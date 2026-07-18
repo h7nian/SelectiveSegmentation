@@ -1,0 +1,155 @@
+\section{Level-set risk framework}
+\label{sec:framework}
+
+\subsection{An explicit working posterior}
+\label{sec:posterior}
+
+For a fixed image, write \(p=(p_1,\ldots,p_N)\). We use a shared random
+threshold to construct a law over masks.
+
+\begin{definition}[Level-set working posterior \(Q_p\)]
+\label{def:levelset}
+Let \(T\sim\operatorname{Unif}(0,1)\) and define
+\begin{equation}
+  Y_T=\{i:p_i\geq T\},
+  \qquad
+  Y_t=\{i:p_i\geq t\}.
+  \label{eq:levelset}
+\end{equation}
+The distribution of \(Y_T\) is denoted by \(Q_p\).
+\end{definition}
+
+The construction satisfies
+\begin{equation}
+  \Prb_{Q_p}(i\in Y_T)=p_i,
+  \qquad
+  \Prb_{Q_p}(i,j\in Y_T)=\min(p_i,p_j).
+  \label{eq:levelset-marginals}
+\end{equation}
+Thus \(p\) is exactly the one-pixel coverage function of \(Q_p\), while the
+common threshold selects the comonotone coupling of those marginals. Samples
+are nested: if \(s<t\), then \(Y_t\subseteq Y_s\). This is a classical
+coverage-function random set \citep{goodman,molchanov}; related shared-level
+constructions appear in uncertain-contour analysis \citep{poethkow,bolin}.
+
+Equation~\eqref{eq:levelset-marginals} is an identity internal to \(Q_p\),
+not evidence that \(p_i\) equals the true marginal or that true labels are
+comonotone. The working posterior is attractive because it generates coherent,
+nested candidates cheaply; it can be inaccurate when ambiguity changes topology,
+moves components independently, or is poorly represented by the probability map.
+
+\subsection{Expected loss as a threshold integral}
+
+\begin{proposition}[Threshold-integral risk]
+\label{prop:integral}
+For any loss satisfying Equation~\eqref{eq:bounded-assumption},
+\begin{equation}
+  r_{L,Q}(x)
+  :=\Ex_{Y\sim Q_{p(x)}}\!\left[L_X(Y,\Yhat(x))\right]
+  =\int_0^1 L_X(Y_t,\Yhat(x))\,dt .
+  \label{eq:integral}
+\end{equation}
+\end{proposition}
+This follows immediately by integrating over the uniform threshold \(T\).
+The identity is exact for the stated working posterior and does not depend on
+the algebraic form of \(L\). It does not assert equality with the true
+conditional risk.
+
+Let \(H_{L,x}(t):=L_X(Y_t,\Yhat(x))\). For nodes \(t_m\in(0,1)\) and
+nonnegative weights \(w_m\) summing to one, define
+\begin{equation}
+  r_{L,M}(x)=\sum_{m=1}^M w_m H_{L,x}(t_m),
+  \qquad
+  C_{L,M}(x)=-r_{L,M}(x).
+  \label{eq:quad}
+\end{equation}
+Every candidate is compared with the fixed deployed mask. By contrast,
+averaging \(L(Y_{t_m},Y_{t_n})\) over pairs of level sets estimates posterior
+dispersion, not conditional risk of the deployed action.
+
+Our default is equal-width midpoint quadrature,
+\begin{equation}
+  t_m=\frac{m-1/2}{M},
+  \qquad
+  w_m=\frac1M,
+  \qquad m=1,\ldots,M.
+  \label{eq:midpoint-nodes}
+\end{equation}
+On a finite image \(H_{L,x}\) is a bounded step function and therefore has
+finite total variation \(V(H_{L,x})\). The one-dimensional Koksma--Hlawka
+inequality and midpoint star discrepancy give
+\begin{equation}
+  \left|r_{L,M}(x)-r_{L,Q}(x)\right|
+  \leq \frac{V(H_{L,x})}{2M}.
+  \label{eq:koksma}
+\end{equation}
+We use midpoint nodes as a fixed numerical rule, not because the bound proves
+they optimize finite-sample AURC \citep{niederreiter1992}.
+
+\subsection{Numerical error and posterior discrepancy}
+\label{sec:error}
+
+Let \(P_x=\Prb(Y\in\cdot\mid X=x)\) denote the true label posterior. For the
+deployed action define the loss-specific discrepancy
+\begin{equation}
+  \Delta_{L,\Yhat}(x)
+  :=
+  \left|
+    \Ex_{Y\sim P_x}L_X(Y,\Yhat(x))
+    -
+    \Ex_{Y\sim Q_{p(x)}}L_X(Y,\Yhat(x))
+  \right|.
+  \label{eq:loss-discrepancy}
+\end{equation}
+This asks only whether two posteriors agree on the expected loss of the action
+being scored. It is less restrictive than total-variation control in the
+precise sense that the latter implies a bound on this one functional, while the
+converse need not hold. For example, if
+\(\TV(P_x,Q_{p(x)})\leq\delta_x\), with total variation
+defined as the supremum over events, then
+\begin{equation}
+  \Delta_{L,\Yhat}(x)\leq D_x\delta_x.
+  \label{eq:tv-sufficient}
+\end{equation}
+The converse need not hold.
+
+\begin{proposition}[Conditional total-error bound]
+\label{prop:total-bound}
+For midpoint quadrature and any bounded measurable \(L\),
+\begin{equation}
+  \left|C_{L,M}(x)-C_L^\star(x)\right|
+  \leq
+  \frac{V(H_{L,x})}{2M}
+  +\Delta_{L,\Yhat}(x).
+  \label{eq:decomp}
+\end{equation}
+Under the stronger sufficient condition
+\(\TV(P_x,Q_{p(x)})\leq\delta_x\), the second term can be replaced by
+\(D_x\delta_x\).
+\end{proposition}
+The proof inserts \(r_{L,Q}(x)\) between the quadrature risk and true
+conditional risk and applies the triangle inequality; Appendix~\ref{app:theory}
+gives the full statement.
+
+\begin{corollary}[Population total error]
+\label{cor:population-bound}
+If \(\Ex[V(H_{L,X})]<\infty\) and
+\(\Ex[\Delta_{L,\Yhat}(X)]<\infty\), then
+\begin{equation}
+  \Ex\!\left[
+    \left|C_{L,M}(X)-C_L^\star(X)\right|
+  \right]
+  \leq
+  \frac{\Ex[V(H_{L,X})]}{2M}
+  +\Ex[\Delta_{L,\Yhat}(X)].
+  \label{eq:population-decomp}
+\end{equation}
+\end{corollary}
+
+Increasing \(M\) controls only the first term. It does not change \(p\), the
+coupling selected by \(Q_p\), or the posterior-discrepancy term. Moreover,
+Equation~\eqref{eq:decomp} is a confidence-value bound, not automatically an
+exact-ranking or AURC-regret bound. A positive pairwise margin is sufficient
+for exact rank stability; approximate AURC control can instead use suitable
+uniform or distributional control of the score errors. None of those
+conditions follows from Equation~\eqref{eq:decomp} alone.

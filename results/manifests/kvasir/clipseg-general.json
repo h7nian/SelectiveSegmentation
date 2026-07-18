@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "run_id": "c7aa8ce18b26",
+  "created_utc": "2026-07-18T07:17:01+00:00",
+  "condition": "clipseg-general",
+  "model": "clipseg",
+  "dataset": "kvasir",
+  "split": "test",
+  "num_images": 200,
+  "checkpoint": null,
+  "base_model": {
+    "name": "clipseg",
+    "source": "CIDAS/clipseg-rd64-refined"
+  },
+  "source_sha256": "0c44f7f9a2b483843069add08f80823ea8b2a01814914a9dd0acc71d6b7440d7",
+  "environment": {
+    "packages": {
+      "python": "3.12.4",
+      "numpy": "2.5.1",
+      "scipy": "1.18.0",
+      "torch": "2.12.1",
+      "torchvision": "0.27.1",
+      "transformers": "5.13.0"
+    },
+    "device": "cuda",
+    "cuda_runtime": "13.0",
+    "cuda_device": "NVIDIA A100-SXM4-40GB"
+  },
+  "cohort": "all images from a native binary segmentation split",
+  "decision_rule": {
+    "form": "foreground_probability >= gamma",
+    "gamma": 0.5
+  },
+  "preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "losses": {
+    "dice": "foreground 1-Dice; empty-empty=0; one-sided-empty=1",
+    "hd95": "pooled bidirectional HD95 / image diagonal; empty-empty=0; one-sided-empty=1"
+  },
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd95"
+  ],
+  "auxiliary_fields": [
+    "risk_hd95_pixels"
+  ],
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd95_m32"
+  ],
+  "quadrature": {
+    "2": {
+      "rule": "midpoint",
+      "nodes": [
+        0.25,
+        0.75
+      ],
+      "weights": [
+        0.5,
+        0.5
+      ]
+    },
+    "8": {
+      "rule": "midpoint",
+      "nodes": [
+        0.0625,
+        0.1875,
+        0.3125,
+        0.4375,
+        0.5625,
+        0.6875,
+        0.8125,
+        0.9375
+      ],
+      "weights": [
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125
+      ]
+    },
+    "32": {
+      "rule": "midpoint",
+      "nodes": [
+        0.015625,
+        0.046875,
+        0.078125,
+        0.109375,
+        0.140625,
+        0.171875,
+        0.203125,
+        0.234375,
+        0.265625,
+        0.296875,
+        0.328125,
+        0.359375,
+        0.390625,
+        0.421875,
+        0.453125,
+        0.484375,
+        0.515625,
+        0.546875,
+        0.578125,
+        0.609375,
+        0.640625,
+        0.671875,
+        0.703125,
+        0.734375,
+        0.765625,
+        0.796875,
+        0.828125,
+        0.859375,
+        0.890625,
+        0.921875,
+        0.953125,
+        0.984375
+      ],
+      "weights": [
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125
+      ]
+    }
+  },
+  "void_policy": "total binary domain; void labels are forbidden",
+  "sdc_empty_convention": "published SDC baseline: confidence 0 when p and hard mask are empty",
+  "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f",
+  "command": [
+    "python",
+    "-m",
+    "selectseg.binary_eval",
+    "--model",
+    "clipseg",
+    "--dataset",
+    "kvasir",
+    "--score-workers",
+    "8",
+    "--max-pending-scores",
+    "16",
+    "--num-workers",
+    "4",
+    "--output-dir",
+    "outputs/binary_final"
+  ],
+  "num_rows": 200,
+  "jsonl_sha256": "c5db28277ba765665396497229c134173e87858284699f1c7a11636c5239dfee"
+}

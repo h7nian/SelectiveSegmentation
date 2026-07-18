@@ -1,0 +1,30 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Selective prediction and failure detection.}
+Selective classification studies how a predictor and rejection rule trade coverage
+for risk \citep{geifman2017selective,selectivenet,feng}. Recent work has also
+emphasized that failure-detection conclusions depend on evaluation choices and
+aggregation \citep{jaeger,values}. We adopt AURC as a ranking functional, but make
+its loss index explicit because segmentation admits several non-equivalent notions
+of error.
+
+\paragraph{Segmentation confidence.}
+Pixelwise entropy and maximum probability are common single-pass uncertainty
+signals; converting them into an image-level score requires an aggregation rule.
+ValUES systematizes this design space for semantic segmentation \citep{values}.
+SDC is the closest metric-aligned predecessor to our work: it uses soft Dice between
+the probability map and deployed mask and derives a Dice-specific approximation
+\citep{sdc}. Our contribution is complementary. We retain the deployed action,
+replace the Dice-specific surrogate by a loss-indexed expected-risk construction,
+and state the joint working posterior required to evaluate nonlinear mask losses.
+
+\paragraph{Random sets and geometric losses.}
+Representing a fuzzy membership function through random level sets has a long
+history in random-set theory \citep{goodman,molchanov}. Shared-level constructions
+also arise in probabilistic contour and excursion-set analysis
+\citep{poethkow,bolin}. We use this construction as a transparent computational
+posterior, not as an identification result. Boundary-aware segmentation objectives
+and evaluation measures address behavior missed by overlap alone
+\citep{karimi2020}; our experiments ask whether a boundary-indexed confidence
+improves selective ranking under a correspondingly defined boundary risk.

@@ -1,0 +1,181 @@
+dataset,condition,split,num_rows,num_image_clusters,risk,risk_label,method,method_label,aurc,oracle_aurc,random_aurc,excess_aurc,normalized_aurc
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_sdc,SDC,0.86492961794,0.834747815169,0.891901853806,0.030181802771,0.528078216181
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.899161190539,0.834747815169,0.891901853806,0.0644133753699,1.12701353931
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.896820814013,0.834747815169,0.891901853806,0.0620729988442,1.08606496277
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.891698412473,0.834747815169,0.891901853806,0.0569505973036,0.996440473181
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.899631575858,0.834747815169,0.891901853806,0.0648837606892,1.13524367195
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.898468399435,0.834747815169,0.891901853806,0.063720584266,1.11489206687
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.893201037171,0.834747815169,0.891901853806,0.0584532220016,1.02273126092
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.885635839679,0.834747815169,0.891901853806,0.0508880245098,0.890366205492
+fives,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.885599201096,0.834747815169,0.891901853806,0.0508513859273,0.889725155737
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.368339157027,0.311300774987,0.457304074569,0.05703838204,0.390665020608
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.488997397891,0.311300774987,0.457304074569,0.177696622904,1.21707265119
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.480634162272,0.311300774987,0.457304074569,0.169333387285,1.15979150999
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.494047489429,0.311300774987,0.457304074569,0.182746714443,1.25166153756
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.529195893536,0.311300774987,0.457304074569,0.217895118549,1.49239859081
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.524379854256,0.311300774987,0.457304074569,0.21307907927,1.45941276588
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.48313076628,0.311300774987,0.457304074569,0.171829991293,1.17689115099
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.45787773525,0.311300774987,0.457304074569,0.146576960263,1.00392909395
+fives,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.460433598416,0.311300774987,0.457304074569,0.149132823429,1.02143461043
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_sdc,SDC,0.821997839322,0.817972654008,0.875340461911,0.00402518531426,0.0701645306215
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.86474774854,0.817972654008,0.875340461911,0.0467750945323,0.815354398967
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.85292500569,0.817972654008,0.875340461911,0.0349523516823,0.60926768793
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.871258690891,0.817972654008,0.875340461911,0.0532860368831,0.92884910251
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.873173014015,0.817972654008,0.875340461911,0.055200360007,0.962218394346
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.873101027796,0.817972654008,0.875340461911,0.0551283737877,0.960963575277
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.845050410036,0.817972654008,0.875340461911,0.0270777560278,0.472002626871
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.846293517026,0.817972654008,0.875340461911,0.0283208630183,0.493671695918
+fives,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.842897499599,0.817972654008,0.875340461911,0.0249248455911,0.43447442917
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.225912765631,0.189768459181,0.300812266031,0.0361443064497,0.325495923411
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.27435111377,0.189768459181,0.300812266031,0.0845826545886,0.7617052854
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.249932543733,0.189768459181,0.300812266031,0.060164084552,0.541804953007
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.42144249458,0.189768459181,0.300812266031,0.231674035399,2.08633008874
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.424796291179,0.189768459181,0.300812266031,0.235027831998,2.11653255292
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.424594505802,0.189768459181,0.300812266031,0.234826046621,2.1147153838
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.257528048655,0.189768459181,0.300812266031,0.0677595894737,0.610205930397
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.272501751458,0.189768459181,0.300812266031,0.0827332922772,0.74505093642
+fives,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.263053043757,0.189768459181,0.300812266031,0.0732845845757,0.659961024884
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_sdc,SDC,0.413447196988,0.363586486739,0.429989891222,0.0498607102495,0.750875811828
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.46285814794,0.363586486739,0.429989891222,0.0992716612011,1.49497848753
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.452276961337,0.363586486739,0.429989891222,0.0886904745978,1.33563143769
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.409995855773,0.363586486739,0.429989891222,0.046409369034,0.698900446372
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.411045655802,0.363586486739,0.429989891222,0.0474591690636,0.714709877195
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.411018379488,0.363586486739,0.429989891222,0.0474318927495,0.714299110394
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.403564564163,0.363586486739,0.429989891222,0.0399780774241,0.602048610838
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.402592823613,0.363586486739,0.429989891222,0.039006336874,0.587414714314
+fives,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.40426307221,0.363586486739,0.429989891222,0.0406765854713,0.612567771003
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.0446016544803,0.0263430502984,0.0457137399371,0.0182586041819,0.942589268759
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.0695287112374,0.0263430502984,0.0457137399371,0.043185660939,2.2294333214
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.0637267239921,0.0263430502984,0.0457137399371,0.0373836736937,1.92990928
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.046062728705,0.0263430502984,0.0457137399371,0.0197196784066,1.01801633161
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.0459592516566,0.0263430502984,0.0457137399371,0.0196162013581,1.01267439229
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.0458482930681,0.0263430502984,0.0457137399371,0.0195052427696,1.00694622306
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.0429300736981,0.0263430502984,0.0457137399371,0.0165870233996,0.856294933689
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.0412056727587,0.0263430502984,0.0457137399371,0.0148626224603,0.767273790326
+fives,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.0428899184159,0.0263430502984,0.0457137399371,0.0165468681175,0.854221941819
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_sdc,SDC,0.556504481506,0.264200617608,0.527176262753,0.292303863898,1.11152446736
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.38320184105,0.264200617608,0.527176262753,0.119001223442,0.452518039747
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.380396629073,0.264200617608,0.527176262753,0.116196011465,0.441850846684
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.507059652693,0.264200617608,0.527176262753,0.242859035085,0.92350390452
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.541700095696,0.264200617608,0.527176262753,0.277499478087,1.05522881381
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.532443926199,0.264200617608,0.527176262753,0.268243308591,1.02003099353
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.456386953854,0.264200617608,0.527176262753,0.192186336246,0.730814201976
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.46916629888,0.264200617608,0.527176262753,0.204965681272,0.779409367582
+kvasir,clipseg-general,test,200,200,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.456639030751,0.264200617608,0.527176262753,0.192438413143,0.731772758031
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.285577971806,0.125015243464,0.269981541897,0.160562728342,1.10758659135
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.215257141477,0.125015243464,0.269981541897,0.0902418980127,0.622502602248
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.207697732153,0.125015243464,0.269981541897,0.0826824886891,0.570356624836
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.296920016431,0.125015243464,0.269981541897,0.171904772966,1.18582577347
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.31656411353,0.125015243464,0.269981541897,0.191548870066,1.32133380059
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.305648427839,0.125015243464,0.269981541897,0.180633184374,1.24603570849
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.260799361009,0.125015243464,0.269981541897,0.135784117545,0.936659892768
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.264421794922,0.125015243464,0.269981541897,0.139406551457,0.961648003464
+kvasir,clipseg-general,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.252665229005,0.125015243464,0.269981541897,0.12764998554,0.880549389205
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_sdc,SDC,0.0892263561333,0.0704894133615,0.219848207735,0.0187369427718,0.125449210074
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.20117367469,0.0704894133615,0.219848207735,0.130684261329,0.874968640963
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.170243003363,0.0704894133615,0.219848207735,0.0997535900011,0.667878918143
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.137322443865,0.0704894133615,0.219848207735,0.0668330305039,0.447466322852
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.0925785431638,0.0704894133615,0.219848207735,0.0220891298023,0.147893064449
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.0907724757854,0.0704894133615,0.219848207735,0.0202830624239,0.13580092494
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.154840013311,0.0704894133615,0.219848207735,0.0843505999496,0.564751478502
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.103551006928,0.0704894133615,0.219848207735,0.0330615935663,0.221356858865
+kvasir,clipseg-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.0999960866591,0.0704894133615,0.219848207735,0.0295066732976,0.197555647268
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.0491893413028,0.0279544840364,0.102461778306,0.0212348572663,0.285003736542
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.103638588521,0.0279544840364,0.102461778306,0.0756841044847,1.01579456384
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.0788138691855,0.0279544840364,0.102461778306,0.0508593851491,0.682609476668
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.101460636067,0.0279544840364,0.102461778306,0.073506152031,0.986563164748
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.0545334719896,0.0279544840364,0.102461778306,0.0265789879532,0.356730011657
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.0536915972086,0.0279544840364,0.102461778306,0.0257371131722,0.345430785329
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.0946926375695,0.0279544840364,0.102461778306,0.0667381535331,0.895726441118
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.0454461239398,0.0279544840364,0.102461778306,0.0174916399034,0.234764127123
+kvasir,clipseg-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.0431933898895,0.0279544840364,0.102461778306,0.0152389058531,0.204529046485
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_sdc,SDC,0.0516527975026,0.0396046605586,0.133514381392,0.0120481369441,0.128294886165
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.0901389216223,0.0396046605586,0.133514381392,0.0505342610637,0.538115336893
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.077465162891,0.0396046605586,0.133514381392,0.0378605023325,0.403158501554
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.0804290155554,0.0396046605586,0.133514381392,0.0408243549968,0.43471916043
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.0525444644316,0.0396046605586,0.133514381392,0.012939803873,0.137789823654
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.0523376115791,0.0396046605586,0.133514381392,0.0127329510205,0.135587145905
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.0902814037172,0.0396046605586,0.133514381392,0.0506767431586,0.539632561027
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.0549160233146,0.0396046605586,0.133514381392,0.015311362756,0.163043427455
+kvasir,deeplabv3-target,test,200,200,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.0546264959329,0.0396046605586,0.133514381392,0.0150218353744,0.159960387925
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.0299533858715,0.0157476514017,0.068079148248,0.0142057344698,0.271456681461
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.0435680105602,0.0157476514017,0.068079148248,0.0278203591584,0.531617875181
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.0328743037431,0.0157476514017,0.068079148248,0.0171266523414,0.327272357443
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.0583200536322,0.0157476514017,0.068079148248,0.0425724022305,0.81351394086
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.030660426801,0.0157476514017,0.068079148248,0.0149127753992,0.284967491815
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.030325683912,0.0157476514017,0.068079148248,0.0145780325102,0.27857090641
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.0550534510096,0.0157476514017,0.068079148248,0.0393057996079,0.75109259197
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.0244464267282,0.0157476514017,0.068079148248,0.00869877532642,0.166224469978
+kvasir,deeplabv3-target,test,200,200,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.0238908751634,0.0157476514017,0.068079148248,0.00814322376165,0.155608462444
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_sdc,SDC,0.0753550931857,0.0610465362718,0.102477205324,0.0143085569139,0.345361473543
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.0995102200887,0.0610465362718,0.102477205324,0.0384636838168,0.928386740944
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.102784889185,0.0610465362718,0.102477205324,0.041738352913,1.00742647578
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.0772339467284,0.0610465362718,0.102477205324,0.0161874104566,0.39071081464
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.0807278139675,0.0610465362718,0.102477205324,0.0196812776956,0.475041271254
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.0791918605771,0.0610465362718,0.102477205324,0.0181453243052,0.437968411329
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.0860196211534,0.0610465362718,0.102477205324,0.0249730848815,0.602768081052
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.0883985936817,0.0610465362718,0.102477205324,0.0273520574099,0.660188648539
+pet,clipseg-general,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.0878464151228,0.0610465362718,0.102477205324,0.026799878851,0.646860875381
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.0420380540964,0.0249161131664,0.0533861688292,0.01712194093,0.601401737065
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.0425292056246,0.0249161131664,0.0533861688292,0.0176130924582,0.618653249814
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.0435382956447,0.0249161131664,0.0533861688292,0.0186221824782,0.654097157336
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.0445634962121,0.0249161131664,0.0533861688292,0.0196473830457,0.690106941777
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.0425403407831,0.0249161131664,0.0533861688292,0.0176242276167,0.619044368069
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.0423874469307,0.0249161131664,0.0533861688292,0.0174713337643,0.613674028994
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.0403269345882,0.0249161131664,0.0533861688292,0.0154108214218,0.541299307747
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.0398720195114,0.0249161131664,0.0533861688292,0.014955906345,0.525320586729
+pet,clipseg-general,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.0411834067167,0.0249161131664,0.0533861688292,0.0162672935502,0.571382569212
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_sdc,SDC,0.0332107827221,0.0231267164025,0.0410197582668,0.0100840663197,0.563574734587
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.0441077765217,0.0231267164025,0.0410197582668,0.0209810601192,1.17258207287
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.0439148887269,0.0231267164025,0.0410197582668,0.0207881723244,1.16180202796
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.0333815681289,0.0231267164025,0.0410197582668,0.0102548517265,0.573119529044
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.0331654269713,0.0231267164025,0.0410197582668,0.0100387105689,0.561039908416
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.033161692228,0.0231267164025,0.0410197582668,0.0100349758256,0.560831182402
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.0399543096561,0.0231267164025,0.0410197582668,0.0168275932537,0.940454584594
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.0394787068785,0.0231267164025,0.0410197582668,0.0163519904761,0.913874264645
+pet,clipseg-target,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.0360944377469,0.0231267164025,0.0410197582668,0.0129677213445,0.724735427479
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.0289980055072,0.0131886089395,0.0299109590858,0.0158093965678,0.945405187037
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.0283515810914,0.0131886089395,0.0299109590858,0.015162972152,0.906748873174
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.0281449381288,0.0131886089395,0.0299109590858,0.0149563291893,0.894391581235
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.0292745332476,0.0131886089395,0.0299109590858,0.0160859243081,0.961941603148
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.0289371333521,0.0131886089395,0.0299109590858,0.0157485244126,0.941765019559
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.028914063438,0.0131886089395,0.0299109590858,0.0157254544986,0.940385433924
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.0256373947512,0.0131886089395,0.0299109590858,0.0124487858117,0.744439968234
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.0252589136463,0.0131886089395,0.0299109590858,0.0120703047068,0.721806719821
+pet,clipseg-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.0250629184202,0.0131886089395,0.0299109590858,0.0118743094807,0.710086164733
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_sdc,SDC,0.0677130107392,0.0554420767882,0.105700798346,0.0122709339509,0.244155314156
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.108406450505,0.0554420767882,0.105700798346,0.0529643737166,1.05383448037
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.107657509332,0.0554420767882,0.105700798346,0.0522154325439,1.03893276482
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.0747425708802,0.0554420767882,0.105700798346,0.019300494092,0.384022782394
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.0678755228715,0.0554420767882,0.105700798346,0.0124334460833,0.247388825224
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.0678974774597,0.0554420767882,0.105700798346,0.0124554006715,0.247825656633
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.0951001188285,0.0554420767882,0.105700798346,0.0396580420403,0.789077811998
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.087014613734,0.0554420767882,0.105700798346,0.0315725369458,0.628200160439
+pet,deeplabv3-external,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.0859710627938,0.0554420767882,0.105700798346,0.0305289860056,0.607436581345
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.0382417472331,0.0223655220286,0.0538347945083,0.0158762252045,0.504499276707
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.0492278127814,0.0223655220286,0.0538347945083,0.0268622907529,0.85360380575
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.046327462941,0.0223655220286,0.0538347945083,0.0239619409124,0.761439303304
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.046010391342,0.0223655220286,0.0538347945083,0.0236448693135,0.751363709749
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.0386166634435,0.0223655220286,0.0538347945083,0.0162511414149,0.516413000185
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.0383261544499,0.0223655220286,0.0538347945083,0.0159606324213,0.507181487325
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.043279597029,0.0223655220286,0.0538347945083,0.0209140750004,0.664587178299
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.035455586007,0.0223655220286,0.0538347945083,0.0130900639784,0.415963349228
+pet,deeplabv3-external,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.0344752106242,0.0223655220286,0.0538347945083,0.0121096885957,0.384809931767
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_sdc,SDC,0.0324780852958,0.022393278154,0.0432641460396,0.0100848071417,0.483200181086
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_mean_max_probability,Mean max probability,0.0408932769047,0.022393278154,0.0432641460396,0.0184999987507,0.886402944627
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_negative_entropy,Negative entropy,0.0405010487276,0.022393278154,0.0432641460396,0.0181077705736,0.867609850863
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_dice_m2,Dice-M2,0.0329842013715,0.022393278154,0.0432641460396,0.0105909232175,0.507450062716
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_dice_m8,Dice-M8,0.0326033394852,0.022393278154,0.0432641460396,0.0102100613311,0.489201569724
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_dice_m32,Dice-M32,0.0324103921593,0.022393278154,0.0432641460396,0.0100171140052,0.479956754082
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m2,nHD95-M2,0.0362878751812,0.022393278154,0.0432641460396,0.0138945970272,0.665741218975
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m8,nHD95-M8,0.0357419102729,0.022393278154,0.0432641460396,0.0133486321189,0.639582033294
+pet,deeplabv3-target,test,3669,3669,risk_dice,Dice risk,confidence_nhd95_m32,nHD95-M32,0.035232311535,0.022393278154,0.0432641460396,0.0128390333809,0.615165284516
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_sdc,SDC,0.0301298353169,0.0127464722547,0.0352267883646,0.0173833630622,0.773270401415
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_mean_max_probability,Mean max probability,0.0290702327281,0.0127464722547,0.0352267883646,0.0163237604734,0.726135717738
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_negative_entropy,Negative entropy,0.0283531547102,0.0127464722547,0.0352267883646,0.0156066824555,0.69423767794
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m2,Dice-M2,0.030698468486,0.0127464722547,0.0352267883646,0.0179519962313,0.798565115523
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m8,Dice-M8,0.0303163060482,0.0127464722547,0.0352267883646,0.0175698337935,0.781565246128
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_dice_m32,Dice-M32,0.0300702548787,0.0127464722547,0.0352267883646,0.017323782624,0.770620063318
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m2,nHD95-M2,0.0252542753528,0.0127464722547,0.0352267883646,0.0125078030981,0.556389111122
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m8,nHD95-M8,0.0248063345674,0.0127464722547,0.0352267883646,0.0120598623127,0.536463199795
+pet,deeplabv3-target,test,3669,3669,risk_nhd95,Normalized penalized HD95 risk,confidence_nhd95_m32,nHD95-M32,0.0239283628044,0.0127464722547,0.0352267883646,0.0111818905497,0.497408065571

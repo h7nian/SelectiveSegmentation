@@ -1,0 +1,50 @@
+\section{Additional experimental results}
+\label{app:additional-results}
+
+This appendix retains the complete generated outputs underlying the compact
+main-text presentation.  The same validated manifests and analysis run produce
+all tables; no row is selected according to its observed AURC or \(p\)-value.
+
+\subsection{Reproducibility identifiers}
+
+All ten evaluation manifests share the evaluator-source identifier below.
+The public artifact retains those manifests, including all six target-trained
+checkpoint hashes, training configurations, sample-list and JSONL hashes, and
+the exact package/device records.  The base weights used by the runs are fixed
+by the identifiers below; each generated table also records the final analysis
+JSON SHA-256 in its source comment.
+
+\begin{table}[h]
+\centering
+\caption{Base-model provenance for the final runs.}
+\label{tab:base-model-provenance}
+{\scriptsize\setlength{\tabcolsep}{4pt}%
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{ll}
+\toprule
+Artifact & Immutable identifier \\
+\midrule
+Evaluator source bundle SHA-256 & \texttt{0c44f7f9a2b483843069add08f80823ea8b2a01814914a9dd0acc71d6b7440d7} \\
+CLIPSeg Hugging Face revision & \texttt{999e0328d9e10b484360c477313983f9afdd7050} \\
+CLIPSeg \texttt{model.safetensors} SHA-256 & \texttt{d00ca85d6b859f9d07b7cfb8ef26fe9771cb275b34c9368f2ecf603139307f55} \\
+DeepLabV3 COCO-with-VOC weights SHA-256 & \texttt{cd0a25694c4a0f7106b38f4938bf90a874f2f241cc410b8f63c7024399538f06} \\
+\bottomrule
+\end{tabular}}}
+\end{table}
+
+Evaluation used Python 3.12.4, NumPy 2.5.1, SciPy 1.18.0, PyTorch
+2.12.1, torchvision 0.27.1, and Transformers 5.13.0 on NVIDIA A100-SXM4
+40GB GPUs with CUDA 13.0.  These are provenance records, not claims that the
+ranking results require this hardware.
+
+\subsection{Complete matched and cross-loss results}
+
+\input{Tables/cross_loss_results.tex}
+
+\subsection{Quadrature-resolution ablation}
+
+\input{Tables/quadrature_ablation.tex}
+
+\subsection{Paired uncertainty and multiplicity control}
+
+\input{Tables/statistical_tests.tex}

@@ -1,0 +1,65 @@
+\section{Limitations}
+\label{sec:limitations}
+
+\paragraph{The working posterior is not identified by a probability map.}
+The shared-threshold construction selects one coupling from many with the same pixel
+marginals. Marginal calibration, even if exact, does not identify expected nonlinear
+geometric loss. Repeated annotations or another source of label variability would be
+needed to validate this coupling directly; one reference mask per image cannot
+separate marginal calibration error from dependence-model error.
+
+\paragraph{The loss convention is substantive.}
+Dice is naturally bounded, but surface distances require an explicit empty-mask
+rule. Assigning a one-sided empty comparison the image diagonal, a fixed cap, or an
+application-specific cost produces different losses and can change the ranking. Our
+normalized penalized HD95 is one predeclared choice. The published SDC baseline's
+empty--empty Dice value also differs from ours, so its theoretical approximation
+guarantee does not automatically cover empty deployed masks under our loss.
+Dropping undefined cases would change the target population and is not equivalent.
+
+\paragraph{Quadrature control is not posterior or AURC control.}
+Equation~\eqref{eq:decomp} separates numerical and posterior terms but does not make
+the latter small by assertion. The variation constant can also be loose. A larger
+\(M\) improves the worst-case midpoint approximation rate to the \(Q_p\) integral;
+it need not improve empirical AURC monotonically. Turning value error into an AURC
+guarantee additionally requires rank-stability or error-tail control; a pairwise
+margin is one sufficient route for exact ordering, not a consequence of the bound.
+
+\paragraph{Scope and information limits.}
+We focus on native binary masks and single-map, post-hoc confidence. If two cases
+produce the same \((p,\Yhat)\), every deterministic score studied here gives them
+the same confidence even when external context makes one more likely to fail.
+Features, ensembles, auxiliary failure predictors, distribution-shift detectors,
+multiclass actions, and multi-rater posterior validation are outside the present
+scope. Finally, AURC measures ranking; it does not imply that a confidence value is
+calibrated as a probability or an absolute forecast of loss.
+
+\paragraph{Empirical generality and training variability.}
+Three binary datasets and two model families cannot establish that metric-aligned
+confidence will dominate across architectures, shifts, or annotation protocols.
+Our paired comparisons deliberately condition on each fixed probability map and
+therefore isolate confidence ranking, not segmentation-model accuracy.  The
+paired image-cluster bootstrap quantifies held-out image variation for a fixed
+fitted checkpoint; its percentile intervals and tail probabilities are approximate,
+and with one predeclared training seed they do not include optimization or
+training-sample variability.  Repeated training runs and external-site validation
+would be needed for that broader claim. Moreover, the 15,876 condition-specific
+rows reuse 4,069 unique held-out images across model conditions; they are not
+15,876 independent images.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Selective segmentation confidence is meaningful only relative to a deployed mask
+and deployment loss. We defined the corresponding ideal confidence, represented a
+level-set construction as an explicit working posterior, and obtained one quadrature
+form for any bounded measurable segmentation loss. The analysis separates numerical
+approximation from disagreement between the working and true label laws. Dice
+illustrates why this separation matters: expected Dice under the level-set law and
+SDC's ratio of expected components are different estimands with structurally
+non-nested conditions for approximating the ideal score. Empirically, nHD95-M32
+consistently improves on Dice-M32 for nHD95 risk, but their Dice-risk ordering
+splits six to four and SDC is the strongest primary score in six conditions.
+Loss indexing therefore provides a general construction and a useful diagnostic
+axis, not a guarantee that a same-named confidence dominates every baseline or
+cross-loss score.

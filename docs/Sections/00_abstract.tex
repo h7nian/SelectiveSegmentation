@@ -1,0 +1,24 @@
+\begin{abstract}
+Selective segmentation requires more than an accurate mask: a system must also rank
+its predictions by the harm they would incur if accepted, and that ranking depends on
+the deployment loss. We formalize this dependence by indexing both selective risk
+and confidence by a bounded segmentation loss \(L\). The ideal score is the negative
+conditional risk of the mask actually deployed,
+\(C_L^\star(x)=-\mathbb{E}[L(Y,\widehat Y(x))\mid X=x]\).
+Because a single probability map does not specify the required joint label posterior,
+we introduce a level-set law as an explicit \emph{working posterior}: draw one
+threshold \(T\sim\mathrm{Unif}(0,1)\) and set
+\(Y_T=\{i:p_i\geq T\}\). Under this stated model, expected loss is exactly the
+one-dimensional integral \(\int_0^1 L(Y_t,\widehat Y)\,dt\), yielding one
+\(M\)-point quadrature estimator for overlap and boundary losses. We separate its
+deterministic quadrature error from a loss-specific discrepancy between the working
+and true posteriors. For Dice, the resulting score is an expectation of a ratio,
+whereas Soft Dice Confidence is a ratio of expectations. Their assumptions are
+therefore not ordered: our construction is more general in the deployment loss, but
+not uniformly weaker probabilistically. Across ten fixed model--dataset conditions,
+nHD95-M32 outranks Dice-M32 under nHD95 risk in all ten, whereas Dice-M32 wins their
+Dice-risk comparison in six and loses in four; SDC has the lowest Dice-risk AURC
+among the five primary scores in six conditions. Thus loss indexing exposes useful
+boundary-specific rankings, but metric matching alone does not imply universal
+superiority.
+\end{abstract}

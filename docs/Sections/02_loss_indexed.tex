@@ -1,0 +1,82 @@
+\section{Loss-indexed selective segmentation}
+\label{sec:setup}
+
+\paragraph{Prediction and loss.}
+Let \((X,Y)\) be an image and its binary segmentation mask, drawn from an
+unknown distribution. A fixed system returns a probability map
+\(p(X)\in[0,1]^N\) and a deployed hard prediction \(\Yhat(X)\). For example,
+\(\Yhat(X)=\{i:p_i(X)\geq\gamma\}\) for a fixed threshold \(\gamma\), but the
+definitions apply to any deterministic deployed decision rule.
+
+Let \(L_x(A,B)\) be the loss incurred when \(B\) is deployed and \(A\) is the
+label. We assume that \(L_x\) is measurable and bounded:
+\begin{equation}
+  0\leq L_x(A,B)\leq D_x<\infty.
+  \label{eq:bounded-assumption}
+\end{equation}
+Boundedness is automatic for \(1-\Dice\) and \(1-\IoU\). A surface loss that
+is undefined for an empty mask must be extended before it enters the framework.
+The convention is part of \(L\) and must be shared by the confidence computation
+and selective-risk evaluation.
+
+\paragraph{Risk and coverage are loss-indexed.}
+A confidence \(g:\mathcal X\to\mathbb R\) is oriented so that larger values mean
+more confidence. At threshold \(\tau\), define
+\begin{align}
+  \operatorname{cov}_g(\tau)
+    &=\Prb\!\left(g(X)\geq\tau\right), \\
+  R_L(\tau;g)
+    &=
+    \frac{\Ex\!\left[
+      L_X(Y,\Yhat(X))\mathbf 1\{g(X)\geq\tau\}
+    \right]}
+    {\Prb(g(X)\geq\tau)} .
+  \label{eq:risk-coverage}
+\end{align}
+The risk in Equation~\eqref{eq:risk-coverage} is defined only when the
+denominator is positive. At a prescribed coverage, randomization within a tied
+confidence value attains the requested acceptance probability without imposing
+an arbitrary order. Writing \(R_L(c;g)\) for the resulting risk at coverage
+\(c\in(0,1]\),
+\begin{equation}
+  \AURC_L(g)=\int_0^1 R_L(c;g)\,dc .
+  \label{eq:aurc-l}
+\end{equation}
+This is the loss-indexed version of the standard selective-prediction evaluation
+\citep{geifman2017selective,selectivenet}. The subscript matters:
+\(\AURC_{1-\Dice}\) and \(\AURC_{\HDF}\) evaluate different rankings of harm
+and have different units. AURC depends on \(g\) only through its induced ranking,
+up to the declared tie rule.
+
+\paragraph{Ideal confidence.}
+\begin{definition}[Ideal loss-indexed confidence]
+\label{def:ideal}
+For a fixed deployed predictor \(\Yhat\), define
+\begin{equation}
+  \rho_L^\star(x)
+  :=\Ex\!\left[L_X(Y,\Yhat(x))\mid X=x\right],
+  \qquad
+  C_L^\star(x):=-\rho_L^\star(x).
+  \label{eq:ideal}
+\end{equation}
+\end{definition}
+If the deployment threshold changes from \(\gamma=0.5\) to \(\gamma=0.3\),
+then \(\Yhat\), and therefore \(C_L^\star\), changes. Confidence here is
+decision-aware rather than solely a property of an uncertainty distribution.
+
+\begin{proposition}[Optimal selective ordering]
+\label{prop:ideal-ranking}
+Among all acceptance rules measurable with respect to \(X\), accepting images in
+increasing order of \(\rho_L^\star(X)\) minimizes selective risk at every coverage,
+up to randomization among ties. Equivalently, ranking by \(C_L^\star\) minimizes
+\(\AURC_L\).
+\end{proposition}
+The result follows by conditioning the accepted loss on \(X\) and exchanging any
+accepted point of higher conditional risk with a rejected point of lower conditional
+risk. Appendix~\ref{app:theory} gives the measure-theoretic statement and proof.
+
+Definition~\ref{def:ideal} is a target, not an available score. It requires the full
+conditional law of \(Y\) given \(x\). Pixel marginals
+\(q_i(x)=\Prb(Y_i=1\mid X=x)\) do not identify how pixels vary jointly, and
+nonlinear losses such as Dice and HD95 depend on that joint structure. We next make
+one working choice explicit.

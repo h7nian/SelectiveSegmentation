@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "run_id": "33cee78f0425",
+  "created_utc": "2026-07-18T07:17:03+00:00",
+  "condition": "deeplabv3-target",
+  "model": "deeplabv3",
+  "dataset": "fives",
+  "split": "test",
+  "num_images": 200,
+  "checkpoint": {
+    "path": "outputs/binary_train/fives/deeplabv3/seed-0/checkpoint.pt",
+    "sha256": "ed6ec767d275c11edeab04f0c14255a0271167e020847135c3b0d0e2719dd389",
+    "size_bytes": 168337923,
+    "training_config": {
+      "path": "outputs/binary_train/fives/deeplabv3/seed-0/train_config.json",
+      "sha256": "6faf034c204e8f6ac5022e6bcb4ab3b533910221d9e491af49e9e4e4ab6cd6a2",
+      "values": {
+        "model": "deeplabv3",
+        "dataset": "fives",
+        "data_root": "data",
+        "output_dir": "outputs/binary_train/fives/deeplabv3/seed-0",
+        "epochs": "40",
+        "batch_size": "16",
+        "lr": "0.005",
+        "weight_decay": "0.0001",
+        "num_workers": "8",
+        "seed": "0",
+        "limit_batches": "None"
+      }
+    }
+  },
+  "base_model": {
+    "name": "deeplabv3",
+    "source": "DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1"
+  },
+  "source_sha256": "0c44f7f9a2b483843069add08f80823ea8b2a01814914a9dd0acc71d6b7440d7",
+  "environment": {
+    "packages": {
+      "python": "3.12.4",
+      "numpy": "2.5.1",
+      "scipy": "1.18.0",
+      "torch": "2.12.1",
+      "torchvision": "0.27.1",
+      "transformers": "5.13.0"
+    },
+    "device": "cuda",
+    "cuda_runtime": "13.0",
+    "cuda_device": "NVIDIA A100-SXM4-40GB"
+  },
+  "cohort": "all images from a native binary segmentation split",
+  "decision_rule": {
+    "form": "foreground_probability >= gamma",
+    "gamma": 0.5
+  },
+  "preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "losses": {
+    "dice": "foreground 1-Dice; empty-empty=0; one-sided-empty=1",
+    "hd95": "pooled bidirectional HD95 / image diagonal; empty-empty=0; one-sided-empty=1"
+  },
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd95"
+  ],
+  "auxiliary_fields": [
+    "risk_hd95_pixels"
+  ],
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd95_m32"
+  ],
+  "quadrature": {
+    "2": {
+      "rule": "midpoint",
+      "nodes": [
+        0.25,
+        0.75
+      ],
+      "weights": [
+        0.5,
+        0.5
+      ]
+    },
+    "8": {
+      "rule": "midpoint",
+      "nodes": [
+        0.0625,
+        0.1875,
+        0.3125,
+        0.4375,
+        0.5625,
+        0.6875,
+        0.8125,
+        0.9375
+      ],
+      "weights": [
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125
+      ]
+    },
+    "32": {
+      "rule": "midpoint",
+      "nodes": [
+        0.015625,
+        0.046875,
+        0.078125,
+        0.109375,
+        0.140625,
+        0.171875,
+        0.203125,
+        0.234375,
+        0.265625,
+        0.296875,
+        0.328125,
+        0.359375,
+        0.390625,
+        0.421875,
+        0.453125,
+        0.484375,
+        0.515625,
+        0.546875,
+        0.578125,
+        0.609375,
+        0.640625,
+        0.671875,
+        0.703125,
+        0.734375,
+        0.765625,
+        0.796875,
+        0.828125,
+        0.859375,
+        0.890625,
+        0.921875,
+        0.953125,
+        0.984375
+      ],
+      "weights": [
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125
+      ]
+    }
+  },
+  "void_policy": "total binary domain; void labels are forbidden",
+  "sdc_empty_convention": "published SDC baseline: confidence 0 when p and hard mask are empty",
+  "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d",
+  "command": [
+    "python",
+    "-m",
+    "selectseg.binary_eval",
+    "--model",
+    "deeplabv3",
+    "--dataset",
+    "fives",
+    "--score-workers",
+    "8",
+    "--max-pending-scores",
+    "16",
+    "--checkpoint",
+    "outputs/binary_train/fives/deeplabv3/seed-0/checkpoint.pt",
+    "--num-workers",
+    "4",
+    "--batch-size",
+    "4",
+    "--output-dir",
+    "outputs/binary_final"
+  ],
+  "num_rows": 200,
+  "jsonl_sha256": "409ca2fbd54bb997485173e5b5d7f9ff27f3916f901a08026288dee04b30b1bd"
+}

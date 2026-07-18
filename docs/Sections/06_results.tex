@@ -1,0 +1,44 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Matched and cross-loss selective risk}
+
+\input{Tables/main_results.tex}
+
+Table~\ref{tab:main-results} shows an asymmetric, condition-dependent result.
+Under nHD95 risk, nHD95-M32 has lower AURC than Dice-M32 in all ten conditions.
+Under Dice risk, Dice-M32 is lower in six conditions---all four Pet conditions
+and the two target-adapted Kvasir-SEG conditions---whereas nHD95-M32 is lower
+for Kvasir-SEG CLIPSeg-General and all three FIVES conditions. Thus boundary
+matching is consistent in this benchmark, but matching is not a universal
+ordering principle.
+
+SDC is also a substantive competitor: it has the lowest Dice-risk AURC among
+the five primary methods in six of ten conditions. Dice-M32 is lowest in two,
+negative entropy in one, and nHD95-M32 in one. The complete \(2\times2\)
+matched and cross-loss decomposition is reported in
+Table~\ref{tab:cross-loss-results}.
+
+\subsection{Quadrature-resolution ablation}
+
+Across the 20 matched score--risk series in
+Table~\ref{tab:quadrature-ablation}, the absolute AURC difference between
+\(M=8\) and \(M=32\) has median \(0.0011\) and maximum \(0.0118\). For
+\(M=2\) versus \(M=32\), these values increase to \(0.0061\) and \(0.0515\).
+The ranking metric is not monotone in quadrature resolution: \(M=8\) has lower
+AURC than \(M=32\) in one of ten Dice series and three of ten nHD95 series,
+while \(M=2\) does so in five and two, respectively. We therefore treat
+\(M=32\) as the fixed primary numerical resolution, not as an empirically
+guaranteed AURC optimum.
+
+\subsection{Paired uncertainty and multiplicity control}
+
+Table~\ref{tab:statistical-tests} reports all 20 signed estimates
+\(\Delta=\AURC(\text{Dice-M32})-\AURC(\text{nHD95-M32})\), whose observed
+values range from \(-0.0181\) to \(0.1615\). Each row retains its 95\% paired
+image-cluster percentile-bootstrap interval, raw two-sided bootstrap tail
+\(p\)-value, and Holm-adjusted \(p\)-value. The pointwise intervals exclude zero
+in 14 of 20 rows; 13 corresponding tests remain below \(0.05\) after adjustment.
+We report every row without significance filtering; the effect signs and
+magnitudes above are not replaced by this binary summary. A pointwise interval
+and a family-adjusted \(p\)-value answer different multiplicity questions.
