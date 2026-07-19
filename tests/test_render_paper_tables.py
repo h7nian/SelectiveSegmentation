@@ -136,22 +136,51 @@ def test_complete_render_has_exact_artifacts_order_and_source_numbers():
     main_table = tables["main_results.tex"]
     assert main_table.index("Oxford Pet") < main_table.index("Kvasir-SEG")
     assert main_table.index("Kvasir-SEG") < main_table.index("FIVES")
-    # This pair occurs verbatim in the source: no best-method formatting or
-    # recomputation is permitted in the renderer.
-    first = validate_analysis(result)[0]
-    method = first["risks"]["risk_dice"]["methods"]["confidence_sdc"]
-    expected_cell = f"{method['aurc']:.4f} ({method['normalized_aurc']:.4f})"
-    assert expected_cell in main_table
+    assert r"\multicolumn{4}{c}{Oxford Pet}" in main_table
+    assert r"\multicolumn{3}{c}{Kvasir-SEG}" in main_table
+    assert r"\multicolumn{3}{c}{FIVES}" in main_table
+    assert (
+        "Confidence method & CLIP-G & CLIP-T & DL-T & DL-E & "
+        "CLIP-G & CLIP-T & DL-T & CLIP-G & CLIP-T & DL-T"
+    ) in main_table
+    assert "Dataset & Model condition" not in main_table
+
+    # Every unpooled condition is a column and every method is a row. Verify a
+    # complete row directly against source values after canonical ordering.
+    ordered = validate_analysis(result)
+    expected_cells = []
+    for condition in ordered:
+        method = condition["risks"]["risk_dice"]["methods"]["confidence_sdc"]
+        expected_cells.append(
+            rf"\shortstack{{{method['aurc']:.4f}\\"
+            rf"({method['normalized_aurc']:.4f})}}"
+        )
+    assert "SDC & " + " & ".join(expected_cells) + r" \\" in main_table
+    assert main_table.count(r"\shortstack{") == 2 * 5 * 10
+    for method_label in (
+        "SDC",
+        "Mean max probability",
+        "Negative entropy",
+        "Dice-M32",
+        "nHD95-M32",
+    ):
+        assert main_table.count(f"\n{method_label} &") == 2
     assert r"lower is better" in main_table
     assert r"analytic expectation" in main_table
 
     cross_loss = tables["cross_loss_results.tex"]
-    assert "Dice-M32 & nHD95-M32 & Dice-M32 & nHD95-M32" in cross_loss
+    assert r"\multicolumn{4}{c}{Oxford Pet}" in cross_loss
+    assert cross_loss.count(r"\shortstack{") == 2 * 2 * 10
+    assert cross_loss.count("\nDice-M32 &") == 2
+    assert cross_loss.count("\nnHD95-M32 &") == 2
     quadrature = tables["quadrature_ablation.tex"]
-    assert "Dice score / Dice risk" in quadrature
-    assert "nHD95 score / nHD95 risk" in quadrature
+    assert r"\multicolumn{3}{c}{Kvasir-SEG}" in quadrature
+    assert quadrature.count("\n$M=2$ &") == 2
+    assert quadrature.count("\n$M=8$ &") == 2
+    assert quadrature.count("\n$M=32$ &") == 2
+    assert "no condition is pooled" in quadrature
     statistics = tables["statistical_tests.tex"]
-    comparison = first["comparisons"]["risk_dice"]
+    comparison = ordered[0]["comparisons"]["risk_dice"]
     assert f"{comparison['difference_left_minus_right']:.4f}" in statistics
     assert (
         f"[{comparison['bootstrap']['ci_low']:.4f}, "
@@ -160,6 +189,16 @@ def test_complete_render_has_exact_artifacts_order_and_source_numbers():
     assert "same paired resamples" in statistics
     assert "Holm" in statistics
     assert "unadjusted" in statistics
+    assert (
+        "Method comparison / condition & Oxford Pet & Kvasir-SEG & FIVES"
+        in statistics
+    )
+    assert "Dataset & Model condition" not in statistics
+    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / CLIP-G &") == 2
+    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / CLIP-T &") == 2
+    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / DL-T &") == 2
+    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / DL-E &") == 2
+    assert statistics.count(r"\shortstack{") == 2 * 10
 
 
 def test_final_validation_requires_exact_condition_risk_and_method_sets():

@@ -1,83 +1,104 @@
 \section{Introduction}
 \label{sec:introduction}
 
-A segmentation system deployed with human oversight must decide which predictions
-can be accepted and which should be deferred. Average test accuracy does not answer
-this question. Two systems with the same average Dice can have different practical
-value if one reliably defers its failures while the other assigns those failures high
-confidence. Selective prediction captures this requirement: a fixed model emits a
-prediction \(\widehat Y(x)\) and an image-level confidence \(g(x)\); predictions are
-accepted from high to low confidence, and the induced ranking is evaluated by a
-risk--coverage curve \citep{geifman2017selective,selectivenet,feng,jaeger}.
+Consider a binary segmentation system used with human oversight. Its mask can be
+accepted as produced or sent for review, but the system must make that decision
+before the reference annotation is available. This is especially consequential in
+clinical workflows, where a plausible-looking contour may still miss a lesion
+boundary or invent a distant component. Average test accuracy does not solve the
+triage problem: two models with the same mean Dice can have very different value if
+only one assigns low confidence to its costly failures. Selective prediction makes
+this operational. A fixed model emits a mask \(\widehat Y(x)\) and an image-level
+confidence \(g(x)\); accepting cases from high to low confidence produces a
+risk--coverage curve.
 
-The risk in that curve is application-dependent. Dice and IoU measure overlap,
-whereas HD95 and related distances measure boundary behavior. Moving a small
-component far from the target can change little in overlap while producing a large
-surface error; a diffuse boundary error can have the opposite profile. Consequently,
-a confidence score cannot be called correct without specifying the loss under
-which accepted predictions are judged.
+The difficulty is that segmentation failure is not a single scalar notion. Dice and
+IoU measure overlap, while HD95 measures boundary behavior. Moving a small component
+far away may barely change Dice yet sharply increase surface error; a diffuse local
+boundary error can reverse that comparison. Meanwhile, familiar scalar scores such
+as mean maximum probability or entropy summarize pixelwise uncertainty without
+specifying which harm they should rank. SDC supplies an important counterexample to
+this metric-agnostic practice by aligning confidence with Dice. It also exposes the
+next question: can metric alignment be extended beyond Dice without hiding the
+probabilistic assumptions required by a nonlinear mask loss?
 
-Most single-pass post-hoc scores aggregate a per-pixel quantity such as maximum
-probability or entropy. Systematic studies show that aggregation is itself a major
-design choice \citep{values,zenk}. Soft Dice Confidence (SDC) takes a more direct
-route: it aligns confidence with the Dice objective and provides an efficient
-Dice-specific marginal surrogate \citep{sdc}. Its success motivates a broader
-question: can the same metric-alignment principle produce a post-hoc confidence for
-an arbitrary bounded segmentation loss while exposing the posterior assumptions it
-requires?
+Our answer begins by separating three objects. The \emph{deployed action}
+\(\widehat Y(x)\) is the mask that would actually be accepted; it may come from a
+threshold of \(0.5\), \(0.3\), or any other fixed rule. The \emph{deployment loss}
+\(L\) says what harm that action incurs. The remaining object is a law for the
+unknown label mask, because conditional risk cannot be evaluated before annotation
+without one. A probability map supplies pixelwise values, but it does not identify
+their joint distribution.
 
-We answer by separating three objects that are often conflated. The
-\emph{deployed action} \(\widehat Y(x)\) is the mask actually accepted or rejected;
-it may be obtained at threshold \(0.5\), threshold \(0.3\), or by another fixed
-decision rule. The \emph{deployment loss} \(L\) specifies the harm of accepting an
-incorrect mask. Finally, evaluating the conditional risk of that action before its
-label is observed requires a distribution over possible labels. A probability map
-supplies one value per pixel, but not the joint distribution of an entire mask.
-
-We make the third object explicit through a classical random-set construction. A
-single uniform threshold applied to the probability map generates a nested family of
-candidate masks. This preserves the map as the one-pixel coverage function and turns
-expected loss into a one-dimensional threshold integral
-\citep{goodman,molchanov}. We call the resulting law a \emph{working posterior}: it
-is computable and its dependence structure is visible, but it is not asserted to be
-the true label posterior.
-
-For quadrature nodes \(t_m\) and weights \(w_m\), the construction gives
+We make this missing law explicit rather than implicit. Applying one shared threshold
+\(T\sim\mathrm{Unif}(0,1)\) to the probability map generates a nested family
+\(Y_T=\{i:p_i\geq T\}\). The resulting random set preserves \(p\) as its one-pixel
+coverage function and converts expected geometric loss into a one-dimensional
+threshold integral \citep{goodman,molchanov}. We call it a \emph{working posterior}:
+it is transparent and computable, but is not claimed to be the true label posterior.
+For quadrature nodes \(t_m\) and weights \(w_m\), it yields
 \begin{equation}
   C_{L,M}(x)
   =-\sum_{m=1}^M w_m
     L\!\left(Y_{t_m},\widehat Y(x)\right).
   \label{eq:intro-score}
 \end{equation}
-Only \(L\) changes between an overlap confidence and a boundary confidence. Every
-candidate label is compared with the same deployed mask; pairwise dispersion among
-candidate labels is a different estimand.
+Changing \(L\) now changes an overlap confidence into a boundary confidence while
+leaving the deployed mask fixed. Every candidate label is compared with that same
+action; dispersion among candidate labels would estimate something else. Under the
+working posterior the integral target is exact, and midpoint quadrature controls its
+numerical approximation. Crucially, increasing \(M\) cannot repair a miscalibrated
+map or a wrong joint law. Our theory therefore separates deterministic quadrature
+error from a loss-specific discrepancy between the working and true posteriors.
 
-This formulation also prevents an overly strong interpretation of numerical
-convergence. Increasing \(M\) improves approximation of expected loss under the
-working posterior. It cannot repair a miscalibrated probability map or an incorrect
-joint model. Our total-error analysis therefore contains a deterministic quadrature
-term and a separate, loss-specific posterior discrepancy.
+This separation leads directly to the empirical test. We hold each probability map
+and deployed action fixed, construct Dice- and nHD95-indexed scores, and evaluate
+both under matched and cross-loss AURC. Across ten model--dataset conditions,
+nHD95-M32 outranks Dice-M32 for boundary risk in all ten, but their Dice-risk
+ordering splits six to four; SDC remains the strongest primary Dice-risk score in
+six conditions. The result supports loss indexing as a way to expose useful
+geometric rankings, not as a promise that a same-named score always wins.
 
-Our contributions are:
-\begin{enumerate}
-  \item We define loss-indexed selective risk \(\AURC_L\) and its Bayes-optimal
-  image-level confidence \(C_L^\star\), making both the deployed action and its
-  evaluation loss explicit.
-  \item We introduce a unified level-set estimator for any bounded measurable
-  segmentation loss. Under its stated working posterior the target is exact, and
-  midpoint quadrature admits a deterministic \(O(M^{-1})\) error bound separated
-  from posterior-model error.
-  \item We characterize the relation to SDC: SDC is a marginal-only ratio of
-  expected Dice components, whereas the level-set Dice score is an expected Dice
-  under an explicit joint law. Neither set of probabilistic assumptions implies the
-  other.
-  \item We evaluate ten fixed model--dataset conditions with tie-aware AURC and
-  paired, multiplicity-controlled inference. The nHD95 score wins its boundary-risk
-  comparison in all ten conditions, while the Dice-risk comparison splits six to
-  four and SDC remains the strongest primary Dice-risk score in six conditions.
-\end{enumerate}
+\subsection{Related Work}
+\label{sec:related}
 
-The empirical conclusion is deliberately non-universal: deployment loss is a useful
-index for constructing and auditing confidence, but matching the confidence and risk
-by name does not guarantee the best ranking.
+\paragraph{Selective prediction and failure detection.}
+Selective classification formalizes the trade between coverage and risk
+\citep{geifman2017selective,selectivenet,feng}, while failure-detection studies show
+that conclusions depend on evaluation choices and score aggregation
+\citep{jaeger,values}. We use AURC as their common ranking functional, but expose its
+loss index because segmentation admits non-equivalent errors.
+
+\paragraph{Segmentation confidence.}
+ValUES systematizes how pixelwise uncertainty becomes image-level segmentation
+confidence, and comparative benchmarking confirms that aggregation matters
+\citep{values,zenk}. SDC is the closest metric-aligned predecessor: it uses soft
+Dice between the probability map and deployed mask and derives a Dice-specific
+approximation \citep{sdc}. We retain that deployed action, replace the
+Dice-specific surrogate by loss-indexed expected risk, and state the joint working
+posterior required by nonlinear mask losses.
+
+\paragraph{Random sets and geometric losses.}
+Random level sets have a long history in fuzzy and random-set theory
+\citep{goodman,molchanov}, and shared-level constructions also arise in
+probabilistic contour and excursion-set analysis \citep{poethkow,bolin}. We use
+them as a transparent computational posterior, not an identification result.
+Boundary-aware objectives and measures address behavior missed by overlap
+\citep{karimi2020}; our experiment carries that distinction into confidence
+ranking.
+
+\subsection{Our Contributions}
+
+Against this background, we first define loss-indexed selective risk \(\AURC_L\)
+and its Bayes-optimal image-level confidence \(C_L^\star\), explicitly tying a
+deployed action to its evaluation loss. We then introduce a single level-set
+estimator for any bounded measurable segmentation loss. Its target is exact under
+the stated working posterior, while midpoint quadrature has a deterministic
+\(O(M^{-1})\) error bound separated from posterior-model error. For Dice, we show
+why SDC and our score are distinct: SDC is a marginal-only ratio of expected
+components, whereas level-set confidence is expected Dice under an explicit joint
+law, and neither assumption set implies the other. Finally, we validate the
+framework across ten fixed model--dataset conditions using tie-aware AURC and
+paired, multiplicity-controlled inference. Together, these results make deployment
+loss a principled axis for constructing and auditing confidence without claiming
+that metric matching guarantees the best ranking.

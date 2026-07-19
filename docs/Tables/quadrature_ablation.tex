@@ -3,26 +3,25 @@
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Matched-loss midpoint-quadrature ablation. Reported values are raw tie-aware AURC (lower is better). Only $M$ changes within each loss-indexed score; the deployed action and evaluation cohort are fixed.}
+\caption{Matched-loss midpoint-quadrature ablation. Reported values are raw tie-aware AURC (lower is better). Only $M$ changes within each loss-indexed score; the action and cohort are fixed and no condition is pooled. Columns are individual, unpooled dataset--condition pairs: CLIP-G and CLIP-T denote CLIPSeg-General and CLIPSeg-Target; DL-T and DL-E denote DeepLabV3-Target and DeepLabV3-External.}
 \label{tab:quadrature-ablation}
-{\scriptsize\setlength{\tabcolsep}{5pt}%
+{\scriptsize\setlength{\tabcolsep}{3pt}%
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{llcccccc}
+\begin{tabular}{l*{10}{c}}
 \toprule
-& & \multicolumn{3}{c}{Dice score / Dice risk} & \multicolumn{3}{c}{nHD95 score / nHD95 risk} \\
-\cmidrule(lr){3-5}\cmidrule(lr){6-8}
-Dataset & Model condition & $M=2$ & $M=8$ & $M=32$ & $M=2$ & $M=8$ & $M=32$ \\
+ & \multicolumn{4}{c}{Oxford Pet} & \multicolumn{3}{c}{Kvasir-SEG} & \multicolumn{3}{c}{FIVES} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-8}\cmidrule(lr){9-11}
+Quadrature nodes & CLIP-G & CLIP-T & DL-T & DL-E & CLIP-G & CLIP-T & DL-T & CLIP-G & CLIP-T & DL-T \\
 \midrule
-Oxford Pet & CLIPSeg-General & 0.0772 & 0.0807 & 0.0792 & 0.0403 & 0.0399 & 0.0412 \\
-Oxford Pet & CLIPSeg-Target & 0.0334 & 0.0332 & 0.0332 & 0.0256 & 0.0253 & 0.0251 \\
-Oxford Pet & DeepLabV3-Target & 0.0330 & 0.0326 & 0.0324 & 0.0253 & 0.0248 & 0.0239 \\
-Oxford Pet & DeepLabV3-External & 0.0747 & 0.0679 & 0.0679 & 0.0433 & 0.0355 & 0.0345 \\
-Kvasir-SEG & CLIPSeg-General & 0.5071 & 0.5417 & 0.5324 & 0.2608 & 0.2644 & 0.2527 \\
-Kvasir-SEG & CLIPSeg-Target & 0.1373 & 0.0926 & 0.0908 & 0.0947 & 0.0454 & 0.0432 \\
-Kvasir-SEG & DeepLabV3-Target & 0.0804 & 0.0525 & 0.0523 & 0.0551 & 0.0244 & 0.0239 \\
-FIVES & CLIPSeg-General & 0.8917 & 0.8996 & 0.8985 & 0.4831 & 0.4579 & 0.4604 \\
-FIVES & CLIPSeg-Target & 0.8713 & 0.8732 & 0.8731 & 0.2575 & 0.2725 & 0.2631 \\
-FIVES & DeepLabV3-Target & 0.4100 & 0.4110 & 0.4110 & 0.0429 & 0.0412 & 0.0429 \\
+\multicolumn{11}{l}{\textit{Dice risk}} \\
+$M=2$ & 0.0772 & 0.0334 & 0.0330 & 0.0747 & 0.5071 & 0.1373 & 0.0804 & 0.8917 & 0.8713 & 0.4100 \\
+$M=8$ & 0.0807 & 0.0332 & 0.0326 & 0.0679 & 0.5417 & 0.0926 & 0.0525 & 0.8996 & 0.8732 & 0.4110 \\
+$M=32$ & 0.0792 & 0.0332 & 0.0324 & 0.0679 & 0.5324 & 0.0908 & 0.0523 & 0.8985 & 0.8731 & 0.4110 \\
+\midrule
+\multicolumn{11}{l}{\textit{nHD95 risk}} \\
+$M=2$ & 0.0403 & 0.0256 & 0.0253 & 0.0433 & 0.2608 & 0.0947 & 0.0551 & 0.4831 & 0.2575 & 0.0429 \\
+$M=8$ & 0.0399 & 0.0253 & 0.0248 & 0.0355 & 0.2644 & 0.0454 & 0.0244 & 0.4579 & 0.2725 & 0.0412 \\
+$M=32$ & 0.0412 & 0.0251 & 0.0239 & 0.0345 & 0.2527 & 0.0432 & 0.0239 & 0.4604 & 0.2631 & 0.0429 \\
 \bottomrule
 \end{tabular}}
 }

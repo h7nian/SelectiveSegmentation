@@ -82,6 +82,12 @@ EXPECTED_CONDITIONS = (
     ("fives", "deeplabv3-target"),
 )
 CONDITION_ORDER = {key: index for index, key in enumerate(EXPECTED_CONDITIONS)}
+CONDITION_ABBREVIATIONS = {
+    "clipseg-general": "CLIP-G",
+    "clipseg-target": "CLIP-T",
+    "deeplabv3-target": "DL-T",
+    "deeplabv3-external": "DL-E",
+}
 
 OUTPUT_NAMES = (
     "main_results.tex",
@@ -507,7 +513,10 @@ def validate_analysis(result, *, allow_incomplete=False):
             )
         )
     ]
-    if len(raw_p_values) != hypothesis_count or len(adjusted_p_values) != hypothesis_count:
+    if (
+        len(raw_p_values) != hypothesis_count
+        or len(adjusted_p_values) != hypothesis_count
+    ):
         raise ValueError("multiple_testing p-value array lengths are inconsistent")
     if any(not 0 <= value <= 1 for value in raw_p_values + adjusted_p_values):
         raise ValueError("multiple_testing p-values must lie in [0, 1]")
@@ -627,7 +636,59 @@ def _number(value):
 
 
 def _aurc_cell(method):
-    return f"{_number(method['aurc'])} ({_number(method['normalized_aurc'])})"
+    return (
+        rf"\shortstack{{{_number(method['aurc'])}\\"
+        rf"({_number(method['normalized_aurc'])})}}"
+    )
+
+
+def _pivot_columns(conditions):
+    by_key = {
+        (condition["dataset"], condition["condition"]): condition
+        for condition in conditions
+    }
+    return [
+        (dataset, condition_name, by_key[(dataset, condition_name)])
+        for dataset, condition_name in EXPECTED_CONDITIONS
+        if (dataset, condition_name) in by_key
+    ]
+
+
+def _pivot_header(columns, *, row_label):
+    dataset_groups = []
+    for dataset, _, _ in columns:
+        if not dataset_groups or dataset_groups[-1][0] != dataset:
+            dataset_groups.append([dataset, 1])
+        else:
+            dataset_groups[-1][1] += 1
+
+    group_cells = [""]
+    rules = []
+    start = 2
+    for dataset, count in dataset_groups:
+        group_cells.append(
+            rf"\multicolumn{{{count}}}{{c}}{{{_escape(_dataset(dataset))}}}"
+        )
+        rules.append(rf"\cmidrule(lr){{{start}-{start + count - 1}}}")
+        start += count
+    condition_cells = [row_label]
+    condition_cells.extend(
+        CONDITION_ABBREVIATIONS[condition_name]
+        for _, condition_name, _ in columns
+    )
+    return [
+        " & ".join(group_cells) + r" \\",
+        "".join(rules),
+        " & ".join(condition_cells) + r" \\",
+    ]
+
+
+def _pivot_caption_key():
+    return (
+        r"Columns are individual, unpooled dataset--condition pairs: CLIP-G and "
+        r"CLIP-T denote CLIPSeg-General and CLIPSeg-Target; DL-T and DL-E denote "
+        r"DeepLabV3-Target and DeepLabV3-External."
+    )
 
 
 def _generated_header(source_hash, *, incomplete):
@@ -640,7 +701,8 @@ def _generated_header(source_hash, *, incomplete):
 
 
 def render_main_results(conditions, *, header):
-    method_headers = ("SDC", "MMP", r"$-H$", "Dice-M32", "nHD95-M32")
+    columns = _pivot_columns(conditions)
+    column_count = 1 + len(columns)
     lines = [
         header.rstrip(),
         r"\begin{table*}[t]",
@@ -648,33 +710,32 @@ def render_main_results(conditions, *, header):
         r"\caption{Primary selective-segmentation results. Each entry is raw AURC "
         r"(nAURC); lower is better for both quantities. AURC is the analytic "
         r"expectation over uniform random order within exact confidence ties. "
-        r"MMP denotes mean maximum probability and $-H$ negative mean entropy.}",
+        + _pivot_caption_key()
+        + "}",
         r"\label{tab:main-results}",
-        r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
+        r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
         r"\resizebox{\textwidth}{!}{%",
-        r"\begin{tabular}{llccccc}",
+        rf"\begin{{tabular}}{{l*{{{len(columns)}}}{{c}}}}",
         r"\toprule",
-        "Dataset & Model condition & " + " & ".join(method_headers) + r" \\",
+        *_pivot_header(columns, row_label="Confidence method"),
         r"\midrule",
     ]
     for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
         if risk_index:
             lines.append(r"\midrule")
         lines.append(
-            rf"\multicolumn{{7}}{{l}}{{\textit{{{_escape(risk_label)}}}}} \\"
+            rf"\multicolumn{{{column_count}}}{{l}}{{"
+            rf"\textit{{{_escape(risk_label)}}}}} \\"
         )
-        for condition in conditions:
-            methods = condition["risks"][risk_field]["methods"]
-            cells = [_aurc_cell(methods[field]) for field in MAIN_METHODS]
-            lines.append(
-                " & ".join(
-                    [
-                        _escape(_dataset(condition["dataset"])),
-                        _escape(_condition(condition["condition"])),
-                        *cells,
-                    ]
+        for method_field in MAIN_METHODS:
+            cells = [
+                _aurc_cell(
+                    condition["risks"][risk_field]["methods"][method_field]
                 )
-                + r" \\"
+                for _, _, condition in columns
+            ]
+            lines.append(
+                " & ".join([_escape(METHODS[method_field]), *cells]) + r" \\"
             )
     lines.extend(
         [r"\bottomrule", r"\end{tabular}}", r"}", r"\end{table*}", ""]
@@ -683,38 +744,42 @@ def render_main_results(conditions, *, header):
 
 
 def render_cross_loss_results(conditions, *, header):
+    columns = _pivot_columns(conditions)
+    column_count = 1 + len(columns)
     lines = [
         header.rstrip(),
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{Complete cross-loss comparison at $M=32$. Each entry is raw "
         r"AURC (nAURC), and lower is better. Exact confidence ties use their "
-        r"analytic random-order expectation; no cell is selected or filled by hand.}",
+        r"analytic random-order expectation; no cell is selected or pooled. "
+        + _pivot_caption_key()
+        + "}",
         r"\label{tab:cross-loss-results}",
-        r"{\scriptsize\setlength{\tabcolsep}{4pt}%",
+        r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
         r"\resizebox{\textwidth}{!}{%",
-        r"\begin{tabular}{llcccc}",
+        rf"\begin{{tabular}}{{l*{{{len(columns)}}}{{c}}}}",
         r"\toprule",
-        r"& & \multicolumn{2}{c}{Dice risk} & \multicolumn{2}{c}{nHD95 risk} \\",
-        r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}",
-        r"Dataset & Model condition & Dice-M32 & nHD95-M32 & Dice-M32 & nHD95-M32 \\",
+        *_pivot_header(columns, row_label="Confidence method"),
         r"\midrule",
     ]
-    for condition in conditions:
-        cells = []
-        for risk_field in RISKS:
-            methods = condition["risks"][risk_field]["methods"]
-            cells.extend(_aurc_cell(methods[field]) for field in PRIMARY_PAIR)
+    for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
+        if risk_index:
+            lines.append(r"\midrule")
         lines.append(
-            " & ".join(
-                [
-                    _escape(_dataset(condition["dataset"])),
-                    _escape(_condition(condition["condition"])),
-                    *cells,
-                ]
-            )
-            + r" \\"
+            rf"\multicolumn{{{column_count}}}{{l}}{{"
+            rf"\textit{{{_escape(risk_label)}}}}} \\"
         )
+        for method_field in PRIMARY_PAIR:
+            cells = [
+                _aurc_cell(
+                    condition["risks"][risk_field]["methods"][method_field]
+                )
+                for _, _, condition in columns
+            ]
+            lines.append(
+                " & ".join([_escape(METHODS[method_field]), *cells]) + r" \\"
+            )
     lines.extend(
         [r"\bottomrule", r"\end{tabular}}", r"}", r"\end{table*}", ""]
     )
@@ -722,43 +787,46 @@ def render_cross_loss_results(conditions, *, header):
 
 
 def render_quadrature_ablation(conditions, *, header):
+    columns = _pivot_columns(conditions)
+    column_count = 1 + len(columns)
     lines = [
         header.rstrip(),
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{Matched-loss midpoint-quadrature ablation. Reported values are "
         r"raw tie-aware AURC (lower is better). Only $M$ changes within each "
-        r"loss-indexed score; the deployed action and evaluation cohort are fixed.}",
+        r"loss-indexed score; the action and cohort are fixed and no condition is "
+        r"pooled. "
+        + _pivot_caption_key()
+        + "}",
         r"\label{tab:quadrature-ablation}",
-        r"{\scriptsize\setlength{\tabcolsep}{5pt}%",
+        r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
         r"\resizebox{\textwidth}{!}{%",
-        r"\begin{tabular}{llcccccc}",
+        rf"\begin{{tabular}}{{l*{{{len(columns)}}}{{c}}}}",
         r"\toprule",
-        r"& & \multicolumn{3}{c}{Dice score / Dice risk} & "
-        r"\multicolumn{3}{c}{nHD95 score / nHD95 risk} \\",
-        r"\cmidrule(lr){3-5}\cmidrule(lr){6-8}",
-        r"Dataset & Model condition & $M=2$ & $M=8$ & $M=32$ & "
-        r"$M=2$ & $M=8$ & $M=32$ \\",
+        *_pivot_header(columns, row_label="Quadrature nodes"),
         r"\midrule",
     ]
-    for condition in conditions:
-        cells = []
-        for risk_field in RISKS:
-            methods = condition["risks"][risk_field]["methods"]
-            cells.extend(
-                _number(methods[field]["aurc"])
-                for field in MATCHED_METHODS[risk_field]
-            )
+    for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
+        if risk_index:
+            lines.append(r"\midrule")
         lines.append(
-            " & ".join(
-                [
-                    _escape(_dataset(condition["dataset"])),
-                    _escape(_condition(condition["condition"])),
-                    *cells,
-                ]
-            )
-            + r" \\"
+            rf"\multicolumn{{{column_count}}}{{l}}{{"
+            rf"\textit{{{_escape(risk_label)}}}}} \\"
         )
+        for method_field in MATCHED_METHODS[risk_field]:
+            cells = [
+                _number(
+                    condition["risks"][risk_field]["methods"][method_field][
+                        "aurc"
+                    ]
+                )
+                for _, _, condition in columns
+            ]
+            node_count = method_field.rsplit("m", maxsplit=1)[1]
+            lines.append(
+                " & ".join([rf"$M={node_count}$", *cells]) + r" \\"
+            )
     lines.extend(
         [r"\bottomrule", r"\end{tabular}}", r"}", r"\end{table*}", ""]
     )
@@ -766,6 +834,21 @@ def render_quadrature_ablation(conditions, *, header):
 
 
 def render_statistical_tests(conditions, *, header):
+    by_key = {
+        (condition["dataset"], condition["condition"]): condition
+        for condition in conditions
+    }
+    datasets = []
+    for dataset, _, _ in _pivot_columns(conditions):
+        if dataset not in datasets:
+            datasets.append(dataset)
+    model_conditions = (
+        "clipseg-general",
+        "clipseg-target",
+        "deeplabv3-target",
+        "deeplabv3-external",
+    )
+    column_count = 1 + len(datasets)
     lines = [
         header.rstrip(),
         r"\begin{table*}[t]",
@@ -777,32 +860,56 @@ def render_statistical_tests(conditions, *, header):
         r"percentile intervals and are unadjusted. Each raw two-sided bootstrap "
         r"$p$-value uses the same paired resamples as its interval; Holm "
         r"adjustment covers all 20 comparisons. Lower $p$-values indicate "
-        r"stronger evidence, but no result is filtered for significance.}",
+        r"stronger evidence, but no result is filtered for significance. Each "
+        r"cell stacks $\Delta$, its 95\% CI, and raw/Holm-adjusted $p$-values, "
+        r"in that order. Methods and model conditions form rows; datasets form "
+        r"columns. CLIP-G and CLIP-T denote CLIPSeg-General and CLIPSeg-Target; "
+        r"DL-T and DL-E denote DeepLabV3-Target and DeepLabV3-External.}",
         r"\label{tab:statistical-tests}",
-        r"{\scriptsize\setlength{\tabcolsep}{4pt}%",
-        r"\resizebox{\textwidth}{!}{%",
-        r"\begin{tabular}{lllrrrr}",
+        r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
+        rf"\begin{{tabular}}{{l*{{{len(datasets)}}}{{c}}}}",
         r"\toprule",
-        r"Dataset & Model condition & Evaluation risk & $\Delta$ & 95\% CI & "
-        r"Raw $p$ & Holm $p$ \\",
+        " & ".join(
+            [
+                "Method comparison / condition",
+                *(_escape(_dataset(dataset)) for dataset in datasets),
+            ]
+        )
+        + r" \\",
         r"\midrule",
     ]
-    for condition in conditions:
-        for risk_field, risk_label in RISKS.items():
-            comparison = condition["comparisons"][risk_field]
-            bootstrap = comparison["bootstrap"]
-            cells = [
-                _escape(_dataset(condition["dataset"])),
-                _escape(_condition(condition["condition"])),
-                _escape(risk_label),
-                _number(comparison["difference_left_minus_right"]),
-                f"[{_number(bootstrap['ci_low'])}, {_number(bootstrap['ci_high'])}]",
-                _number(bootstrap["p_value"]),
-                _number(comparison["holm_adjusted_p_value"]),
-            ]
-            lines.append(" & ".join(cells) + r" \\")
+    for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
+        if risk_index:
+            lines.append(r"\midrule")
+        lines.append(
+            rf"\multicolumn{{{column_count}}}{{l}}{{"
+            rf"\textit{{{_escape(risk_label)}}}}} \\"
+        )
+        for condition_name in model_conditions:
+            cells = []
+            row_has_data = False
+            for dataset in datasets:
+                condition = by_key.get((dataset, condition_name))
+                if condition is None:
+                    cells.append("--")
+                    continue
+                row_has_data = True
+                comparison = condition["comparisons"][risk_field]
+                bootstrap = comparison["bootstrap"]
+                cells.append(
+                    rf"\shortstack{{{_number(comparison['difference_left_minus_right'])}\\"
+                    rf"{{[{_number(bootstrap['ci_low'])}, {_number(bootstrap['ci_high'])}]}}\\"
+                    rf"{_number(bootstrap['p_value'])} / "
+                    rf"{_number(comparison['holm_adjusted_p_value'])}}}"
+                )
+            if row_has_data:
+                row_label = (
+                    r"Dice-M32 $-$ nHD95-M32 / "
+                    + CONDITION_ABBREVIATIONS[condition_name]
+                )
+                lines.append(" & ".join([row_label, *cells]) + r" \\")
     lines.extend(
-        [r"\bottomrule", r"\end{tabular}}", r"}", r"\end{table*}", ""]
+        [r"\bottomrule", r"\end{tabular}", r"}", r"\end{table*}", ""]
     )
     return "\n".join(lines)
 
