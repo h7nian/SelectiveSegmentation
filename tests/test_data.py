@@ -1,7 +1,7 @@
 """Tests for the focused binary dataset wrappers and transforms.
 
-Synthetic-input tests always run; tests touching Oxford-IIIT Pet skip until
-``scripts/download_binary_assets.py`` has been run.
+Synthetic-input tests always run; tests touching downloaded releases skip
+until ``scripts/download_binary_assets.py`` has been run.
 """
 
 import hashlib
@@ -14,10 +14,12 @@ from PIL import Image
 from selectseg.data import (
     FivesSegmentation,
     IGNORE_INDEX,
-    SPECS,
+    ISICSegmentation,
     KvasirSegmentation,
     PetSegmentation,
+    SPECS,
     SegDataset,
+    TN3KSegmentation,
     _random_scale_crop_flip,
     eval_collate,
 )
@@ -27,6 +29,25 @@ DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
 requires_pet = pytest.mark.skipif(
     not (DATA_ROOT / "oxford-iiit-pet" / "annotations" / "trainval.txt").exists(),
     reason="Oxford-IIIT Pet not downloaded; run scripts/download_binary_assets.py",
+)
+
+requires_isic = pytest.mark.skipif(
+    not (
+        DATA_ROOT / "ISIC2018" / "ISIC2018_Task1-2_Training_Input"
+    ).is_dir(),
+    reason="ISIC 2018 not downloaded; run scripts/download_binary_assets.py",
+)
+
+requires_tn3k = pytest.mark.skipif(
+    not (
+        DATA_ROOT
+        / "TN3K"
+        / "extracted"
+        / "Thyroid Dataset"
+        / "tn3k"
+        / "trainval-image"
+    ).is_dir(),
+    reason="TN3K not downloaded; run scripts/download_binary_assets.py",
 )
 
 
@@ -53,6 +74,40 @@ def _write_fives_sample(root, split, stem, image_size=(9, 7), mask_size=None):
     Image.new("RGB", image_size, color=(20, 40, 60)).save(images / f"{stem}.png")
     mask = Image.new("L", mask_size or image_size, color=0)
     mask.putpixel((1, 1), 255)
+    mask.save(masks / f"{stem}.png")
+
+
+def _write_isic_sample(root, split, stem, image_size=(9, 7), mask_size=None):
+    label = "Training" if split == "train" else "Test"
+    images = root / "ISIC2018" / f"ISIC2018_Task1-2_{label}_Input"
+    masks = root / "ISIC2018" / f"ISIC2018_Task1_{label}_GroundTruth"
+    images.mkdir(parents=True, exist_ok=True)
+    masks.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", image_size, color=(20, 40, 60)).save(images / f"{stem}.jpg")
+    mask = Image.new("L", mask_size or image_size, color=0)
+    mask.putpixel((1, 1), 255)
+    mask.putpixel((2, 1), 1)
+    mask.putpixel((3, 1), 128)
+    mask.save(masks / f"{stem}_segmentation.png")
+
+
+def _write_tn3k_sample(
+    root, split, stem, image_size=(9, 7), mask_size=None, *, extracted=False
+):
+    label = "trainval" if split == "train" else "test"
+    base = root / "TN3K"
+    if extracted:
+        base = base / "extracted" / "Thyroid Dataset"
+    base = base / "tn3k"
+    images = base / f"{label}-image"
+    masks = base / f"{label}-mask"
+    images.mkdir(parents=True, exist_ok=True)
+    masks.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", image_size, color=(20, 40, 60)).save(images / f"{stem}.jpg")
+    mask = Image.new("RGB", mask_size or image_size, color=(0, 0, 0))
+    mask.putpixel((1, 1), (0, 255, 0))
+    mask.putpixel((2, 1), (0, 0, 1))
+    mask.putpixel((3, 1), (128, 0, 0))
     mask.save(masks / f"{stem}.png")
 
 
@@ -202,6 +257,166 @@ def test_fives_rejects_unpaired_files_and_size_mismatch(tmp_path):
     )
     with pytest.raises(ValueError, match="size mismatch"):
         FivesSegmentation(tmp_path, "test")
+
+
+@pytest.mark.parametrize(
+    ("name", "class_name", "prompt"),
+    [
+        ("isic", "skin lesion", "skin lesion"),
+        ("tn3k", "thyroid nodule", "thyroid nodule"),
+    ],
+)
+def test_added_medical_dataset_specs_are_native_binary(name, class_name, prompt):
+    spec = SPECS[name]
+    assert spec.class_names == ("background", class_name)
+    assert spec.prompts == (prompt,)
+    assert spec.prompt_classes == (1,)
+    assert (spec.train_split, spec.eval_split) == ("train", "test")
+
+
+def test_isic_pairs_segmentation_suffix_and_preserves_official_split(tmp_path):
+    _write_isic_sample(tmp_path, "train", "ISIC_0000002")
+    _write_isic_sample(tmp_path, "train", "ISIC_0000001")
+    _write_isic_sample(tmp_path, "test", "ISIC_0012169")
+
+    train = ISICSegmentation(tmp_path, "train")
+    test = ISICSegmentation(tmp_path, "test")
+    assert [train.sample_id(i) for i in range(len(train))] == [
+        "ISIC_0000001",
+        "ISIC_0000002",
+    ]
+    assert test.sample_id(0) == "ISIC_0012169"
+    image, mask, prompt = test[0]
+    assert image.mode == "RGB" and image.size == (9, 7)
+    assert mask.shape == (1, 7, 9) and mask.dtype == torch.long
+    assert mask[0, 1, 1] == 1
+    assert mask[0, 1, 2] == 0  # Low residuals are background.
+    assert mask[0, 1, 3] == 1  # The threshold is inclusive.
+    assert prompt == 0
+
+    dataset = SegDataset(SPECS["isic"], tmp_path, train=False, image_size=16)
+    resized_image, native_mask = dataset[0]
+    assert resized_image.shape == (3, 16, 16)
+    assert native_mask.shape == (7, 9)
+
+
+def test_tn3k_uses_official_trainval_test_directories_and_threshold(tmp_path):
+    _write_tn3k_sample(tmp_path, "train", "0002")
+    _write_tn3k_sample(tmp_path, "train", "0001")
+    _write_tn3k_sample(tmp_path, "test", "0000")
+
+    train = TN3KSegmentation(tmp_path, "train")
+    test = TN3KSegmentation(tmp_path, "test")
+    assert [train.sample_id(i) for i in range(len(train))] == ["0001", "0002"]
+    assert test.sample_id(0) == "0000"
+    image, mask, prompt = test[0]
+    assert image.mode == "RGB" and image.size == (9, 7)
+    assert mask.shape == (1, 7, 9) and mask.dtype == torch.long
+    assert mask[0, 1, 1] == 1  # Any channel can carry foreground.
+    assert mask[0, 1, 2] == 0
+    assert mask[0, 1, 3] == 1
+    assert prompt == 0
+
+    dataset = SegDataset(SPECS["tn3k"], tmp_path, train=False, image_size=16)
+    resized_image, native_mask = dataset[0]
+    assert resized_image.shape == (3, 16, 16)
+    assert native_mask.shape == (7, 9)
+    assert dataset.sample_id(0) == "0000"
+
+
+def test_tn3k_accepts_downloaded_extraction_layout(tmp_path):
+    _write_tn3k_sample(tmp_path, "test", "0000", extracted=True)
+    dataset = TN3KSegmentation(tmp_path, "test")
+    assert len(dataset) == 1 and dataset.sample_id(0) == "0000"
+
+
+@pytest.mark.parametrize(
+    ("writer", "dataset", "name"),
+    [
+        (_write_isic_sample, ISICSegmentation, "ISIC"),
+        (_write_tn3k_sample, TN3KSegmentation, "TN3K"),
+    ],
+)
+def test_added_medical_datasets_reject_size_mismatch(
+    tmp_path, writer, dataset, name
+):
+    writer(tmp_path, "test", "bad", image_size=(8, 6), mask_size=(7, 6))
+    with pytest.raises(ValueError, match=f"{name}.*size mismatch"):
+        dataset(tmp_path, "test")
+
+
+@pytest.mark.parametrize(
+    ("writer", "dataset"),
+    [
+        (_write_isic_sample, ISICSegmentation),
+        (_write_tn3k_sample, TN3KSegmentation),
+    ],
+)
+def test_added_medical_datasets_reject_unpaired_and_duplicate_stems(
+    tmp_path, writer, dataset
+):
+    writer(tmp_path, "test", "unpaired")
+    next(tmp_path.rglob("unpaired*.png")).unlink()
+    with pytest.raises(ValueError, match="not paired"):
+        dataset(tmp_path, "test")
+
+    writer(tmp_path, "train", "duplicate")
+    image_path = next(tmp_path.rglob("duplicate.jpg"))
+    Image.new("RGB", (9, 7), color=(20, 40, 60)).save(
+        image_path.with_suffix(".png")
+    )
+    with pytest.raises(ValueError, match="duplicate image stem"):
+        dataset(tmp_path, "train")
+
+
+def test_isic_rejects_duplicate_stems_after_mask_suffix_removal(tmp_path):
+    _write_isic_sample(tmp_path, "test", "ISIC_0000001")
+    masks = (
+        tmp_path / "ISIC2018" / "ISIC2018_Task1_Test_GroundTruth"
+    )
+    Image.new("L", (9, 7), color=0).save(
+        masks / "ISIC_0000001_segmentation.jpg"
+    )
+    with pytest.raises(ValueError, match="duplicate mask stem"):
+        ISICSegmentation(tmp_path, "test")
+
+
+@pytest.mark.parametrize("dataset", [ISICSegmentation, TN3KSegmentation])
+def test_added_medical_datasets_reject_nonofficial_split(tmp_path, dataset):
+    with pytest.raises(ValueError, match="split must be one of"):
+        dataset(tmp_path, "validation")
+
+
+@requires_isic
+def test_isic_actual_release_counts_pairing_and_sample():
+    train = ISICSegmentation(DATA_ROOT, "train")
+    test = ISICSegmentation(DATA_ROOT, "test")
+    assert (len(train), len(test)) == (2594, 1000)
+    train_ids = [train.sample_id(index) for index in range(len(train))]
+    test_ids = [test.sample_id(index) for index in range(len(test))]
+    assert train_ids == sorted(set(train_ids))
+    assert test_ids == sorted(set(test_ids))
+    assert set(train_ids).isdisjoint(test_ids)
+    image, mask, prompt = test[0]
+    assert image.size == (mask.shape[-1], mask.shape[-2])
+    assert image.mode == "RGB" and mask.dtype == torch.long and prompt == 0
+    assert set(mask.unique().tolist()) <= {0, 1}
+
+
+@requires_tn3k
+def test_tn3k_actual_release_counts_pairing_and_sample():
+    train = TN3KSegmentation(DATA_ROOT, "train")
+    test = TN3KSegmentation(DATA_ROOT, "test")
+    assert (len(train), len(test)) == (2879, 614)
+    train_ids = [train.sample_id(index) for index in range(len(train))]
+    test_ids = [test.sample_id(index) for index in range(len(test))]
+    assert train_ids == sorted(set(train_ids))
+    assert test_ids == sorted(set(test_ids))
+    # TN3K numbers each official split independently, so stems may overlap.
+    image, mask, prompt = test[0]
+    assert image.size == (mask.shape[-1], mask.shape[-2])
+    assert image.mode == "RGB" and mask.dtype == torch.long and prompt == 0
+    assert set(mask.unique().tolist()) <= {0, 1}
 
 
 @requires_pet

@@ -1,174 +1,89 @@
 \section{Experimental protocol}
 \label{sec:experiments}
 
-\subsection{Native binary tasks and fixed cohorts}
+\subsection{Five datasets, sixteen frozen conditions}
 
-We evaluate native binary segmentation so that each image contributes exactly
-one foreground task and one row to every risk--coverage analysis. We do not
-construct ground-truth-selected one-vs-rest cohorts. Every held-out image is
-retained, including any image with an empty reference foreground.
+We study five native-binary tasks: Oxford-IIIT Pet, Kvasir-SEG polyps, FIVES
+retinal vessels, ISIC 2018 skin lesions, and TN3K thyroid nodules
+\citep{parkhi2012cats,jha2020kvasir,jin2022fives,codella2019isic,
+gong2023thyroid}. Official splits are used except for Kvasir, whose 800/200
+split is fixed by SHA-256 order. Empty references remain in the cohort.
 
-\paragraph{Oxford-IIIT Pet.}
-We use the official trainval/test split \citep{parkhi2012cats}. Trimap values
-1 (pet) and 3 (border) are foreground and value 2 is background. This
-predeclared border-inclusive mapping yields a total binary label for every
-pixel; no annotation-derived ignore region enters either confidence or risk.
-The held-out cohort contains 3,669 images per model condition.
+Each dataset has \textsc{CLIPSeg-General}, \textsc{CLIPSeg-Target}, and
+\textsc{DeepLabV3-Target}; Pet additionally has a released
+\textsc{DeepLabV3-External} cat/dog condition, giving sixteen conditions.
+Target models follow one frozen 40-epoch schedule and seed 0. No test label
+selects a checkpoint, hyperparameter, or condition. Within a condition every
+score receives the same frozen native-resolution probability map and action,
+isolating ranking from segmentation quality. Appendix~\ref{app:benchmark-protocol}
+specifies cohorts, prompts, training, checkpoints, and integrity checks.
 
-\paragraph{Kvasir-SEG.}
-The release contains 1,000 paired polyp images and masks but no official
-train/test split \citep{jha2020kvasir}. We rank paired file stems by
-\((\operatorname{SHA256}(\text{stem}),\text{stem})\), assign the first
-\(\lfloor0.8N\rfloor=800\) to training and the remaining 200 to testing, and order
-samples within each split by stem. This deterministic rule is fixed before
-model fitting. Because the nominally binary masks are JPEG-compressed, we map
-a pixel to foreground when its maximum channel value is at least 128; this
-fixed threshold separates the modes near 0 and 255 without treating small
-compression residuals as foreground.
+\subsection{One action, three geometric losses}
 
-\paragraph{FIVES.}
-We use the official 600-image training and 200-image test partitions for
-retinal-vessel segmentation \citep{jin2022fives}. Any nonzero mask value is
-foreground. All dataset pairings and split memberships are validated by stable
-sample identifiers before analysis; each model condition therefore contributes
-200 held-out rows.
+The deployed action is fixed once,
+\begin{equation*}
+  \Yhat(x)=\{i:p_i(x)\geq0.5\}.
+\end{equation*}
+An integration threshold changes only a candidate mask. Besides
+\(L_{\Dice}=1-\Dice\), let \(D(A,B)\) pool both directed nearest distances
+between inner digital surfaces. On an \(H\times W\) native grid with
+\(D_x=\sqrt{H^2+W^2}\),
+\begin{equation*}
+  L_{\mathrm{nHD},x}=\frac{\max D(A,B)}{D_x},
+  \qquad
+  L_{\mathrm{nHD95},x}=\frac{Q_{0.95}(D(A,B))}{D_x}.
+\end{equation*}
+The percentile follows pooling. Empty--empty costs zero and a one-sided empty
+pair costs one, so all primary risks lie in \([0,1]\). Raw native-pixel HD and
+HD95 are retained descriptively; Appendix~\ref{app:benchmark-protocol} fixes
+surface, quantile, resizing, and empty-mask conventions.
 
-For every model condition, fitting and any model selection use only the
-declared training partition. The held-out manifest records the model condition,
-checkpoint identity and hash when applicable, split, image identifiers, and
-complete confidence/risk schema.
-The main analysis requires all ten predeclared dataset--condition pairs defined
-below; a missing run makes the analysis incomplete rather than silently changing
-the cohort. Model conditions are never selected using test AURC.
+\subsection{Scores and the complete cross-loss design}
 
-\subsection{Prediction models and training}
+For each of the three losses we compute midpoint confidence
+\begin{equation*}
+  C_{L,M}(x)=-\frac1M\sum_{m=1}^M
+  L\!\left(\{i:p_i(x)\geq(m-1/2)/M\},\Yhat(x)\right)
+\end{equation*}
+at \(M\in\{2,8,32\}\); the three \(M=32\) scores are primary. Dice-Exact
+is the probability-knot oracle from Corollary~\ref{app:cor:exact-dice}.
+Seven single-map references---SDC, mean maximum probability, mean negative
+entropy, QFR-Entropy, PLM-10/PLA-10-Entropy, MMMC-Entropy, and foreground
+entropy---complete seventeen scores \citep{sdc,guarino2026aggregation,
+holder2021uncertainty}.
 
-The primary matrix contains three fixed prediction conditions on each dataset:
-\textsc{CLIPSeg-General}, \textsc{CLIPSeg-Target}, and
-\textsc{DeepLabV3-Target}.  Within a condition, every confidence method receives
-the identical foreground probability map, so confidence comparisons do not
-conflate ranking with segmentation-model quality.  A tenth,
-\textsc{DeepLabV3-External} condition is declared for Pet only, where the
-external vocabulary has an explicit cat/dog mapping.
-The four Pet and three conditions on each remaining dataset produce 15,876
-condition-specific rows in total.
+Dice-M32, nHD-M32, and nHD95-M32 are evaluated under all three risks, producing
+the full \(3\times3\) indexed-score matrix. The only predeclared primary contrasts are
+the two adjacent geometric steps under their neighboring risks:
+\begin{equation*}
+\begin{aligned}
+  &\AURC(\text{Dice-M32})-\AURC(\text{nHD-M32})
+    &&\text{under Dice and nHD},\\
+  &\AURC(\text{nHD-M32})-\AURC(\text{nHD95-M32})
+    &&\text{under nHD and nHD95}.
+\end{aligned}
+\end{equation*}
+All nonadjacent and mismatched cells are descriptive. The \(M\)-ladder and
+Dice-Exact additionally separate quadrature error from posterior discrepancy
+using direct score errors and rank agreement.
 
-\paragraph{CLIPSeg.}
-We use the public \texttt{CIDAS/clipseg-rd64-refined} checkpoint
-\citep{clipseg} at its \(352\times352\) input resolution.  The fixed text prompts
-are \texttt{cat} and \texttt{dog} for Pet (combined by a pixelwise maximum),
-\texttt{polyp} for Kvasir-SEG, and \texttt{retinal blood vessels} for FIVES.
-\textsc{CLIPSeg-General} uses the released weights without access to a target
-training image.  For \textsc{CLIPSeg-Target}, we freeze both CLIP encoders and
-optimize the segmentation decoder for 40 epochs using binary cross-entropy,
-AdamW, learning rate \(10^{-4}\), weight decay \(10^{-4}\), and batch size 32.
+\subsection{Locked analysis and paired inference}
 
-\paragraph{DeepLabV3.}
-\textsc{DeepLabV3-Target} is DeepLabV3 with a ResNet-50 backbone, initialized
-from the torchvision COCO-with-VOC-labels checkpoint \citep{deeplabv3}.  We
-replace its main and auxiliary classifiers by two-class heads and fine-tune the
-entire network at \(512\times512\) for 40 epochs.  The objective is main
-cross-entropy plus \(0.4\) times auxiliary cross-entropy; optimization uses SGD
-with learning rate \(5\times10^{-3}\), momentum \(0.9\), weight decay
-\(10^{-4}\), and batch size 16.  \textsc{DeepLabV3-External} maps the released
-checkpoint's cat and dog probabilities to Pet foreground without target
-adaptation.  We do not construct corresponding external conditions for
-Kvasir-SEG or FIVES: polyps and retinal vessels are absent from that vocabulary,
-so those conditions would not be comparable zero-shot predictors.
+One immutable manifest per condition binds ordered samples, probability maps,
+labels, checkpoints, source fingerprints, and hashes. Independent Slurm jobs
+freeze each condition, compute common quantities, compute each
+\((\text{condition},M)\) score shard, and strictly assemble only matching
+identities. A separate locked diagnostic reports marginal Brier/ECE, empty-mask
+rates, and level-set ladder diversity; none validates the joint posterior or
+tunes a method.
 
-Both target-adapted models use a polynomial per-step learning-rate multiplier
-\((1-s/S)^{0.9}\), gradient-norm clipping at 1, and seed 0.  Training applies a
-shared random scale in \([0.5,2]\), a model-resolution crop (with padded mask
-pixels excluded from the loss), and a horizontal flip with probability \(0.5\).
-We use the final epoch checkpoint under this fixed schedule; no held-out test
-label chooses an epoch, hyperparameter, or condition.  Training uses bfloat16
-autocasting when a CUDA device is available.  The run manifest retains target
-checkpoint and training-configuration hashes when applicable, evaluator-source
-and sample-list hashes, package versions, and device metadata.
-
-\subsection{One action, two losses}
-
-The foreground probability map is resized bilinearly to native image resolution
-before thresholding or scoring; masks remain at their native resolution.  Model
-inputs are resized to the square resolution stated above with antialiasing.  The
-deployed action is fixed throughout:
-\begin{equation}
-  \Yhat(x)=\{i:p_i(x)\geq\gamma\},
-  \qquad \gamma=0.5.
-  \label{eq:experimental-action}
-\end{equation}
-Changing a quadrature threshold never changes this action.
-
-The overlap loss is foreground Dice loss,
-\(L_{\Dice}=1-\Dice\), with loss zero for empty--empty and one for a
-one-sided empty pair. The boundary loss is normalized penalized HD95,
-\(L_{\HDF}\): for two nonempty masks we pool surface-to-surface distances in
-both directions, take their 95th percentile, and divide by the native image
-diagonal. Empty--empty has loss zero and a one-sided empty pair has loss one.
-This places both primary risks in \([0,1]\) and prevents undefined boundary
-cases from silently changing the cohort. Raw HD95 in pixels is retained only
-as an auxiliary descriptive quantity \citep{karimi2020}.
-
-\subsection{Confidence scores}
-
-For each loss \(L\in\{L_{\Dice},L_{\HDF}\}\), we compute the midpoint score
-\begin{equation}
-  C_{L,M}(x)
-  =-\frac1M\sum_{m=1}^M
-  L\!\left(
-    \{i:p_i(x)\geq(m-1/2)/M\},
-    \Yhat(x)
-  \right).
-  \label{eq:experimental-score}
-\end{equation}
-\(M=32\) is the primary estimator. \(M\in\{2,8\}\) forms a predeclared
-quadrature-resolution ablation; only node count changes. Dice- and nHD95-indexed
-scores use the same action, nodes, weights, spatial resolution, and empty-mask
-conventions.
-
-We compare against SDC \citep{sdc}, mean pixelwise maximum probability, and
-negative mean binary entropy. For the SDC baseline, the positive-denominator
-formula is Equation~\eqref{eq:sdc}; when both the probability mass and hard
-mask are empty, we use the published baseline convention of confidence zero.
-No confidence score observes the reference mask.
-
-\subsection{Selective evaluation and inference}
-
-For each dataset--condition pair and each risk
-\(L\in\{L_{\Dice},L_{\HDF}\}\), we report the exact expected empirical AURC
-under uniform random ordering within every exact confidence tie. This makes the
-result invariant to input row order. The paper tables report raw AURC and
-normalized excess AURC; the machine-readable supplementary analysis additionally
-records oracle AURC, random-order AURC, and excess AURC. We define
-\begin{equation}
-  \operatorname{nAURC}
-  =
-  \frac{\AURC-\AURC_{\mathrm{oracle}}}
-       {\AURC_{\mathrm{random}}-\AURC_{\mathrm{oracle}}},
-  \label{eq:normalized-aurc}
-\end{equation}
-when the denominator is nonzero. Lower is better; zero is oracle ordering and
-one is random ordering.
-
-The primary metric-alignment comparison is Dice-\(M32\) versus nHD95-\(M32\)
-under both Dice and nHD95 risk. We report the paired AURC difference with a
-95\% equal-tail percentile interval from \(B=10{,}000\) paired image-cluster
-bootstrap resamples \citep{efron1993}. The same resampled AURC differences
-\(\Delta_b^*\) define a two-sided percentile-bootstrap tail probability,
-\begin{equation}
-  p_{\mathrm{boot}}
-  =\min\!\left\{1,\;2\min\!\left(
-    \frac{1+\sum_{b=1}^{B}\mathbf{1}\{\Delta_b^*\leq0\}}{B+1},
-    \frac{1+\sum_{b=1}^{B}\mathbf{1}\{\Delta_b^*\geq0\}}{B+1}
-  \right)\right\}.
-  \label{eq:bootstrap-p}
-\end{equation}
-Thus the effect, interval, and raw \(p\)-value target the same test-image
-sampling estimand and are invariant to strictly increasing reparameterizations
-of either confidence score. We apply Holm's step-down family-wise-error
-adjustment to these raw \(p\)-values across the 20 predeclared comparisons
-(ten dataset--condition pairs and two risks) \citep{holm1979}. The reported
-percentile intervals are pointwise, not multiplicity-adjusted. Baselines and
-\(M\)-ladder comparisons are descriptive and excluded from that family.
-All seeds, hashes, row counts, and generated artifacts are written by the
-analysis pipeline.
+We compute tie-aware empirical AURC as the exact expectation over uniform
+ordering within score ties; lower is better. Each of the four contrasts per
+condition receives a 95\% pointwise interval and approximate two-sided tail
+probability from 10,000 paired image-cluster bootstrap resamples
+\citep{efron1993}. Holm transforms are applied separately to the predeclared
+40-comparison Pet/Kvasir/FIVES core and 24-comparison ISIC/TN3K extension
+families \citep{holm1979}. We treat them as multiplicity-aware evidence
+summaries, not exact finite-sample family-wise-error guarantees. Appendix
+\ref{app:benchmark-protocol} gives every score, diagnostic, AURC, bootstrap,
+and multiplicity convention.

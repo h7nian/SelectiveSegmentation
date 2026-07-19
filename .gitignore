@@ -29,6 +29,7 @@ scratch*/
 *.log
 *.out
 *.pdf
+!docs/Figures/*.pdf
 *.synctex.gz
 
 # Editor and operating-system files

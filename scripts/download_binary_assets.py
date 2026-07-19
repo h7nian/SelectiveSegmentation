@@ -2,7 +2,7 @@
 
 Examples::
 
-    python scripts/download_binary_assets.py --datasets pet kvasir fives
+    python scripts/download_binary_assets.py --datasets pet kvasir fives isic tn3k
     python scripts/download_binary_assets.py --models-only
 
 FIVES is distributed as a RAR archive, so extraction requires an ``unrar``
@@ -26,6 +26,37 @@ KVASIR_SHA256 = "03b30e21d584e04facf49397a2576738fd626815771afbbf788f74a7153478f
 FIVES_URL = "https://ndownloader.figshare.com/files/34969398"
 FIVES_SHA256 = "be72f9af286b107bcebcc08a9dae7fc55c3fb0959409b689e14c72f9fdc4ad8e"
 FIVES_RELEASE_DIR = "FIVES A Fundus Image Dataset for AI-based Vessel Segmentation"
+ISIC_ARCHIVES = {
+    "ISIC2018_Task1-2_Training_Input.zip": (
+        "https://isic-archive.s3.amazonaws.com/challenges/2018/"
+        "ISIC2018_Task1-2_Training_Input.zip",
+        "80f98572347a2d7a376227fa9eb2e4f7459d317cb619865b8b9910c81446675f",
+        "ISIC2018_Task1-2_Training_Input",
+    ),
+    "ISIC2018_Task1_Training_GroundTruth.zip": (
+        "https://isic-archive.s3.amazonaws.com/challenges/2018/"
+        "ISIC2018_Task1_Training_GroundTruth.zip",
+        "99f8b2bb3c4d6af483362010715f7e7d5d122d9f6c02cac0e0d15bef77c7604c",
+        "ISIC2018_Task1_Training_GroundTruth",
+    ),
+    "ISIC2018_Task1-2_Test_Input.zip": (
+        "https://isic-archive.s3.amazonaws.com/challenges/2018/"
+        "ISIC2018_Task1-2_Test_Input.zip",
+        "e59ae1f69f4ed16f09db2cb1d76c2a828487b63d28f6ab85997f5616869b127d",
+        "ISIC2018_Task1-2_Test_Input",
+    ),
+    "ISIC2018_Task1_Test_GroundTruth.zip": (
+        "https://isic-archive.s3.amazonaws.com/challenges/2018/"
+        "ISIC2018_Task1_Test_GroundTruth.zip",
+        "2e8f6edce454a5bdee52485e39f92bd6eddf357e81f39018d05512175238ef82",
+        "ISIC2018_Task1_Test_GroundTruth",
+    ),
+}
+TN3K_URL = (
+    "https://drive.usercontent.google.com/download?"
+    "id=1reHyY5eTZ5uePXMVMzFOq5j3eFOSp50F&export=download&confirm=t"
+)
+TN3K_SHA256 = "0ba1770076dab01b1f8fd661a227d80982168bc433de61c80fd266427b20cf60"
 
 
 def _sha256(path):
@@ -95,6 +126,34 @@ def download_fives():
     extracted.replace(target)
 
 
+def download_isic():
+    """Download the official ISIC 2018 Task 1 train and test releases."""
+
+    target = DATA_ROOT / "ISIC2018"
+    target.mkdir(exist_ok=True)
+    for archive_name, (url, digest, directory_name) in ISIC_ARCHIVES.items():
+        if (target / directory_name).is_dir():
+            print(f"[cached] data/ISIC2018/{directory_name}")
+            continue
+        archive = target / archive_name
+        _download(url, archive, digest)
+        _safe_extract_zip(archive, target)
+
+
+def download_tn3k():
+    """Download the official TN3K bundle and retain its provided split files."""
+
+    target = DATA_ROOT / "TN3K"
+    extracted = target / "extracted" / "Thyroid Dataset" / "tn3k"
+    if extracted.is_dir():
+        print("[cached] data/TN3K/extracted/Thyroid Dataset/tn3k")
+        return
+    target.mkdir(exist_ok=True)
+    archive = target / "tn3k.zip"
+    _download(TN3K_URL, archive, TN3K_SHA256)
+    _safe_extract_zip(archive, target / "extracted")
+
+
 def download_models():
     # Set cache locations before importing either model library.
     os.environ["HF_HOME"] = str(DATA_ROOT / "cache" / "huggingface")
@@ -118,8 +177,8 @@ def parse_args():
     parser.add_argument(
         "--datasets",
         nargs="*",
-        choices=("pet", "kvasir", "fives"),
-        default=("pet", "kvasir", "fives"),
+        choices=("pet", "kvasir", "fives", "isic", "tn3k"),
+        default=("pet", "kvasir", "fives", "isic", "tn3k"),
     )
     parser.add_argument(
         "--skip-models", action="store_true", help="do not populate model caches"
@@ -138,6 +197,8 @@ def main():
             "pet": download_pet,
             "kvasir": download_kvasir,
             "fives": download_fives,
+            "isic": download_isic,
+            "tn3k": download_tn3k,
         }
         for name in args.datasets:
             print(f"[{name}]")

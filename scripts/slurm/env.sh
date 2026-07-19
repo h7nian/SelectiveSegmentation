@@ -10,6 +10,7 @@ export TMPDIR="$SELECTSEG_TMPDIR"
 
 module load python3/3.12.4_anaconda2024.06-1_libmamba
 source "$REPO_ROOT/.venv/bin/activate"
+export PYTHONPATH="$REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
 
 # Keep model caches inside the repo so jobs never touch the network.
 export HF_HOME="$REPO_ROOT/data/cache/huggingface"

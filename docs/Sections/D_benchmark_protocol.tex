@@ -1,0 +1,199 @@
+\section{Expanded Benchmark Protocol}
+\label{app:benchmark-protocol}
+
+This appendix freezes the expanded five-dataset protocol and comparator
+definitions independently of their observed AURC. Its purpose is to make every
+row reconstructible, including cases in which a predicted foreground is empty.
+
+\subsection{Native-binary cohorts}
+
+\paragraph{Oxford-IIIT Pet.}
+We use the official trainval/test split: 3,680 released training examples and
+3,669 test examples \citep{parkhi2012cats}. Trimap values 1 (pet) and 3 (border)
+are foreground and value 2 is background. This border-inclusive mapping is
+declared before evaluation and leaves no annotation-derived ignore pixels.
+
+\paragraph{Kvasir-SEG.}
+The release contains 1,000 paired polyp images and masks but no official split
+\citep{jha2020kvasir}. We rank stems by
+\((\operatorname{SHA256}(\text{stem}),\text{stem})\), assign the first 800 to
+training and the remaining 200 to testing, and order each split by stem. For its
+JPEG-compressed masks, a pixel is foreground iff the maximum decoded channel is
+at least 128; this rejects small compression residuals near zero.
+
+\paragraph{FIVES.}
+We use the official 600-image training and 200-image test partitions
+\citep{jin2022fives}. A pixel is foreground iff its mask value is nonzero.
+
+\paragraph{ISIC 2018 Task 1.}
+We use the official 2,594-image training and 1,000-image test releases for lesion
+boundary segmentation \citep{codella2019isic,tschandl2018ham10000,
+isic2018task1}. Each losslessly encoded mask denotes the primary skin lesion
+with values 0 and 255; foreground is therefore the nonzero set. Image and mask
+identifiers are joined by the official \texttt{ISIC\_id} stem rather than by
+directory order.
+
+\paragraph{TN3K.}
+We use the released split of 2,879 training and 614 test ultrasound images
+\citep{gong2021multitask,gong2023thyroid}. The source contains 3,493 images from
+2,421 patients and permits multiple disconnected nodules in one binary mask. As
+the released masks are JPEG-compressed, foreground again means maximum decoded
+channel value at least 128.
+
+For all five datasets, image--mask dimensions, one-to-one stem pairing, split
+membership, and stable sample identifiers are checked before inference. The
+fixed CLIPSeg prompts are \texttt{cat}/\texttt{dog}, \texttt{polyp},
+\texttt{retinal blood vessels}, \texttt{skin lesion}, and
+\texttt{thyroid nodule}, respectively. Scores and risks are computed after
+bilinear probability-map resizing to the native image grid; masks are never
+interpolated for evaluation.
+
+\subsection{Prediction models and frozen training schedules}
+
+We use \texttt{CIDAS/clipseg-rd64-refined} \citep{clipseg} at
+\(352\times352\). \textsc{CLIPSeg-General} uses its released weights;
+\textsc{CLIPSeg-Target} freezes both CLIP encoders and optimizes the decoder
+for 40 epochs with binary cross-entropy, AdamW, learning rate \(10^{-4}\),
+weight decay \(10^{-4}\), and batch size 32.
+
+\textsc{DeepLabV3-Target} is a ResNet-50 DeepLabV3 initialized from the
+torchvision COCO-with-VOC-labels checkpoint \citep{deeplabv3}. Both classifiers
+are replaced by two-class heads and fine-tuned at \(512\times512\) for 40
+epochs. The objective is main cross-entropy plus \(0.4\) times auxiliary
+cross-entropy; SGD uses learning rate \(5\times10^{-3}\), momentum \(0.9\),
+weight decay \(10^{-4}\), and batch size 16. The Pet-only
+\textsc{DeepLabV3-External} condition maps the released cat and dog
+probabilities to foreground.
+
+Both target-adapted schedules use the per-step multiplier
+\((1-s/S)^{0.9}\), gradient clipping at 1, and seed 0. Augmentation applies a
+shared random scale in \([0.5,2]\), a model-resolution crop with padded pixels
+excluded from loss, and a horizontal flip with probability \(0.5\). We retain
+the final epoch under this predeclared schedule. Frozen manifests record the
+checkpoint, source, cohort, configuration, package, and device hashes or
+identifiers.
+
+\subsection{Single-map entropy comparators}
+
+All entropy comparators begin with the same foreground probabilities
+\(p=(p_i)_{i\in\Omega}\), deployed threshold \(\gamma\), and hard foreground
+\(F_\gamma=\{i:p_i\geq\gamma\}\). Let \(n=|\Omega|\), \(k=|F_\gamma|\), and
+\[
+  u_i=-p_i\log_2p_i-(1-p_i)\log_2(1-p_i),
+  \qquad 0\log_2 0:=0.
+\]
+Thus \(u_i\in[0,1]\). Every reported scalar below is oriented as confidence:
+higher is better.
+
+\paragraph{QFR-Entropy.}
+The foreground-ratio aggregator sets \(q_{\mathrm{FG}}=k/n\), computes
+\(\tau=Q_{1-q_{\mathrm{FG}}}(u)\) with NumPy's default linear quantile, and
+uses the inclusive cutoff from the reference implementation
+\citep{guarino2026aggregation}:
+\[
+ C_{\mathrm{QFR}}
+ =-\operatorname{mean}\{u_i:u_i\geq\tau\}.
+\]
+All cutoff ties are therefore retained, so their realized fraction can exceed
+\(q_{\mathrm{FG}}\). If \(k=0\), then \(\tau=\max_i u_i\) and the score is
+\(-\max_i u_i\); the selected set is never empty. This convention reproduces
+the public implementation exactly rather than silently replacing it by a
+top-\(k\) rule.
+
+\paragraph{PLM-10/PLA-10-Entropy.}
+For the set \(\mathcal W_{10}\) of all valid, unpadded \(10\times10\) windows on
+the native grid, we use
+\[
+ C_{\mathrm{PLM10}}
+ =-\max_{w\in\mathcal W_{10}}\frac{1}{|w|}\sum_{i\in w}u_i.
+\]
+PLM is commonly written as a maximum patch average
+\citep{guarino2026aggregation}; PLA-10 is written as the negative maximum patch
+sum \citep{sdc}. Since every valid window here has 100 pixels, the two scores
+differ only by the positive constant 100 and therefore induce exactly the same
+ranking and AURC. We report one row rather than counting rank-equivalent methods
+twice.
+
+\paragraph{MMMC-Entropy.}
+Following the entropy form compared by \citet{sdc} and originating with
+\citet{holder2021uncertainty},
+\[
+ C_{\mathrm{MMMC}}=
+ \begin{cases}
+ -\bigl(\operatorname{median}_i u_i+\min_i u_i\bigr)/\max_i u_i,
+   & \max_i u_i>0,\\
+ 0, & \max_i u_i=0.
+ \end{cases}
+\]
+The second branch fixes the otherwise undefined all-zero-entropy case.
+
+\paragraph{Foreground entropy.}
+The action-restricted score is
+\[
+ C_{\mathrm{FGEnt}}=
+ \begin{cases}
+  -k^{-1}\sum_{i\in F_\gamma}u_i, & k>0,\\
+  -1, & k=0.
+ \end{cases}
+\]
+The empty-action value is the bottom of the nonempty score range, rather than a
+global-entropy fallback. Mean negative entropy
+\(-n^{-1}\sum_i u_i\), mean maximum probability
+\(n^{-1}\sum_i\max(p_i,1-p_i)\), and SDC from
+Equation~\eqref{eq:sdc} complete the reference panel. SDC retains its published
+zero confidence when both its probability mass and hard mask have zero mass.
+
+\subsection{Matched information budget}
+
+Every primary confidence method is a deterministic function of the same single
+foreground probability map and fixed deployed action. It receives no reference
+mask, internal feature, validation-label fit, test-set rank transform, extra
+forward pass, or method-specific calibration. QFR uses the current image's
+predicted foreground ratio, PLM/PLA fixes its patch width at 10, and no comparator
+is selected by test AURC.
+
+Monte Carlo dropout, test-time augmentation, and deep ensembles produce multiple
+maps and therefore change both information and inference cost. Learned failure
+predictors additionally use internal features and a labeled fitting set. These
+are valuable but answer a different-budget question; we exclude them from the
+matched primary table and treat them only as extensions discussed in the
+limitations. This isolates the paper's question: given one fixed probability
+map, does changing only the image-level confidence functional improve selective
+ranking?
+
+\subsection{Loss, numerical, and inference conventions}
+
+For a mask \(A\), the inner digital surface is
+\(S(A)=A\setminus\operatorname{erosion}(A)\), using SciPy
+\texttt{binary\_erosion}'s default structuring element and border handling;
+nearest-surface distances use native-grid Euclidean distance transforms.
+For nonempty masks, the native-pixel boundary auxiliaries are
+\(\max D(A,B)\) and \(Q_{0.95}(D(A,B))\). A one-sided empty pair receives the
+image diagonal. Their normalized primary counterparts divide by that diagonal
+and use loss one for a one-sided empty pair; empty--empty loss is zero. The
+percentile is NumPy's default linear quantile after pooling both directed
+surface-distance arrays. This fixes the otherwise consequential pooling,
+interpolation, and empty-mask choices.
+
+For Dice-Exact versus each \(M\in\{2,8,32\}\) midpoint score, we retain the
+mean, median, 95th percentile, and maximum absolute per-image score error,
+Spearman correlation, Kendall's \(\tau_b\), and exact-match fraction.
+Correlations use average ranks and are undefined when either score is constant.
+Separately, each locked probability map yields pixel-weighted Brier score,
+15-bin ECE, truth- and prediction-empty rates, mean distinct-mask count along
+the \(M=32\) ladder, the fraction of unchanged adjacent threshold pairs, and
+the mean adjacent changed-pixel fraction. These held-out-label diagnostics are
+descriptive only: they do not tune a score and cannot identify the joint mask
+posterior.
+
+Empirical AURC is the exact expectation under uniform random ordering within
+every exact confidence tie. We also retain oracle AURC, random-order AURC, and
+normalized excess AURC whenever its denominator is nonzero. Each predeclared
+adjacent-geometry contrast uses the same 10,000 paired image-cluster bootstrap
+resamples for both scores and the observed risk \citep{efron1993}. Equal-tail
+intervals are pointwise. Holm's step-down transform \citep{holm1979} is applied
+separately to the 40-comparison Pet/Kvasir/FIVES core family and the
+24-comparison ISIC/TN3K extension family. Because the inputs are approximate
+bootstrap confidence-curve tail areas rather than exact null-calibrated
+\(p\)-values, we report them as multiplicity-aware evidence summaries and do
+not claim exact finite-sample family-wise error control.

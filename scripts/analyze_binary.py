@@ -10,12 +10,16 @@ Example::
         --output-dir outputs/binary/analysis
 
 Use ``--inputs`` to analyze an explicit, reproducible list of JSONL files.
+Complete analysis additionally requires ``--campaign-lock`` and verifies that
+every input is a final assembly bound to that exact immutable campaign.
 The outputs are a machine-readable JSON summary, a long-form CSV, and a LaTeX
 main table.  All AURCs use analytic random ordering within exact confidence
-ties.  The predeclared Dice-M32 versus nHD95-M32 comparisons report paired
-image-cluster percentile-bootstrap intervals and two-sided bootstrap p-values
-computed from the same resamples. Holm adjustment is applied to those p-values
-without making significance calls.
+ties.  Four predeclared adjacent-geometry comparisons report paired
+image-cluster percentile-bootstrap intervals and two-sided approximate
+bootstrap tail probabilities computed from the same resamples. A Holm step-down
+transform is applied separately to the core and extension families, without
+making significance or exact finite-sample error-control claims. All other
+score--risk combinations remain descriptive.
 """
 
 import argparse
@@ -24,10 +28,12 @@ import hashlib
 import json
 import math
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import numpy as np
+from scipy.stats import kendalltau, rankdata
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
@@ -38,7 +44,8 @@ from selectseg.binary_framework import (  # noqa: E402
 )
 
 
-SUPPORTED_SCHEMA_VERSION = 1
+SUPPORTED_SCHEMA_VERSION = 2
+ANALYSIS_SCHEMA_VERSION = 2
 JSON_NAME = "analysis.json"
 CSV_NAME = "main_table.csv"
 LATEX_NAME = "main_table.tex"
@@ -47,25 +54,109 @@ METHODS = (
     ("confidence_sdc", "SDC"),
     ("confidence_mean_max_probability", "Mean max probability"),
     ("confidence_negative_entropy", "Negative entropy"),
+    ("confidence_dice_exact", "Dice-Exact"),
+    ("confidence_qfr_entropy", "QFR-Entropy"),
+    ("confidence_plm10_entropy", "PLM-10/PLA-10-Entropy"),
+    ("confidence_mmmc_entropy", "MMMC-Entropy"),
+    ("confidence_foreground_entropy", "Foreground entropy"),
     ("confidence_dice_m2", "Dice-M2"),
     ("confidence_dice_m8", "Dice-M8"),
     ("confidence_dice_m32", "Dice-M32"),
+    ("confidence_nhd_m2", "nHD-M2"),
+    ("confidence_nhd_m8", "nHD-M8"),
+    ("confidence_nhd_m32", "nHD-M32"),
     ("confidence_nhd95_m2", "nHD95-M2"),
     ("confidence_nhd95_m8", "nHD95-M8"),
     ("confidence_nhd95_m32", "nHD95-M32"),
 )
+EXPECTED_CONDITIONS = (
+    ("pet", "clipseg-general"),
+    ("pet", "clipseg-target"),
+    ("pet", "deeplabv3-target"),
+    ("pet", "deeplabv3-external"),
+    ("kvasir", "clipseg-general"),
+    ("kvasir", "clipseg-target"),
+    ("kvasir", "deeplabv3-target"),
+    ("fives", "clipseg-general"),
+    ("fives", "clipseg-target"),
+    ("fives", "deeplabv3-target"),
+    ("isic", "clipseg-general"),
+    ("isic", "clipseg-target"),
+    ("isic", "deeplabv3-target"),
+    ("tn3k", "clipseg-general"),
+    ("tn3k", "clipseg-target"),
+    ("tn3k", "deeplabv3-target"),
+)
+HOLM_FAMILY_BY_DATASET = {
+    "pet": "core",
+    "kvasir": "core",
+    "fives": "core",
+    "isic": "extension",
+    "tn3k": "extension",
+}
+HOLM_FAMILY_DEFINITIONS = {
+    "core": (
+        "Oxford Pet, Kvasir-SEG, and FIVES conditions across the four "
+        "predeclared adjacent-geometry contrasts"
+    ),
+    "extension": (
+        "ISIC 2018 and TN3K conditions across the four predeclared "
+        "adjacent-geometry contrasts"
+    ),
+}
 RISKS = (
     ("risk_dice", "Dice risk"),
+    ("risk_nhd", "Normalized penalized Hausdorff risk"),
     ("risk_nhd95", "Normalized penalized HD95 risk"),
+)
+DICE_QUADRATURE_METHODS = (
+    ("confidence_dice_m2", 2),
+    ("confidence_dice_m8", 8),
+    ("confidence_dice_m32", 32),
+)
+DICE_EXACT_REFERENCE = "confidence_dice_exact"
+
+
+@dataclass(frozen=True)
+class ContrastSpec:
+    name: str
+    left: str
+    right: str
+    risk: str
+
+
+CONTRASTS = (
+    ContrastSpec(
+        "dice_vs_nhd_under_dice",
+        "confidence_dice_m32",
+        "confidence_nhd_m32",
+        "risk_dice",
+    ),
+    ContrastSpec(
+        "dice_vs_nhd_under_nhd",
+        "confidence_dice_m32",
+        "confidence_nhd_m32",
+        "risk_nhd",
+    ),
+    ContrastSpec(
+        "nhd_vs_nhd95_under_nhd",
+        "confidence_nhd_m32",
+        "confidence_nhd95_m32",
+        "risk_nhd",
+    ),
+    ContrastSpec(
+        "nhd_vs_nhd95_under_nhd95",
+        "confidence_nhd_m32",
+        "confidence_nhd95_m32",
+        "risk_nhd95",
+    ),
 )
 METHOD_LABELS = dict(METHODS)
 RISK_LABELS = dict(RISKS)
 REQUIRED_SCORE_FIELDS = frozenset(METHOD_LABELS)
 REQUIRED_RISK_FIELDS = frozenset(RISK_LABELS)
-REQUIRED_ROW_FIELDS = frozenset(
-    {"schema_version", "run_id", "sample_id", "image_id", "risk_hd95_pixels"}
-)
-AUXILIARY_RISK_FIELDS = frozenset({"risk_hd95_pixels"})
+REQUIRED_ROW_FIELDS = frozenset({"schema_version", "run_id", "sample_id", "image_id"})
+OPTIONAL_AUXILIARY_FIELDS = frozenset({"risk_hd_pixels", "risk_hd95_pixels"})
 REQUIRED_MANIFEST_FIELDS = frozenset(
     {
         "schema_version",
@@ -80,6 +171,34 @@ REQUIRED_MANIFEST_FIELDS = frozenset(
         "risk_fields",
         "auxiliary_fields",
         "score_fields",
+    }
+)
+ASSEMBLY_ARTIFACT_TYPE = "selectseg.binary_simulation_assembly"
+LOCK_SCHEMA_VERSION = 1
+LOCK_FIELDS = frozenset(
+    {
+        "lock_schema_version",
+        "campaign_id",
+        "config",
+        "protocol",
+        "estimator",
+        "paths",
+        "artifacts",
+    }
+)
+LOCK_ARTIFACT_FIELDS = frozenset(
+    {
+        "manifest_path",
+        "manifest_sha256",
+        "artifact_id",
+        "dataset",
+        "condition",
+        "model",
+        "split",
+        "checkpoint_sha256",
+        "source_sha256",
+        "sample_id_sha256",
+        "num_samples",
     }
 )
 
@@ -117,8 +236,13 @@ def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--input-dir",
-        default="outputs/binary",
-        help="directory recursively searched for *.jsonl when --inputs is omitted",
+        dest="input_dirs",
+        action="append",
+        default=None,
+        help=(
+            "directory recursively searched for *.jsonl when --inputs is omitted; "
+            "repeat to combine disjoint roots (default: outputs/binary)"
+        ),
     )
     parser.add_argument(
         "--inputs",
@@ -126,10 +250,32 @@ def parse_args():
         default=None,
         help="explicit JSONL files; each requires a matching .manifest.json",
     )
+    parser.add_argument(
+        "--campaign-lock",
+        default=None,
+        help=(
+            "immutable campaign lock required for complete analysis; every "
+            "assembly is checked against its SHA-256 and locked cohort"
+        ),
+    )
     parser.add_argument("--output-dir", default="outputs/binary/analysis")
     parser.add_argument("--bootstrap-samples", type=int, default=10_000)
+    parser.add_argument(
+        "--bootstrap-workers",
+        type=int,
+        default=4,
+        help="parallel adjacent contrasts per condition (default: 4)",
+    )
     parser.add_argument("--confidence-level", type=float, default=0.95)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument(
+        "--allow-incomplete",
+        action="store_true",
+        help=(
+            "allow a nonempty declared subset for draft analysis; by default "
+            "the exact 16-condition benchmark is required"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -165,6 +311,30 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _analysis_source_sha256() -> str:
+    """Bind the analysis result to the code that defines its statistics."""
+
+    paths = (Path(__file__).resolve(), REPO_ROOT / "selectseg/binary_framework.py")
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(path.relative_to(REPO_ROOT).as_posix().encode())
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def _digest(value, *, location: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{location} must be a lowercase SHA-256 digest")
+    value = value.lower()
+    if len(value) != 64 or any(
+        character not in "0123456789abcdef" for character in value
+    ):
+        raise ValueError(f"{location} must be a lowercase SHA-256 digest")
+    return value
+
+
 def _assert_finite_tree(value, *, location: str):
     if isinstance(value, float) and not math.isfinite(value):
         raise ValueError(f"{location} contains a non-finite number")
@@ -183,10 +353,11 @@ def _required_string(mapping, field, *, location):
     return value
 
 
-def _field_list(manifest, name, *, location):
+def _field_list(manifest, name, *, location, allow_empty=False):
     value = manifest.get(name)
-    if not isinstance(value, list) or not value:
-        raise ValueError(f"{location}.{name} must be a non-empty list")
+    if not isinstance(value, list) or (not allow_empty and not value):
+        qualifier = "a list" if allow_empty else "a non-empty list"
+        raise ValueError(f"{location}.{name} must be {qualifier}")
     if not all(isinstance(field, str) and field for field in value):
         raise ValueError(f"{location}.{name} must contain non-empty strings")
     if len(value) != len(set(value)):
@@ -211,15 +382,15 @@ def load_condition(jsonl_path) -> ConditionData:
     if not manifest_path.is_file():
         raise FileNotFoundError(f"matching manifest does not exist: {manifest_path}")
 
-    manifest = _loads_strict(
-        manifest_path.read_text(), source=str(manifest_path)
-    )
+    manifest = _loads_strict(manifest_path.read_text(), source=str(manifest_path))
     if not isinstance(manifest, dict):
         raise ValueError(f"manifest must contain one JSON object: {manifest_path}")
     _assert_finite_tree(manifest, location=str(manifest_path))
     missing = sorted(REQUIRED_MANIFEST_FIELDS - set(manifest))
     if missing:
-        raise ValueError(f"manifest {manifest_path} is missing required fields {missing}")
+        raise ValueError(
+            f"manifest {manifest_path} is missing required fields {missing}"
+        )
     if (
         isinstance(manifest["schema_version"], bool)
         or not isinstance(manifest["schema_version"], int)
@@ -278,7 +449,10 @@ def load_condition(jsonl_path) -> ConditionData:
     score_fields = _field_list(manifest, "score_fields", location=str(manifest_path))
     risk_fields = _field_list(manifest, "risk_fields", location=str(manifest_path))
     auxiliary_fields = _field_list(
-        manifest, "auxiliary_fields", location=str(manifest_path)
+        manifest,
+        "auxiliary_fields",
+        location=str(manifest_path),
+        allow_empty=True,
     )
     missing_scores = sorted(REQUIRED_SCORE_FIELDS - score_fields)
     missing_risks = sorted(REQUIRED_RISK_FIELDS - risk_fields)
@@ -287,15 +461,22 @@ def load_condition(jsonl_path) -> ConditionData:
             f"manifest {manifest_path} lacks required score/risk fields: "
             f"scores={missing_scores}, risks={missing_risks}"
         )
+    if score_fields != REQUIRED_SCORE_FIELDS:
+        raise ValueError(
+            f"manifest {manifest_path} must list exactly the predeclared scores "
+            f"{sorted(REQUIRED_SCORE_FIELDS)}; got {sorted(score_fields)}"
+        )
     if risk_fields != REQUIRED_RISK_FIELDS:
         raise ValueError(
-            f"manifest {manifest_path} must list exactly the two main risks "
+            f"manifest {manifest_path} must list exactly the three main risks "
             f"{sorted(REQUIRED_RISK_FIELDS)}; got {sorted(risk_fields)}"
         )
-    if auxiliary_fields != AUXILIARY_RISK_FIELDS:
+    undeclared_auxiliary = auxiliary_fields - OPTIONAL_AUXILIARY_FIELDS
+    if undeclared_auxiliary:
         raise ValueError(
-            f"manifest {manifest_path} must list exactly the auxiliary fields "
-            f"{sorted(AUXILIARY_RISK_FIELDS)}; got {sorted(auxiliary_fields)}"
+            f"manifest {manifest_path} contains unsupported auxiliary fields "
+            f"{sorted(undeclared_auxiliary)}; allowed optional fields are "
+            f"{sorted(OPTIONAL_AUXILIARY_FIELDS)}"
         )
 
     rows = []
@@ -318,18 +499,16 @@ def load_condition(jsonl_path) -> ConditionData:
 
     row_fields = set(rows[0])
     missing_row_fields = sorted(
-        (REQUIRED_ROW_FIELDS | score_fields | risk_fields) - row_fields
+        (REQUIRED_ROW_FIELDS | score_fields | risk_fields | auxiliary_fields)
+        - row_fields
     )
     if missing_row_fields:
         raise ValueError(f"{jsonl_path} rows lack required fields {missing_row_fields}")
-    manifested_scores = {field for field in row_fields if field.startswith("confidence_")}
+    manifested_scores = {
+        field for field in row_fields if field.startswith("confidence_")
+    }
     row_risks = {field for field in row_fields if field.startswith("risk_")}
-    unregistered_risks = row_risks - risk_fields - AUXILIARY_RISK_FIELDS
-    if (
-        manifested_scores != score_fields
-        or not risk_fields.issubset(row_risks)
-        or unregistered_risks
-    ):
+    if manifested_scores != score_fields or row_risks != risk_fields | auxiliary_fields:
         raise ValueError(
             f"manifest/row score-risk schema mismatch in {jsonl_path}: "
             f"score_fields={sorted(score_fields)} row_scores={sorted(manifested_scores)}; "
@@ -355,30 +534,25 @@ def load_condition(jsonl_path) -> ConditionData:
             raise ValueError(f"duplicate image_id {image_id!r} in {jsonl_path}")
         image_ids.add(image_id)
         if row.get("schema_version") != manifest["schema_version"]:
-            raise ValueError(
-                f"schema_version mismatch at {jsonl_path}:{line_number}"
-            )
+            raise ValueError(f"schema_version mismatch at {jsonl_path}:{line_number}")
         if row.get("run_id") != manifest["run_id"]:
             raise ValueError(f"run_id mismatch at {jsonl_path}:{line_number}")
-        for field in score_fields | risk_fields | AUXILIARY_RISK_FIELDS:
+        for field in score_fields | risk_fields | auxiliary_fields:
             value = row[field]
             if isinstance(value, bool) or not isinstance(value, (int, float)):
-                raise ValueError(
-                    f"{jsonl_path}:{line_number}.{field} must be numeric"
-                )
+                raise ValueError(f"{jsonl_path}:{line_number}.{field} must be numeric")
             if not math.isfinite(value):
-                raise ValueError(
-                    f"{jsonl_path}:{line_number}.{field} must be finite"
-                )
+                raise ValueError(f"{jsonl_path}:{line_number}.{field} must be finite")
         for field in risk_fields:
             if not 0 <= row[field] <= 1:
                 raise ValueError(
                     f"{jsonl_path}:{line_number}.{field} must lie in [0, 1]"
                 )
-        if row["risk_hd95_pixels"] < 0:
-            raise ValueError(
-                f"{jsonl_path}:{line_number}.risk_hd95_pixels must be non-negative"
-            )
+        for field in auxiliary_fields:
+            if row[field] < 0:
+                raise ValueError(
+                    f"{jsonl_path}:{line_number}.{field} must be non-negative"
+                )
 
     sample_id_hash = hashlib.sha256(
         "\n".join(ordered_sample_ids).encode("utf-8")
@@ -397,8 +571,164 @@ def load_condition(jsonl_path) -> ConditionData:
     )
 
 
+def load_analysis_campaign_lock(path):
+    """Load the portable immutable lock without requiring frozen payloads."""
+
+    path = Path(path)
+    if not path.is_file():
+        raise FileNotFoundError(f"campaign lock does not exist: {path}")
+    raw = path.read_bytes()
+    lock = _loads_strict(raw.decode("utf-8"), source=str(path))
+    if not isinstance(lock, dict) or set(lock) != LOCK_FIELDS:
+        raise ValueError(f"campaign lock must contain exactly {sorted(LOCK_FIELDS)}")
+    _assert_finite_tree(lock, location=str(path))
+    if lock["lock_schema_version"] != LOCK_SCHEMA_VERSION:
+        raise ValueError(f"{path}.lock_schema_version must equal {LOCK_SCHEMA_VERSION}")
+    campaign_id = _required_string(lock, "campaign_id", location=str(path))
+    protocol = lock.get("protocol")
+    expected_protocol = {
+        "gamma_values": [0.5],
+        "m_values": [2, 8, 32],
+        "quadrature_rule": "midpoint-v1",
+        "seeds": [0],
+    }
+    if protocol != expected_protocol:
+        raise ValueError("campaign lock does not contain the final midpoint protocol")
+    config = lock.get("config")
+    if not isinstance(config, dict) or set(config) != {"path", "sha256"}:
+        raise ValueError("campaign lock config provenance is malformed")
+    _required_string(config, "path", location=f"{path}.config")
+    _digest(config["sha256"], location=f"{path}.config.sha256")
+    estimator = lock.get("estimator")
+    if not isinstance(estimator, dict):
+        raise ValueError("campaign lock estimator provenance is malformed")
+    if (
+        estimator.get("estimator_id") != "midpoint-v1"
+        or estimator.get("target_measure") != "uniform-threshold"
+    ):
+        raise ValueError("campaign lock estimator is not midpoint-v1")
+    _digest(estimator.get("spec_sha256"), location=f"{path}.estimator.spec_sha256")
+
+    artifacts = lock.get("artifacts")
+    if not isinstance(artifacts, list) or len(artifacts) != len(EXPECTED_CONDITIONS):
+        raise ValueError("campaign lock must contain exactly 16 artifacts")
+    by_key = {}
+    for index, artifact in enumerate(artifacts):
+        location = f"{path}.artifacts[{index}]"
+        if not isinstance(artifact, dict) or set(artifact) != LOCK_ARTIFACT_FIELDS:
+            raise ValueError(
+                f"{location} must contain exactly {sorted(LOCK_ARTIFACT_FIELDS)}"
+            )
+        dataset = _required_string(artifact, "dataset", location=location)
+        condition = _required_string(artifact, "condition", location=location)
+        key = (dataset, condition)
+        if key in by_key:
+            raise ValueError(f"campaign lock contains duplicate condition {key}")
+        for field in ("manifest_sha256", "source_sha256", "sample_id_sha256"):
+            _digest(artifact[field], location=f"{location}.{field}")
+        checkpoint_sha = artifact["checkpoint_sha256"]
+        if checkpoint_sha is not None:
+            _digest(checkpoint_sha, location=f"{location}.checkpoint_sha256")
+        if (
+            isinstance(artifact["num_samples"], bool)
+            or not isinstance(artifact["num_samples"], int)
+            or artifact["num_samples"] <= 0
+        ):
+            raise ValueError(f"{location}.num_samples must be a positive integer")
+        for field in ("manifest_path", "artifact_id", "model", "split"):
+            _required_string(artifact, field, location=location)
+        by_key[key] = artifact
+    if set(by_key) != set(EXPECTED_CONDITIONS):
+        raise ValueError("campaign lock conditions differ from the declared benchmark")
+    return path, _sha256(path), campaign_id, config, by_key
+
+
+def validate_campaign_bound_conditions(conditions, campaign_lock):
+    """Require final assemblies and bind each one to its locked source artifact."""
+
+    lock_path, lock_sha, campaign_id, config, locked = load_analysis_campaign_lock(
+        campaign_lock
+    )
+    observed = {(item.dataset, item.condition) for item in conditions}
+    if observed != set(locked) or len(conditions) != len(locked):
+        raise ValueError(
+            "analysis inputs must contain each locked condition exactly once"
+        )
+
+    inputs = []
+    for data in sorted(conditions, key=lambda item: (item.dataset, item.condition)):
+        manifest = data.manifest
+        location = str(data.manifest_path)
+        if manifest.get("artifact_type") != ASSEMBLY_ARTIFACT_TYPE:
+            raise ValueError(
+                f"{location}.artifact_type must equal {ASSEMBLY_ARTIFACT_TYPE!r}"
+            )
+        assembly = manifest.get("assembly")
+        if not isinstance(assembly, dict):
+            raise ValueError(f"{location}.assembly must be an object")
+        if assembly.get("assembly_schema_version") != 2:
+            raise ValueError(f"{location}.assembly has an unsupported schema")
+        assembly_source_sha = _digest(
+            assembly.get("assembly_source_sha256"),
+            location=f"{location}.assembly.assembly_source_sha256",
+        )
+        artifact = locked[(data.dataset, data.condition)]
+        expected = {
+            "campaign_id": campaign_id,
+            "campaign_lock_sha256": lock_sha,
+            "artifact_id": artifact["artifact_id"],
+            "artifact_manifest_sha256": artifact["manifest_sha256"].lower(),
+            "artifact_source_sha256": artifact["source_sha256"].lower(),
+        }
+        for field, value in expected.items():
+            observed_value = assembly.get(field)
+            if field.endswith("sha256") and isinstance(observed_value, str):
+                observed_value = observed_value.lower()
+            if observed_value != value:
+                raise ValueError(f"{location}.assembly.{field} differs from the lock")
+        if manifest["split"] != artifact["split"]:
+            raise ValueError(f"{location}.split differs from the lock")
+        if manifest.get("model") != artifact["model"]:
+            raise ValueError(f"{location}.model differs from the lock")
+        if manifest["num_images"] != artifact["num_samples"]:
+            raise ValueError(f"{location}.num_images differs from the lock")
+        if manifest["sample_id_sha256"].lower() != artifact["sample_id_sha256"].lower():
+            raise ValueError(f"{location}.sample_id_sha256 differs from the lock")
+        checkpoint = manifest.get("checkpoint")
+        checkpoint_sha = None if checkpoint is None else checkpoint.get("sha256")
+        if checkpoint_sha != artifact["checkpoint_sha256"]:
+            raise ValueError(f"{location}.checkpoint differs from the lock")
+        manifest_sha = _sha256(data.manifest_path)
+        logical_id = f"{data.dataset}/{data.condition}/{manifest['run_id']}"
+        inputs.append(
+            {
+                "logical_id": logical_id,
+                "dataset": data.dataset,
+                "condition": data.condition,
+                "assembly_run_id": manifest["run_id"],
+                "assembly_source_sha256": assembly_source_sha,
+                "artifact_id": artifact["artifact_id"],
+                "manifest_sha256": manifest_sha,
+                "records_sha256": manifest["jsonl_sha256"].lower(),
+                "sample_id_sha256": manifest["sample_id_sha256"].lower(),
+                "num_samples": manifest["num_images"],
+            }
+        )
+    return {
+        "binding": "campaign-lock",
+        "campaign_id": campaign_id,
+        "campaign_lock": {
+            "logical_name": lock_path.name,
+            "sha256": lock_sha,
+        },
+        "config_sha256": config["sha256"].lower(),
+        "analysis_source_sha256": _analysis_source_sha256(),
+        "inputs": inputs,
+    }
+
+
 def holm_adjust(p_values):
-    """Holm step-down family-wise-error adjustment, in original order."""
+    """Apply Holm's step-down multiplicity adjustment in original order."""
 
     values = np.asarray(p_values, dtype=float)
     if values.ndim != 1:
@@ -442,19 +772,20 @@ def paired_cluster_bootstrap_aurc_test(
     confidence_level=0.95,
     seed=0,
 ):
-    """Paired cluster bootstrap interval and equal-tail p-value for AURC.
+    """Paired cluster bootstrap interval and equal-tail bootstrap tail area.
 
     Each resample draws image clusters with replacement and uses the identical
     sampled rows for both scores and the risk. The percentile interval and the
-    two-sided p-value are computed from that one array of AURC differences.
-    For ``B`` draws, the p-value is::
+    two-sided approximate tail probability are computed from that one array of
+    AURC differences. For ``B`` draws, the tail probability is::
 
         min(1, 2 * min((1 + #{delta* <= 0}) / (B + 1),
                        (1 + #{delta* >= 0}) / (B + 1)))
 
-    This confidence-curve p-value is aligned with the equal-tail percentile
-    interval. Both are invariant to separate strictly increasing transforms
-    of the two confidence scores because every statistic is rank based.
+    This confidence-curve tail area is aligned with the equal-tail percentile
+    interval. Both are invariant to separate strictly increasing transforms of
+    the two confidence scores because every statistic is rank based. It is not
+    asserted to be an exact finite-sample null-calibrated p-value.
     """
 
     left = np.asarray(left_confidences, dtype=float)
@@ -464,11 +795,13 @@ def paired_cluster_bootstrap_aurc_test(
         raise ValueError("confidences and risks must be one-dimensional")
     if not left.size or left.size != right.size or left.size != risk.size:
         raise ValueError("paired confidences and risks must have one non-empty length")
-    if not np.isfinite(left).all() or not np.isfinite(right).all() or not np.isfinite(risk).all():
-        raise ValueError("confidences and risks must be finite")
-    if isinstance(n_resamples, bool) or not isinstance(
-        n_resamples, (int, np.integer)
+    if (
+        not np.isfinite(left).all()
+        or not np.isfinite(right).all()
+        or not np.isfinite(risk).all()
     ):
+        raise ValueError("confidences and risks must be finite")
+    if isinstance(n_resamples, bool) or not isinstance(n_resamples, (int, np.integer)):
         raise TypeError("n_resamples must be a positive integer")
     if n_resamples <= 0:
         raise ValueError("n_resamples must be a positive integer")
@@ -519,12 +852,70 @@ def _derived_seed(base_seed, *parts):
     return int.from_bytes(hashlib.sha256(payload).digest()[:4], "big")
 
 
+def _rank_agreement(approximation, reference):
+    """Return Spearman and Kendall tau-b, or ``None`` when undefined."""
+
+    approximation = np.asarray(approximation, dtype=float)
+    reference = np.asarray(reference, dtype=float)
+    if np.unique(approximation).size < 2 or np.unique(reference).size < 2:
+        return {"spearman_rho": None, "kendall_tau_b": None}
+    approximation_ranks = rankdata(approximation, method="average")
+    reference_ranks = rankdata(reference, method="average")
+    spearman = float(
+        np.clip(np.corrcoef(approximation_ranks, reference_ranks)[0, 1], -1, 1)
+    )
+    kendall = float(
+        np.clip(
+            kendalltau(approximation, reference, variant="b", method="auto").statistic,
+            -1,
+            1,
+        )
+    )
+    if not math.isfinite(spearman) or not math.isfinite(kendall):
+        raise RuntimeError("rank agreement unexpectedly became non-finite")
+    return {"spearman_rho": spearman, "kendall_tau_b": kendall}
+
+
+def _dice_quadrature_validation(rows):
+    reference = np.asarray([row[DICE_EXACT_REFERENCE] for row in rows], dtype=float)
+    methods = {}
+    for field, count in DICE_QUADRATURE_METHODS:
+        approximation = np.asarray([row[field] for row in rows], dtype=float)
+        absolute_error = np.abs(approximation - reference)
+        methods[field] = {
+            "m": count,
+            "num_images": int(reference.size),
+            "absolute_error": {
+                "mean": float(absolute_error.mean()),
+                "median": float(np.median(absolute_error)),
+                "p95": float(np.quantile(absolute_error, 0.95, method="linear")),
+                "max": float(absolute_error.max()),
+            },
+            "rank_agreement": _rank_agreement(approximation, reference),
+            "exact_match_fraction": float(np.mean(approximation == reference)),
+        }
+    return {
+        "reference": DICE_EXACT_REFERENCE,
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "rank_agreement_definition": (
+            "Spearman correlation of average ranks and Kendall tau-b over "
+            "image-level confidences; null when either ranking is constant"
+        ),
+        "exact_match_definition": (
+            "fraction with exact floating-point equality and no tolerance"
+        ),
+        "dice_quadrature": methods,
+    }
+
+
 def analyze_conditions(
     conditions,
     *,
     bootstrap_samples=10_000,
     confidence_level=0.95,
     seed=0,
+    bootstrap_workers=4,
+    allow_incomplete=False,
 ):
     if not conditions:
         raise ValueError("at least one condition is required")
@@ -532,36 +923,72 @@ def analyze_conditions(
         raise ValueError("bootstrap sample count must be positive")
     if not 0 < confidence_level < 1:
         raise ValueError("confidence_level must lie strictly between 0 and 1")
+    if (
+        isinstance(bootstrap_workers, bool)
+        or not isinstance(bootstrap_workers, int)
+        or bootstrap_workers <= 0
+    ):
+        raise ValueError("bootstrap_workers must be a positive integer")
 
     conditions = sorted(
-        conditions, key=lambda item: (item.dataset, item.condition, str(item.jsonl_path))
+        conditions,
+        key=lambda item: (item.dataset, item.condition, str(item.jsonl_path)),
     )
     identifiers = [(item.dataset, item.condition) for item in conditions]
     if len(identifiers) != len(set(identifiers)):
         raise ValueError("each dataset/condition pair must appear exactly once")
+    observed = set(identifiers)
+    expected = set(EXPECTED_CONDITIONS)
+    undeclared = sorted(observed - expected)
+    if undeclared:
+        raise ValueError(f"undeclared dataset/condition pairs: {undeclared}")
+    if allow_incomplete:
+        if len(observed) > len(expected):
+            raise ValueError("incomplete analysis exceeds the declared benchmark")
+    elif observed != expected:
+        missing = sorted(expected - observed)
+        raise ValueError(
+            "complete analysis requires exactly the 16 declared conditions; "
+            f"missing={missing}"
+        )
 
     result = {
-        "schema_version": 1,
+        "schema_version": ANALYSIS_SCHEMA_VERSION,
+        "provenance": {
+            "binding": "unbound",
+            "analysis_source_sha256": _analysis_source_sha256(),
+        },
         "analysis": {
             "tie_policy": "analytic expectation over random within-tie order",
-            "normalized_aurc": (
-                "(AURC - oracle AURC) / (random AURC - oracle AURC)"
+            "normalized_aurc": ("(AURC - oracle AURC) / (random AURC - oracle AURC)"),
+            "comparisons": (
+                "four predeclared adjacent-geometry contrasts; every reported "
+                "difference is AURC(left) - AURC(right)"
             ),
-            "comparison": (
-                "confidence_dice_m32 versus confidence_nhd95_m32; reported "
-                "difference is AURC(Dice-M32) - AURC(nHD95-M32)"
+            "contrast_definitions": [asdict(contrast) for contrast in CONTRASTS],
+            "cross_loss_policy": (
+                "all method-by-risk AURCs are reported descriptively; only the "
+                "four declared adjacent-geometry contrasts receive bootstrap "
+                "intervals and the multiplicity-aware Holm transform"
             ),
             "bootstrap_samples": int(bootstrap_samples),
+            "bootstrap_workers": int(bootstrap_workers),
             "confidence_level": float(confidence_level),
             "bootstrap_p_value": (
-                "two-sided equal-tail confidence-curve p-value from the same "
-                "paired image-cluster bootstrap draws as the percentile interval"
+                "two-sided approximate equal-tail confidence-curve tail "
+                "probability from the same paired image-cluster bootstrap draws "
+                "as the percentile interval; despite the compatibility field "
+                "name, this is not claimed to be an exact null-calibrated p-value"
             ),
             "seed": int(seed),
         },
         "conditions": [],
         "multiple_testing": {},
     }
+    family_sizes = {}
+    for dataset, _ in identifiers:
+        family = HOLM_FAMILY_BY_DATASET[dataset]
+        family_sizes[family] = family_sizes.get(family, 0) + len(CONTRASTS)
     comparison_records = []
     for data in conditions:
         rows = data.rows
@@ -572,14 +999,22 @@ def analyze_conditions(
             "split": data.manifest["split"],
             "num_rows": len(rows),
             "num_image_clusters": len(set(image_ids)),
-            "jsonl": str(data.jsonl_path),
-            "manifest": str(data.manifest_path),
+            "jsonl": (
+                f"{data.dataset}/{data.condition}/{data.manifest['run_id']}/records.jsonl"
+            ),
+            "manifest": (
+                f"{data.dataset}/{data.condition}/{data.manifest['run_id']}/manifest.json"
+            ),
             "jsonl_sha256": data.manifest["jsonl_sha256"],
+            "manifest_sha256": _sha256(data.manifest_path),
             "risks": {},
             "comparisons": {},
+            "numerical_validation": _dice_quadrature_validation(rows),
         }
+        risk_arrays = {}
         for risk_field, risk_label in RISKS:
             risks = np.asarray([row[risk_field] for row in rows], dtype=float)
+            risk_arrays[risk_field] = risks
             risk_result = {
                 "label": risk_label,
                 "methods": {},
@@ -597,12 +1032,12 @@ def analyze_conditions(
             risk_result["random_aurc"] = first["random_aurc"]
             condition_result["risks"][risk_field] = risk_result
 
-            left_field = "confidence_dice_m32"
-            right_field = "confidence_nhd95_m32"
-            left = np.asarray([row[left_field] for row in rows], dtype=float)
-            right = np.asarray([row[right_field] for row in rows], dtype=float)
+        def compute_contrast(contrast):
+            risks = risk_arrays[contrast.risk]
+            left = np.asarray([row[contrast.left] for row in rows], dtype=float)
+            right = np.asarray([row[contrast.right] for row in rows], dtype=float)
             bootstrap_seed = _derived_seed(
-                seed, data.dataset, data.condition, risk_field, "bootstrap"
+                seed, data.dataset, data.condition, contrast.name, "bootstrap"
             )
             bootstrap = paired_cluster_bootstrap_aurc_test(
                 left,
@@ -613,51 +1048,91 @@ def analyze_conditions(
                 confidence_level=confidence_level,
                 seed=bootstrap_seed,
             )
+            return contrast, bootstrap
+
+        worker_count = min(bootstrap_workers, len(CONTRASTS))
+        if worker_count == 1:
+            contrast_results = [compute_contrast(contrast) for contrast in CONTRASTS]
+        else:
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                contrast_results = list(executor.map(compute_contrast, CONTRASTS))
+        for contrast, bootstrap in contrast_results:
+            holm_family = HOLM_FAMILY_BY_DATASET[data.dataset]
             comparison = {
-                "left": left_field,
-                "right": right_field,
+                "name": contrast.name,
+                "risk": contrast.risk,
+                "left": contrast.left,
+                "right": contrast.right,
                 "difference_left_minus_right": bootstrap.difference,
                 "bootstrap": asdict(bootstrap),
+                "holm_family": holm_family,
+                "holm_family_size": family_sizes[holm_family],
                 "holm_adjusted_p_value": None,
             }
-            condition_result["comparisons"][risk_field] = comparison
+            condition_result["comparisons"][contrast.name] = comparison
             comparison_records.append(
-                (data.dataset, data.condition, risk_field, comparison)
+                (
+                    data.dataset,
+                    data.condition,
+                    contrast,
+                    holm_family,
+                    comparison,
+                )
             )
         result["conditions"].append(condition_result)
 
-    raw_p_values = [
-        record["bootstrap"]["p_value"]
-        for _, _, _, record in comparison_records
-    ]
-    adjusted = holm_adjust(raw_p_values)
+    families = {}
+    for family in HOLM_FAMILY_DEFINITIONS:
+        records = [
+            record
+            for _, _, _, record_family, record in comparison_records
+            if record_family == family
+        ]
+        if not records:
+            continue
+        raw_p_values = [record["bootstrap"]["p_value"] for record in records]
+        adjusted = holm_adjust(raw_p_values)
+        for record, adjusted_p in zip(records, adjusted):
+            record["holm_adjusted_p_value"] = adjusted_p
+        families[family] = {
+            "definition": HOLM_FAMILY_DEFINITIONS[family],
+            "num_hypotheses": len(records),
+            "raw_bootstrap_p_values": raw_p_values,
+            "holm_adjusted_p_values": adjusted,
+        }
+
     hypotheses = []
-    for (dataset, condition, risk_field, record), adjusted_p in zip(
-        comparison_records, adjusted
-    ):
-        record["holm_adjusted_p_value"] = adjusted_p
+    for dataset, condition, contrast, family, record in comparison_records:
         hypotheses.append(
             {
                 "dataset": dataset,
                 "condition": condition,
-                "risk": risk_field,
+                "contrast": contrast.name,
+                "risk": contrast.risk,
+                "left": contrast.left,
+                "right": contrast.right,
+                "holm_family": family,
+                "holm_family_size": family_sizes[family],
                 "raw_bootstrap_p_value": record["bootstrap"]["p_value"],
-                "holm_adjusted_p_value": adjusted_p,
+                "holm_adjusted_p_value": record["holm_adjusted_p_value"],
             }
         )
     result["multiple_testing"] = {
-        "procedure": "Holm step-down family-wise-error adjustment",
-        "family": (
-            "all predeclared Dice-M32 versus nHD95-M32 paired cluster "
-            "bootstrap tests across supplied conditions and both risks"
+        "procedure": (
+            "Holm step-down transform of approximate bootstrap tail probabilities, "
+            "applied separately within each family; no exact finite-sample FWER "
+            "control is claimed"
         ),
-        "num_hypotheses": len(raw_p_values),
-        "raw_bootstrap_p_values": raw_p_values,
-        "holm_adjusted_p_values": adjusted,
+        "family_policy": (
+            "core and extension experiments are distinct predeclared families; "
+            "approximate tail probabilities are never pooled across them"
+        ),
+        "families": families,
+        "total_hypotheses": len(comparison_records),
         "hypotheses": hypotheses,
         "confidence_intervals": (
             "unadjusted equal-tail percentile intervals from the same paired "
-            "bootstrap draws; Holm adjustment applies only to the 20 p-values"
+            "bootstrap draws; the Holm transform applies only within the named family"
         ),
         "significance_calls": "not made by this analysis",
     }
@@ -685,6 +1160,14 @@ def write_csv(result, path):
         "random_aurc",
         "excess_aurc",
         "normalized_aurc",
+        "numerical_reference",
+        "absolute_error_mean",
+        "absolute_error_median",
+        "absolute_error_p95",
+        "absolute_error_max",
+        "spearman_rho",
+        "kendall_tau_b",
+        "exact_match_fraction",
     ]
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns, lineterminator="\n")
@@ -694,6 +1177,17 @@ def write_csv(result, path):
                 risk = condition["risks"][risk_field]
                 for score_field, _ in METHODS:
                     method = risk["methods"][score_field]
+                    numerical = None
+                    if risk_field == "risk_dice":
+                        numerical = condition["numerical_validation"][
+                            "dice_quadrature"
+                        ].get(score_field)
+                    absolute_error = (
+                        None if numerical is None else numerical["absolute_error"]
+                    )
+                    rank_agreement = (
+                        None if numerical is None else numerical["rank_agreement"]
+                    )
                     writer.writerow(
                         {
                             "dataset": condition["dataset"],
@@ -711,6 +1205,46 @@ def write_csv(result, path):
                             "excess_aurc": _format_csv_number(method["excess_aurc"]),
                             "normalized_aurc": _format_csv_number(
                                 method["normalized_aurc"]
+                            ),
+                            "numerical_reference": (
+                                ""
+                                if numerical is None
+                                else condition["numerical_validation"]["reference"]
+                            ),
+                            "absolute_error_mean": _format_csv_number(
+                                None
+                                if absolute_error is None
+                                else absolute_error["mean"]
+                            ),
+                            "absolute_error_median": _format_csv_number(
+                                None
+                                if absolute_error is None
+                                else absolute_error["median"]
+                            ),
+                            "absolute_error_p95": _format_csv_number(
+                                None
+                                if absolute_error is None
+                                else absolute_error["p95"]
+                            ),
+                            "absolute_error_max": _format_csv_number(
+                                None
+                                if absolute_error is None
+                                else absolute_error["max"]
+                            ),
+                            "spearman_rho": _format_csv_number(
+                                None
+                                if rank_agreement is None
+                                else rank_agreement["spearman_rho"]
+                            ),
+                            "kendall_tau_b": _format_csv_number(
+                                None
+                                if rank_agreement is None
+                                else rank_agreement["kendall_tau_b"]
+                            ),
+                            "exact_match_fraction": _format_csv_number(
+                                None
+                                if numerical is None
+                                else numerical["exact_match_fraction"]
                             ),
                         }
                     )
@@ -794,21 +1328,42 @@ def main():
     args = parse_args()
     if args.bootstrap_samples <= 0:
         raise ValueError("bootstrap sample count must be positive")
+    if args.bootstrap_workers <= 0:
+        raise ValueError("--bootstrap-workers must be positive")
     if not 0 < args.confidence_level < 1:
         raise ValueError("--confidence-level must lie strictly between 0 and 1")
+    if not args.allow_incomplete and args.inputs is None:
+        raise ValueError("complete analysis requires 16 explicit --inputs")
+    if not args.allow_incomplete and args.campaign_lock is None:
+        raise ValueError("complete analysis requires --campaign-lock")
     if args.inputs is None:
-        inputs = sorted(Path(args.input_dir).rglob("*.jsonl"))
+        roots = args.input_dirs or ["outputs/binary"]
+        inputs = sorted(
+            {path for root in roots for path in Path(root).rglob("*.jsonl")},
+            key=str,
+        )
     else:
-        inputs = sorted({Path(path) for path in args.inputs}, key=str)
+        inputs = [Path(path) for path in args.inputs]
+        resolved = [path.resolve() for path in inputs]
+        if len(resolved) != len(set(resolved)):
+            raise ValueError("--inputs must not contain duplicate paths")
+        inputs = sorted(inputs, key=str)
     if not inputs:
         raise FileNotFoundError("no binary JSONL inputs were selected")
     conditions = [load_condition(path) for path in inputs]
+    provenance = None
+    if args.campaign_lock is not None:
+        provenance = validate_campaign_bound_conditions(conditions, args.campaign_lock)
     result = analyze_conditions(
         conditions,
         bootstrap_samples=args.bootstrap_samples,
         confidence_level=args.confidence_level,
         seed=args.seed,
+        bootstrap_workers=args.bootstrap_workers,
+        allow_incomplete=args.allow_incomplete,
     )
+    if provenance is not None:
+        result["provenance"] = provenance
     paths = write_outputs(result, args.output_dir)
     for path in paths:
         print(f"saved {path}")

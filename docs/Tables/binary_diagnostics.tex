@@ -1,0 +1,28 @@
+% Generated from diagnostics_analysis.json SHA-256: 9af6daac57da5d257a8c3229503c12b0f31345a0d6b9416ebd0b0d76e75cb1b5
+\begin{table*}[t]
+\centering
+\small
+\caption{Predeclared held-out diagnostics, reported separately for each dataset--condition with no cross-condition pooling. Brier score and ECE diagnose marginal pixel probabilities; M32 ladder statistics describe candidate-mask diversity. Neither identifies a joint mask posterior nor validates shared-threshold coupling. Labels are used only for the displayed descriptive aggregates, never confidence-score fitting or sample selection.}
+\label{tab:binary-diagnostics}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Diagnostic & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
+\midrule
+Pixelwise Brier score & \shortstack[l]{\textsc{CLIP-G}: 0.0569 \\ \textsc{CLIP-T}: 0.0243 \\ \textsc{DL-T}: 0.0262 \\ \textsc{DL-E}: 0.0550} & \shortstack[l]{\textsc{CLIP-G}: 0.1643 \\ \textsc{CLIP-T}: 0.0335 \\ \textsc{DL-T}: 0.0249} & \shortstack[l]{\textsc{CLIP-G}: 0.0869 \\ \textsc{CLIP-T}: 0.0640 \\ \textsc{DL-T}: 0.0541} & \shortstack[l]{\textsc{CLIP-G}: 0.2379 \\ \textsc{CLIP-T}: 0.0483 \\ \textsc{DL-T}: 0.0519} & \shortstack[l]{\textsc{CLIP-G}: 0.1093 \\ \textsc{CLIP-T}: 0.0342 \\ \textsc{DL-T}: 0.0207} \\
+\addlinespace[2pt]
+Fixed-bin ECE (15 bins) & \shortstack[l]{\textsc{CLIP-G}: 0.0906 \\ \textsc{CLIP-T}: 0.0119 \\ \textsc{DL-T}: 0.0078 \\ \textsc{DL-E}: 0.0562} & \shortstack[l]{\textsc{CLIP-G}: 0.2362 \\ \textsc{CLIP-T}: 0.0076 \\ \textsc{DL-T}: 0.0106} & \shortstack[l]{\textsc{CLIP-G}: 0.0679 \\ \textsc{CLIP-T}: 0.0071 \\ \textsc{DL-T}: 0.0205} & \shortstack[l]{\textsc{CLIP-G}: 0.1574 \\ \textsc{CLIP-T}: 0.0333 \\ \textsc{DL-T}: 0.0293} & \shortstack[l]{\textsc{CLIP-G}: 0.0807 \\ \textsc{CLIP-T}: 0.0099 \\ \textsc{DL-T}: 0.0035} \\
+\addlinespace[2pt]
+Truth-empty rate & \shortstack[l]{\textsc{CLIP-G}: 0.2\% \\ \textsc{CLIP-T}: 0.2\% \\ \textsc{DL-T}: 0.2\% \\ \textsc{DL-E}: 0.2\%} & \shortstack[l]{\textsc{CLIP-G}: 0.0\% \\ \textsc{CLIP-T}: 0.0\% \\ \textsc{DL-T}: 0.0\%} & \shortstack[l]{\textsc{CLIP-G}: 0.0\% \\ \textsc{CLIP-T}: 0.0\% \\ \textsc{DL-T}: 0.0\%} & \shortstack[l]{\textsc{CLIP-G}: 0.0\% \\ \textsc{CLIP-T}: 0.0\% \\ \textsc{DL-T}: 0.0\%} & \shortstack[l]{\textsc{CLIP-G}: 0.0\% \\ \textsc{CLIP-T}: 0.0\% \\ \textsc{DL-T}: 0.0\%} \\
+\addlinespace[2pt]
+Prediction-empty rate & \shortstack[l]{\textsc{CLIP-G}: 0.2\% \\ \textsc{CLIP-T}: 0.0\% \\ \textsc{DL-T}: 0.0\% \\ \textsc{DL-E}: 0.2\%} & \shortstack[l]{\textsc{CLIP-G}: 3.5\% \\ \textsc{CLIP-T}: 3.0\% \\ \textsc{DL-T}: 1.0\%} & \shortstack[l]{\textsc{CLIP-G}: 11.5\% \\ \textsc{CLIP-T}: 6.5\% \\ \textsc{DL-T}: 0.0\%} & \shortstack[l]{\textsc{CLIP-G}: 74.3\% \\ \textsc{CLIP-T}: 0.0\% \\ \textsc{DL-T}: 0.2\%} & \shortstack[l]{\textsc{CLIP-G}: 100.0\% \\ \textsc{CLIP-T}: 4.6\% \\ \textsc{DL-T}: 1.8\%} \\
+\addlinespace[2pt]
+Mean distinct M32 masks & \shortstack[l]{\textsc{CLIP-G}: 30.99 \\ \textsc{CLIP-T}: 31.99 \\ \textsc{DL-T}: 31.99 \\ \textsc{DL-E}: 31.86} & \shortstack[l]{\textsc{CLIP-G}: 22.91 \\ \textsc{CLIP-T}: 30.76 \\ \textsc{DL-T}: 31.56} & \shortstack[l]{\textsc{CLIP-G}: 24.23 \\ \textsc{CLIP-T}: 24.61 \\ \textsc{DL-T}: 31.73} & \shortstack[l]{\textsc{CLIP-G}: 13.61 \\ \textsc{CLIP-T}: 31.80 \\ \textsc{DL-T}: 31.64} & \shortstack[l]{\textsc{CLIP-G}: 5.76 \\ \textsc{CLIP-T}: 29.66 \\ \textsc{DL-T}: 31.12} \\
+\addlinespace[2pt]
+Zero-change transition ratio & \shortstack[l]{\textsc{CLIP-G}: 3.2\% \\ \textsc{CLIP-T}: 0.0\% \\ \textsc{DL-T}: 0.0\% \\ \textsc{DL-E}: 0.5\%} & \shortstack[l]{\textsc{CLIP-G}: 29.3\% \\ \textsc{CLIP-T}: 4.0\% \\ \textsc{DL-T}: 1.4\%} & \shortstack[l]{\textsc{CLIP-G}: 25.1\% \\ \textsc{CLIP-T}: 23.9\% \\ \textsc{DL-T}: 0.9\%} & \shortstack[l]{\textsc{CLIP-G}: 59.3\% \\ \textsc{CLIP-T}: 0.6\% \\ \textsc{DL-T}: 1.2\%} & \shortstack[l]{\textsc{CLIP-G}: 84.6\% \\ \textsc{CLIP-T}: 7.5\% \\ \textsc{DL-T}: 2.8\%} \\
+\addlinespace[2pt]
+Mean adjacent changed-pixel fraction & \shortstack[l]{\textsc{CLIP-G}: 1.9\% \\ \textsc{CLIP-T}: 0.6\% \\ \textsc{DL-T}: 0.5\% \\ \textsc{DL-E}: 0.7\%} & \shortstack[l]{\textsc{CLIP-G}: 3.2\% \\ \textsc{CLIP-T}: 0.8\% \\ \textsc{DL-T}: 0.5\%} & \shortstack[l]{\textsc{CLIP-G}: 2.3\% \\ \textsc{CLIP-T}: 2.6\% \\ \textsc{DL-T}: 1.1\%} & \shortstack[l]{\textsc{CLIP-G}: 3.2\% \\ \textsc{CLIP-T}: 1.1\% \\ \textsc{DL-T}: 1.0\%} & \shortstack[l]{\textsc{CLIP-G}: 2.3\% \\ \textsc{CLIP-T}: 1.1\% \\ \textsc{DL-T}: 0.6\%} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}

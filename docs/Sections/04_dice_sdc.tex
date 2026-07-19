@@ -1,24 +1,46 @@
-\section{Dice instantiation and relation to SDC}
+\section{Geometric loss instantiations and relation to SDC}
 \label{sec:theory}
 
 For binary masks, define
-\begin{equation}
+\begin{equation*}
   \Dice(A,B)=\frac{2|A\cap B|}{|A|+|B|},
-  \label{eq:dice-definition}
-\end{equation}
+\end{equation*}
 with \(\Dice(\varnothing,\varnothing)=1\) and Dice equal to zero when
 exactly one mask is empty. The loss \(L_{\Dice}=1-\Dice\) lies in
-\([0,1]\). Equation~\eqref{eq:quad} gives
-\begin{align}
+\([0,1]\). Let \(d_J\) be Jaccard distance with
+\(d_J(\varnothing,\varnothing)=0\), and let \(W_{1,d}\) denote the corresponding
+1-Wasserstein transport cost. Appendix~\ref{app:theory} proves
+\begin{equation*}
+  \Delta_{L_{\Dice},\Yhat}(x)
+  \leq\min\{\TV(P_x,Q_{p(x)}),2W_{1,d_J}(P_x,Q_{p(x)})\}.
+\end{equation*}
+This permits distinct masks that are geometrically close even though their point
+masses have TV one; the factor two means it is not uniformly tighter than TV.
+
+Equation~\eqref{eq:quad} gives
+\begin{align*}
   C_{\Dice,M}(x)
   &:=-\sum_{m=1}^M w_m
       \left[1-\Dice(Y_{t_m},\Yhat)\right], \\
   1+C_{\Dice,M}(x)
   &=\sum_{m=1}^M w_m\Dice(Y_{t_m},\Yhat).
-  \label{eq:levelset-dice}
-\end{align}
+\end{align*}
 Thus \(1+C_{\Dice,M}\) estimates expected Dice under \(Q_p\) and is
 rank-equivalent to the loss-oriented confidence.
+
+Because level sets change only at probability knots, sorting tied groups gives
+exact Dice confidence in \(O(N\log N)\) time and removes quadrature error.
+Appendix~\ref{app:theory} gives the sum, pseudocode, and all endpoint and empty
+cases; midpoint quadrature remains the common estimator for arbitrary losses.
+
+\paragraph{Full surface Hausdorff.}
+Normalized penalized full surface-set Hausdorff is a metric on digital surfaces
+and a pseudometric on masks. Reverse triangle gives the constant-one bound
+\(\Delta_{L^{\mathrm{nHD}},\Yhat}(x)
+\leq W_{1,d_{H,x}}(P_x,Q_{p(x)})
+\leq\TV(P_x,Q_{p(x)})\), where the appendix defines the normalized surface cost
+\(d_{H,x}\), diagonal and empty penalties, and a quantile jump showing why pooled
+nHD95 does not inherit this result.
 
 When the denominator is positive, SDC computes the soft Dice between \(p\)
 and the deployed mask:
@@ -31,69 +53,19 @@ and the deployed mask:
   \hat y_i=\mathbf 1\{i\in\Yhat\}.
   \label{eq:sdc}
 \end{equation}
-The published SDC convention assigns zero when both arguments vanish
-\citep{sdc}. This differs from our deployment-loss convention
-\(\Dice(\varnothing,\varnothing)=1\), a distinction that matters when the
-deployed mask is empty. It does not affect the following identity, which
-assumes a positive denominator.
+For any mask law \(Q\) with marginals \(\Ex_QY_i=p_i\), let
+\(N(Y)=2\sum_iY_i\hat y_i\) and \(D(Y)=\sum_iY_i+\sum_i\hat y_i\).
+Linearity gives \(\SDC=\Ex_QN(Y)/\Ex_QD(Y)\), whereas expected Dice is
+\(\Ex_Q[N(Y)/D(Y)]\); the two are unequal in general. For example, with
+\(p=(1/2,1/2)\) and \(\Yhat=\{1\}\), independent pixels, the level-set
+coupling, and SDC give \(5/12\), \(1/3\), and \(1/2\), respectively.
+Appendix~\ref{app:theory} proves the identity and handles empty masks.
 
-\begin{proposition}[SDC is a ratio of expected Dice components]
-\label{prop:sdc}
-Let \(Q\) be any distribution over binary masks with marginals
-\(\Ex_Q[Y_i]=p_i\), and let
-\(N(Y)=2\sum_iY_i\hat y_i\) and
-\(D(Y)=\sum_iY_i+\sum_i\hat y_i\). If \(\Ex_Q[D(Y)]>0\), then
-\begin{equation}
-  \frac{\Ex_Q[N(Y)]}{\Ex_Q[D(Y)]}
-  =\SDC(p,\Yhat).
-  \label{eq:sdc-ratio-expectations}
-\end{equation}
-The right-hand side is therefore invariant to the coupling among pixels once
-the marginals are fixed.
-\end{proposition}
-Both \(N\) and \(D\) are affine in \(Y\), so the identity follows by
-linearity of expectation. If \(D(Y)>0\) almost surely---in particular, whenever
-\(\Yhat\neq\varnothing\)---expected Dice is an expectation of a ratio:
-\begin{equation}
-  \Ex_Q[\Dice(Y,\Yhat)]
-  =\Ex_Q\!\left[\frac{N(Y)}{D(Y)}\right]
-  \neq
-  \frac{\Ex_Q[N(Y)]}{\Ex_Q[D(Y)]}
-  \quad\text{in general}.
-  \label{eq:ratio-noncommute}
-\end{equation}
-When \(D(Y)=0\) has positive probability, the left-hand side instead includes
-the declared empty--empty value on that event; it still is not determined by
-the ratio of the two expectations.
-
-A two-pixel example makes the distinction concrete. Let
-\(p=(1/2,1/2)\) and \(\Yhat=\{1\}\). Under independent Bernoulli pixels,
-\(\Ex[\Dice(Y,\Yhat)]=5/12\). Under the level-set coupling, \(Y\) is
-either \(\{1,2\}\) or \(\varnothing\), each with probability \(1/2\), so
-\(\Ex_{Q_p}[\Dice(Y,\Yhat)]=1/3\). Both couplings have the same marginals
-and \(\SDC(p,\Yhat)=1/2\). The three quantities are distinct.
-
-\paragraph{Assumptions are not ordered.}
-Computing SDC requires no explicit joint posterior. Interpreting it as an
-approximation to true ideal expected Dice requires the input map to represent
-the relevant true marginals and, in the published analysis, conditional pixel
-independence. Under the product law induced by those marginals, the SDC theory
-directly bounds the ratio between SDC and its marginal-based ideal Dice
-confidence \citep{sdc}. Because that analysis sets
-\(\Dice(\varnothing,\varnothing)=0\), its guarantee transfers directly to our
-Dice convention for nonempty deployed masks, but not for an empty deployed
-mask without an additional argument.
-The level-set estimator instead evaluates expected Dice exactly under its
-explicit comonotone working posterior in the dense-quadrature limit. Its link
-to the true ideal confidence requires the loss-specific discrepancy in
-Equation~\eqref{eq:loss-discrepancy} to be small.
-
-The structural conditions are not ordered. Conditional independence does not
-force exact agreement with \(Q_p\): the two-pixel example above has independent
-true labels but Dice discrepancy \(|5/12-1/3|=1/12\) from the level-set law. Conversely,
-labels generated by a shared threshold make \(Q_p\) exact while violating
-conditional independence except in degenerate cases. Approximate conditions
-must therefore be compared at explicit tolerances rather than labeled weaker
-in the abstract. The framework generalizes the
-\emph{loss-indexed principle} beyond Dice, but does not contain SDC as a literal
-special case or claim uniformly weaker probabilistic assumptions.
+The assumptions are not ordered. Published SDC theory relates its
+coupling-invariant ratio to a product-Bernoulli Dice target; identifying that
+target with true expected Dice additionally requires exact pointwise marginals
+and conditional pixel independence \citep{sdc}. Our estimator is exact instead
+under the generally dependent, comonotone \(Q_p\), and approaches true ideal
+confidence only when Equation~\eqref{eq:loss-discrepancy} is small. Thus the
+framework extends loss indexing beyond Dice, but neither method is a special
+case of the other nor uniformly less assumptive.

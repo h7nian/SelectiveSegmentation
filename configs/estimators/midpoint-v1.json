@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "estimator_id": "midpoint-v1",
+  "target_measure": "uniform-threshold",
+  "rule": "midpoint",
+  "randomized": false,
+  "required_seed": 0
+}

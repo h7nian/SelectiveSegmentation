@@ -1,0 +1,454 @@
+{
+  "aggregation": {
+    "calibration_weighting": "pixel-weighted within each condition",
+    "cohort_binding": "source-manifest SHA-256 plus ordered sample-ID SHA-256 and locked image count",
+    "ece_bins": 15,
+    "ladder": "uniform-midpoint M=32",
+    "metric_keys": [
+      "brier_score",
+      "ece",
+      "truth_empty_mask_ratio",
+      "prediction_empty_mask_ratio",
+      "m32_mean_distinct_mask_count",
+      "m32_zero_change_pair_ratio",
+      "m32_mean_adjacent_changed_pixel_fraction"
+    ],
+    "pooling": "none across datasets or model conditions",
+    "unit": "one locked dataset-condition artifact"
+  },
+  "artifact_type": "selectseg.binary_diagnostics_analysis",
+  "campaign": {
+    "campaign_id": "binary-midpoint-main-v1",
+    "complete_predeclared_campaign": true,
+    "diagnostics_source_sha256": "7dd77777a0ca2e25392542692bf7bcdac7974d94dfce415b93c59e34e276af77",
+    "lock_path": "outputs/binary_campaign/campaign.lock.json",
+    "lock_sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "num_analyzed_conditions": 16,
+    "num_locked_conditions": 16
+  },
+  "conditions": [
+    {
+      "condition": "clipseg-general",
+      "dataset": "fives",
+      "diagnostic_id": "e3d84813b7c152cd",
+      "diagnostics_path": "outputs/binary_diagnostics/fives/clipseg-general/cb5c08e73819574c/e3d84813b7c152cd/diagnostics.json",
+      "diagnostics_sha256": "d56c36de15d8c3d79000c5ed9d6d53b8fbabe87fb488e9d6ae91157e753ad849",
+      "metrics": {
+        "brier_score": 0.08692353807012067,
+        "ece": 0.06789993106471368,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.02309522013510427,
+        "m32_mean_distinct_mask_count": 24.225,
+        "m32_zero_change_pair_ratio": 0.2508064516129032,
+        "prediction_empty_mask_ratio": 0.115,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 200,
+      "num_pixels": 838860800,
+      "source_artifact": {
+        "artifact_id": "cb5c08e73819574c",
+        "manifest_sha256": "977fd1d5362e68597695e38b2de381f73880df3c537a734a8d3a87427702a690",
+        "num_samples": 200,
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "fives",
+      "diagnostic_id": "d7835e3a89f0f943",
+      "diagnostics_path": "outputs/binary_diagnostics/fives/clipseg-target/ef8e1b5176b92b87/d7835e3a89f0f943/diagnostics.json",
+      "diagnostics_sha256": "3786689d97cd3436582cf798d111af50664fed13b5d180f282516e03da40ec6d",
+      "metrics": {
+        "brier_score": 0.06400976921776594,
+        "ece": 0.0071251092227290575,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.02552593311955852,
+        "m32_mean_distinct_mask_count": 24.605,
+        "m32_zero_change_pair_ratio": 0.2385483870967742,
+        "prediction_empty_mask_ratio": 0.065,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 200,
+      "num_pixels": 838860800,
+      "source_artifact": {
+        "artifact_id": "ef8e1b5176b92b87",
+        "manifest_sha256": "5ea7ca873b8d9d527706e4d2cccb3c12da758c5b31b831b164eb7fc32dfdb16e",
+        "num_samples": 200,
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "fives",
+      "diagnostic_id": "f70a7eb7a434d59f",
+      "diagnostics_path": "outputs/binary_diagnostics/fives/deeplabv3-target/e7e1e90e13ce3dfa/f70a7eb7a434d59f/diagnostics.json",
+      "diagnostics_sha256": "3b2eff064b1f9a63a54393ebe9b898db3afbb99663a37479774597420eba77cb",
+      "metrics": {
+        "brier_score": 0.054101483482632585,
+        "ece": 0.020546370231940937,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.010777124743307791,
+        "m32_mean_distinct_mask_count": 31.735,
+        "m32_zero_change_pair_ratio": 0.008548387096774194,
+        "prediction_empty_mask_ratio": 0.0,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "deeplabv3",
+      "num_images": 200,
+      "num_pixels": 838860800,
+      "source_artifact": {
+        "artifact_id": "e7e1e90e13ce3dfa",
+        "manifest_sha256": "fd33483e3e90d1508b3dc39354041f7299618524adc22326c4d1f65d7369bd87",
+        "num_samples": 200,
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "isic",
+      "diagnostic_id": "c31b6e1da74a2af5",
+      "diagnostics_path": "outputs/binary_diagnostics/isic/clipseg-general/3e57aa259264c1be/c31b6e1da74a2af5/diagnostics.json",
+      "diagnostics_sha256": "5bf723438917c389f085a75c2defe4930dcff595cb56bbc37e29225a5fd3bbd9",
+      "metrics": {
+        "brier_score": 0.2379381905643985,
+        "ece": 0.15740109881301112,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.031755150696190684,
+        "m32_mean_distinct_mask_count": 13.609,
+        "m32_zero_change_pair_ratio": 0.5932580645161291,
+        "prediction_empty_mask_ratio": 0.743,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 1000,
+      "num_pixels": 6615437579,
+      "source_artifact": {
+        "artifact_id": "3e57aa259264c1be",
+        "manifest_sha256": "e11cf7fe164004bc5174066ef1d1f25a0af82e0ac6482018fe345c30fc0df115",
+        "num_samples": 1000,
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "isic",
+      "diagnostic_id": "143763d549e2cdfd",
+      "diagnostics_path": "outputs/binary_diagnostics/isic/clipseg-target/a5d30aa0ec8b0742/143763d549e2cdfd/diagnostics.json",
+      "diagnostics_sha256": "215d686cfd0964a6282ca1586917de05663f475c90da058b9c88cd6c7f81e438",
+      "metrics": {
+        "brier_score": 0.048338141149190834,
+        "ece": 0.03331624538717251,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.01074773465021237,
+        "m32_mean_distinct_mask_count": 31.803,
+        "m32_zero_change_pair_ratio": 0.006354838709677419,
+        "prediction_empty_mask_ratio": 0.0,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 1000,
+      "num_pixels": 6615437579,
+      "source_artifact": {
+        "artifact_id": "a5d30aa0ec8b0742",
+        "manifest_sha256": "fe756c276aa3da2868b8d41d2ddc2eed1dcf36e553ada12206e6e945b490f980",
+        "num_samples": 1000,
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "isic",
+      "diagnostic_id": "540445444231aa5d",
+      "diagnostics_path": "outputs/binary_diagnostics/isic/deeplabv3-target/48cf75646c61ecf4/540445444231aa5d/diagnostics.json",
+      "diagnostics_sha256": "5a1f8636e34350dddc3a69bcd8a1e4d393fb4685a50094d58e45d7c5ccb26834",
+      "metrics": {
+        "brier_score": 0.051912753780431836,
+        "ece": 0.029279608903975712,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.009919815391400768,
+        "m32_mean_distinct_mask_count": 31.637,
+        "m32_zero_change_pair_ratio": 0.011709677419354839,
+        "prediction_empty_mask_ratio": 0.002,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "deeplabv3",
+      "num_images": 1000,
+      "num_pixels": 6615437579,
+      "source_artifact": {
+        "artifact_id": "48cf75646c61ecf4",
+        "manifest_sha256": "9e9634dd93434de85fc7ea5fc0de7972220960f1db0ce012d7e4a56f1ba3a4ba",
+        "num_samples": 1000,
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "kvasir",
+      "diagnostic_id": "a74be81d641f08bc",
+      "diagnostics_path": "outputs/binary_diagnostics/kvasir/clipseg-general/eb7304bdd945035d/a74be81d641f08bc/diagnostics.json",
+      "diagnostics_sha256": "83b4e184761b402f76576a125ea9c9d6cbd9b56a67b85f93c18cfd8812b0006a",
+      "metrics": {
+        "brier_score": 0.1642985871028384,
+        "ece": 0.23615280539714262,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.03168343132568182,
+        "m32_mean_distinct_mask_count": 22.915,
+        "m32_zero_change_pair_ratio": 0.2930645161290323,
+        "prediction_empty_mask_ratio": 0.035,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 200,
+      "num_pixels": 66651381,
+      "source_artifact": {
+        "artifact_id": "eb7304bdd945035d",
+        "manifest_sha256": "b2cafd736eda658aff739ce9a78836a116b5b93d167af672f60933360bfab271",
+        "num_samples": 200,
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "kvasir",
+      "diagnostic_id": "3caabe5bdbb4b3e0",
+      "diagnostics_path": "outputs/binary_diagnostics/kvasir/clipseg-target/7ce9cddd0f9704fd/3caabe5bdbb4b3e0/diagnostics.json",
+      "diagnostics_sha256": "392358f349c74e2164825be38af8a1b9054791c1299a1ecdcde1385de5ba409c",
+      "metrics": {
+        "brier_score": 0.0334869381419043,
+        "ece": 0.0075844068967583994,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.008234591103571597,
+        "m32_mean_distinct_mask_count": 30.76,
+        "m32_zero_change_pair_ratio": 0.04,
+        "prediction_empty_mask_ratio": 0.03,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 200,
+      "num_pixels": 66651381,
+      "source_artifact": {
+        "artifact_id": "7ce9cddd0f9704fd",
+        "manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8",
+        "num_samples": 200,
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "kvasir",
+      "diagnostic_id": "ec8bc33416cc6e1b",
+      "diagnostics_path": "outputs/binary_diagnostics/kvasir/deeplabv3-target/be7dedef6990d54c/ec8bc33416cc6e1b/diagnostics.json",
+      "diagnostics_sha256": "c82aa85b394afa97e450080c23a49d5a962c3a601b1507b5c67122008dfba404",
+      "metrics": {
+        "brier_score": 0.02485403733863066,
+        "ece": 0.010637634757181328,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.00479761069255093,
+        "m32_mean_distinct_mask_count": 31.56,
+        "m32_zero_change_pair_ratio": 0.014193548387096775,
+        "prediction_empty_mask_ratio": 0.01,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "deeplabv3",
+      "num_images": 200,
+      "num_pixels": 66651381,
+      "source_artifact": {
+        "artifact_id": "be7dedef6990d54c",
+        "manifest_sha256": "2050573de3eed869d71a158b51da6c8748c6dc6decf634cc15f9a6a7ccc15fa5",
+        "num_samples": 200,
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "pet",
+      "diagnostic_id": "47423e48837ef93b",
+      "diagnostics_path": "outputs/binary_diagnostics/pet/clipseg-general/e0d454ce916c5ca9/47423e48837ef93b/diagnostics.json",
+      "diagnostics_sha256": "9fa84d1381ed9dd4d40f30c368ca8da078700b647016edaf207d13dd97e86f7e",
+      "metrics": {
+        "brier_score": 0.05686574619145541,
+        "ece": 0.09058566023984943,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.019291562876108014,
+        "m32_mean_distinct_mask_count": 30.99373126192423,
+        "m32_zero_change_pair_ratio": 0.032460281873411934,
+        "prediction_empty_mask_ratio": 0.0019078768056691197,
+        "truth_empty_mask_ratio": 0.0019078768056691197
+      },
+      "model": "clipseg",
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "source_artifact": {
+        "artifact_id": "e0d454ce916c5ca9",
+        "manifest_sha256": "3a7ee87f84e0c03baed3b77dc6b4f6610b4e189d752a58c8926a968e4be899ca",
+        "num_samples": 3669,
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "pet",
+      "diagnostic_id": "5feb27d4b496655c",
+      "diagnostics_path": "outputs/binary_diagnostics/pet/clipseg-target/7261edbb5f763435/5feb27d4b496655c/diagnostics.json",
+      "diagnostics_sha256": "ce6c44f9bd5898a2b144731b6075fc5d44249b2d8ed1108bc22db5a9c2e56db3",
+      "metrics": {
+        "brier_score": 0.02433223958069165,
+        "ece": 0.01185319827097066,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.006237819867338849,
+        "m32_mean_distinct_mask_count": 31.985009539384027,
+        "m32_zero_change_pair_ratio": 0.00048356324567650497,
+        "prediction_empty_mask_ratio": 0.0,
+        "truth_empty_mask_ratio": 0.0019078768056691197
+      },
+      "model": "clipseg",
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "source_artifact": {
+        "artifact_id": "7261edbb5f763435",
+        "manifest_sha256": "63209620844cf2caa074c6ee726d58a8579483fd8f8586cdfdf9c1ea48e03d9d",
+        "num_samples": 3669,
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "deeplabv3-external",
+      "dataset": "pet",
+      "diagnostic_id": "041128adb118de1e",
+      "diagnostics_path": "outputs/binary_diagnostics/pet/deeplabv3-external/640ef98bcd028dc3/041128adb118de1e/diagnostics.json",
+      "diagnostics_sha256": "26ae9c777dd769014c9d9772754185c8e6ba6f1605b4a0a09704caad7a707a19",
+      "metrics": {
+        "brier_score": 0.05502857112796979,
+        "ece": 0.05616628997768459,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.007157818253677796,
+        "m32_mean_distinct_mask_count": 31.85936222403925,
+        "m32_zero_change_pair_ratio": 0.004536702450346847,
+        "prediction_empty_mask_ratio": 0.0021804306350504225,
+        "truth_empty_mask_ratio": 0.0019078768056691197
+      },
+      "model": "deeplabv3",
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "source_artifact": {
+        "artifact_id": "640ef98bcd028dc3",
+        "manifest_sha256": "b6a88350dd7414b56e8506602f6ab464a107f5bca414e06c0aebc013d064a22e",
+        "num_samples": 3669,
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "pet",
+      "diagnostic_id": "347f17e24a3a9af0",
+      "diagnostics_path": "outputs/binary_diagnostics/pet/deeplabv3-target/ced4dc6e67bc178f/347f17e24a3a9af0/diagnostics.json",
+      "diagnostics_sha256": "3f12fd5ed41adac16775521d3f59f90e8eab5dccb02b7664573ebc8bc9c4ba16",
+      "metrics": {
+        "brier_score": 0.02619620801514613,
+        "ece": 0.00779456958958466,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.005363502968060836,
+        "m32_mean_distinct_mask_count": 31.990460615971653,
+        "m32_zero_change_pair_ratio": 0.00030772206543050316,
+        "prediction_empty_mask_ratio": 0.0,
+        "truth_empty_mask_ratio": 0.0019078768056691197
+      },
+      "model": "deeplabv3",
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "source_artifact": {
+        "artifact_id": "ced4dc6e67bc178f",
+        "manifest_sha256": "6902b90780b75b74015c613c4eae78debdd51315a40146a7daabc393c124c403",
+        "num_samples": 3669,
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "tn3k",
+      "diagnostic_id": "7863e03f406b2ceb",
+      "diagnostics_path": "outputs/binary_diagnostics/tn3k/clipseg-general/9626e945ef94b1e5/7863e03f406b2ceb/diagnostics.json",
+      "diagnostics_sha256": "eb43390df4bba1441c3f08be60d662e48d0795ff386accf7dcac2d5197bc310b",
+      "metrics": {
+        "brier_score": 0.10933500172159355,
+        "ece": 0.08073645591674711,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.02346196119018908,
+        "m32_mean_distinct_mask_count": 5.762214983713355,
+        "m32_zero_change_pair_ratio": 0.8463801618156982,
+        "prediction_empty_mask_ratio": 1.0,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 614,
+      "num_pixels": 165729396,
+      "source_artifact": {
+        "artifact_id": "9626e945ef94b1e5",
+        "manifest_sha256": "aa7d822e499095496e4111f66bfb472f2971c7164f5bc85895caef5fc5034210",
+        "num_samples": 614,
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "tn3k",
+      "diagnostic_id": "08a28116dbe599e1",
+      "diagnostics_path": "outputs/binary_diagnostics/tn3k/clipseg-target/603dc94883b5f395/08a28116dbe599e1/diagnostics.json",
+      "diagnostics_sha256": "ae968a8642ee194db7e185f91dd8f323a4879302059dbc0a513fc9f31c8403e4",
+      "metrics": {
+        "brier_score": 0.03421180362060143,
+        "ece": 0.00990182782688831,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.010977539888467941,
+        "m32_mean_distinct_mask_count": 29.664495114006513,
+        "m32_zero_change_pair_ratio": 0.07533886729011242,
+        "prediction_empty_mask_ratio": 0.04560260586319218,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "clipseg",
+      "num_images": 614,
+      "num_pixels": 165729396,
+      "source_artifact": {
+        "artifact_id": "603dc94883b5f395",
+        "manifest_sha256": "259fba96dd6f14ee127839c4e4b1b254100a2f67aa163b6c61d62d9b4653eacd",
+        "num_samples": 614,
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "tn3k",
+      "diagnostic_id": "11b5210ec67f2cab",
+      "diagnostics_path": "outputs/binary_diagnostics/tn3k/deeplabv3-target/efce266864cd5269/11b5210ec67f2cab/diagnostics.json",
+      "diagnostics_sha256": "586260ebca9fd24e78c9df7b0d91efcca908b46547e3591a3fc14af495512d95",
+      "metrics": {
+        "brier_score": 0.020707175925870108,
+        "ece": 0.0034737633545165324,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.005606052744450269,
+        "m32_mean_distinct_mask_count": 31.118892508143322,
+        "m32_zero_change_pair_ratio": 0.028422822317957338,
+        "prediction_empty_mask_ratio": 0.017915309446254073,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "deeplabv3",
+      "num_images": 614,
+      "num_pixels": 165729396,
+      "source_artifact": {
+        "artifact_id": "efce266864cd5269",
+        "manifest_sha256": "3650248ad9a3cd84cd85bd6f88555df40e3d716c3f24310f12b7e1af600fe515",
+        "num_samples": 614,
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      },
+      "split": "test"
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "descriptor_policy": "descriptor integrity is validated when present, but no per-image failure case is selected or reported",
+    "label_use": "labels enter only predeclared aggregate Brier/ECE and truth-empty descriptions; they never fit, tune, or select a confidence score",
+    "posterior_limitation": "marginal calibration and M32 ladder diversity do not identify a joint mask posterior or validate shared-threshold coupling",
+    "purpose": "held-out descriptive diagnostics; not confidence fitting"
+  }
+}

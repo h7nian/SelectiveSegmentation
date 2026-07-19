@@ -2,11 +2,15 @@
 
 \usepackage{iclr2026_conference,times}
 \usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage{xcolor}
 \usepackage{microtype}
 \usepackage{hyperref}
 \usepackage{url}
+\hypersetup{hidelinks}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -26,6 +30,8 @@
 \newcommand{\Ex}{\mathbb{E}}
 \newcommand{\Prb}{\mathbb{P}}
 \newcommand{\TV}{\operatorname{TV}}
+\definecolor{bestblue}{RGB}{0,76,153}
+\newcommand{\bestresult}[1]{\textcolor{bestblue}{\bfseries #1}}
 
 \title{Loss-Indexed Confidence for Selective Binary Segmentation}
 \author{Anonymous Authors}
@@ -43,6 +49,7 @@
 \input{Sections/05_experiments}
 \input{Sections/06_results}
 \input{Sections/08_limitations_conclusion}
+\input{Sections/09_statements}
 
 \bibliography{references}
 \bibliographystyle{iclr2026_conference}
@@ -50,5 +57,8 @@
 \appendix
 \input{Sections/A_theory}
 \input{Sections/B_additional_results}
+\input{Sections/C_expanded_limitations}
+\input{Sections/D_benchmark_protocol}
+\input{Sections/E_llm_usage}
 
 \end{document}

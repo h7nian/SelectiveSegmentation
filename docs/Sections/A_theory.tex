@@ -1,2 +1,1007 @@
-% The detailed proofs remain in one auditable source file.
-\input{theory_appendix}
+% The detailed proofs remain in this single auditable section file.
+\section{Theory for Loss-Indexed Selective Segmentation}
+\label{app:theory}
+
+This appendix states the framework for binary segmentation. Let
+$\mathcal X$ be a standard Borel image space, let $\Omega$ be a finite pixel
+grid, and let $\mathcal Y:=2^\Omega$. Assume that
+$p:\mathcal X\to[0,1]^\Omega$ and
+$\widehat Y:\mathcal X\to\mathcal Y$ are measurable. Fix a regular
+conditional distribution $P_x=\mathcal L(Y\mid X=x)$. All pointwise
+statements involving $P_x$ use this version and are understood to hold for
+$P_X$-almost every $x$. For data with variable native resolutions, the
+statements apply imagewise; equivalently, one may use the countable disjoint
+union of the finite mask spaces.
+
+The mask $\widehat Y(x)$ actually returned by the deployed system is held fixed
+throughout the confidence calculation. In particular, if it is obtained by
+thresholding the foreground probability map $p_x$, then
+
+\begin{equation*}
+  \widehat Y(x)=\{i\in\Omega:p_{x,i}\geq\gamma\}
+\end{equation*}
+
+for the deployment threshold $\gamma$; none of the results below requires
+$\gamma=1/2$.
+
+We assume that $(x,A,B)\mapsto L_x(A,B)$ is jointly measurable and that the
+deployment loss is uniformly bounded, with
+$B_x\leq B<\infty$ on the image population under study.
+The subscript permits a spatial loss to use the native image geometry.
+Losses that are ordinarily undefined on empty masks are extended to the
+whole of $\mathcal{Y}\times\mathcal{Y}$.  In the experiments, the binary
+conventions are
+
+\begin{align}
+  \Dice(\varnothing,\varnothing)&=1,
+  &\Dice(\varnothing,A)=\Dice(A,\varnothing)&=0
+    &&(A\neq\varnothing),
+  \label{app:eq:empty-dice}\\
+  L_x^{\mathrm{nHD95}}(\varnothing,\varnothing)&=0,
+  &L_x^{\mathrm{nHD95}}(\varnothing,A)
+    =L_x^{\mathrm{nHD95}}(A,\varnothing)&=1
+    &&(A\neq\varnothing). \notag
+\end{align}
+
+For two nonempty masks, $L_x^{\mathrm{nHD95}}$ pools surface distances in
+both directions, takes their 95th percentile, and divides by the image
+diagonal $D_x$. Thus both $L_x^{\Dice}=1-\Dice$ and normalized penalized
+HD95 are bounded by one. These total conventions are necessary whenever a
+label law assigns positive probability to an empty mask.
+
+\subsection{Ideal confidence and optimal selective ranking}
+
+\begin{definition}[Conditional risk and ideal confidence]
+\label{app:def:ideal-confidence}
+For a fixed deployment loss $L$, define
+\begin{equation*}
+  \rho_L^\star(x)
+  :=\mathbb{E}_{P_x}\!\left[L_x(Y,\widehat Y(x))\right],
+  \qquad
+  C_L^\star(x):=-\rho_L^\star(x).
+\end{equation*}
+\end{definition}
+
+To handle atoms without arbitrary tie breaking, represent acceptance at
+coverage $c\in(0,1]$ by a randomized selector
+$a:\mathcal{X}\to[0,1]$ satisfying $\mathbb{E}[a(X)]=c$.  Its selective
+risk is
+
+\begin{equation*}
+  \mathcal{R}_L(a;c)
+  :=\frac{\mathbb{E}\!\left[
+      a(X)L_X(Y,\widehat Y(X))\right]}{c}.
+\end{equation*}
+
+A scalar confidence $g$ induces such a selector by accepting the largest
+values of $g$, with randomization among observations tied at the coverage
+quantile.  Denote the resulting risk by $R_L(c;g)$ and define
+
+\begin{equation*}
+  \AURC_L(g):=\int_0^1 R_L(c;g)\,dc,
+\end{equation*}
+
+whenever the integral is finite.  Boundedness of $L$ is sufficient.
+
+\begin{proposition}[The ideal confidence is simultaneously optimal at every coverage]
+\label{app:prop:optimal-ranking}
+For every $c\in(0,1]$, thresholding $C_L^\star=-\rho_L^\star$ minimizes
+$\mathcal{R}_L(a;c)$ over all randomized selectors measurable with
+respect to $X$ and satisfying $\mathbb{E}[a(X)]=c$.  Consequently,
+
+\begin{equation*}
+  R_L(c;C_L^\star)\leq R_L(c;g)
+  \quad\text{for every }c\in(0,1]
+\end{equation*}
+
+and every measurable score $g$, and hence
+$\AURC_L(C_L^\star)\leq\AURC_L(g)$.
+\end{proposition}
+
+\begin{proof}
+The tower property gives, for every admissible selector $a$,
+
+\begin{equation}
+  \mathbb{E}\!\left[a(X)L_X(Y,\widehat Y(X))\right]
+  =\mathbb{E}\!\left[a(X)\rho_L^\star(X)\right].
+  \label{app:eq:tower-selector}
+\end{equation}
+
+Let
+
+\begin{equation*}
+  q_c:=\inf\{q:\mathbb{P}(\rho_L^\star(X)\leq q)\geq c\}.
+\end{equation*}
+
+An optimal coverage-$c$ selector is
+
+\begin{equation}
+  a_c^\star(x)
+  =\mathbf{1}\{\rho_L^\star(x)<q_c\}
+   +\lambda_c\mathbf{1}\{\rho_L^\star(x)=q_c\},
+  \label{app:eq:randomized-quantile-selector}
+\end{equation}
+
+where $\lambda_c\in[0,1]$ is chosen so that
+$\mathbb{E}[a_c^\star(X)]=c$; if the quantile has no atom, the second
+term is absent.  For any other admissible $a$, the pointwise product
+
+\begin{equation*}
+  \big(a(x)-a_c^\star(x)\big)
+  \big(\rho_L^\star(x)-q_c\big)
+\end{equation*}
+
+is nonnegative: below $q_c$, $a_c^\star=1$; above $q_c$,
+$a_c^\star=0$; and at $q_c$ the second factor is zero.  Therefore
+
+\begin{align*}
+  0
+  &\leq
+  \mathbb{E}\!\left[
+    (a-a_c^\star)(\rho_L^\star-q_c)\right] \\
+  &=\mathbb{E}[a\rho_L^\star]
+    -\mathbb{E}[a_c^\star\rho_L^\star],
+\end{align*}
+
+where the term involving $q_c$ vanishes because both selectors have
+mean $c$.  Combining this inequality with
+\eqref{app:eq:tower-selector} proves optimality at coverage $c$.
+Thresholding $C_L^\star=-\rho_L^\star$ implements
+\eqref{app:eq:randomized-quantile-selector}.  Since the argument holds
+for every $c$, integrating the pointwise risk inequality proves the
+AURC claim.
+\end{proof}
+
+For a sample $(x_i,y_i)_{i=1}^n$, let $\Pi_g$ be a random permutation
+that orders observations by nonincreasing $g(x_i)$ and is uniform over
+permutations within each tied-score block. The tie-aware empirical quantity
+used in our experiments is
+
+\begin{equation*}
+  \widehat{\AURC}_L(g)
+  =\mathbb{E}_{\Pi_g}\!\left[
+    \frac1n\sum_{k=1}^n
+      \frac1k\sum_{j=1}^k
+      L_{x_{\Pi_{g,j}}}(y_{\Pi_{g,j}},
+                        \widehat Y(x_{\Pi_{g,j}}))
+    \right].
+\end{equation*}
+
+It depends on $g$ only through its weak ordering. This expectation is
+equivalent to averaging over every order compatible with the scores and avoids
+using input order or sample identifiers to resolve ties.
+
+\subsection{The level-set working posterior}
+
+The probability map specifies one-point marginals, not a joint law over
+masks.  We use the classical coverage-function random-set construction
+\cite{goodman,molchanov} as an explicit working posterior.
+
+\begin{definition}[Level-set working posterior]
+\label{app:def:levelset-posterior}
+For a fixed map $p=(p_i)_{i\in\Omega}\in[0,1]^\Omega$, draw
+$T\sim\operatorname{Unif}(0,1)$ and set
+\begin{equation*}
+  Y_T:=\{i\in\Omega:p_i\geq T\}.
+\end{equation*}
+The law of $Y_T$ is denoted by $Q_p$, and
+$Y_t:=\{i:p_i\geq t\}$ denotes a deterministic level set.
+\end{definition}
+
+Calling $Q_p$ a working posterior is deliberate: the construction below
+is exact, but equality between $Q_p$ and the unknown $P_x$ is neither
+assumed nor implied by a single probability map.
+
+\begin{proposition}[Marginals, pairwise law, and nesting]
+\label{app:prop:levelset-properties}
+For every $i,j\in\Omega$,
+\begin{equation*}
+  \mathbb{P}_{Q_p}(i\in Y)=p_i,
+  \qquad
+  \mathbb{P}_{Q_p}(i,j\in Y)=\min(p_i,p_j).
+\end{equation*}
+Moreover, any two samples generated by thresholds $s$ and $t$ are
+nested: if $s\leq t$, then $Y_t\subseteq Y_s$.
+\end{proposition}
+
+\begin{proof}
+The event $i\in Y_T$ is $\{T\leq p_i\}$, which has probability $p_i$.
+Likewise, $i,j\in Y_T$ exactly when
+$T\leq\min(p_i,p_j)$.  The nesting statement follows immediately from
+the threshold inequalities.
+\end{proof}
+
+The second identity is the Fr\'echet--Hoeffding upper coupling of the
+Bernoulli marginals.  It describes the dependence imposed by $Q_p$; it
+does not establish that this dependence is the true one.
+
+\begin{proposition}[Threshold-integral identity]
+\label{app:prop:threshold-integral}
+For every fixed action $A\in\mathcal{Y}$ and every bounded measurable
+loss $L_x$,
+\begin{equation*}
+  \mathbb{E}_{Y\sim Q_p}[L_x(Y,A)]
+  =\int_0^1 L_x(Y_t,A)\,dt.
+\end{equation*}
+In particular, the level-set risk of the deployed action is
+
+\begin{equation*}
+  r_{L,Q}(x)
+  :=\mathbb{E}_{Q_{p_x}}[
+      L_x(Y,\widehat Y(x))]
+  =\int_0^1L_x(Y_t,\widehat Y(x))\,dt.
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+By Definition~\ref{app:def:levelset-posterior}, a draw from $Q_p$ is
+$Y_T$ with $T$ uniform.  Thus the expectation under $Q_p$ is the
+Lebesgue integral with respect to $T$.  Boundedness guarantees
+integrability.
+\end{proof}
+
+For completeness, if $0\leq v_1<\cdots<v_K\leq1$ are the distinct
+values of $p$ and $v_0:=0$, then the integral also has the exact finite
+representation
+
+\begin{equation*}
+  \int_0^1 L_x(Y_t,A)\,dt
+  =\sum_{k=1}^K(v_k-v_{k-1})L_x(Y_{v_k},A)
+   +(1-v_K)L_x(\varnothing,A).
+\end{equation*}
+
+Indeed, the non-strict level set is constant on
+$(v_{k-1},v_k]$ and equals $Y_{v_k}$ there; the final interval carries
+the empty-mask atom.  Values at the finitely many interval endpoints do
+not affect the integral.
+
+\begin{corollary}[Exact level-set Dice]
+\label{app:cor:exact-dice}
+Let $v_1>\cdots>v_K>0$ be the distinct positive values of $p$, set
+$v_{K+1}:=0$, and write $A_k:=Y_{v_k}$,
+$n_k:=|A_k|$, $a_k:=|A_k\cap\widehat Y|$, and
+$h:=|\widehat Y|$. If $K>0$, then
+\begin{equation*}
+  \mathbb E_{Q_p}[\Dice(Y,\widehat Y)]
+  =(1-v_1)\mathbf 1\{h=0\}
+   +\sum_{k=1}^K
+      (v_k-v_{k+1})\frac{2a_k}{n_k+h},
+\end{equation*}
+and the exact loss-oriented confidence is this quantity minus one. If $K=0$,
+the expectation is $\mathbf 1\{h=0\}$. Sorting probabilities and accumulating
+tied groups evaluates the expression in $O(|\Omega|\log|\Omega|)$ time and
+$O(|\Omega|)$ memory. If the map is already represented by $b$ ordered
+probability bins, histogram accumulation reduces this to $O(|\Omega|+b)$ time
+and $O(b)$ memory.
+\end{corollary}
+
+\begin{proof}
+Specialize the exact finite threshold sum to Dice. The empty level set has mass
+$1-v_1$ and Dice value $\mathbf 1\{h=0\}$; the level set $A_k$ has mass
+$v_k-v_{k+1}$ and Dice value $2a_k/(n_k+h)$. Because $v_k>0$, every
+$A_k$ is nonempty and its displayed denominator is positive, even when
+$\widehat Y$ is empty. Probability-zero pixels occur only at the measure-zero
+threshold $T=0$ and hence are correctly omitted. If $p\equiv0$, $Y_T$ is empty
+almost surely, which gives the stated $K=0$ branch. A value $v_1=1$ simply makes
+the empty-set mass zero.
+\end{proof}
+
+\begin{algorithm}[t]
+\caption{Exact uniform-level-set Dice confidence}
+\label{app:alg:exact-dice}
+\small
+\begin{algorithmic}[1]
+\Require probability map $p$, fixed deployed mask $\widehat Y$
+\State $h\gets|\widehat Y|$
+\State group pixels with $p_i>0$ into $v_1>\cdots>v_K>0$; set $v_{K+1}\gets0$
+\If{$K=0$}
+  \State \Return $\mathbf 1\{h=0\}-1$
+\EndIf
+\State $n\gets0$, $a\gets0$, $s\gets(1-v_1)\mathbf 1\{h=0\}$
+\For{$k=1,\ldots,K$}
+  \State $n\gets n+|\{i:p_i=v_k\}|$
+  \State $a\gets a+|\{i:p_i=v_k,\ i\in\widehat Y\}|$
+  \State $s\gets s+(v_k-v_{k+1})\,2a/(n+h)$
+\EndFor
+\State \Return $C_{\Dice,\mathrm{Exact}}\gets s-1$
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm sorts once, keeps tied pixels in one group, and then performs one
+linear scan. Corollary~\ref{app:cor:exact-dice} proves its correctness. It also
+shows why the empty--empty convention must enter both the $K=0$ return and the
+mass above $v_1$; silently assigning zero Dice there would compute a different
+estimand.
+
+\subsection{Midpoint quadrature}
+
+Define
+
+\begin{equation*}
+  H_x(t):=L_x(Y_t,\widehat Y(x)),
+  \qquad
+  t_m:=\frac{m-1/2}{M},
+\end{equation*}
+
+and the $M$-point midpoint estimator and confidence
+
+\begin{equation*}
+  r_{L,M}(x):=\frac1M\sum_{m=1}^M H_x(t_m),
+  \qquad
+  C_{L,M}(x):=-r_{L,M}(x).
+\end{equation*}
+
+\begin{proposition}[Per-image midpoint error]
+\label{app:prop:midpoint-bound}
+On a finite pixel grid, $H_x$ has bounded variation.  Writing
+$V(H_x)$ for its total variation on $[0,1]$,
+\begin{equation}
+  \left|r_{L,M}(x)-r_{L,Q}(x)\right|
+  \leq \frac{V(H_x)}{2M}.
+  \label{app:eq:midpoint-bound}
+\end{equation}
+Consequently, for each fixed image, midpoint quadrature converges to the
+level-set risk at rate $O(M^{-1})$.
+\end{proposition}
+
+\begin{proof}
+Because $\Omega$ is finite, $Y_t$ changes only when $t$ crosses one of
+the finitely many values $p_i$.  Hence $H_x$ is a bounded step function
+and has finite total variation.  The one-dimensional
+Koksma--Hlawka inequality \citep{niederreiter1992} gives
+
+\begin{equation*}
+  \left|
+    \frac1M\sum_{m=1}^M H_x(t_m)-\int_0^1H_x(t)\,dt
+  \right|
+  \leq V(H_x)D_M^\star,
+\end{equation*}
+
+where $D_M^\star$ is the star discrepancy of the nodes.  The midpoint
+nodes have $D_M^\star=1/(2M)$, yielding
+\eqref{app:eq:midpoint-bound}.
+\end{proof}
+
+The constant $V(H_x)$ is image-dependent.  Proposition
+\ref{app:prop:midpoint-bound} therefore gives a per-image convergence
+statement, not a resolution-uniform bound.  It neither implies that the
+realized error decreases monotonically with $M$ nor identifies an
+optimal finite node set.  It also controls only numerical integration
+under $Q_p$; the next subsection separates the remaining posterior-model
+error.
+
+\subsection{Loss-specific posterior agreement and total error}
+
+Recovering the full label posterior is stronger than necessary for
+scoring a fixed deployment loss and action.  The relevant discrepancy is
+the integral probability metric induced by that loss.
+
+\begin{definition}[Loss-induced posterior discrepancy]
+\label{app:def:loss-ipm}
+For an action class $\mathcal{A}_x\subseteq\mathcal{Y}$, define
+\begin{equation}
+  \Delta_{L,\mathcal{A}_x}(P_x,Q_{p_x})
+  :=\sup_{A\in\mathcal{A}_x}
+    \left|
+      \mathbb{E}_{P_x}[L_x(Y,A)]
+      -\mathbb{E}_{Q_{p_x}}[L_x(Y,A)]
+    \right|.
+  \label{app:eq:loss-ipm}
+\end{equation}
+\end{definition}
+
+The loss-specific agreement assumption, imposed for $P_X$-almost every $x$ for
+a nonnegative measurable function
+$\varepsilon_L:\mathcal X\to[0,\infty)$, is
+
+\begin{equation}
+  \widehat Y(x)\in\mathcal{A}_x,
+  \qquad
+  \Delta_{L,\mathcal{A}_x}(P_x,Q_{p_x})
+  \leq\varepsilon_L(x).
+  \label{app:eq:loss-specific-assumption}
+\end{equation}
+
+For the single deployed action, taking
+$\mathcal{A}_x=\{\widehat Y(x)\}$ is the weakest action-specific version
+needed for the numerical confidence guarantee below.  A larger action
+class is useful when one guarantee is intended to cover several
+deployment thresholds or post-processing rules.
+
+\begin{proposition}[Pointwise and population error]
+\label{app:prop:total-error}
+Under \eqref{app:eq:loss-specific-assumption}, the midpoint confidence
+satisfies
+\begin{equation}
+  \left|C_{L,M}(x)-C_L^\star(x)\right|
+  \leq
+  \frac{V(H_x)}{2M}+\varepsilon_L(x).
+  \label{app:eq:pointwise-total-error}
+\end{equation}
+If $\mathbb{E}[V(H_X)]<\infty$ and
+$\mathbb{E}[\varepsilon_L(X)]<\infty$, then
+\begin{equation}
+  \mathbb{E}_X\!\left[
+    |C_{L,M}(X)-C_L^\star(X)|\right]
+  \leq
+  \frac{\mathbb{E}_X[V(H_X)]}{2M}
+  +\mathbb{E}_X[\varepsilon_L(X)].
+  \label{app:eq:population-total-error}
+\end{equation}
+The same right-hand side also bounds
+$|\mathbb{E}C_{L,M}(X)-\mathbb{E}C_L^\star(X)|$.
+\end{proposition}
+
+\begin{proof}
+Negation does not change absolute error, so the triangle inequality,
+Proposition~\ref{app:prop:midpoint-bound}, and
+\eqref{app:eq:loss-specific-assumption} give
+\begin{align*}
+  |C_{L,M}-C_L^\star|
+  &=|r_{L,M}-\rho_L^\star|\\
+  &\leq |r_{L,M}-r_{L,Q}|
+       +|r_{L,Q}-\rho_L^\star|\\
+  &\leq \frac{V(H_x)}{2M}+\varepsilon_L(x).
+\end{align*}
+Taking expectations proves
+\eqref{app:eq:population-total-error}; Jensen's inequality gives the
+final bias statement.
+\end{proof}
+
+This assumption is less restrictive than requiring the two full posteriors to
+be close in total variation in the following precise sense. With
+$\operatorname{TV}(P,Q):=\sup_E|P(E)-Q(E)|$ and
+$0\leq L_x\leq B_x$,
+
+\begin{equation*}
+  \Delta_{L,\mathcal{A}_x}(P_x,Q_{p_x})
+  \leq B_x\operatorname{TV}(P_x,Q_{p_x}),
+\end{equation*}
+
+whereas the converse need not hold: two posteriors may disagree on many
+events while agreeing on the expected losses of the actions in
+$\mathcal{A}_x$.  Conversely, marginal calibration alone does not in
+general control \eqref{app:eq:loss-ipm} for nonlinear losses such as
+Dice or boundary distance, because different couplings can share all
+one-point marginals.
+
+\begin{lemma}[Lipschitz--Wasserstein posterior agreement]
+\label{app:lem:lipschitz-wasserstein}
+Let $d$ be a bounded pseudometric on $\mathcal Y$, and define
+\begin{equation*}
+  W_{1,d}(P,Q):=\inf_{\pi\in\Pi(P,Q)}
+  \mathbb E_{(Y,Y')\sim\pi}[d(Y,Y')].
+\end{equation*}
+If, for every $A\in\mathcal A$ and $Y,Y'\in\mathcal Y$,
+\begin{equation*}
+  |L(Y,A)-L(Y',A)|\leq Kd(Y,Y'),
+\end{equation*}
+then
+\begin{equation*}
+  \Delta_{L,\mathcal A}(P,Q)\leq K W_{1,d}(P,Q).
+\end{equation*}
+\end{lemma}
+
+\begin{proof}
+For any coupling $\pi\in\Pi(P,Q)$ and fixed $A\in\mathcal A$, coupling the two
+expectations and applying the pointwise inequality bounds their difference by
+$K\mathbb E_\pi[d(Y,Y')]$. Take the infimum over couplings and then the
+supremum over actions.
+\end{proof}
+
+Dice and normalized full surface Hausdorff below instantiate this same lemma
+with different ground geometries and constants. Small agreement in one ground
+geometry need not imply small agreement in the other.
+
+\subsection{Jaccard--Wasserstein control for Dice}
+
+For masks $A,B\in\mathcal Y$, define
+\begin{equation*}
+  d_J(A,B)
+  :=
+  \begin{cases}
+    |A\mathbin{\triangle}B|/|A\cup B|,&A\cup B\neq\varnothing,\\
+    0,&A=B=\varnothing.
+  \end{cases}
+\end{equation*}
+This is the Jaccard metric and takes values in $[0,1]$; the corresponding
+transport cost is $W_{1,d_J}$ from
+Lemma~\ref{app:lem:lipschitz-wasserstein}.
+
+\begin{lemma}[Dice loss is Lipschitz in Jaccard geometry]
+\label{app:lem:dice-jaccard}
+For every three masks $Y,Y',A$, including all empty-mask cases,
+\begin{equation*}
+  |L^{\Dice}(Y,A)-L^{\Dice}(Y',A)|
+  \leq 2d_J(Y,Y').
+\end{equation*}
+Consequently, for every action class $\mathcal A\subseteq\mathcal Y$,
+\begin{equation*}
+  \Delta_{L^{\Dice},\mathcal A}(P,Q)
+  \leq 2W_{1,d_J}(P,Q).
+\end{equation*}
+With the supremum-over-events convention for total variation,
+\begin{equation*}
+  W_{1,d_J}(P,Q)\leq\operatorname{TV}(P,Q),
+  \qquad
+  \Delta_{L^{\Dice},\mathcal A}(P,Q)
+  \leq\min\{\operatorname{TV}(P,Q),2W_{1,d_J}(P,Q)\}.
+\end{equation*}
+\end{lemma}
+
+\begin{proof}
+With the declared empty-mask conventions, for every $Y,A$,
+\begin{equation*}
+  L^{\Dice}(Y,A)
+  =\phi(d_J(Y,A)),
+  \qquad
+  \phi(u):=\frac{u}{2-u}.
+\end{equation*}
+Indeed, this is the usual Dice--Jaccard identity when the union is nonempty;
+both sides are zero for empty--empty and one for a one-sided empty pair. Since
+$\phi'(u)=2/(2-u)^2\leq2$ on $[0,1]$, the reverse triangle inequality for the
+metric $d_J$ gives
+\begin{align*}
+  |L^{\Dice}(Y,A)-L^{\Dice}(Y',A)|
+  &\leq2|d_J(Y,A)-d_J(Y',A)|\\
+  &\leq2d_J(Y,Y').
+\end{align*}
+For any coupling $\pi\in\Pi(P,Q)$, the difference of expected losses at a
+fixed $A$ is therefore at most
+$2\mathbb E_\pi[d_J(Y,Y')]$. Taking the infimum over couplings and then the
+supremum over $A\in\mathcal A$ proves the Wasserstein statement.
+
+Because $0\leq d_J\leq1$, a maximal coupling gives
+$W_{1,d_J}(P,Q)\leq\Prb(Y\neq Y')=\operatorname{TV}(P,Q)$. Finally,
+$0\leq L^{\Dice}\leq1$ gives the separate total-variation bound, and taking
+the smaller of the two completes the proof.
+\end{proof}
+
+This is a geometry-aware alternative sufficient condition, not a claim that
+the Wasserstein upper bound is numerically smaller for every pair of laws: its
+constant is two. Its assumption can nevertheless be much less restrictive for
+segmentation geometry. If $P=\delta_Y$ and $Q=\delta_{Y'}$ for distinct masks,
+then $\operatorname{TV}(P,Q)=1$, whereas
+$W_{1,d_J}(P,Q)=d_J(Y,Y')$ can vanish as a fraction of image area. Thus there
+is no resolution-independent converse from small Jaccard--Wasserstein distance
+to small TV. This result is Dice-specific; we do not assert the required metric
+or Lipschitz property for pooled penalized nHD95.
+
+\subsection{Full surface Hausdorff geometry}
+
+Fix an image $x$. Let $S_x(A)$ be the chosen digital surface of mask $A$, with
+$S_x(\varnothing)=\varnothing$ and $S_x(A)\neq\varnothing$ for every nonempty
+$A$. Pixel centers carry their native-coordinate Euclidean distance
+$\|u-v\|_x$, and
+the image-diagonal normalizer $D_x$ is assumed to upper-bound the diameter of
+the pixel grid. For nonempty surface sets $U,V$, write
+\begin{equation*}
+  h_x(U,V):=\max\!\left\{
+    \max_{u\in U}\min_{v\in V}\|u-v\|_x,
+    \max_{v\in V}\min_{u\in U}\|u-v\|_x
+  \right\}.
+\end{equation*}
+Define the normalized penalized full-Hausdorff ground cost on masks by
+\begin{equation*}
+  d_{H,x}(A,B):=
+  \begin{cases}
+    h_x(S_x(A),S_x(B))/D_x,&A,B\neq\varnothing,\\
+    0,&A=B=\varnothing,\\
+    1,&\text{exactly one of $A,B$ is empty}.
+  \end{cases}
+\end{equation*}
+The associated deployment loss is $L_x^{\mathrm{nHD}}:=d_{H,x}$. This is full
+Hausdorff distance, not a percentile of the pooled directed distances.
+
+\begin{lemma}[Full-Hausdorff Wasserstein control]
+\label{app:lem:full-hd-wasserstein}
+The preceding cost is a metric on the surface representations
+$\{S_x(A):A\in\mathcal Y\}$, including the declared empty state. Its pullback
+$d_{H,x}$ is in general only a pseudometric on masks, unless $S_x$ is injective.
+For every $Y,Y',A$,
+\begin{equation*}
+  |L_x^{\mathrm{nHD}}(Y,A)-L_x^{\mathrm{nHD}}(Y',A)|
+  \leq d_{H,x}(Y,Y').
+\end{equation*}
+Consequently, for any action class $\mathcal A\subseteq\mathcal Y$,
+\begin{equation*}
+  \Delta_{L^{\mathrm{nHD}},\mathcal A}(P,Q)
+  \leq W_{1,d_{H,x}}(P,Q)
+  \leq\operatorname{TV}(P,Q),
+\end{equation*}
+where $W_{1,d_{H,x}}$ is the optimal transport cost induced by this possibly
+pseudometric mask cost.
+\end{lemma}
+
+\begin{proof}
+Hausdorff distance is a metric on nonempty finite subsets of a metric space.
+It is at most $D_x$ here. After division by $D_x$, adjoining the empty state at
+distance one from every nonempty surface preserves all triangle inequalities:
+the only new nontrivial comparison is bounded by one on the nonempty surface
+space. Thus the cost is a metric on distinct surface representations. Composing
+that metric with $S_x$ preserves symmetry and the triangle inequality but may
+assign zero to distinct masks with the same extracted surface, hence only a
+pseudometric is guaranteed on masks.
+
+The reverse triangle inequality for a pseudometric gives
+\begin{equation*}
+  |d_{H,x}(Y,A)-d_{H,x}(Y',A)|\leq d_{H,x}(Y,Y'),
+\end{equation*}
+including the empty branches. Under any coupling of $P$ and $Q$, take
+expectations of this pointwise inequality and then minimize over couplings.
+Finally $0\leq d_{H,x}\leq1$, so a maximal coupling has expected cost at most
+its mismatch probability $\operatorname{TV}(P,Q)$.
+\end{proof}
+
+The constant-one conclusion does \emph{not} transfer to pooled nHD95. A simple
+finite-grid construction isolates the obstruction. It is realizable by the
+erosion surface used in the experiment: take the action mask $A$ to be 100
+separated singleton pixels, so $S_x(A)=A$, and let $z$ be one remote singleton.
+For $Y=A\cup\{z\}$, pooling directed distances between $S_x(Y)$ and $S_x(A)$
+gives 200 zeros and one remote distance, so the empirical 95th percentile is
+zero. Now replace $z$ by a one-pixel-thick pattern $R$ containing $z$ and 20
+additional pixels within a fixed $k$-pixel diameter, and set $Y'=A\cup R$.
+The pattern can be chosen with no eroded interior, hence $S_x(Y')=Y'$. Then
+$d_{H,x}(Y,Y')\leq k/D_x$, but the new pool has 200 zeros and 21 remote
+distances, so its 95th percentile is remote. On growing grids, keep $k$ fixed
+and place $z$ at a fixed fraction of the diagonal: the ground-cost change tends
+to zero while the normalized nHD95 jump stays bounded away from zero. Thus
+surface-point multiplicity can cross the quantile cutoff, ruling out a
+resolution-independent Lipschitz or Wasserstein bound of the form above for
+pooled nHD95 without additional assumptions.
+
+\subsection{From score error to selective-risk and AURC regret}
+
+The image-dependent pointwise bound in
+\eqref{app:eq:pointwise-total-error} need not preserve every pairwise ordering.
+Its population $L^1$ consequence does, however, control aggregate selective
+regret without a margin assumption.
+
+\begin{proposition}[Plug-in selective-risk regret]
+\label{app:prop:aurc-regret}
+Let $r,\widetilde r:\mathcal X\to[0,B]$ be measurable, let
+$g=-\widetilde r$, and set
+\begin{equation*}
+  \eta:=\mathbb E|r(X)-\widetilde r(X)|.
+\end{equation*}
+Let $R(c;g)$ be the true risk $r$ among the coverage-$c$ lower tail of
+$\widetilde r$, with constant randomization across the boundary tie, and let
+$R^\star(c)$ be the corresponding optimal lower-tail risk of $r$. Then, for
+every $c\in(0,1]$,
+\begin{equation*}
+  0\leq R(c;g)-R^\star(c)
+  \leq\min\!\left\{B,\frac{\eta}{c}\right\}.
+\end{equation*}
+In particular, the bound $\min\{B,2\eta/c\}$ also holds. If instead
+$\|r-\widetilde r\|_\infty\leq\epsilon$ in essential supremum, then
+\begin{equation*}
+  0\leq R(c;g)-R^\star(c)\leq\min\{B,2\epsilon\}
+  \qquad\text{for every }c\in(0,1].
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+Let $a_c^\star$ and $\widetilde a_c$ be the randomized selectors induced by
+the lower tails of $r$ and $\widetilde r$, respectively. Both take values in
+$[0,1]$ and have expectation $c$, including when a quantile is an atom.
+Proposition~\ref{app:prop:optimal-ranking}, applied once to each risk
+function, gives
+\begin{equation*}
+  \mathbb E[(\widetilde a_c-a_c^\star)\widetilde r]\leq0.
+\end{equation*}
+Hence
+\begin{align*}
+  c\{R(c;g)-R^\star(c)\}
+  &=\mathbb E[(\widetilde a_c-a_c^\star)r]\\
+  &\leq
+    \mathbb E[(\widetilde a_c-a_c^\star)(r-\widetilde r)]\\
+  &\leq\mathbb E|r-\widetilde r|=\eta,
+\end{align*}
+because $|\widetilde a_c-a_c^\star|\leq1$. Optimality of $a_c^\star$ gives
+the lower bound, and $r\in[0,B]$ gives the trivial upper bound $B$.
+
+Under uniform error, the same display is at most
+$\epsilon\mathbb E|\widetilde a_c-a_c^\star|$. Since both selectors are
+nonnegative with mean $c$, this expectation is at most $2c$, proving the
+coverage-independent $2\epsilon$ bound.
+\end{proof}
+
+The factor one in the $L^1$ bound is sharper than the factor two obtained by
+bounding the errors on the two selected sets separately. It relies only on the
+fact that two randomized selectors in $[0,1]$ differ pointwise by at most one.
+
+\begin{corollary}[AURC regret from population score error]
+\label{app:cor:aurc-regret}
+For $B>0$, define the nondecreasing envelope on $[0,\infty)$ by
+\begin{equation*}
+  \Psi_B(z):=
+  \begin{cases}
+    0,&z=0,\\
+    z[1+\log(B/z)],&0<z<B,\\
+    B,&z\geq B.
+  \end{cases}
+\end{equation*}
+Under Proposition~\ref{app:prop:aurc-regret},
+\begin{equation*}
+  0\leq\AURC(g)-\AURC(-r)\leq\Psi_B(\eta).
+\end{equation*}
+Under the uniform-error condition the AURC regret is instead at most
+$\min\{B,2\epsilon\}$. If $B=0$, all these regrets are zero.
+\end{corollary}
+
+\begin{proof}
+For $0<\eta<B$, integrate the coverage-wise envelope at its crossing
+$c_0=\eta/B$:
+\begin{equation*}
+  \int_0^1\min\!\left\{B,\frac{\eta}{c}\right\}dc
+  =Bc_0+\eta\int_{c_0}^1\frac{dc}{c}
+  =\eta[1+\log(B/\eta)].
+\end{equation*}
+The cases $\eta=0$ and $\eta\geq B$ follow respectively from equality almost
+surely and the trivial loss envelope. Integrating the uniform bound proves the
+last claim.
+\end{proof}
+
+Applying this result with $r=\rho_L^\star$ and
+$\widetilde r=r_{L,M}$, Proposition~\ref{app:prop:total-error} gives
+\begin{equation*}
+  \AURC_L(C_{L,M})-\AURC_L(C_L^\star)
+  \leq
+  \Psi_B\!\left(
+    \frac{\mathbb E[V(H_X)]}{2M}
+    +\mathbb E[\varepsilon_L(X)]
+  \right).
+\end{equation*}
+For normalized penalized full Hausdorff, Lemma~\ref{app:lem:full-hd-wasserstein}
+allows $\varepsilon_L(x)=\delta_H(x)$ and $B=1$, where
+$\delta_H(x):=W_{1,d_{H,x}}(P_x,Q_{p_x})$, yielding
+\begin{equation*}
+  \AURC_{L^{\mathrm{nHD}}}(C_{L^{\mathrm{nHD}},M})
+  -\AURC_{L^{\mathrm{nHD}}}(C_{L^{\mathrm{nHD}}}^\star)
+  \leq\Psi_1\!\left(
+    \frac{\mathbb E[V(H_X)]}{2M}
+    +\mathbb E[\delta_H(X)]
+  \right),
+\end{equation*}
+This corollary concerns full Hausdorff, not nHD95.
+For exact level-set Dice, Corollary~\ref{app:cor:exact-dice} removes the
+quadrature term. Lemma~\ref{app:lem:dice-jaccard} then gives the sharper
+Dice-specific chain
+\begin{equation*}
+  \delta_{\Dice}(x):=
+  \min\{\operatorname{TV}(P_x,Q_{p_x}),
+         2W_{1,d_J}(P_x,Q_{p_x})\},
+\end{equation*}
+and hence
+\begin{equation*}
+  \AURC_{L^{\Dice}}(C_{\Dice,\mathrm{Exact}})
+  -\AURC_{L^{\Dice}}(C_{\Dice}^\star)
+  \leq\Psi_1\!\left(\mathbb E[\delta_{\Dice}(X)]\right).
+\end{equation*}
+This chain removes numerical integration error, not the working-posterior
+discrepancy. Close pairs may still be reordered, so it controls aggregate AURC
+rather than guaranteeing exact rank recovery.
+
+\subsection{Threshold proposals and importance weighting}
+\label{app:importance-thresholds}
+
+The uniform random threshold that defines \(Q_p\) and the nodes used to
+compute its integral have different roles.
+
+\begin{proposition}[Why the posterior threshold is uniform]
+\label{app:prop:uniform-unique}
+Let \(T\) have CDF \(F\) on \([0,1]\), and set
+\(Y_T=\{i:p_i\geq T\}\). Then
+\begin{equation*}
+  \Prb(i\in Y_T)=F(p_i).
+\end{equation*}
+The identity \(\Prb(i\in Y_T)=p_i\) for every finite probability map holds if
+and only if \(F(u)=u\) on \([0,1]\), namely \(T\sim\operatorname{Unif}(0,1)\).
+\end{proposition}
+
+\begin{proof}
+The membership event is \(\{T\leq p_i\}\), giving \(F(p_i)\). Sufficiency is
+immediate. For necessity, consider a one-pixel map with \(p_1=u\) for each
+\(u\in[0,1]\). For one fixed finite map the condition constrains \(F\) only at
+its observed probability values, which is why uniqueness is asserted across
+arbitrary maps.
+\end{proof}
+
+A nonuniform numerical proposal need not change this target, provided that it
+is importance weighted \citep{kahn1953,owen2000safe}.
+
+\begin{proposition}[Importance-weighted threshold estimator]
+\label{app:prop:importance-thresholds}
+Fix \(x\), write \(H_x(t)=L_x(Y_t,\widehat Y(x))\), and let \(q_x\) be a
+density on \([0,1]\) that is positive almost everywhere on
+\(\{t:H_x(t)>0\}\). Suppose
+\begin{equation*}
+  J_x(q_x):=\int_0^1\frac{H_x(t)^2}{q_x(t)}\,dt<\infty.
+\end{equation*}
+For \(S_1,\ldots,S_M\stackrel{\mathrm{iid}}{\sim}q_x\), define
+\begin{equation*}
+  \widehat r^{\mathrm{IS}}_{L,M}(x)
+  :=\frac1M\sum_{m=1}^M\frac{H_x(S_m)}{q_x(S_m)},
+  \qquad
+  \widehat C^{\mathrm{IS}}_{L,M}(x)
+  :=-\widehat r^{\mathrm{IS}}_{L,M}(x).
+\end{equation*}
+Then, conditionally on \(x\),
+\begin{align*}
+  \mathbb E_S[\widehat r^{\mathrm{IS}}_{L,M}(x)]
+  &=r_{L,Q}(x),\\
+  \operatorname{Var}_S(\widehat r^{\mathrm{IS}}_{L,M}(x))
+  &=\frac1M\left\{J_x(q_x)-r_{L,Q}(x)^2\right\}.
+\end{align*}
+If \(r_{L,Q}(x)>0\), the oracle density
+\(q_x^\star(t)=H_x(t)/r_{L,Q}(x)\) has zero variance, and
+\begin{equation*}
+  \operatorname{Var}_S(\widehat r^{\mathrm{IS}}_{L,M}(x))
+  =\frac{r_{L,Q}(x)^2}{M}
+    \chi^2(q_x^\star\Vert q_x).
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+For one draw \(S\sim q_x\), integration against \(q_x\) gives
+\(\mathbb E[H_x(S)/q_x(S)]=\int_0^1H_x(t)\,dt=r_{L,Q}(x)\) and
+\(\mathbb E[(H_x(S)/q_x(S))^2]=J_x(q_x)\). Independence yields the stated
+variance. Substituting \(H_x=r_{L,Q}q_x^\star\) gives the chi-squared identity.
+If \(r_{L,Q}=0\), nonnegativity implies \(H_x=0\) almost everywhere.
+\end{proof}
+
+The zero-variance proposal is an oracle benchmark, not a free algorithm:
+constructing and normalizing \(H_x\) over all of its steps already reveals the
+target integral. A defensive mixture gives a usable guarantee even when a
+data-dependent approximation to that oracle is imperfect.
+
+\begin{corollary}[Defensive proposal and total confidence error]
+\label{app:cor:defensive-importance}
+For any candidate density \(\widetilde q_x\) and \(0<\alpha<1\), let
+\begin{equation*}
+  q_{x,\alpha}(t)
+  :=(1-\alpha)\widetilde q_x(t)+\alpha,
+\end{equation*}
+where the constant one is the uniform density on \([0,1]\). If
+\(0\leq H_x\leq B_x\), the corresponding estimator is unbiased and
+\begin{equation*}
+  \operatorname{Var}_S(\widehat r^{\mathrm{IS}}_{L,M}(x))
+  \leq \frac{B_x^2}{M\alpha}.
+\end{equation*}
+If \(B_x>0\), then, for every \(z>0\),
+\begin{equation*}
+  \Prb_S\!\left(
+    |\widehat r^{\mathrm{IS}}_{L,M}(x)-r_{L,Q}(x)|\geq z
+  \right)
+  \leq
+  2\exp\!\left(-\frac{2M\alpha^2z^2}{B_x^2}\right).
+\end{equation*}
+When \(B_x=0\), \(H_x=0\) almost everywhere and all displayed errors vanish.
+Under \eqref{app:eq:loss-specific-assumption},
+\begin{align*}
+  \mathbb E_S\!\left[
+    |\widehat C^{\mathrm{IS}}_{L,M}(x)-C_L^\star(x)|
+  \right]
+  &\leq
+  \varepsilon_L(x)+
+  \sqrt{\frac{J_x(q_{x,\alpha})-r_{L,Q}(x)^2}{M}}\\
+  &\leq \varepsilon_L(x)+\frac{B_x}{\sqrt{M\alpha}}.
+\end{align*}
+For the population statement, additionally assume that
+$(x,t)\mapsto q_{x,\alpha}(t)$ is jointly measurable. Consequently, using the
+global bound \(B_x\leq B\) assumed above,
+\(\mathbb E_{X,S}|\widehat C^{\mathrm{IS}}_{L,M}(X)-C_L^\star(X)|
+\leq\mathbb E_X[\varepsilon_L(X)]+B/\sqrt{M\alpha}\).
+\end{corollary}
+
+\begin{proof}
+The mixture satisfies \(q_{x,\alpha}\geq\alpha\), so the weighted summand lies
+in \([0,B_x/\alpha]\). The variance bound follows from the second moment,
+Hoeffding's inequality gives the tail bound, and the triangle inequality plus
+Cauchy--Schwarz gives the confidence-error result.
+\end{proof}
+
+The proposal may depend on \(x\), \(p_x\), \(\gamma\), and \(L\), but not on
+the held-out reference mask. A proposal learned from pilot evaluations should
+use independent main draws for the elementary unbiasedness argument above.
+Self-normalization or weight clipping can stabilize an estimator but introduces
+finite-sample bias. Most importantly, sampling from \(q_x\) without the
+\(1/q_x\) factor estimates a different threshold law and changes the working
+posterior.
+
+Midpoint and importance sampling offer different guarantees. For each fixed
+finite-image bounded-variation integrand, the deterministic midpoint bound
+decays as \(M^{-1}\), whereas generic iid importance sampling has
+\(O(M^{-1/2})\) root-mean-square error; a good proposal can reduce its constant
+but does not improve that generic rate.
+The exact knot sum above has zero numerical error but may require as many loss
+evaluations as there are distinct pixel probabilities. We therefore retain
+midpoint quadrature in the experiments: it is deterministic, reproducible, and
+has the stronger worst-case rate for the finite-image step integrand.
+
+\subsection{Relation to Soft Dice Confidence}
+
+Soft Dice Confidence (SDC) \cite{sdc} is
+
+\begin{equation}
+  \SDC(p,\widehat Y)
+  :=\frac{2\sum_i p_i\widehat y_i}
+          {\sum_i p_i+\sum_i\widehat y_i},
+  \qquad
+  \widehat y_i:=\mathbf{1}\{i\in\widehat Y\},
+  \label{app:eq:sdc}
+\end{equation}
+
+when the denominator is positive. If $p\equiv0$ and
+$\widehat Y=\varnothing$, the ratio requires a separate convention; the
+experimental SDC baseline follows the published implementation and assigns
+confidence zero. The published SDC analysis also defines
+$\Dice(\varnothing,\varnothing)=0$, whereas our deployment loss uses
+Equation~\eqref{app:eq:empty-dice}. Its approximation guarantee therefore
+applies directly under our convention only for nonempty deployed masks (or
+after separately controlling the empty-action case). All ratio identities
+below assume a positive denominator.
+
+\begin{proposition}[SDC is a ratio of expectations]
+\label{app:prop:sdc-ratio}
+Let $Q$ be any joint law on $Y$ with one-point marginals
+$\mathbb{P}_Q(Y_i=1)=p_i$.  If the denominator in
+\eqref{app:eq:sdc} is positive, then
+\begin{equation}
+  \frac{
+    \mathbb{E}_Q[2\sum_iY_i\widehat y_i]
+  }{
+    \mathbb{E}_Q[\sum_iY_i+\sum_i\widehat y_i]
+  }
+  =\SDC(p,\widehat Y).
+  \label{app:eq:sdc-ratio-identity}
+\end{equation}
+Thus this ratio-of-expectations quantity depends on $Q$ only through its
+marginals.  In general, however,
+\begin{equation*}
+  \mathbb{E}_Q[\Dice(Y,\widehat Y)]
+  \neq \SDC(p,\widehat Y).
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+Linearity gives
+\begin{equation*}
+  \mathbb{E}_Q\!\left[\sum_iY_i\widehat y_i\right]
+  =\sum_i p_i\widehat y_i,
+  \qquad
+  \mathbb{E}_Q\!\left[\sum_iY_i\right]=\sum_i p_i,
+\end{equation*}
+which proves \eqref{app:eq:sdc-ratio-identity}. On the event that its
+denominator is positive, Dice is a ratio of random quantities, so linearity
+does not move its expectation through that ratio. On a zero-denominator event,
+expected Dice additionally depends on the declared empty--empty convention.
+\end{proof}
+
+The distinction already appears with two pixels.  Let
+$p=(1/2,1/2)$ and $\widehat Y=\{1\}$.  Under independent Bernoulli
+marginals, the four masks have probability $1/4$, and the Dice values
+under \eqref{app:eq:empty-dice} are $0,1,0,2/3$.  Hence
+
+\begin{equation*}
+  \mathbb{E}_{\mathrm{indep}}[
+    \Dice(Y,\widehat Y)]=\frac5{12}.
+\end{equation*}
+
+Under $Q_p$, the empty mask and $\{1,2\}$ each have probability $1/2$,
+so
+
+\begin{equation*}
+  \mathbb{E}_{Q_p}[\Dice(Y,\widehat Y)]=\frac13,
+  \qquad
+  \SDC(p,\widehat Y)=\frac12.
+\end{equation*}
+
+These are three distinct quantities.  Consequently, up to the additive
+$-1$ in the confidence induced by $L=1-\Dice$, the Dice instance of the
+level-set framework estimates an expectation of Dice under the explicit
+working posterior $Q_p$, whereas SDC is a coupling-invariant
+ratio-of-expectations surrogate. For nonempty deployed masks, they share the
+principle of aligning confidence with Dice, but neither formula is a literal
+special case of the other. For empty deployed masks, their published and
+experimental conventions must additionally be kept explicit.

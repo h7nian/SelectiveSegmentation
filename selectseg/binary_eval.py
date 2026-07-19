@@ -30,6 +30,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, Subset
 from tqdm import tqdm
 
+from selectseg.binary_baselines import strong_binary_confidences
 from selectseg.binary_framework import (
     foreground_dice_loss,
     midpoint_loss_indexed_confidences,
@@ -94,7 +95,13 @@ def _source_fingerprint():
     root = Path(__file__).resolve().parents[1]
     paths = [
         root / "selectseg" / name
-        for name in ("binary_eval.py", "binary_framework.py", "data.py", "models.py")
+        for name in (
+            "binary_eval.py",
+            "binary_baselines.py",
+            "binary_framework.py",
+            "data.py",
+            "models.py",
+        )
     ]
     digest = hashlib.sha256()
     for path in paths:
@@ -212,6 +219,7 @@ def binary_record(
         ),
         "confidence_negative_entropy": float(-_binary_entropy(probability).mean()),
     }
+    row.update(strong_binary_confidences(probability, hard_prediction))
     for count, scores in loss_indexed.items():
         row[f"confidence_dice_m{count}"] = scores["dice"]
         row[f"confidence_nhd95_m{count}"] = scores["nhd95"]
@@ -235,6 +243,11 @@ def _manifest(
         "confidence_sdc",
         "confidence_mean_max_probability",
         "confidence_negative_entropy",
+        "confidence_dice_exact",
+        "confidence_qfr_entropy",
+        "confidence_plm10_entropy",
+        "confidence_mmmc_entropy",
+        "confidence_foreground_entropy",
     ]
     for count in quadrature_rules:
         score_fields.extend(

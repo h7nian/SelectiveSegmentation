@@ -6,9 +6,14 @@ import json
 import pytest
 
 from scripts.render_paper_tables import (
+    COMPLETION_MARKER,
+    CONTRASTS,
     EXPECTED_CONDITIONS,
+    HOLM_FAMILY_BY_DATASET,
     METHODS,
     OUTPUT_NAMES,
+    RISKS,
+    _is_best,
     load_analysis,
     main,
     render_tables,
@@ -16,24 +21,41 @@ from scripts.render_paper_tables import (
 )
 
 
-def _analysis(*, condition_count=10, samples=10_000):
+def _holm(values):
+    order = sorted(range(len(values)), key=values.__getitem__)
+    adjusted = [0.0] * len(values)
+    running = 0.0
+    for rank, index in enumerate(order):
+        running = max(running, (len(values) - rank) * values[index])
+        adjusted[index] = min(1.0, running)
+    return adjusted
+
+
+def _analysis(*, condition_count=16, samples=10_000):
+    selected = EXPECTED_CONDITIONS[:condition_count]
+    family_sizes = {}
+    for dataset, _ in selected:
+        family = HOLM_FAMILY_BY_DATASET[dataset]
+        family_sizes[family] = family_sizes.get(family, 0) + len(CONTRASTS)
+
     conditions = []
     hypotheses = []
-    raw_p_values = []
-    adjusted_p_values = []
-    method_items = list(METHODS.items())
-    for condition_index, (dataset, condition_name) in enumerate(
-        reversed(EXPECTED_CONDITIONS[:condition_count])
-    ):
+    comparison_refs = {family: [] for family in family_sizes}
+    hypothesis_refs = {family: [] for family in family_sizes}
+    method_items = tuple(METHODS.items())
+    for condition_index, (dataset, condition_name) in enumerate(reversed(selected)):
         risks = {}
-        comparisons = {}
-        for risk_index, risk_field in enumerate(("risk_dice", "risk_nhd95")):
+        for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
             oracle = 0.01 + 0.001 * risk_index
-            random = 0.81 + 0.001 * risk_index
+            random = 0.90 + 0.001 * risk_index
             methods = {}
             for method_index, (method_field, label) in enumerate(method_items):
-                aurc = 0.2 + 0.005 * condition_index + 0.01 * method_index
-                aurc += 0.1 * risk_index
+                aurc = (
+                    0.10
+                    + 0.003 * condition_index
+                    + 0.02 * risk_index
+                    + 0.002 * method_index
+                )
                 excess = aurc - oracle
                 methods[method_field] = {
                     "label": label,
@@ -44,24 +66,26 @@ def _analysis(*, condition_count=10, samples=10_000):
                     "normalized_aurc": excess / (random - oracle),
                 }
             risks[risk_field] = {
-                "label": (
-                    "Dice risk"
-                    if risk_field == "risk_dice"
-                    else "Normalized penalized HD95 risk"
-                ),
+                "label": risk_label,
                 "methods": methods,
                 "oracle_aurc": oracle,
                 "random_aurc": random,
             }
-            difference = (
-                methods["confidence_dice_m32"]["aurc"]
-                - methods["confidence_nhd95_m32"]["aurc"]
+
+        family = HOLM_FAMILY_BY_DATASET[dataset]
+        comparisons = {}
+        for contrast_index, spec in enumerate(CONTRASTS):
+            methods = risks[spec.risk]["methods"]
+            difference = methods[spec.left]["aurc"] - methods[spec.right]["aurc"]
+            p_value = min(
+                1.0,
+                2 / (samples + 1) + 1e-5 * (condition_index + contrast_index),
             )
-            p_value = min(1.0, 2 / (samples + 1))
-            adjusted = min(1.0, 2 * condition_count * p_value)
-            comparisons[risk_field] = {
-                "left": "confidence_dice_m32",
-                "right": "confidence_nhd95_m32",
+            comparison = {
+                "name": spec.name,
+                "risk": spec.risk,
+                "left": spec.left,
+                "right": spec.right,
                 "difference_left_minus_right": difference,
                 "bootstrap": {
                     "difference": difference,
@@ -72,202 +96,352 @@ def _analysis(*, condition_count=10, samples=10_000):
                     "n_resamples": samples,
                     "n_observations": 20,
                     "n_clusters": 20,
-                    "seed": condition_index * 2 + risk_index,
+                    "seed": condition_index * len(CONTRASTS) + contrast_index,
                 },
-                "holm_adjusted_p_value": adjusted,
+                "holm_family": family,
+                "holm_family_size": family_sizes[family],
+                "holm_adjusted_p_value": None,
             }
-            hypotheses.append(
-                {
-                    "dataset": dataset,
-                    "condition": condition_name,
-                    "risk": risk_field,
-                    "raw_bootstrap_p_value": p_value,
-                    "holm_adjusted_p_value": adjusted,
-                }
-            )
-            raw_p_values.append(p_value)
-            adjusted_p_values.append(adjusted)
-        conditions.append(
-            {
+            hypothesis = {
                 "dataset": dataset,
                 "condition": condition_name,
+                "contrast": spec.name,
+                "risk": spec.risk,
+                "left": spec.left,
+                "right": spec.right,
+                "holm_family": family,
+                "holm_family_size": family_sizes[family],
+                "raw_bootstrap_p_value": p_value,
+                "holm_adjusted_p_value": None,
+            }
+            comparisons[spec.name] = comparison
+            hypotheses.append(hypothesis)
+            comparison_refs[family].append(comparison)
+            hypothesis_refs[family].append(hypothesis)
+
+        conditions.append(
+            {
+                "condition": condition_name,
+                "dataset": dataset,
                 "split": "test",
                 "num_rows": 20,
                 "num_image_clusters": 20,
+                "jsonl": f"outputs/{dataset}/{condition_name}.jsonl",
+                "manifest": f"outputs/{dataset}/{condition_name}.manifest.json",
+                "jsonl_sha256": f"{condition_index:064x}",
+                "manifest_sha256": f"{condition_index + 100:064x}",
                 "risks": risks,
                 "comparisons": comparisons,
+                "numerical_validation": {
+                    "reference": "confidence_dice_exact",
+                    "absolute_error_definition": (
+                        "per-image |C_Dice,M - C_Dice,Exact|"
+                    ),
+                    "rank_agreement_definition": (
+                        "Spearman average ranks and Kendall tau-b"
+                    ),
+                    "exact_match_definition": (
+                        "fraction with exact floating-point equality and no tolerance"
+                    ),
+                    "dice_quadrature": {
+                        f"confidence_dice_m{count}": {
+                            "m": count,
+                            "num_images": 20,
+                            "absolute_error": {
+                                "mean": 0.01 / count,
+                                "median": 0.008 / count,
+                                "p95": 0.02 / count,
+                                "max": 0.03 / count,
+                            },
+                            "rank_agreement": {
+                                "spearman_rho": 1 - 0.01 / count,
+                                "kendall_tau_b": 1 - 0.02 / count,
+                            },
+                            "exact_match_fraction": count / 64,
+                        }
+                        for count in (2, 8, 32)
+                    },
+                },
             }
         )
+
+    families = {}
+    for family, comparisons in comparison_refs.items():
+        raw = [comparison["bootstrap"]["p_value"] for comparison in comparisons]
+        adjusted = _holm(raw)
+        for comparison, hypothesis, value in zip(
+            comparisons, hypothesis_refs[family], adjusted
+        ):
+            comparison["holm_adjusted_p_value"] = value
+            hypothesis["holm_adjusted_p_value"] = value
+        families[family] = {
+            "definition": f"synthetic {family} family",
+            "num_hypotheses": len(raw),
+            "raw_bootstrap_p_values": raw,
+            "holm_adjusted_p_values": adjusted,
+        }
+
+    provenance_inputs = [
+        {
+            "logical_id": (
+                f"{condition['dataset']}/{condition['condition']}/synthetic-run"
+            ),
+            "dataset": condition["dataset"],
+            "condition": condition["condition"],
+            "assembly_run_id": "synthetic-run",
+            "assembly_source_sha256": "c" * 64,
+            "artifact_id": f"artifact-{index}",
+            "manifest_sha256": condition["manifest_sha256"],
+            "records_sha256": condition["jsonl_sha256"],
+            "sample_id_sha256": f"{index + 200:064x}",
+            "num_samples": condition["num_rows"],
+        }
+        for index, condition in enumerate(conditions)
+    ]
     return {
-        "schema_version": 1,
+        "schema_version": 2,
+        "provenance": {
+            "binding": "campaign-lock",
+            "campaign_id": "synthetic-campaign",
+            "campaign_lock": {
+                "logical_name": "campaign.lock.json",
+                "sha256": "f" * 64,
+            },
+            "config_sha256": "e" * 64,
+            "analysis_source_sha256": "d" * 64,
+            "inputs": provenance_inputs,
+        },
         "analysis": {
             "tie_policy": "analytic expectation over random within-tie order",
             "normalized_aurc": "normalized excess AURC",
-            "comparison": "Dice-M32 minus nHD95-M32 AURC",
+            "comparisons": "four predeclared adjacent-geometry contrasts",
+            "contrast_definitions": [
+                {
+                    "name": spec.name,
+                    "left": spec.left,
+                    "right": spec.right,
+                    "risk": spec.risk,
+                }
+                for spec in CONTRASTS
+            ],
+            "cross_loss_policy": "all other score-risk cells are descriptive",
             "bootstrap_samples": samples,
+            "bootstrap_workers": 4,
             "confidence_level": 0.95,
-            "bootstrap_p_value": "same-resample equal-tail bootstrap p-value",
+            "bootstrap_p_value": "paired equal-tail bootstrap tail probability",
             "seed": 0,
         },
         "conditions": conditions,
         "multiple_testing": {
-            "procedure": "Holm step-down family-wise-error adjustment",
-            "family": "all paired cluster bootstrap comparisons",
-            "num_hypotheses": 2 * condition_count,
+            "procedure": "Holm step-down within each family",
+            "family_policy": "core and extension are never pooled",
+            "families": families,
+            "total_hypotheses": len(CONTRASTS) * condition_count,
             "hypotheses": hypotheses,
-            "raw_bootstrap_p_values": raw_p_values,
-            "holm_adjusted_p_values": adjusted_p_values,
             "confidence_intervals": "unadjusted percentile intervals",
             "significance_calls": "not made by this analysis",
         },
     }
 
 
-def test_complete_render_has_exact_artifacts_order_and_source_numbers():
+def test_complete_render_has_declared_artifacts_and_main_orientation():
     result = _analysis()
     tables = render_tables(result, source_hash="a" * 64)
 
     assert set(tables) == set(OUTPUT_NAMES)
-    assert all("COMPLETE FINAL ANALYSIS" in text for text in tables.values())
-    assert all(
-        "DRAFT GENERATED-TABLE PLACEHOLDER" not in text
-        for text in tables.values()
-    )
-    main_table = tables["main_results.tex"]
-    assert main_table.index("Oxford Pet") < main_table.index("Kvasir-SEG")
-    assert main_table.index("Kvasir-SEG") < main_table.index("FIVES")
-    assert r"\multicolumn{4}{c}{Oxford Pet}" in main_table
-    assert r"\multicolumn{3}{c}{Kvasir-SEG}" in main_table
-    assert r"\multicolumn{3}{c}{FIVES}" in main_table
-    assert (
-        "Confidence method & CLIP-G & CLIP-T & DL-T & DL-E & "
-        "CLIP-G & CLIP-T & DL-T & CLIP-G & CLIP-T & DL-T"
-    ) in main_table
-    assert "Dataset & Model condition" not in main_table
+    assert result["multiple_testing"]["total_hypotheses"] == 64
+    assert result["multiple_testing"]["families"]["core"]["num_hypotheses"] == 40
+    assert result["multiple_testing"]["families"]["extension"]["num_hypotheses"] == 24
+    assert all("COMPLETE FINAL ANALYSIS" in table for table in tables.values())
 
-    # Every unpooled condition is a column and every method is a row. Verify a
-    # complete row directly against source values after canonical ordering.
-    ordered = validate_analysis(result)
-    expected_cells = []
-    for condition in ordered:
-        method = condition["risks"]["risk_dice"]["methods"]["confidence_sdc"]
-        expected_cells.append(
-            rf"\shortstack{{{method['aurc']:.4f}\\"
-            rf"({method['normalized_aurc']:.4f})}}"
-        )
-    assert "SDC & " + " & ".join(expected_cells) + r" \\" in main_table
-    assert main_table.count(r"\shortstack{") == 2 * 5 * 10
-    for method_label in (
-        "SDC",
+    main = tables["main_results.tex"]
+    assert r"\label{tab:main-results}" in main
+    assert r"\label{tab:adjacent-geometry-contrasts}" not in main
+    assert (
+        "Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K" in main
+    )
+    assert "Dataset & Model condition" not in main
+    assert main.count(r"\multicolumn{6}{l}{\textit{") == len(RISKS)
+    assert main.count("\nSDC &") == 3
+    assert main.count("\nDice-M32 &") == 2
+    assert main.count("\nnHD-M32 &") == 3
+    assert main.count("\nnHD95-M32 &") == 2
+    for omitted in (
         "Mean max probability",
         "Negative entropy",
-        "Dice-M32",
-        "nHD95-M32",
+        "QFR-Entropy",
+        "PLM-10/PLA-10-Entropy",
+        "MMMC-Entropy",
+        "Foreground entropy",
     ):
-        assert main_table.count(f"\n{method_label} &") == 2
-    assert r"lower is better" in main_table
-    assert r"analytic expectation" in main_table
-
-    cross_loss = tables["cross_loss_results.tex"]
-    assert r"\multicolumn{4}{c}{Oxford Pet}" in cross_loss
-    assert cross_loss.count(r"\shortstack{") == 2 * 2 * 10
-    assert cross_loss.count("\nDice-M32 &") == 2
-    assert cross_loss.count("\nnHD95-M32 &") == 2
-    quadrature = tables["quadrature_ablation.tex"]
-    assert r"\multicolumn{3}{c}{Kvasir-SEG}" in quadrature
-    assert quadrature.count("\n$M=2$ &") == 2
-    assert quadrature.count("\n$M=8$ &") == 2
-    assert quadrature.count("\n$M=32$ &") == 2
-    assert "no condition is pooled" in quadrature
-    statistics = tables["statistical_tests.tex"]
-    comparison = ordered[0]["comparisons"]["risk_dice"]
-    assert f"{comparison['difference_left_minus_right']:.4f}" in statistics
-    assert (
-        f"[{comparison['bootstrap']['ci_low']:.4f}, "
-        f"{comparison['bootstrap']['ci_high']:.4f}]"
-    ) in statistics
-    assert "same paired resamples" in statistics
-    assert "Holm" in statistics
-    assert "unadjusted" in statistics
-    assert (
-        "Method comparison / condition & Oxford Pet & Kvasir-SEG & FIVES"
-        in statistics
-    )
-    assert "Dataset & Model condition" not in statistics
-    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / CLIP-G &") == 2
-    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / CLIP-T &") == 2
-    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / DL-T &") == 2
-    assert statistics.count("\nDice-M32 $-$ nHD95-M32 / DL-E &") == 2
-    assert statistics.count(r"\shortstack{") == 2 * 10
+        assert omitted not in main
+    for spec in CONTRASTS:
+        assert spec.name not in main
+        assert f"{METHODS[spec.left]} $-$ {METHODS[spec.right]}" not in main
+    assert r"\bestresult{" in main
+    assert "Dark blue" in main
+    assert "raw/Holm-transformed" not in main
+    assert "CLIP-T:" in main and "DL-T:" in main
+    assert "significant" not in main.lower()
+    assert "significance" not in main.lower()
 
 
-def test_final_validation_requires_exact_condition_risk_and_method_sets():
-    incomplete = _analysis(condition_count=6, samples=100)
-    with pytest.raises(ValueError, match="exactly 10 conditions"):
+def test_top1_highlight_uses_the_exact_unrounded_minimum():
+    methods = {
+        "left": {"aurc": 0.1},
+        "near": {"aurc": 0.1 + 5e-11},
+    }
+    assert _is_best(methods, "left", ("left", "near"))
+    assert not _is_best(methods, "near", ("left", "near"))
+
+
+def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
+    tables = render_tables(_analysis(), source_hash="b" * 64)
+
+    for name in ("full_target_results.tex", "complete_results.tex"):
+        table = tables[name]
+        assert table.count(r"\begin{tabular}{l*{5}{c}}") == len(RISKS)
+        assert table.count(r"\begin{table*}[t]") == len(RISKS)
+        for label in METHODS.values():
+            assert table.count(f"\n{label} &") == len(RISKS)
+        assert table.count(r"\shortstack{") == len(RISKS) * len(METHODS) * 5
+        assert r"\bestresult{" in table
+        assert "raw AURC (nAURC)" in table
+
+    cross = tables["cross_loss_results.tex"]
+    assert "Full $3\\times3$" in cross
+    assert cross.count(r"\multicolumn{6}{l}{\textit{") == len(RISKS)
+    assert cross.count(r"\shortstack{") == len(RISKS) * 3 * 5
+    for method in ("Dice-M32", "nHD-M32", "nHD95-M32"):
+        assert cross.count(f"\n{method} &") == len(RISKS)
+    for condition in ("CLIP-G:", "CLIP-T:", "DL-T:", "DL-E:"):
+        assert condition in cross
+    assert "descriptive" in cross
+
+
+def test_quadrature_table_includes_exact_and_all_declared_midpoint_rules():
+    table = render_tables(_analysis(), source_hash="c" * 64)["quadrature_ablation.tex"]
+
+    assert table.count("\nDice-Exact &") == 1
+    for count in (2, 8, 32):
+        assert table.count(f"\nDice-M{count} &") == 1
+        assert table.count(f"\nDice-M{count} / ") == 7
+    for prefix in ("nHD", "nHD95"):
+        for count in (2, 8, 32):
+            assert table.count(f"\n{prefix}-M{count} &") == 1
+    assert table.count(r"\shortstack{") == (4 + 3 + 3) * 5
+    assert "exact level-set oracle" in table
+    assert r"\bestresult{" in table
+    assert r"\label{tab:dice-quadrature-fidelity}" in table
+    for statistic in (
+        "Mean abs. error",
+        "Median abs. error",
+        "P95 abs. error",
+        "Max abs. error",
+        r"Spearman $\rho$",
+        r"Kendall $\tau_b$",
+        "Exact match",
+    ):
+        assert table.count(f"/ {statistic} &") == 3
+    assert "do not enter the four contrasts" in table
+
+
+def test_final_renderer_requires_numerical_validation():
+    result = _analysis()
+    for condition in result["conditions"]:
+        del condition["numerical_validation"]
+    with pytest.raises(ValueError, match="numerical_validation is required"):
+        validate_analysis(result)
+    validate_analysis(result, allow_incomplete=True)
+    table = render_tables(result, source_hash="9" * 64, allow_incomplete=True)[
+        "quadrature_ablation.tex"
+    ]
+    assert r"\label{tab:quadrature-ablation}" in table
+    assert "tab:dice-quadrature-fidelity" not in table
+
+
+def test_full_contrast_table_reports_four_contrasts_and_all_64_conditions():
+    table = render_tables(_analysis(), source_hash="d" * 64)["statistical_tests.tex"]
+
+    assert "subset of the 64 predeclared" in table
+    assert "40 comparisons" in table
+    assert "24 comparisons" in table
+    assert r"\label{tab:statistical-tests}" in table
+    assert r"\label{tab:statistical-tests-extension}" in table
+    assert table.count(r"\shortstack{") == len(CONTRASTS) * 5
+    for spec in CONTRASTS:
+        row = f"{METHODS[spec.left]} $-$ {METHODS[spec.right]} / {RISKS[spec.risk]}"
+        assert table.count(f"\n{row} &") == 2
+    assert "raw/Holm-transformed" in table
+    assert "no exact finite-sample error-control claim" in table
+    assert "significant" not in table.lower()
+    assert "significance" not in table.lower()
+
+
+def test_validation_rejects_old_schema_and_wrong_dimensions():
+    old = _analysis()
+    old["schema_version"] = 1
+    with pytest.raises(ValueError, match="schema_version 1 is obsolete"):
+        validate_analysis(old)
+
+    incomplete = _analysis(condition_count=6)
+    with pytest.raises(ValueError, match="exactly 16"):
         validate_analysis(incomplete)
-    ordered = validate_analysis(incomplete, allow_incomplete=True)
-    assert len(ordered) == 6
+    assert len(validate_analysis(incomplete, allow_incomplete=True)) == 6
 
     missing_risk = _analysis()
-    del missing_risk["conditions"][0]["risks"]["risk_nhd95"]
-    with pytest.raises(ValueError, match="exactly the two risks"):
+    del missing_risk["conditions"][0]["risks"]["risk_nhd"]
+    with pytest.raises(ValueError, match="must contain exactly"):
         validate_analysis(missing_risk)
 
     missing_method = _analysis()
     del missing_method["conditions"][0]["risks"]["risk_dice"]["methods"][
-        "confidence_sdc"
+        "confidence_nhd_m32"
     ]
-    with pytest.raises(ValueError, match="exactly the nine methods"):
+    with pytest.raises(ValueError, match="must contain exactly"):
         validate_analysis(missing_method)
 
+    missing_contrast = _analysis()
+    del missing_contrast["conditions"][0]["comparisons"][CONTRASTS[0].name]
+    with pytest.raises(ValueError, match="must contain exactly"):
+        validate_analysis(missing_contrast)
 
-def test_validation_rejects_inconsistent_displayed_statistics():
-    bad_aurc = _analysis()
-    bad_aurc["conditions"][0]["risks"]["risk_dice"]["methods"][
-        "confidence_sdc"
-    ]["excess_aurc"] += 0.1
-    with pytest.raises(ValueError, match="excess_aurc is inconsistent"):
-        validate_analysis(bad_aurc)
+    bad_numerical = _analysis()
+    bad_numerical["conditions"][0]["numerical_validation"]["dice_quadrature"][
+        "confidence_dice_m32"
+    ]["absolute_error"]["p95"] = -1
+    with pytest.raises(ValueError, match="non-negative"):
+        validate_analysis(bad_numerical)
 
+    mixed_numerical = _analysis()
+    del mixed_numerical["conditions"][0]["numerical_validation"]
+    with pytest.raises(ValueError, match="numerical_validation is required"):
+        validate_analysis(mixed_numerical)
+
+
+def test_validation_rejects_inconsistent_statistics_and_holm_contract():
     bad_delta = _analysis()
-    bad_delta["conditions"][0]["comparisons"]["risk_dice"][
-        "difference_left_minus_right"
-    ] += 0.1
+    comparison = bad_delta["conditions"][0]["comparisons"][CONTRASTS[0].name]
+    comparison["difference_left_minus_right"] += 0.1
     with pytest.raises(ValueError, match="difference disagrees"):
         validate_analysis(bad_delta)
 
-    bad_hypothesis = _analysis()
-    bad_hypothesis["multiple_testing"]["hypotheses"][0][
-        "holm_adjusted_p_value"
-    ] = 0.999
-    with pytest.raises(ValueError, match="arrays disagree"):
-        validate_analysis(bad_hypothesis)
+    bad_holm = _analysis()
+    bad_holm["multiple_testing"]["families"]["core"]["holm_adjusted_p_values"][0] = (
+        0.999
+    )
+    with pytest.raises(ValueError, match="Holm values are inconsistent"):
+        validate_analysis(bad_holm)
 
-
-def test_validation_rejects_legacy_randomization_and_missing_bootstrap_p_value():
-    legacy_metadata = _analysis()
-    legacy_metadata["analysis"]["randomization_samples"] = 10_000
-    with pytest.raises(ValueError, match="analysis metadata.*schema"):
-        validate_analysis(legacy_metadata)
-
-    legacy_comparison = _analysis()
-    legacy_comparison["conditions"][0]["comparisons"]["risk_dice"][
-        "randomization"
-    ] = {"p_value": 0.5}
-    with pytest.raises(ValueError, match="comparison schema"):
-        validate_analysis(legacy_comparison)
-
-    missing_p = _analysis()
-    del missing_p["conditions"][0]["comparisons"]["risk_dice"]["bootstrap"][
-        "p_value"
-    ]
-    with pytest.raises(ValueError, match="bootstrap.*schema"):
-        validate_analysis(missing_p)
+    bad_definition = _analysis()
+    bad_definition["analysis"]["contrast_definitions"][0]["risk"] = "risk_nhd95"
+    with pytest.raises(ValueError, match="contrast_definitions"):
+        validate_analysis(bad_definition)
 
 
 def test_strict_loader_rejects_duplicate_keys_and_nonfinite(tmp_path):
     duplicate = tmp_path / "duplicate.json"
-    duplicate.write_text('{"schema_version": 1, "schema_version": 1}')
+    duplicate.write_text('{"schema_version": 2, "schema_version": 2}')
     with pytest.raises(ValueError, match="duplicate JSON key"):
         load_analysis(duplicate)
 
@@ -277,23 +451,23 @@ def test_strict_loader_rejects_duplicate_keys_and_nonfinite(tmp_path):
         load_analysis(nonfinite)
 
 
-def test_cli_atomically_writes_only_four_tables(tmp_path):
-    analysis = tmp_path / "analysis.json"
-    analysis.write_text(json.dumps(_analysis(), allow_nan=False) + "\n")
-    output = tmp_path / "tables"
+def test_cli_atomically_writes_only_declared_tables(tmp_path):
+    analysis_path = tmp_path / "analysis.json"
+    analysis_path.write_text(json.dumps(_analysis()))
+    output_dir = tmp_path / "tables"
 
-    main(["--analysis", str(analysis), "--output-dir", str(output)])
+    main(["--analysis", str(analysis_path), "--output-dir", str(output_dir)])
 
-    assert sorted(path.name for path in output.iterdir()) == sorted(OUTPUT_NAMES)
-    for name in OUTPUT_NAMES:
-        text = (output / name).read_text()
-        assert text.endswith("\n")
-        assert "AUTO-GENERATED" in text
-        assert not list(output.glob(f".{name}.*.tmp"))
+    assert {path.name for path in output_dir.iterdir()} == set(OUTPUT_NAMES) | {
+        COMPLETION_MARKER
+    }
+    assert all((output_dir / name).read_text().endswith("\n") for name in OUTPUT_NAMES)
+    assert (output_dir / COMPLETION_MARKER).read_text().endswith("\n")
 
 
-def test_source_object_is_not_mutated_by_validation_or_rendering():
+def test_validation_and_rendering_do_not_mutate_source():
     result = _analysis()
-    before = copy.deepcopy(result)
-    render_tables(result, source_hash="b" * 64)
-    assert result == before
+    original = copy.deepcopy(result)
+    validate_analysis(result)
+    render_tables(result, source_hash="e" * 64)
+    assert result == original

@@ -1,24 +1,23 @@
 \begin{abstract}
-Selective segmentation requires more than an accurate mask: a system must also rank
-its predictions by the harm they would incur if accepted, and that ranking depends on
-the deployment loss. We formalize this dependence by indexing both selective risk
-and confidence by a bounded segmentation loss \(L\). The ideal score is the negative
-conditional risk of the mask actually deployed,
-\(C_L^\star(x)=-\mathbb{E}[L(Y,\widehat Y(x))\mid X=x]\).
-Because a single probability map does not specify the required joint label posterior,
-we introduce a level-set law as an explicit \emph{working posterior}: draw one
-threshold \(T\sim\mathrm{Unif}(0,1)\) and set
-\(Y_T=\{i:p_i\geq T\}\). Under this stated model, expected loss is exactly the
-one-dimensional integral \(\int_0^1 L(Y_t,\widehat Y)\,dt\), yielding one
-\(M\)-point quadrature estimator for overlap and boundary losses. We separate its
-deterministic quadrature error from a loss-specific discrepancy between the working
-and true posteriors. For Dice, the resulting score is an expectation of a ratio,
-whereas Soft Dice Confidence is a ratio of expectations. Their assumptions are
-therefore not ordered: our construction is more general in the deployment loss, but
-not uniformly weaker probabilistically. Across ten fixed model--dataset conditions,
-nHD95-M32 outranks Dice-M32 under nHD95 risk in all ten, whereas Dice-M32 wins their
-Dice-risk comparison in six and loses in four; SDC has the lowest Dice-risk AURC
-among the five primary scores in six conditions. Thus loss indexing exposes useful
-boundary-specific rankings, but metric matching alone does not imply universal
-superiority.
+Selective segmentation must decide not only what mask to deploy, but also which
+predictions are safe to accept. We make that second decision explicit by indexing
+confidence by the deployment loss: the ideal score is the negative conditional
+risk of the fixed deployed mask. Because pixelwise marginals do not identify this
+quantity for nonlinear mask losses, we state a shared-threshold level-set law as a
+\emph{working posterior}, rather than treating it as the true label posterior. This
+turns expected structured loss into a one-dimensional threshold integral. We
+separate quadrature error from posterior discrepancy and show how population score
+error controls coverage-wise selective-risk and AURC regret. Dice and normalized
+Hausdorff (nHD) losses then instantiate the same Lipschitz--Wasserstein principle
+under different geometries---Jaccard overlap and normalized surface Hausdorff
+distance, respectively---while nHD95 is a robust, nonmetric boundary extension
+covered by the general bounded-loss theory but not by the nHD-specific corollary.
+For Dice, an exact level-set algorithm removes quadrature error altogether. We
+evaluate this geometry-indexed view on five binary-segmentation datasets and
+sixteen fixed model--dataset conditions using a complete \(3\times3\) design:
+Dice-, nHD-, and nHD95-indexed confidence are each evaluated under all three
+deployment risks, with predeclared adjacent-geometry comparisons and fixed
+baselines. On the ten target-adapted conditions, nHD-M32 lowers nHD-risk AURC
+relative to Dice-M32 in all ten, whereas Dice-M32 lowers Dice-risk AURC in eight;
+nHD-versus-nHD95 effects are smaller and condition dependent.
 \end{abstract}

@@ -1,0 +1,222 @@
+{
+  "schema_version": 2,
+  "artifact_type": "selectseg.binary_simulation_assembly",
+  "run_id": "74db5fc8c0672236",
+  "condition": "clipseg-general",
+  "model": "clipseg",
+  "dataset": "fives",
+  "split": "test",
+  "num_images": 200,
+  "checkpoint": null,
+  "base_model": {
+    "name": "clipseg",
+    "source": "CIDAS/clipseg-rd64-refined"
+  },
+  "source_sha256": "cf75500e7bf2ef89d4fa315ffc3bc5a8795fddc2e35445fe1f81a0bd536c0acf",
+  "environment": {
+    "packages": {
+      "python": "3.12.4",
+      "numpy": "2.5.1",
+      "scipy": "1.18.0"
+    },
+    "device": "cpu"
+  },
+  "cohort": "all images from a native binary segmentation split",
+  "decision_rule": {
+    "form": "foreground_probability >= gamma",
+    "gamma": 0.5
+  },
+  "preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "losses": {
+    "dice": "foreground 1-Dice; empty-empty=0; one-sided-empty=1",
+    "nhd": "full bidirectional digital-surface Hausdorff / image diagonal; empty-empty=0; one-sided-empty=1",
+    "nhd95": "pooled bidirectional HD95 / image diagonal; empty-empty=0; one-sided-empty=1"
+  },
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd",
+    "risk_nhd95"
+  ],
+  "auxiliary_fields": [
+    "risk_hd_pixels",
+    "risk_hd95_pixels"
+  ],
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_exact",
+    "confidence_qfr_entropy",
+    "confidence_plm10_entropy",
+    "confidence_mmmc_entropy",
+    "confidence_foreground_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd_m32",
+    "confidence_nhd95_m32"
+  ],
+  "void_policy": "total binary domain; void labels are forbidden",
+  "sdc_empty_convention": "published SDC baseline: confidence 0 when p and hard mask are empty",
+  "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d",
+  "command": [
+    "python",
+    "-m",
+    "scripts.assemble_binary_simulations"
+  ],
+  "num_rows": 200,
+  "quadrature": {
+    "2": {
+      "rule": "midpoint",
+      "nodes": [
+        0.25,
+        0.75
+      ],
+      "weights": [
+        0.5,
+        0.5
+      ]
+    },
+    "8": {
+      "rule": "midpoint",
+      "nodes": [
+        0.0625,
+        0.1875,
+        0.3125,
+        0.4375,
+        0.5625,
+        0.6875,
+        0.8125,
+        0.9375
+      ],
+      "weights": [
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125
+      ]
+    },
+    "32": {
+      "rule": "midpoint",
+      "nodes": [
+        0.015625,
+        0.046875,
+        0.078125,
+        0.109375,
+        0.140625,
+        0.171875,
+        0.203125,
+        0.234375,
+        0.265625,
+        0.296875,
+        0.328125,
+        0.359375,
+        0.390625,
+        0.421875,
+        0.453125,
+        0.484375,
+        0.515625,
+        0.546875,
+        0.578125,
+        0.609375,
+        0.640625,
+        0.671875,
+        0.703125,
+        0.734375,
+        0.765625,
+        0.796875,
+        0.828125,
+        0.859375,
+        0.890625,
+        0.921875,
+        0.953125,
+        0.984375
+      ],
+      "weights": [
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125
+      ]
+    }
+  },
+  "jsonl_sha256": "1ed5642002afcfed3a6a664e1a729301c7c63d7c9d9f8ee8920b229737945113",
+  "assembly": {
+    "assembly_schema_version": 2,
+    "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+    "campaign_lock_sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "artifact_id": "cb5c08e73819574c",
+    "artifact_manifest_sha256": "977fd1d5362e68597695e38b2de381f73880df3c537a734a8d3a87427702a690",
+    "artifact_source_sha256": "42a369ca8b2d6b7eaa54ac2c8e4dc170c57d4705d6f5d1954a7be453d6b2c915",
+    "common_manifest_sha256": "6efeceaba079b36a8fca22b7b698b9a19e57e25de3b9e0530488976431a3ee9e",
+    "common_jsonl_sha256": "8cf0a25487d2333f5a664906cd7eab4403e68a139f4f13d90cbc3dae6434a40a",
+    "simulation_manifests": {
+      "2": {
+        "path": "outputs/binary_simulations/fives/clipseg-general/1bfa9f005f7f444a/manifest.json",
+        "sha256": "646b03c73a7fd15ec47da4e0244156f93d5456ade36308b72199292869374f9c",
+        "jsonl_sha256": "4504e09dd4d00b0f34ee6f04c150f417218ea3b2f576359b412646515007deb1"
+      },
+      "8": {
+        "path": "outputs/binary_simulations/fives/clipseg-general/b9c8756c7c4c2a5a/manifest.json",
+        "sha256": "875423174bb410038c3b71ccb1db64d00ef1a7073a5b82cf4c7e66aa532e5baa",
+        "jsonl_sha256": "d9166edf8deb290ac377a3780036e995f7400a430f56633d3bc522d9800dba1e"
+      },
+      "32": {
+        "path": "outputs/binary_simulations/fives/clipseg-general/98efc55392e4aee3/manifest.json",
+        "sha256": "a7bac59a498cb2c9d1cb7f64f1b511c31fb91870f43d3cde4ab9953800b44e43",
+        "jsonl_sha256": "dea3eaa65e6eba9597523921417978d26f688e972f7660416f721ab1fae5ff4d"
+      }
+    },
+    "simulation_jsonl": {
+      "2": "4504e09dd4d00b0f34ee6f04c150f417218ea3b2f576359b412646515007deb1",
+      "8": "d9166edf8deb290ac377a3780036e995f7400a430f56633d3bc522d9800dba1e",
+      "32": "dea3eaa65e6eba9597523921417978d26f688e972f7660416f721ab1fae5ff4d"
+    },
+    "campaign_id": "binary-midpoint-main-v1",
+    "campaign_lock_path": "outputs/binary_campaign/campaign.lock.json",
+    "common_manifest": {
+      "path": "outputs/binary_common_scores/fives/clipseg-general/e52a908c8cee81d2/manifest.json",
+      "sha256": "6efeceaba079b36a8fca22b7b698b9a19e57e25de3b9e0530488976431a3ee9e",
+      "jsonl_sha256": "8cf0a25487d2333f5a664906cd7eab4403e68a139f4f13d90cbc3dae6434a40a"
+    }
+  }
+}

@@ -12,10 +12,12 @@ def _rules(*counts):
 
 
 def test_binary_record_has_matched_risks_and_loss_indexed_confidences():
-    probability = np.array(
+    probability = np.full((10, 10), 0.1, dtype=float)
+    probability[:3, :3] = np.array(
         [[0.9, 0.8, 0.2], [0.7, 0.4, 0.1], [0.2, 0.1, 0.0]], dtype=float
     )
-    truth = np.array(
+    truth = np.zeros((10, 10), dtype=bool)
+    truth[:3, :3] = np.array(
         [[1, 1, 0], [1, 0, 0], [0, 0, 0]], dtype=bool
     )
     row = binary_record(
@@ -35,6 +37,14 @@ def test_binary_record_has_matched_risks_and_loss_indexed_confidences():
     assert row["risk_dice"] == 0.0
     assert row["risk_nhd95"] == 0.0
     assert 0 <= row["confidence_sdc"] <= 1
+    for field in (
+        "confidence_dice_exact",
+        "confidence_qfr_entropy",
+        "confidence_plm10_entropy",
+        "confidence_foreground_entropy",
+    ):
+        assert -1 <= row[field] <= 0
+    assert -2 <= row["confidence_mmmc_entropy"] <= 0
     for count in (2, 32):
         assert -1 <= row[f"confidence_dice_m{count}"] <= 0
         assert -1 <= row[f"confidence_nhd95_m{count}"] <= 0
@@ -42,8 +52,8 @@ def test_binary_record_has_matched_risks_and_loss_indexed_confidences():
 
 
 def test_binary_record_anchors_confidence_to_the_declared_gamma():
-    probability = np.array([[0.8, 0.6], [0.4, 0.2]])
-    truth = np.array([[1, 0], [0, 0]], dtype=bool)
+    probability = np.tile(np.array([[0.8, 0.6], [0.4, 0.2]]), (5, 5))
+    truth = np.tile(np.array([[1, 0], [0, 0]], dtype=bool), (5, 5))
     common = dict(
         run_id="unit-test",
         image_id="x",
@@ -65,8 +75,8 @@ def test_binary_record_anchors_confidence_to_the_declared_gamma():
 
 
 def test_negative_image_is_kept_and_uses_total_empty_conventions():
-    probability = np.array([[0.9, 0.8], [0.2, 0.1]])
-    truth = np.zeros((2, 2), dtype=bool)
+    probability = np.tile(np.array([[0.9, 0.8], [0.2, 0.1]]), (5, 5))
+    truth = np.zeros((10, 10), dtype=bool)
     common = dict(
         run_id="unit-test",
         image_id="x",
@@ -82,7 +92,7 @@ def test_negative_image_is_kept_and_uses_total_empty_conventions():
     assert row["risk_hd95_pixels"] == pytest.approx(row["image_diagonal"])
 
     empty = binary_record(
-        np.zeros((2, 2)), truth, **common
+        np.zeros((10, 10)), truth, **common
     )
     assert empty["risk_dice"] == 0.0
     assert empty["risk_nhd95"] == 0.0
@@ -91,11 +101,13 @@ def test_negative_image_is_kept_and_uses_total_empty_conventions():
 
 
 def test_binary_record_requires_a_total_binary_truth_and_equal_shapes():
-    probability = np.full((2, 2), 0.4)
+    probability = np.full((10, 10), 0.4)
+    void_truth = np.zeros((10, 10), dtype=int)
+    void_truth[0, :3] = (0, 255, 1)
     with pytest.raises(ValueError, match="no void"):
         binary_record(
             probability,
-            np.array([[0, 255], [0, 1]]),
+            void_truth,
             run_id="unit-test",
             image_id="x",
             image_index=0,
@@ -107,7 +119,7 @@ def test_binary_record_requires_a_total_binary_truth_and_equal_shapes():
     with pytest.raises(ValueError, match="equal shapes"):
         binary_record(
             probability,
-            np.ones((3, 2), dtype=bool),
+            np.ones((11, 10), dtype=bool),
             run_id="unit-test",
             image_id="x",
             image_index=0,
@@ -119,8 +131,8 @@ def test_binary_record_requires_a_total_binary_truth_and_equal_shapes():
 
 
 def test_binary_record_rejects_mislabeled_rule_and_invalid_gamma():
-    probability = np.full((2, 2), 0.4)
-    truth = np.zeros((2, 2), dtype=bool)
+    probability = np.full((10, 10), 0.4)
+    truth = np.zeros((10, 10), dtype=bool)
     common = dict(
         run_id="unit-test",
         image_id="x",

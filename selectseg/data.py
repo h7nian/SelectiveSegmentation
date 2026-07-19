@@ -97,6 +97,22 @@ SPECS = {
         train_split="train",
         eval_split="test",
     ),
+    "isic": DatasetSpec(
+        name="isic",
+        class_names=("background", "skin lesion"),
+        prompts=("skin lesion",),
+        prompt_classes=(1,),
+        train_split="train",
+        eval_split="test",
+    ),
+    "tn3k": DatasetSpec(
+        name="tn3k",
+        class_names=("background", "thyroid nodule"),
+        prompts=("thyroid nodule",),
+        prompt_classes=(1,),
+        train_split="train",
+        eval_split="test",
+    ),
     "voc": DatasetSpec(
         name="voc",
         class_names=VOC_CLASS_NAMES,
@@ -348,6 +364,118 @@ class FivesSegmentation(Dataset):
         return image, mask, 0
 
 
+class _StrictPairedBinarySegmentation(Dataset):
+    """Shared loader for official train/test releases paired strictly by stem."""
+
+    _SPLITS = frozenset({"train", "test"})
+    _SUFFIXES = frozenset({".png", ".jpg", ".jpeg"})
+    _DATASET_NAME = "binary dataset"
+    _DOWNLOAD_HINT = "download the dataset first"
+    _MASK_STEM_SUFFIX = ""
+
+    def __init__(self, root, split):
+        if split not in self._SPLITS:
+            raise ValueError(
+                f"{self._DATASET_NAME} split must be one of "
+                f"{sorted(self._SPLITS)}, got {split!r}"
+            )
+
+        images_dir, masks_dir = self._split_directories(Path(root), split)
+        images = self._files_by_stem(images_dir, "image")
+        masks = self._files_by_stem(masks_dir, "mask", mask=True)
+        image_stems = set(images)
+        mask_stems = set(masks)
+        if image_stems != mask_stems:
+            missing_masks = sorted(image_stems - mask_stems)
+            missing_images = sorted(mask_stems - image_stems)
+            raise ValueError(
+                f"{self._DATASET_NAME} image/mask stems are not paired: "
+                f"missing masks={missing_masks[:5]}, "
+                f"missing images={missing_images[:5]}"
+            )
+
+        self.samples = []
+        for stem in sorted(image_stems):
+            image_path, mask_path = images[stem], masks[stem]
+            with Image.open(image_path) as image, Image.open(mask_path) as mask_image:
+                if image.size != mask_image.size:
+                    raise ValueError(
+                        f"{self._DATASET_NAME} image/mask size mismatch for "
+                        f"{stem!r}: image={image.size}, mask={mask_image.size}"
+                    )
+            self.samples.append((stem, image_path, mask_path))
+
+    def _split_directories(self, root, split):
+        raise NotImplementedError
+
+    def _files_by_stem(self, directory, kind, *, mask=False):
+        if not directory.is_dir():
+            raise FileNotFoundError(
+                f"{directory} not found; {self._DOWNLOAD_HINT}"
+            )
+
+        files = {}
+        for path in directory.iterdir():
+            if not path.is_file() or path.suffix.lower() not in self._SUFFIXES:
+                continue
+            stem = path.stem
+            if mask and self._MASK_STEM_SUFFIX:
+                stem = stem.removesuffix(self._MASK_STEM_SUFFIX)
+            if stem in files:
+                raise ValueError(
+                    f"{self._DATASET_NAME} has duplicate {kind} stem {stem!r}: "
+                    f"{files[stem].name!r} and {path.name!r}"
+                )
+            files[stem] = path
+        return files
+
+    def __len__(self):
+        return len(self.samples)
+
+    def sample_id(self, index):
+        """Return the stable paired image/mask stem."""
+        return self.samples[index][0]
+
+    def __getitem__(self, index):
+        _, image_path, mask_path = self.samples[index]
+        with Image.open(image_path) as source:
+            image = source.convert("RGB")
+        with Image.open(mask_path) as source:
+            mask_channels = TF.pil_to_tensor(source)
+        mask = (mask_channels.amax(dim=0, keepdim=True) >= 128).long()
+        return image, mask, 0
+
+
+class ISICSegmentation(_StrictPairedBinarySegmentation):
+    """ISIC 2018 Task 1 lesion masks with the official train/test split."""
+
+    _DATASET_NAME = "ISIC"
+    _DOWNLOAD_HINT = "run scripts/download_binary_assets.py --datasets isic"
+    _MASK_STEM_SUFFIX = "_segmentation"
+
+    def _split_directories(self, root, split):
+        release_split = "Training" if split == "train" else "Test"
+        base = root / "ISIC2018"
+        return (
+            base / f"ISIC2018_Task1-2_{release_split}_Input",
+            base / f"ISIC2018_Task1_{release_split}_GroundTruth",
+        )
+
+
+class TN3KSegmentation(_StrictPairedBinarySegmentation):
+    """TN3K thyroid-nodule masks with the official trainval/test split."""
+
+    _DATASET_NAME = "TN3K"
+    _DOWNLOAD_HINT = "run scripts/download_binary_assets.py --datasets tn3k"
+
+    def _split_directories(self, root, split):
+        release_split = "trainval" if split == "train" else "test"
+        extracted = root / "TN3K" / "extracted" / "Thyroid Dataset" / "tn3k"
+        normalized = root / "TN3K" / "tn3k"
+        base = extracted if extracted.is_dir() else normalized
+        return base / f"{release_split}-image", base / f"{release_split}-mask"
+
+
 def _base_dataset(spec, root, split):
     if spec.name == "pet":
         return PetSegmentation(root, split)
@@ -355,6 +483,10 @@ def _base_dataset(spec, root, split):
         return KvasirSegmentation(root, split)
     if spec.name == "fives":
         return FivesSegmentation(root, split)
+    if spec.name == "isic":
+        return ISICSegmentation(root, split)
+    if spec.name == "tn3k":
+        return TN3KSegmentation(root, split)
     if spec.name == "voc":
         return VOCSegmentationBase(root, split)
     raise ValueError(f"Unsupported dataset spec {spec.name!r}")

@@ -1,50 +1,112 @@
-\section{Additional experimental results}
+\section{Additional experimental results and reproducibility}
 \label{app:additional-results}
 
-This appendix retains the complete generated outputs underlying the compact
-main-text presentation.  The same validated manifests and analysis run produce
-all tables; no row is selected according to its observed AURC or \(p\)-value.
+The final tables are generated from one validated analysis object; no row is
+selected by its observed AURC, interval, or tail probability. This source
+intentionally contains no transcribed result values.
 
-\subsection{Reproducibility identifiers}
+\subsection{Immutable campaign and execution graph}
 
-All ten evaluation manifests share the evaluator-source identifier below.
-The public artifact retains those manifests, including all six target-trained
-checkpoint hashes, training configurations, sample-list and JSONL hashes, and
-the exact package/device records.  The base weights used by the runs are fixed
-by the identifiers below; each generated table also records the final analysis
-JSON SHA-256 in its source comment.
+The reproducibility release is accepted only when it contains exactly sixteen
+schema-v2 frozen-map manifests, one for every declared model--dataset condition.
+Each manifest binds the ordered sample identifiers, probability/truth payload,
+cohort and checkpoint metadata, evaluator-source fingerprint, package versions,
+device metadata, and SHA-256 digests. A no-overwrite campaign lock binds those
+sixteen manifests to \(\gamma=0.5\), midpoint \(M\in\{2,8,32\}\), and seed 0.
+Append-only, phase-specific submission receipts record every intended Slurm job
+and its returned job identifier; unresolved submission intent blocks blind
+resubmission.
 
-\begin{table}[h]
-\centering
-\caption{Base-model provenance for the final runs.}
-\label{tab:base-model-provenance}
-{\scriptsize\setlength{\tabcolsep}{4pt}%
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{ll}
-\toprule
-Artifact & Immutable identifier \\
-\midrule
-Evaluator source bundle SHA-256 & \texttt{0c44f7f9a2b483843069add08f80823ea8b2a01814914a9dd0acc71d6b7440d7} \\
-CLIPSeg Hugging Face revision & \texttt{999e0328d9e10b484360c477313983f9afdd7050} \\
-CLIPSeg \texttt{model.safetensors} SHA-256 & \texttt{d00ca85d6b859f9d07b7cfb8ef26fe9771cb275b34c9368f2ecf603139307f55} \\
-DeepLabV3 COCO-with-VOC weights SHA-256 & \texttt{cd0a25694c4a0f7106b38f4938bf90a874f2f241cc410b8f63c7024399538f06} \\
-\bottomrule
-\end{tabular}}}
-\end{table}
+The execution graph separates expensive inference from repeated geometry. One
+GPU \emph{freeze} job per condition writes the immutable native-resolution map
+artifact; every freeze job is eligible on either of two private A100 partitions. One CPU
+\emph{common} job per artifact computes the three observed risks, both raw-pixel
+boundary auxiliaries, and the eight \(M\)-independent scores. Finally, each
+independent pair \((\text{condition},M)\) is one CPU simulation job---48 jobs,
+not a Slurm array---and writes only the Dice, nHD, and nHD95 scores for that
+\(M\). A strict assembler joins one common shard and the three \(M\)-specific
+shards only when schemas, identities, row counts, sample ordering, hashes, and
+campaign bindings agree exactly. This design computes each shared floating-point
+quantity once and lets the three numerical resolutions run in parallel.
 
-Evaluation used Python 3.12.4, NumPy 2.5.1, SciPy 1.18.0, PyTorch
-2.12.1, torchvision 0.27.1, and Transformers 5.13.0 on NVIDIA A100-SXM4
-40GB GPUs with CUDA 13.0.  These are provenance records, not claims that the
-ranking results require this hardware.
+The manifests, lock, assembled records, diagnostics, and analysis JSON are the
+authoritative computational provenance. They retain checkpoint and source
+hashes plus software/hardware versions; a portable release descriptor adds the
+exact cached CLIPSeg revision, torchvision weight digest, and available
+training-configuration hashes without exporting private execution paths.
 
-\subsection{Complete matched and cross-loss results}
+\IfFileExists{Tables/results_complete.tex}{%
+  \input{Tables/results_complete.tex}
+  \subsection{Complete matched and cross-loss results}
 
-\input{Tables/cross_loss_results.tex}
+  \input{Tables/full_target_results.tex}
+  \input{Tables/complete_results.tex}
+  \input{Tables/cross_loss_results.tex}
 
-\subsection{Quadrature-resolution ablation}
+  \subsection{Numerical-resolution and Exact-Dice validation}
 
-\input{Tables/quadrature_ablation.tex}
+  \input{Tables/quadrature_ablation.tex}
 
-\subsection{Paired uncertainty and multiplicity control}
+  \subsection{Paired uncertainty and multiplicity adjustment}
 
-\input{Tables/statistical_tests.tex}
+  \input{Tables/statistical_tests.tex}
+}{%
+  \paragraph{Rendering guard.}
+  Complete numerical tables appear here only after the strict sixteen-condition
+  renderer publishes \texttt{Tables/results\_complete.tex} after all six tables
+  share one validated analysis hash. Until then, stale or partial tables are
+  deliberately excluded from the compiled manuscript.
+}
+
+\IfFileExists{Tables/binary_diagnostics.tex}{%
+  \subsection{Marginal calibration and level-set diversity diagnostics}
+
+  \input{Tables/binary_diagnostics.tex}
+}{%
+  \paragraph{Diagnostics rendering guard.}
+  The descriptive diagnostics table appears only after the campaign-bound
+  validator receives the immutable lock and sixteen explicit
+  \texttt{diagnostics.json} files. Marginal calibration and ladder diversity
+  are not treated as validation of the joint mask posterior.
+}
+
+\IfFileExists{Figures/risk_coverage_complete.tex}{%
+  \input{Figures/risk_coverage_complete.tex}
+  \subsection{Complete risk--coverage curves}
+
+  Figures~\ref{fig:rc-pet}--\ref{fig:rc-tn3k} plot the three indexed \(M=32\)
+  scores, SDC, oracle, and random references under every risk. Exact confidence
+  ties use the same analytic convention as the tabulated AURC, so the mean of
+  each discrete curve equals its reported AURC.
+
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/risk_coverage_all_indexed_pet.pdf}
+    \caption{Oxford-IIIT Pet risk--coverage curves for all four fixed conditions.}
+    \label{fig:rc-pet}
+  \end{figure*}
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/risk_coverage_all_indexed_kvasir.pdf}
+    \caption{Kvasir-SEG risk--coverage curves.}
+    \label{fig:rc-kvasir}
+  \end{figure*}
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/risk_coverage_all_indexed_fives.pdf}
+    \caption{FIVES risk--coverage curves.}
+    \label{fig:rc-fives}
+  \end{figure*}
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/risk_coverage_all_indexed_isic.pdf}
+    \caption{ISIC 2018 risk--coverage curves.}
+    \label{fig:rc-isic}
+  \end{figure*}
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/risk_coverage_all_indexed_tn3k.pdf}
+    \caption{TN3K risk--coverage curves.}
+    \label{fig:rc-tn3k}
+  \end{figure*}
+}{}
