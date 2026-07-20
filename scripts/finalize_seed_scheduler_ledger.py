@@ -3,10 +3,10 @@
 This command is deliberately separate from the submission planner.  It is a
 read-only ``sacct`` consumer and never submits, updates, cancels, or retries a
 job.  Once all 20 top-level jobs are terminal, it validates every record from a
-successful job and any record that a failed job nevertheless published.  It
-then logically appends one content-addressed terminal event to the private
-scheduler ledger and publishes a path-free, strict-whitelist summary.  A failed
-terminal job may have no record and is never reported as a complete campaign.
+successful job and any record that a failed job nevertheless published.  A
+dry run reports terminal failures without mutating the ledger.  Persistent
+closure is permitted only for 20 successful jobs, after which one
+content-addressed terminal event and a path-free public summary are written.
 """
 
 from __future__ import annotations
@@ -1329,6 +1329,66 @@ def load_scheduler_accounting_closure(
     return {"private": private, "public": public}
 
 
+def validate_complete_training_closure(
+    binding,
+    planned_jobs,
+    *,
+    expected_public_summary_sha256,
+):
+    """Validate the fixed scheduler closure before sealing checkpoints.
+
+    The checkpoint gate deliberately accepts no path overrides.  It binds the
+    canonical training receipt, current strict training records, private
+    terminal event, and redacted public summary to the exact locked 20-job
+    plan.  The operator-supplied public-summary digest prevents accidentally
+    consuming different bytes from those reviewed after finalization.
+    """
+
+    expected_summary_sha = _digest(
+        expected_public_summary_sha256,
+        location="expected public scheduler-summary sha256",
+    )
+    jobs = tuple(planned_jobs)
+    receipt = _validate_receipt(TRAIN_RECEIPT, jobs)
+    records, record_set_sha = _load_records(binding, jobs, receipt)
+    if len(records) != EXPECTED_JOBS:
+        raise RuntimeError("scheduler closure requires exactly 20 training records")
+
+    public_payload = _read_regular(PUBLIC_SUMMARY)
+    observed_summary_sha = _sha256_bytes(public_payload)
+    if observed_summary_sha != expected_summary_sha:
+        raise ValueError("public scheduler summary SHA-256 mismatch")
+
+    closure = load_scheduler_accounting_closure(
+        PRIVATE_LEDGER,
+        PUBLIC_SUMMARY,
+        expected_job_bindings=receipt["job_bindings"],
+        expected_spec_lock_sha256=binding["sha256"],
+        expected_receipt_sha256=receipt["sha256"],
+        expected_record_set_sha256=record_set_sha,
+        require_complete=True,
+    )
+
+    # Detect changes to the three fixed closure files across validation.  The
+    # checkpoint writer immediately revalidates every training record/output.
+    if _sha256_bytes(_read_regular(TRAIN_RECEIPT)) != receipt["sha256"]:
+        raise RuntimeError("training receipt changed during scheduler closure gate")
+    if (
+        _sha256_bytes(_read_regular(PRIVATE_LEDGER))
+        != closure["private"]["private_ledger_sha256"]
+    ):
+        raise RuntimeError("private scheduler ledger changed during closure gate")
+    if _sha256_bytes(_read_regular(PUBLIC_SUMMARY)) != expected_summary_sha:
+        raise RuntimeError("public scheduler summary changed during closure gate")
+    return {
+        "public_summary": closure["public"],
+        "public_summary_sha256": observed_summary_sha,
+        "private_ledger_sha256": closure["private"]["private_ledger_sha256"],
+        "train_submission_receipt_sha256": receipt["sha256"],
+        "training_record_set_sha256": record_set_sha,
+    }
+
+
 def _atomic_write_new_or_identical(path, value):
     destination = Path(path)
     encoded = (
@@ -1479,6 +1539,11 @@ def finalize_scheduler_ledger(
     summary = _validate_public_summary(
         _public_summary(event, private_ledger_sha256=final_ledger_sha)
     )
+    if write and not event["campaign_complete"]:
+        raise RuntimeError(
+            "refusing to persist terminal failures; design and audit a recovery "
+            "receipt before closing the scheduler ledger"
+        )
     if write:
         # A conflicting public destination must not cause a private append first.
         _preflight_new_or_identical(public_summary, summary)

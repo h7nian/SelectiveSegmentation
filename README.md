@@ -411,7 +411,18 @@ Each job computes Dice, nHD, and nHD95 jointly for the same condition. M128 is
 a high-resolution numerical reference for the boundary losses, not an exact
 integral. The strict analyzer requires all 16 auxiliary and all 16 canonical
 record paths explicitly; `scripts/render_m128_auxiliary.py` then emits the
-appendix table from its analysis JSON.
+appendix table from its analysis JSON:
+
+```bash
+python -m scripts.render_m128_auxiliary \
+  --analysis outputs/binary_m128_auxiliary_analysis/analysis.json
+```
+
+The canonical display-scaled artifact is written once to
+`outputs/binary_m128_auxiliary_analysis/rendered_v2/m128_numerical_reference.tex`.
+The pre-scaling file under `rendered/` is retained as a superseded provenance
+artifact and must not be published as the manuscript table. The renderer never
+overwrites either artifact.
 
 Deployment-action sensitivity uses a separate immutable lock and exactly one
 job per `(condition, gamma)` for `gamma in {0.3,0.7}`:
@@ -429,7 +440,26 @@ Every gamma job computes all three risks and all three M32 indexed scores in
 one pass. `scripts/analyze_gamma_sensitivity.py` requires the complete 32-run
 grid, the 16 canonical assemblies, the auxiliary lock, and the locked main
 analysis. This is a sensitivity analysis of the deployed action; it is not a
-test-set search for a favorable threshold.
+test-set search for a favorable threshold. Analyze the fixed grid and render
+the table with:
+
+```bash
+python -m scripts.analyze_gamma_sensitivity \
+  --auxiliary-lock configs/auxiliary/binary_gamma_sensitivity-v1.lock.json \
+  --auxiliary-inputs <32-explicit-gamma-records.jsonl-paths> \
+  --canonical-inputs <16-explicit-canonical-records.jsonl-paths> \
+  --canonical-analysis outputs/binary_final_v3_analysis/analysis.json \
+  --output-root outputs/binary_gamma_sensitivity_analysis
+python -m scripts.render_gamma_sensitivity \
+  --analysis outputs/binary_gamma_sensitivity_analysis/b0d4468443fcc46e/analysis.json
+```
+
+The display-scaled, write-once renderer output is
+`outputs/binary_gamma_sensitivity_analysis/rendered_v3/f6915b8dce868dd7/gamma_sensitivity.tex`.
+The earlier artifacts under `rendered/`, `rendered_overfull_fix/`, and
+`rendered_v2/` are superseded provenance records and must not replace the v3
+manuscript table. The content-addressed subdirectory and no-overwrite policy
+remain unchanged.
 
 The analysis-only grouped diagnostic is generated from the 16 explicit
 canonical assembly paths with `scripts/analyze_working_risk_diagnostics.py`
@@ -587,11 +617,15 @@ guard for the twenty jobs already bound to this extension. The checkpoint and
 downstream locks intentionally follow the immutable path recorded inside the
 spec lock under `outputs/binary_seed_campaign/`.
 
-After all 20 jobs are terminal, first preview and then seal their Slurm
-accounting. The finalizer binds the exact training receipt, all strict
-successful-job records, and the existing hash-chained scheduler-adjustment
-ledger. It publishes only a path-free summary; a terminal failure is recorded
-but cannot pass the completion gate:
+After all 20 jobs are terminal, first apply the reviewed post-training record
+validator hardening and run its focused tests. This ordering makes the stronger
+runtime, GPU-profile, environment, and A100 checks part of the immutable
+closure; never create the checkpoint lock with the pre-hardening validator.
+Then preview and seal Slurm accounting. The finalizer binds the exact training
+receipt, all strict successful-job records, and the existing hash-chained
+scheduler-adjustment ledger. It publishes only a path-free summary. A terminal
+failure appears in the dry-run preview but is never persisted; stop and design
+an audited recovery receipt instead of changing receipt paths:
 
 ```bash
 python -m scripts.finalize_seed_scheduler_ledger
@@ -599,12 +633,16 @@ python -m scripts.finalize_seed_scheduler_ledger --write
 sha256sum outputs/public_seed/seed_scheduler_summary.json
 ```
 
-After all 20 final-epoch records and the scheduler closure validate, create the
-immutable checkpoint lock, submit exactly 20 freeze jobs, and create the
-downstream lock only after all frozen artifacts validate:
+Run `--write` only when the preview reports 20 successful `COMPLETED` jobs and
+no failures. Record the displayed public-summary SHA-256. The checkpoint
+planner revalidates the fixed private ledger, public summary, training receipt,
+all 20 current records, and their identity-to-job bindings before it can write
+the immutable checkpoint lock. Then submit exactly 20 freeze jobs, and create
+the downstream lock only after all frozen artifacts validate:
 
 ```bash
 python -m scripts.submit_binary_seed_extension --phase checkpoint-lock \
+  --expected-scheduler-summary-sha256 <scheduler-summary-sha256> \
   --write-checkpoint-lock
 python -m scripts.submit_binary_seed_extension --phase freeze \
   --expected-checkpoint-lock-sha256 <checkpoint-lock-sha256> --submit \
@@ -903,6 +941,8 @@ python -m pytest -q tests/test_binary_framework.py \
   tests/test_binary_runtime.py \
   tests/test_cardinality_diagnostics.py \
   tests/test_binary_seed_extension.py \
+  tests/test_finalize_seed_scheduler_ledger.py \
+  tests/test_export_binary_seed_provenance.py \
   tests/test_publish_binary_seed_extension.py tests/test_synthetic_posterior.py \
   tests/test_binary_qualitative_cases.py \
   tests/test_analyze_working_risk_diagnostics.py \

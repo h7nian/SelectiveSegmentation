@@ -26,8 +26,11 @@ from scripts.analyze_gamma_sensitivity import (
     write_report,
 )
 from scripts.render_gamma_sensitivity import (
+    DEFAULT_OUTPUT_ROOT,
     OUTPUT_NAME,
+    _aurc_range,
     load_analysis,
+    parse_args,
     render_analysis,
     validate_analysis,
     write_output,
@@ -218,9 +221,7 @@ def _report():
         if row["is_target_condition"]
     ]
     auxiliary_inputs = [
-        {
-            "manifest_sha256": hashlib.sha256(f"manifest-{index}".encode()).hexdigest()
-        }
+        {"manifest_sha256": hashlib.sha256(f"manifest-{index}".encode()).hexdigest()}
         for index in range(32)
     ]
     return {
@@ -293,9 +294,7 @@ def test_condition_join_metrics_reversals_and_tie_aware_mass():
     # invariant floating-point reduction; this is not artifact contamination.
     roundoff_rows = copy.deepcopy(auxiliary[0.7].rows)
     value = roundoff_rows[0][GAMMA_INVARIANT_FIELDS[-1]]
-    roundoff_rows[0][GAMMA_INVARIANT_FIELDS[-1]] = float(
-        np.nextafter(value, np.inf)
-    )
+    roundoff_rows[0][GAMMA_INVARIANT_FIELDS[-1]] = float(np.nextafter(value, np.inf))
     roundoff = dict(auxiliary)
     roundoff[0.7] = GammaConditionData(
         auxiliary[0.7].records_path,
@@ -352,7 +351,9 @@ def test_primary_analysis_values_are_recomputed_and_tampering_is_rejected(tmp_pa
                 "dataset": dataset,
                 "condition": condition,
                 "jsonl_sha256": data.manifest["jsonl_sha256"],
-                "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+                "manifest_sha256": hashlib.sha256(
+                    manifest_path.read_bytes()
+                ).hexdigest(),
                 "num_rows": len(data.rows),
                 "comparisons": comparisons,
                 "risks": risks,
@@ -396,6 +397,7 @@ def test_renderer_is_complete_deterministic_labeled_and_content_addressed(tmp_pa
     assert "not threshold tuning or a robustness guarantee" in tex
     assert "Predicted-empty rate" in tex
     assert "Spearman" in tex and "J_{0.25}" in tex
+    assert r"Range of $100(\Delta_\gamma-\Delta_{.5})$" in tex
     assert tex.count(r"\resizebox{\linewidth}{!}{%") == 2
     assert tex.count(r"\textbf{Macro mean}") == 1
     assert "macro-mean row" in tex
@@ -416,6 +418,13 @@ def test_renderer_is_complete_deterministic_labeled_and_content_addressed(tmp_pa
     assert destination.parent.name == source_hash[:16]
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
         write_output(tex, tmp_path / "tex", source_hash=source_hash)
+
+
+def test_renderer_default_and_aurc_change_use_versioned_times_100_display():
+    args = parse_args(["--analysis", "analysis.json"])
+    assert args.output_root == DEFAULT_OUTPUT_ROOT
+    assert args.output_root.endswith("/rendered_v3")
+    assert _aurc_range({"min": -0.0123, "max": 0.0456}) == (r"$[-1.230,\,4.560]$")
 
 
 def test_renderer_rejects_tampered_headline_and_duplicate_json(tmp_path):

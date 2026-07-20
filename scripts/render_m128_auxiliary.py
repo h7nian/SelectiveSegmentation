@@ -27,6 +27,7 @@ from scripts.analyze_m128_auxiliary import (
 
 
 OUTPUT_NAME = "m128_numerical_reference.tex"
+DEFAULT_OUTPUT_DIR = "outputs/binary_m128_auxiliary_analysis/rendered_v2"
 DATASET_LABELS = {
     "pet": "Oxford Pet",
     "kvasir": "Kvasir-SEG",
@@ -85,7 +86,7 @@ def parse_args(argv: Sequence[str] | None = None):
     parser.add_argument("--analysis", required=True)
     parser.add_argument(
         "--output-dir",
-        default="outputs/binary_m128_auxiliary_analysis/rendered",
+        default=DEFAULT_OUTPUT_DIR,
     )
     return parser.parse_args(argv)
 
@@ -216,7 +217,10 @@ def _validate_comparison(value: Any, *, spec, location: str, num_images: int) ->
 def validate_analysis(value: Any) -> dict[tuple[str, str], dict]:
     if not isinstance(value, dict) or set(value) != TOP_LEVEL_KEYS:
         raise ValueError("analysis has an invalid top-level schema")
-    if value["schema_version"] != SCHEMA_VERSION or value["artifact_type"] != ARTIFACT_TYPE:
+    if (
+        value["schema_version"] != SCHEMA_VERSION
+        or value["artifact_type"] != ARTIFACT_TYPE
+    ):
         raise ValueError("analysis type/schema is unsupported")
     if not isinstance(value["analysis_id"], str) or len(value["analysis_id"]) != 16:
         raise ValueError("analysis_id must be a 16-character content identity")
@@ -228,7 +232,9 @@ def validate_analysis(value: Any) -> dict[tuple[str, str], dict]:
     sets = value["condition_sets"]
     if not isinstance(sets, dict):
         raise ValueError("condition_sets must be an object")
-    expected_all = [f"{dataset}/{condition}" for dataset, condition in EXPECTED_CONDITIONS]
+    expected_all = [
+        f"{dataset}/{condition}" for dataset, condition in EXPECTED_CONDITIONS
+    ]
     expected_target = [
         f"{dataset}/{condition}" for dataset, condition in ORDERED_TARGET_CONDITIONS
     ]
@@ -255,7 +261,11 @@ def validate_analysis(value: Any) -> dict[tuple[str, str], dict]:
         if row["model"] not in {"clipseg", "deeplabv3"}:
             raise ValueError(f"{location}.model is unsupported")
         num_images = row["num_images"]
-        if isinstance(num_images, bool) or not isinstance(num_images, int) or num_images <= 0:
+        if (
+            isinstance(num_images, bool)
+            or not isinstance(num_images, int)
+            or num_images <= 0
+        ):
             raise ValueError(f"{location}.num_images must be positive")
         comparisons = row["comparisons"]
         if not isinstance(comparisons, dict) or set(comparisons) != {
@@ -272,9 +282,7 @@ def validate_analysis(value: Any) -> dict[tuple[str, str], dict]:
         by_key[key] = row
     if set(by_key) != set(EXPECTED_CONDITIONS):
         raise ValueError("condition rows differ from the exact benchmark")
-    recomputed = _aggregate_target_ranges(
-        [by_key[key] for key in EXPECTED_CONDITIONS]
-    )
+    recomputed = _aggregate_target_ranges([by_key[key] for key in EXPECTED_CONDITIONS])
     if recomputed != value["target_aggregate_ranges"]:
         raise ValueError("target aggregate ranges do not match condition statistics")
     return by_key
@@ -353,7 +361,9 @@ def _range_table(ranges: Mapping[str, Any]) -> list[str]:
         errors = row["per_image_absolute_score_error"]
         ranks = row["rank_agreement"]
         cells = [labels[spec.name]]
-        cells.extend(_range(errors[metric]) for metric in ("mean", "median", "p95", "max"))
+        cells.extend(
+            _range(errors[metric]) for metric in ("mean", "median", "p95", "max")
+        )
         cells.extend(
             [
                 _range(ranks["spearman_rho"], 3),
@@ -402,7 +412,9 @@ def write_output(tex: str, output_dir: str | os.PathLike[str]) -> Path:
     directory = Path(output_dir)
     destination = directory / OUTPUT_NAME
     if destination.exists() or destination.is_symlink():
-        raise FileExistsError(f"refusing to overwrite rendered M128 table: {destination}")
+        raise FileExistsError(
+            f"refusing to overwrite rendered M128 table: {destination}"
+        )
     directory.mkdir(parents=True, exist_ok=True)
     descriptor, temporary_name = tempfile.mkstemp(
         prefix=f".{OUTPUT_NAME}.tmp-", dir=directory

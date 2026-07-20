@@ -33,6 +33,7 @@ from scripts.analyze_gamma_sensitivity import (
 
 
 OUTPUT_NAME = "gamma_sensitivity.tex"
+DEFAULT_OUTPUT_ROOT = "outputs/binary_gamma_sensitivity_analysis/rendered_v3"
 DATASET_LABELS = {
     "pet": "Oxford Pet",
     "kvasir": "Kvasir-SEG",
@@ -88,9 +89,7 @@ CONDITION_KEYS = frozenset(
 def parse_args(argv: Sequence[str] | None = None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis", required=True)
-    parser.add_argument(
-        "--output-root", default="outputs/binary_gamma_sensitivity_analysis/rendered"
-    )
+    parser.add_argument("--output-root", default=DEFAULT_OUTPUT_ROOT)
     return parser.parse_args(argv)
 
 
@@ -282,7 +281,9 @@ def _validate_contrast(value: Any, *, spec, location: str) -> None:
             location=f"{location}.sensitivity.{gamma_key}.change",
         )
         if not math.isclose(change, expected_change, rel_tol=1e-13, abs_tol=1e-14):
-            raise ValueError(f"{location}.sensitivity.{gamma_key} change is inconsistent")
+            raise ValueError(
+                f"{location}.sensitivity.{gamma_key} change is inconsistent"
+            )
         primary_direction = primary["direction"]
         auxiliary_direction = by_gamma[gamma_key]["direction"]
         reversal = {primary_direction, auxiliary_direction} == {
@@ -297,10 +298,14 @@ def _validate_contrast(value: Any, *, spec, location: str) -> None:
             or item["strict_reversal"] is not reversal
             or item["tie_transition"] is not (not retained and not reversal)
         ):
-            raise ValueError(f"{location}.sensitivity.{gamma_key} direction is inconsistent")
+            raise ValueError(
+                f"{location}.sensitivity.{gamma_key} direction is inconsistent"
+            )
 
 
-def _validate_score_stability(value: Any, *, score: str, label: str, location: str) -> None:
+def _validate_score_stability(
+    value: Any, *, score: str, label: str, location: str
+) -> None:
     if not isinstance(value, dict) or set(value) != {"label", "gamma_pairs"}:
         raise ValueError(f"{location} has an invalid score-stability schema")
     if value["label"] != label:
@@ -326,7 +331,9 @@ def _validate_score_stability(value: Any, *, score: str, label: str, location: s
         )
         accepted = item["accepted_set_agreement"]
         if not isinstance(accepted, list) or len(accepted) != len(COVERAGES):
-            raise ValueError(f"{location}.{pair_key}.accepted_set_agreement is incomplete")
+            raise ValueError(
+                f"{location}.{pair_key}.accepted_set_agreement is incomplete"
+            )
         by_coverage = {}
         for row in accepted:
             if not isinstance(row, dict) or set(row) != {
@@ -351,15 +358,22 @@ def _validate_score_stability(value: Any, *, score: str, label: str, location: s
 def validate_analysis(value: Any) -> dict[tuple[str, str], dict]:
     if not isinstance(value, dict) or set(value) != TOP_LEVEL_KEYS:
         raise ValueError("gamma analysis has an invalid top-level schema")
-    if value["schema_version"] != SCHEMA_VERSION or value["artifact_type"] != ARTIFACT_TYPE:
+    if (
+        value["schema_version"] != SCHEMA_VERSION
+        or value["artifact_type"] != ARTIFACT_TYPE
+    ):
         raise ValueError("gamma analysis type/schema is unsupported")
     if not isinstance(value["analysis_id"], str) or len(value["analysis_id"]) != 16:
         raise ValueError("analysis_id must be a 16-character content identity")
     scope = value["scope"]
     if not isinstance(scope, dict) or "neither" not in scope.get("status", ""):
-        raise ValueError("analysis must preserve the non-tuning/non-guarantee limitation")
+        raise ValueError(
+            "analysis must preserve the non-tuning/non-guarantee limitation"
+        )
     sets = value["condition_sets"]
-    expected_all = [f"{dataset}/{condition}" for dataset, condition in EXPECTED_CONDITIONS]
+    expected_all = [
+        f"{dataset}/{condition}" for dataset, condition in EXPECTED_CONDITIONS
+    ]
     expected_targets = [
         f"{dataset}/{condition}" for dataset, condition in ORDERED_TARGET_CONDITIONS
     ]
@@ -406,7 +420,9 @@ def validate_analysis(value: Any) -> dict[tuple[str, str], dict]:
         expected_model = "clipseg" if key[1].startswith("clipseg") else "deeplabv3"
         if row["model"] != expected_model:
             raise ValueError(f"{location}.model is inconsistent")
-        if isinstance(row["num_images"], bool) or not isinstance(row["num_images"], int):
+        if isinstance(row["num_images"], bool) or not isinstance(
+            row["num_images"], int
+        ):
             raise ValueError(f"{location}.num_images must be a positive integer")
         if row["num_images"] <= 0:
             raise ValueError(f"{location}.num_images must be a positive integer")
@@ -433,7 +449,10 @@ def validate_analysis(value: Any) -> dict[tuple[str, str], dict]:
             raise ValueError(f"{location}.indexed_score_stability is incomplete")
         for score, label in INDEXED_SCORES:
             _validate_score_stability(
-                stability[score], score=score, label=label, location=f"{location}.{score}"
+                stability[score],
+                score=score,
+                label=label,
+                location=f"{location}.{score}",
             )
         by_key[key] = row
     if set(by_key) != set(EXPECTED_CONDITIONS):
@@ -451,7 +470,9 @@ def _format(value: float, digits: int = 3) -> str:
     return f"{value:.{digits}f}"
 
 
-def _range(value: Mapping[str, float], *, digits: int = 3, percent: bool = False) -> str:
+def _range(
+    value: Mapping[str, float], *, digits: int = 3, percent: bool = False
+) -> str:
     low = float(value["min"])
     high = float(value["max"])
     if percent:
@@ -473,9 +494,7 @@ def _triple(contrast: Mapping[str, Any]) -> str:
     return "/".join(_format(100 * value) for value in values) + marker
 
 
-def _macro_triple(
-    by_key: Mapping[tuple[str, str], dict], *, contrast_name: str
-) -> str:
+def _macro_triple(by_key: Mapping[tuple[str, str], dict], *, contrast_name: str) -> str:
     values = []
     for gamma in ALL_GAMMAS:
         gamma_key = _gamma_key(gamma)
@@ -533,9 +552,7 @@ def _render_contrast_table(by_key: Mapping[tuple[str, str], dict]) -> list[str]:
         _macro_triple(by_key, contrast_name=spec.name) for spec in CONTRASTS
     )
     lines.append(" & ".join(macro_cells) + r" \\")
-    lines.extend(
-        [r"\bottomrule", r"\end{tabular}%", r"}", r"\end{table*}", ""]
-    )
+    lines.extend([r"\bottomrule", r"\end{tabular}%", r"}", r"\end{table*}", ""])
     return lines
 
 
@@ -595,9 +612,7 @@ def _render_stability_panel(headline: Mapping[str, Any]) -> list[str]:
                 for coverage in COVERAGES
             )
             lines.append(" & ".join(cells) + r" \\")
-    lines.extend(
-        [r"\bottomrule", r"\end{tabular}%", r"}", r"\vspace{5pt}"]
-    )
+    lines.extend([r"\bottomrule", r"\end{tabular}%", r"}", r"\vspace{5pt}"])
     return lines
 
 
@@ -608,7 +623,7 @@ def _render_direction_panel(headline: Mapping[str, Any]) -> list[str]:
         r"\resizebox{\linewidth}{!}{%",
         r"\begin{tabular}{llcccc}",
         r"\toprule",
-        r"Contrast & $\gamma$ & Retained/10 & Reversed/10 & Tie transitions/10 & Range of $\Delta_\gamma-\Delta_{.5}$ \\",
+        r"Contrast & $\gamma$ & Retained/10 & Reversed/10 & Tie transitions/10 & Range of $100(\Delta_\gamma-\Delta_{.5})$ \\",
         r"\midrule",
     ]
     for spec in CONTRASTS:
@@ -677,7 +692,9 @@ def write_output(
     directory = Path(output_root) / source_hash[:16]
     destination = directory / OUTPUT_NAME
     if destination.exists() or destination.is_symlink() or directory.is_symlink():
-        raise FileExistsError(f"refusing to overwrite gamma TeX artifact: {destination}")
+        raise FileExistsError(
+            f"refusing to overwrite gamma TeX artifact: {destination}"
+        )
     directory.mkdir(parents=True, exist_ok=False)
     descriptor, temporary_name = tempfile.mkstemp(
         prefix=f".{OUTPUT_NAME}.tmp-", dir=directory

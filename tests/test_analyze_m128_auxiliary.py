@@ -21,8 +21,11 @@ from scripts.analyze_m128_auxiliary import (
     write_report,
 )
 from scripts.render_m128_auxiliary import (
+    DEFAULT_OUTPUT_DIR,
     OUTPUT_NAME,
+    _aurc_format,
     load_analysis,
+    parse_args,
     render_analysis,
     validate_analysis,
     write_output,
@@ -129,8 +132,7 @@ def _condition_pair(dataset: str, condition: str, index: int):
                 "schema_version": 1,
                 "run_id": "aux-run",
                 **common,
-                "confidence_dice_m128_aux": exact
-                + (image_index - 2.5) * 0.0001,
+                "confidence_dice_m128_aux": exact + (image_index - 2.5) * 0.0001,
                 "confidence_nhd_m128_aux": nhd128,
                 "confidence_nhd95_m128_aux": nhd95128,
             }
@@ -246,6 +248,13 @@ def test_renderer_is_deterministic_complete_and_explicitly_nonexact(tmp_path):
     assert output.name == OUTPUT_NAME
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
         write_output(tex, tmp_path / "rendered")
+
+
+def test_renderer_default_uses_versioned_times_100_destination():
+    args = parse_args(["--analysis", "analysis.json"])
+    assert args.output_dir == DEFAULT_OUTPUT_DIR
+    assert args.output_dir.endswith("/rendered_v2")
+    assert _aurc_format(0.0123) == "1.230"
 
 
 def test_strict_json_io_hash_and_no_overwrite(tmp_path):

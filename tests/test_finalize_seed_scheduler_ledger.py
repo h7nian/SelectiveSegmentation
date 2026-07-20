@@ -236,6 +236,39 @@ def _finalize(campaign, *, provider, write=True):
     )
 
 
+def _bind_fixed_closure_paths(monkeypatch, campaign):
+    monkeypatch.setattr(ledger, "TRAIN_RECEIPT", campaign.receipt_path)
+    monkeypatch.setattr(ledger, "PRIVATE_LEDGER", campaign.private_path)
+    monkeypatch.setattr(ledger, "PUBLIC_SUMMARY", campaign.public_path)
+
+
+def _public_sha(campaign):
+    return hashlib.sha256(campaign.public_path.read_bytes()).hexdigest()
+
+
+def _write_terminal_failure_closure(campaign):
+    accounting = _accounting(campaign)
+    accounting[campaign.job_ids[0]].update(state="TIMEOUT", exit_code="0:0")
+    core = ledger._event_core(
+        parent_hash=hashlib.sha256(campaign.private_payload).hexdigest(),
+        spec_sha=campaign.spec_sha,
+        receipt_sha=campaign.receipt_sha,
+        record_set_sha=campaign.record_sha,
+        records=campaign.records,
+        accounting=accounting,
+    )
+    event = ledger._build_event(core, now="2026-07-20T12:03:00+00:00")
+    private_payload = campaign.private_payload + _line(event)
+    campaign.private_path.write_bytes(private_payload)
+    summary = ledger._public_summary(
+        event, private_ledger_sha256=hashlib.sha256(private_payload).hexdigest()
+    )
+    campaign.public_path.parent.mkdir(parents=True)
+    campaign.public_path.write_text(
+        json.dumps(summary, indent=2, sort_keys=True, allow_nan=False) + "\n"
+    )
+
+
 def test_happy_path_is_idempotent_and_public_summary_is_private_free(
     tmp_path, monkeypatch
 ):
@@ -290,6 +323,108 @@ def test_happy_path_is_idempotent_and_public_summary_is_private_free(
     assert campaign.private_path.read_bytes() == original_private
 
 
+def test_checkpoint_gate_accepts_only_the_complete_fixed_closure(tmp_path, monkeypatch):
+    campaign = _campaign(tmp_path)
+    _patch_campaign(monkeypatch, campaign)
+    summary = _finalize(campaign, provider=lambda ids: _accounting(campaign))
+    _bind_fixed_closure_paths(monkeypatch, campaign)
+
+    result = ledger.validate_complete_training_closure(
+        {"sha256": campaign.spec_sha, "spec": {}},
+        campaign.jobs,
+        expected_public_summary_sha256=_public_sha(campaign),
+    )
+
+    assert result["public_summary"] == summary
+    assert result["training_record_set_sha256"] == campaign.record_sha
+    assert result["train_submission_receipt_sha256"] == campaign.receipt_sha
+
+
+def test_checkpoint_gate_rejects_absent_public_summary(tmp_path, monkeypatch):
+    campaign = _campaign(tmp_path)
+    _patch_campaign(monkeypatch, campaign)
+    _bind_fixed_closure_paths(monkeypatch, campaign)
+
+    with pytest.raises(FileNotFoundError, match="required file does not exist"):
+        ledger.validate_complete_training_closure(
+            {"sha256": campaign.spec_sha, "spec": {}},
+            campaign.jobs,
+            expected_public_summary_sha256="f" * 64,
+        )
+
+
+def test_checkpoint_gate_rejects_public_summary_hash_mismatch(tmp_path, monkeypatch):
+    campaign = _campaign(tmp_path)
+    _patch_campaign(monkeypatch, campaign)
+    _finalize(campaign, provider=lambda ids: _accounting(campaign))
+    _bind_fixed_closure_paths(monkeypatch, campaign)
+
+    with pytest.raises(ValueError, match="summary SHA-256 mismatch"):
+        ledger.validate_complete_training_closure(
+            {"sha256": campaign.spec_sha, "spec": {}},
+            campaign.jobs,
+            expected_public_summary_sha256="f" * 64,
+        )
+
+
+def test_checkpoint_gate_rejects_terminal_failure_closure(tmp_path, monkeypatch):
+    campaign = _campaign(tmp_path)
+    _patch_campaign(monkeypatch, campaign)
+    _write_terminal_failure_closure(campaign)
+    _bind_fixed_closure_paths(monkeypatch, campaign)
+
+    with pytest.raises(RuntimeError, match="terminal failures"):
+        ledger.validate_complete_training_closure(
+            {"sha256": campaign.spec_sha, "spec": {}},
+            campaign.jobs,
+            expected_public_summary_sha256=_public_sha(campaign),
+        )
+
+
+def test_checkpoint_cli_runs_complete_closure_gate_before_lock_write(monkeypatch):
+    from scripts import submit_binary_seed_extension as submit
+
+    binding = {"sha256": "a" * 64, "spec": {"paths": {"checkpoint_lock": "x"}}}
+    jobs = tuple(
+        PlannedJob("seed_train", (index,), ("sbatch", str(index)))
+        for index in range(ledger.EXPECTED_JOBS)
+    )
+    calls = []
+    monkeypatch.setattr(submit, "load_spec_lock", lambda *args, **kwargs: binding)
+    monkeypatch.setattr(submit, "plan_training_jobs", lambda value: jobs)
+
+    def gate(value, planned, *, expected_public_summary_sha256):
+        assert value is binding
+        assert planned == jobs
+        assert expected_public_summary_sha256 == "b" * 64
+        calls.append("gate")
+
+    def write(value, destination):
+        assert value is binding
+        assert destination == "x"
+        calls.append("write")
+        return destination
+
+    monkeypatch.setattr(ledger, "validate_complete_training_closure", gate)
+    monkeypatch.setattr(submit, "write_checkpoint_lock", write)
+
+    with pytest.raises(ValueError, match="requires --expected-scheduler-summary"):
+        submit.main(["--phase", "checkpoint-lock", "--write-checkpoint-lock"])
+    assert calls == []
+
+    result = submit.main(
+        [
+            "--phase",
+            "checkpoint-lock",
+            "--write-checkpoint-lock",
+            "--expected-scheduler-summary-sha256",
+            "b" * 64,
+        ]
+    )
+    assert result == "x"
+    assert calls == ["gate", "write"]
+
+
 @pytest.mark.parametrize("target", ["receipt_duplicate", "ledger_parent"])
 def test_strict_tamper_is_rejected_before_writes(tmp_path, monkeypatch, target):
     campaign = _campaign(tmp_path)
@@ -323,36 +458,26 @@ def test_nonterminal_accounting_causes_no_write(tmp_path, monkeypatch):
     assert not campaign.public_path.exists()
 
 
-def test_timeout_is_recorded_but_never_declared_complete(tmp_path, monkeypatch):
+def test_timeout_is_previewed_but_never_persisted(tmp_path, monkeypatch):
     campaign = _campaign(tmp_path)
     _patch_campaign(monkeypatch, campaign)
     accounting = _accounting(campaign)
     accounting[campaign.job_ids[3]].update(state="TIMEOUT", exit_code="0:0")
-    summary = _finalize(campaign, provider=lambda ids: accounting)
+    summary = _finalize(campaign, provider=lambda ids: accounting, write=False)
     assert summary["status"] == "terminal_failures"
     assert summary["failed_jobs"] == 1
-    assert campaign.job_ids[3] not in campaign.public_path.read_text()
-    with pytest.raises(RuntimeError, match="terminal failures"):
-        ledger.load_public_scheduler_summary(
-            campaign.public_path, require_complete=True
-        )
-    terminal = ledger.load_terminal_scheduler_event(
-        campaign.private_path, expected_job_bindings=_job_bindings(campaign)
-    )
-    assert terminal["event"]["campaign_complete"] is False
-    assert terminal["event"]["failed_jobs"] == [
-        {
-            "dataset": "dataset-3",
-            "model": "model",
-            "training_seed": 1,
-            "receipt_job_id": campaign.job_ids[3],
-            "state": "TIMEOUT",
-            "exit_code": "0:0",
-        }
-    ]
+    assert campaign.private_path.read_bytes() == campaign.private_payload
+    assert not campaign.public_path.exists()
+
+    with pytest.raises(RuntimeError, match="refusing to persist terminal failures"):
+        _finalize(campaign, provider=lambda ids: accounting, write=True)
+    assert campaign.private_path.read_bytes() == campaign.private_payload
+    assert not campaign.public_path.exists()
 
 
-def test_timeout_without_training_record_writes_failure_event(tmp_path, monkeypatch):
+def test_timeout_without_training_record_is_valid_in_failure_preview(
+    tmp_path, monkeypatch
+):
     campaign = _campaign(tmp_path)
     missing_index = 3
     _patch_partial_record_campaign(
@@ -361,20 +486,10 @@ def test_timeout_without_training_record_writes_failure_event(tmp_path, monkeypa
     accounting = _accounting(campaign)
     accounting[campaign.job_ids[missing_index]].update(state="TIMEOUT", exit_code="0:0")
 
-    summary = _finalize(campaign, provider=lambda ids: accounting)
+    summary = _finalize(campaign, provider=lambda ids: accounting, write=False)
     assert summary["status"] == "terminal_failures"
-    terminal = ledger.load_terminal_scheduler_event(
-        campaign.private_path, expected_job_bindings=_job_bindings(campaign)
-    )["event"]
-    failed_row = terminal["jobs"][missing_index]
-    assert failed_row["record_slurm_job_id"] is None
-    assert failed_row["train_record_sha256"] is None
-    expected_records = [dict(row) for row in campaign.records]
-    expected_records[missing_index]["record_slurm_job_id"] = None
-    expected_records[missing_index]["train_record_sha256"] = None
-    assert terminal["training_record_set_sha256"] == ledger._record_set_sha256(
-        expected_records
-    )
+    assert campaign.private_path.read_bytes() == campaign.private_payload
+    assert not campaign.public_path.exists()
 
 
 def test_successful_job_without_training_record_is_rejected(tmp_path, monkeypatch):

@@ -77,6 +77,13 @@ def parse_args(argv=None):
     )
     parser.add_argument("--spec-lock", default=DEFAULT_SPEC_LOCK)
     parser.add_argument("--expected-spec-lock-sha256")
+    parser.add_argument(
+        "--expected-scheduler-summary-sha256",
+        help=(
+            "required by checkpoint-lock; binds the fixed complete training "
+            "scheduler closure reviewed after finalization"
+        ),
+    )
     parser.add_argument("--checkpoint-lock")
     parser.add_argument("--expected-checkpoint-lock-sha256")
     parser.add_argument("--downstream-lock")
@@ -600,6 +607,10 @@ def main(argv=None):
             )
         if not args.write_checkpoint_lock:
             raise ValueError("checkpoint-lock requires --write-checkpoint-lock")
+        if not args.expected_scheduler_summary_sha256:
+            raise ValueError(
+                "checkpoint-lock requires --expected-scheduler-summary-sha256"
+            )
         if args.receipt:
             raise ValueError("checkpoint-lock does not submit; omit --receipt")
         if (
@@ -614,6 +625,18 @@ def main(argv=None):
         destination = (
             args.checkpoint_lock or binding["spec"]["paths"]["checkpoint_lock"]
         )
+        # Import only after this submitter is fully initialized.  The finalizer
+        # accepts the already constructed plan, so this checkpoint-only gate
+        # does not need to reconstruct or submit any job.
+        from scripts.finalize_seed_scheduler_ledger import (
+            validate_complete_training_closure,
+        )
+
+        validate_complete_training_closure(
+            binding,
+            plan_training_jobs(binding),
+            expected_public_summary_sha256=(args.expected_scheduler_summary_sha256),
+        )
         return write_checkpoint_lock(binding, destination)
 
     if args.phase == "downstream-lock":
@@ -625,6 +648,10 @@ def main(argv=None):
             raise ValueError("downstream-lock does not submit; omit --receipt")
         if args.write_checkpoint_lock:
             raise ValueError("--write-checkpoint-lock applies only to checkpoint-lock")
+        if args.expected_scheduler_summary_sha256:
+            raise ValueError(
+                "--expected-scheduler-summary-sha256 applies only to checkpoint-lock"
+            )
         if not args.expected_checkpoint_lock_sha256:
             raise ValueError(
                 "downstream-lock requires --expected-checkpoint-lock-sha256"
@@ -649,6 +676,10 @@ def main(argv=None):
 
     if args.write_checkpoint_lock:
         raise ValueError("--write-checkpoint-lock applies only to checkpoint-lock")
+    if args.expected_scheduler_summary_sha256:
+        raise ValueError(
+            "--expected-scheduler-summary-sha256 applies only to checkpoint-lock"
+        )
     if args.write_downstream_lock:
         raise ValueError("--write-downstream-lock applies only to downstream-lock")
     if args.phase == "train":
