@@ -149,6 +149,53 @@ def _finite_wasserstein(probability, approximation, costs):
     return float(result.fun)
 
 
+@pytest.mark.parametrize("seed", range(5))
+def test_scalar_loss_pushforward_wasserstein_controls_mean_discrepancy(seed):
+    """The generic nHD95-compatible bridge needs no mask-space metric."""
+
+    rng = np.random.default_rng(seed)
+    losses = rng.choice(np.linspace(0.0, 1.0, 17), size=12, replace=True)
+    probability = rng.dirichlet(np.ones(losses.size))
+    approximation = rng.dirichlet(np.ones(losses.size))
+    scalar_cost = np.abs(losses[:, None] - losses[None, :])
+    wasserstein = _finite_wasserstein(
+        probability, approximation, scalar_cost
+    )
+    mean_discrepancy = abs(
+        float(np.dot(probability - approximation, losses))
+    )
+
+    knots = np.unique(np.r_[0.0, losses, 1.0])
+    cdf_integral = 0.0
+    for left, right in zip(knots[:-1], knots[1:]):
+        cdf_probability = float(probability[losses <= left].sum())
+        cdf_approximation = float(approximation[losses <= left].sum())
+        cdf_integral += (right - left) * abs(
+            cdf_probability - cdf_approximation
+        )
+
+    assert mean_discrepancy <= wasserstein + 1e-10
+    assert wasserstein == pytest.approx(cdf_integral, abs=1e-9)
+
+
+def test_loss_pushforward_can_agree_when_mask_laws_have_tv_one():
+    # Distinct masks can induce the same loss against a fixed action. The
+    # action-specific pushforward condition is therefore strictly less
+    # demanding than full mask-law agreement.
+    losses = np.array([0.25, 0.75, 0.25, 1.0])
+    probability = np.array([1.0, 0.0, 0.0, 0.0])
+    approximation = np.array([0.0, 0.0, 1.0, 0.0])
+    scalar_cost = np.abs(losses[:, None] - losses[None, :])
+    wasserstein = _finite_wasserstein(
+        probability, approximation, scalar_cost
+    )
+    total_variation = 0.5 * float(
+        np.abs(probability - approximation).sum()
+    )
+    assert total_variation == 1.0
+    assert wasserstein == pytest.approx(0.0, abs=1e-12)
+
+
 def _direct_piecewise_dice_confidence(probability, prediction):
     boundaries = np.unique(
         np.r_[0.0, np.asarray(probability, dtype=float).ravel(), 1.0]

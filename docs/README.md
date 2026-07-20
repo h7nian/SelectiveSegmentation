@@ -74,6 +74,11 @@ public artifact includes a portable campaign descriptor, all assembled
 manifests, all per-image `records.jsonl` files, and redacted phase-completion
 provenance; private filesystem, account, partition, and job identifiers are not
 exported.
+The training-seed extension follows the same rule: its portable analysis,
+terminal scheduler summary, and write-last provenance guard are exported only
+after all 162 one-job phase records, including the 20 training cells, satisfy
+their locked grids. Raw AURC remains unscaled in JSON; manuscript displays
+multiply AURC-derived quantities by 100.
 Dataset archives, model caches, checkpoints, and frozen probability-map
 payloads are not part of this LaTeX package; their immutable identifiers are
 retained in the released manifests. The code release provides official dataset

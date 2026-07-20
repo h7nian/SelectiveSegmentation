@@ -587,9 +587,21 @@ guard for the twenty jobs already bound to this extension. The checkpoint and
 downstream locks intentionally follow the immutable path recorded inside the
 spec lock under `outputs/binary_seed_campaign/`.
 
-After all 20 final-epoch records validate, create the immutable checkpoint
-lock, submit exactly 20 freeze jobs, and create the downstream lock only after
-all frozen artifacts validate:
+After all 20 jobs are terminal, first preview and then seal their Slurm
+accounting. The finalizer binds the exact training receipt, all strict
+successful-job records, and the existing hash-chained scheduler-adjustment
+ledger. It publishes only a path-free summary; a terminal failure is recorded
+but cannot pass the completion gate:
+
+```bash
+python -m scripts.finalize_seed_scheduler_ledger
+python -m scripts.finalize_seed_scheduler_ledger --write
+sha256sum outputs/public_seed/seed_scheduler_summary.json
+```
+
+After all 20 final-epoch records and the scheduler closure validate, create the
+immutable checkpoint lock, submit exactly 20 freeze jobs, and create the
+downstream lock only after all frozen artifacts validate:
 
 ```bash
 python -m scripts.submit_binary_seed_extension --phase checkpoint-lock \
@@ -674,6 +686,47 @@ python -m scripts.publish_binary_seed_extension \
   --table outputs/binary_seed_analysis/seed_robustness.tex \
   --expected-table-sha256 <seed-table-sha256>
 ```
+
+Finally, export the portable seed analysis and its write-last provenance
+guard. Supply exactly the seven downstream receipts and all 20 explicit
+diagnostic summaries; never substitute directory discovery or private locks in
+the public artifact:
+
+```bash
+python -m scripts.export_binary_seed_provenance \
+  --spec-lock configs/auxiliary/binary_seed_extension-v1.lock.json \
+  --expected-spec-lock-sha256 <spec-lock-sha256> \
+  --checkpoint-lock outputs/binary_seed_campaign/checkpoints.lock.json \
+  --expected-checkpoint-lock-sha256 <checkpoint-lock-sha256> \
+  --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+  --expected-downstream-lock-sha256 <downstream-lock-sha256> \
+  --canonical-analysis outputs/binary_final_v3_analysis/analysis.json \
+  --expected-canonical-analysis-sha256 <canonical-analysis-sha256> \
+  --seed-analysis outputs/binary_seed_analysis/analysis.json \
+  --expected-seed-analysis-sha256 <seed-analysis-sha256> \
+  --table outputs/binary_seed_analysis/seed_robustness.tex \
+  --expected-table-sha256 <seed-table-sha256> \
+  --train-receipt outputs/binary_seed_extension_campaign/train-submissions.jsonl \
+  --phase-receipt freeze outputs/binary_seed_campaign/freeze-submissions.jsonl \
+  --phase-receipt common outputs/binary_seed_campaign/common-submissions.jsonl \
+  --phase-receipt score outputs/binary_seed_campaign/score-submissions.jsonl \
+  --phase-receipt diagnose outputs/binary_seed_campaign/diagnose-submissions.jsonl \
+  --phase-receipt assemble outputs/binary_seed_campaign/assemble-submissions.jsonl \
+  --phase-receipt analyze outputs/binary_seed_campaign/analyze-submissions.jsonl \
+  --phase-receipt render outputs/binary_seed_campaign/render-submissions.jsonl \
+  --diagnostic-summary <diagnostic-01.json> \
+  ... \
+  --diagnostic-summary <diagnostic-20.json> \
+  --private-scheduler-ledger outputs/binary_seed_extension_campaign/scheduler-adjustments.jsonl \
+  --public-scheduler-summary outputs/public_seed/seed_scheduler_summary.json \
+  --public-analysis-output outputs/public_seed/seed_robustness_analysis.json \
+  --public-provenance-output outputs/public_seed/seed_provenance.json
+```
+
+The exporter requires 162 globally unique job identifiers across the eight
+receipts, recomputes the analysis, verifies the rendered table byte-for-byte,
+and rejects private paths, scheduler metadata, credentials, or unknown schema
+fields before either public destination is written.
 
 Every retry must reuse the exact receipt path shown for its phase; changing a
 receipt path defeats duplicate-submission detection. The strict analysis joins

@@ -142,6 +142,10 @@ deployed action define the loss-specific discrepancy
 This loss-functional discrepancy is weaker than total-variation control: if
 \(\TV(P_x,Q_{p(x)})\leq\delta_x\), using the supremum-over-events convention,
 then \(\Delta_{L,\Yhat}(x)\leq B_x\delta_x\), while the converse need not hold.
+Appendix~\ref{app:lem:loss-pushforward} also controls it through the
+one-dimensional Wasserstein distance between the scalar loss laws induced by
+\(P_x\) and \(Q_{p(x)}\). This remains available for nHD95 without pretending
+that its percentile surface loss is a mask metric.
 
 \begin{proposition}[Conditional total-error bound]
 \label{prop:total-bound}

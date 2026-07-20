@@ -465,6 +465,52 @@ general control \eqref{app:eq:loss-ipm} for nonlinear losses such as
 Dice or boundary distance, because different couplings can share all
 one-point marginals.
 
+There is also a one-dimensional, loss-aware sufficient condition that does
+not compare complete masks directly. For a fixed action $A$, let
+$Z_{x,A}(Y):=L_x(Y,A)$ and write $(Z_{x,A})_\#R$ for its pushforward law when
+$Y\sim R$.
+
+\begin{lemma}[Loss-pushforward agreement]
+\label{app:lem:loss-pushforward}
+Let $0\leq L_x\leq B_x<\infty$, and let $F^L_{R,A}$ be the CDF of
+$Z_{x,A}$ under a mask law $R$. Then
+\begin{align*}
+  &\left|
+    \mathbb E_{P}[L_x(Y,A)]-\mathbb E_{Q}[L_x(Y,A)]
+  \right|\\
+  &\qquad\leq
+  W_1\!\left((Z_{x,A})_\#P,(Z_{x,A})_\#Q\right)
+  =\int_0^{B_x}
+    \left|F^L_{P,A}(u)-F^L_{Q,A}(u)\right|\,du.
+\end{align*}
+Consequently,
+\begin{equation*}
+  \Delta_{L,\mathcal A}(P,Q)
+  \leq\sup_{A\in\mathcal A}
+  W_1\!\left((Z_{x,A})_\#P,(Z_{x,A})_\#Q\right).
+\end{equation*}
+In particular, a uniform CDF discrepancy at most $\epsilon$ for every
+$A\in\mathcal A$ makes the right-hand side at most $B_x\epsilon$.
+\end{lemma}
+
+\begin{proof}
+For any coupling $(U,V)$ of the two scalar pushforward laws,
+$|\mathbb E U-\mathbb E V|\leq\mathbb E|U-V|$. Infimizing over couplings
+gives the first inequality. The equality is the one-dimensional
+Wasserstein--CDF identity for bounded real-valued laws. Taking the supremum
+over actions and integrating the uniform CDF bound prove the remaining
+claims.
+\end{proof}
+
+This lemma controls the mean-loss discrepancy; it does not claim that the
+full posterior, or even the complete scalar loss law, is identified from one
+annotation. It applies without a mask metric to pooled nHD95 by taking
+$Z_{x,A}=L_x^{\mathrm{nHD95}}(\cdot,A)$. These are posterior laws of one scalar
+loss as the complete mask varies, not the within-mask surface-distance
+distributions whose percentile defines nHD95. Mask-space total variation
+controls this pushforward discrepancy by data processing, while converses
+need not hold.
+
 \begin{lemma}[Lipschitz--Wasserstein posterior agreement]
 \label{app:lem:lipschitz-wasserstein}
 Let $d$ be a bounded pseudometric on $\mathcal Y$, and define
