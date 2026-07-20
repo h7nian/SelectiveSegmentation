@@ -93,10 +93,27 @@ def _strict_object(pairs):
     return result
 
 
+def _regular_source_without_symlink_ancestors(
+    path: str | os.PathLike[str], *, expected_name: str
+) -> Path:
+    """Return one absolute regular file while preserving its lexical trust path."""
+
+    source = Path(os.path.abspath(path))
+    if (
+        source.name != expected_name
+        or any(candidate.is_symlink() for candidate in (source, *source.parents))
+        or not source.is_file()
+    ):
+        raise FileNotFoundError(
+            f"expected a regular {expected_name} with no symlink ancestors: {source}"
+        )
+    return source
+
+
 def _load_selection(path: str | os.PathLike[str]) -> tuple[Path, dict[str, Any]]:
-    source = Path(path)
-    if source.name != "selection.json" or not source.is_file() or source.is_symlink():
-        raise FileNotFoundError(f"expected a regular selection.json: {source}")
+    source = _regular_source_without_symlink_ancestors(
+        path, expected_name="selection.json"
+    )
     report = json.loads(
         source.read_text(encoding="utf-8"),
         object_pairs_hook=_strict_object,
@@ -135,7 +152,7 @@ def _load_selection(path: str | os.PathLike[str]) -> tuple[Path, dict[str, Any]]
                 and case.get("dataset") != dataset["dataset"]
             ):
                 raise ValueError("selected case dataset differs from its group")
-    return source.resolve(), report
+    return source, report
 
 
 def _source_sha256() -> str:
@@ -162,12 +179,10 @@ def _safe_payload_path(artifact_dir: Path, relative: str) -> Path:
     pure = PurePosixPath(relative)
     if pure.is_absolute() or ".." in pure.parts or pure.suffix != ".npz":
         raise ValueError(f"unsafe selected payload path {relative!r}")
-    artifact_dir = Path(artifact_dir)
-    if artifact_dir.is_symlink():
-        raise ValueError(
-            f"selected artifact root must not be a symlink: {artifact_dir}"
-        )
-    root = artifact_dir.resolve()
+    root = Path(os.path.abspath(artifact_dir))
+    for ancestor in (root, *root.parents):
+        if ancestor.is_symlink():
+            raise ValueError(f"selected artifact root traverses a symlink: {ancestor}")
     path = root.joinpath(*pure.parts)
     resolved = path.resolve(strict=False)
     try:
@@ -194,7 +209,10 @@ def load_selected_arrays(
     provenance = case.get("provenance")
     if not isinstance(provenance, Mapping):
         raise ValueError("selected case lacks provenance")
-    manifest_path = _resolve_repo_path(str(provenance["artifact_manifest_path"]))
+    manifest_path = _regular_source_without_symlink_ancestors(
+        _resolve_repo_path(str(provenance["artifact_manifest_path"])),
+        expected_name="manifest.json",
+    )
     artifact = load_binary_artifact(manifest_path, validate_payloads=False)
     if artifact.manifest_sha256 != provenance.get("artifact_manifest_sha256"):
         raise ValueError("artifact manifest hash differs from selection")
@@ -737,13 +755,9 @@ def render_package(
 
 
 def _load_render_manifest(path: str | os.PathLike[str]) -> tuple[Path, dict[str, Any]]:
-    source = Path(path)
-    if (
-        source.name != "render_manifest.json"
-        or not source.is_file()
-        or source.is_symlink()
-    ):
-        raise FileNotFoundError(f"expected a regular render_manifest.json: {source}")
+    source = _regular_source_without_symlink_ancestors(
+        path, expected_name="render_manifest.json"
+    )
     manifest = json.loads(
         source.read_text(encoding="utf-8"),
         object_pairs_hook=_strict_object,
@@ -769,7 +783,7 @@ def _load_render_manifest(path: str | os.PathLike[str]) -> tuple[Path, dict[str,
         raise ValueError(
             "render manifest ID differs from its selection/source content address"
         )
-    return source.resolve(), manifest
+    return source, manifest
 
 
 def publish_manuscript_package(

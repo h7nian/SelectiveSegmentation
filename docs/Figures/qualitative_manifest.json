@@ -24,13 +24,13 @@
     },
     {
       "path": "qualitative_cases.tex",
-      "sha256": "a961395438d66042c7c611a00de3ba08b633d367a22a04c39442885015db1bbb"
+      "sha256": "4a79128738df4b0cfb555a4c7294f92b584bec20cb0bc0813c01c67083a8265b"
     }
   ],
-  "render_id": "b21eecfab2afbd47",
-  "renderer_source_sha256": "6d004d40c8ecedc0bbfa0a9ac8ccc493e18c5f8f667087dc8eb7f747765aec94",
+  "render_id": "01a96effd16eb158",
+  "renderer_source_sha256": "c96862862670140add7f754cab47b364d5ac9726f379d435ebe128ddc3ffe4cc",
   "schema_version": 1,
   "selection_id": "f618c91bfeaa467e",
   "selection_sha256": "d362eaa45175198cc177d2101d39971ca9d7f16c20e7cfe21b16918fc2619c4c",
-  "source_render_manifest_sha256": "9cef348734c9c3b6bf01f72b0fd27dc119a3cf687bff0d72b60de092e00a31ed"
+  "source_render_manifest_sha256": "ee9510329656152158fb11b142e30b52308b2a713ebde07bbfa6993efa5fe3d9"
 }

@@ -306,6 +306,31 @@ def test_manuscript_publisher_rejects_render_id_not_bound_to_source(tmp_path):
         publish_manuscript_package(manifest_path, selection_path, tmp_path / "paper")
 
 
+def test_manuscript_publisher_rejects_symlinked_source_ancestors(tmp_path):
+    actual_root = tmp_path / "actual"
+    actual_root.mkdir()
+    selection_path = actual_root / "selection.json"
+    selection, selection_sha = _write_minimal_selection(selection_path)
+    _, manifest_path = _write_minimal_render_package(
+        actual_root, selection, selection_sha
+    )
+    linked_root = tmp_path / "linked"
+    linked_root.symlink_to(actual_root, target_is_directory=True)
+
+    with pytest.raises(FileNotFoundError, match="symlink ancestors"):
+        publish_manuscript_package(
+            manifest_path,
+            linked_root / "selection.json",
+            tmp_path / "paper-selection-link",
+        )
+    with pytest.raises(FileNotFoundError, match="symlink ancestors"):
+        publish_manuscript_package(
+            linked_root / manifest_path.relative_to(actual_root),
+            selection_path,
+            tmp_path / "paper-render-link",
+        )
+
+
 def test_safe_payload_path_rejects_symlinked_ancestor_and_escape(tmp_path):
     root = tmp_path / "artifact"
     root.mkdir()
@@ -324,6 +349,15 @@ def test_safe_payload_path_rejects_symlinked_ancestor_and_escape(tmp_path):
     (root / "linked-outside").symlink_to(outside, target_is_directory=True)
     with pytest.raises(ValueError, match="escapes the artifact directory"):
         _safe_payload_path(root, "linked-outside/sample.npz")
+
+    actual_parent = tmp_path / "actual-parent"
+    ancestor_root = actual_parent / "artifact"
+    (ancestor_root / "samples").mkdir(parents=True)
+    (ancestor_root / "samples" / "sample.npz").write_bytes(b"payload")
+    linked_parent = tmp_path / "linked-parent"
+    linked_parent.symlink_to(actual_parent, target_is_directory=True)
+    with pytest.raises(ValueError, match="artifact root traverses a symlink"):
+        _safe_payload_path(linked_parent / "artifact", "samples/sample.npz")
 
 
 def _write_artifact(root):
@@ -392,6 +426,21 @@ def test_renderer_loads_only_manifest_bound_payload_and_checks_hash(tmp_path):
     assert probability.dtype == np.float32
     assert truth.dtype == bool
     assert provenance["payload_sha256"] == entry["sha256"]
+
+    linked_artifacts = tmp_path / "linked-artifacts"
+    linked_artifacts.symlink_to(manifest_path.parent.parent, target_is_directory=True)
+    linked_case = {
+        **case,
+        "provenance": {
+            **case["provenance"],
+            "artifact_manifest_path": str(
+                linked_artifacts
+                / manifest_path.relative_to(manifest_path.parent.parent)
+            ),
+        },
+    }
+    with pytest.raises(FileNotFoundError, match="symlink ancestors"):
+        load_selected_arrays(linked_case)
 
     payload = manifest_path.parent / entry["path"]
     payload.write_bytes(payload.read_bytes() + b"tamper")
