@@ -8,14 +8,16 @@ For binary masks, define
 with \(\Dice(\varnothing,\varnothing)=1\) and Dice equal to zero when
 exactly one mask is empty. The loss \(L_{\Dice}=1-\Dice\) lies in
 \([0,1]\). Let \(d_J\) be Jaccard distance with
-\(d_J(\varnothing,\varnothing)=0\), and let \(W_{1,d}\) denote the corresponding
+\(d_J(\varnothing,\varnothing)=0\), and let \(W_{1,d_J}\) denote the corresponding
 1-Wasserstein transport cost. Appendix~\ref{app:theory} proves
 \begin{equation*}
   \Delta_{L_{\Dice},\Yhat}(x)
   \leq\min\{\TV(P_x,Q_{p(x)}),2W_{1,d_J}(P_x,Q_{p(x)})\}.
 \end{equation*}
-This permits distinct masks that are geometrically close even though their point
-masses have TV one; the factor two means it is not uniformly tighter than TV.
+This permits nearby distinct masks despite TV one. A complementary fixed-action
+decomposition in Appendix~\ref{app:prop:dice-cardinality} isolates
+overlap--cardinality, marginal, and reciprocal-cardinality disagreement, with a
+separate exact branch for an empty action.
 
 Equation~\eqref{eq:quad} gives
 \begin{align*}

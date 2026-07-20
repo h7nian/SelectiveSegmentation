@@ -10,6 +10,10 @@ but neither operation removes posterior discrepancy. The score-error theorem
 therefore controls population AURC regret only to the extent that its discrepancy
 term is small; it neither guarantees pairwise rank recovery nor says that a
 matched score must win empirically.
+Exact cardinality diagnostics expose direct support incompatibilities---most
+clearly on FIVES and ISIC---but pooled PIT and bias summaries remain
+finite-sample evidence, and one label per image cannot turn favorable
+diagnostics into validation of \(Q_p\).
 
 Dice and normalized full HD share a Lipschitz--Wasserstein proof template, but
 their Jaccard and surface-Hausdorff agreement conditions express different
@@ -23,7 +27,11 @@ The boundary surface, pixel spacing, diagonal normalization, percentile pooling,
 and empty-mask penalty are substantive deployment choices. Our experiment uses
 native pixel coordinates and one fixed convention; physical-distance or
 application-specific costs could induce another ranking. Empirically, the design
-covers five binary datasets, two model families, and one training seed. Its
+covers five binary datasets, two model families, and one training seed. The
+locked \(\gamma\in\{.3,.5,.7\}\) sensitivity preserves the main
+region-to-worst-boundary direction but triggers the predeclared locked warning
+rule for the worst-to-robust-boundary comparison; conclusions involving nHD versus
+nHD95 therefore depend on the deployed action threshold. Its
 paired bootstrap captures held-out image variation for fixed fitted checkpoints,
 not optimization, site-shift, or multi-rater uncertainty. Finally, all methods
 use one probability map: ensembles, internal features, learned failure detectors,

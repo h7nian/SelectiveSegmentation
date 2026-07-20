@@ -1,0 +1,2147 @@
+{
+  "schema_version": 1,
+  "artifact_type": "selectseg.binary_cardinality_diagnostics_analysis",
+  "analysis_id": "0f2eaad22b189f5e",
+  "scope": {
+    "role": "single-label aggregate falsification and label-proxy diagnostics for the shared-threshold working posterior's cardinality implications",
+    "interpretation_limit": "flat pooled PIT or favorable mass reliability cannot identify the pointwise conditional cardinality law, establish posterior calibration, validate Q_p, or establish Jaccard-Wasserstein agreement",
+    "use_policy": "held-out labels summarize predeclared diagnostics only and must not fit, tune, or select a confidence score"
+  },
+  "protocol": {
+    "working_posterior": "shared-threshold",
+    "threshold_distribution": "Uniform(0,1)",
+    "mask_rule": "Y_T={i:foreground_probability_i>=T}",
+    "cardinality": "K(T)=|Y_T|",
+    "cdf_lower": "F_-(k)=Q_p(K<k)",
+    "cdf_upper": "F(k)=Q_p(K<=k)",
+    "randomized_pit": "F_-(k)+V[F(k)-F_-(k)]",
+    "diagnostic_seed": 20260720,
+    "randomizer": "sha256-top52-midpoint-v1",
+    "empty_mask_identity": "Q_p(K=0)=1-max_i foreground_probability_i"
+  },
+  "condition_sets": {
+    "complete": true,
+    "num_conditions": 16,
+    "num_target_conditions": 10,
+    "conditions": [
+      "pet/clipseg-general",
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "pet/deeplabv3-external",
+      "kvasir/clipseg-general",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-general",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-general",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-general",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ],
+    "target_conditions": [
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ]
+  },
+  "provenance": {
+    "auxiliary_lock_path": "configs/auxiliary/binary_cardinality_diagnostics-v1.lock.json",
+    "auxiliary_lock_sha256": "3433dce6b2ec0798654d90b7226b05f2f3f4b6b61254011df4915c3a6da59f28",
+    "canonical_campaign_lock_path": "outputs/binary_campaign/campaign.lock.json",
+    "canonical_campaign_lock_sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "analyzer_source_sha256": "76ac7ee584550e56b37aaa191f20eb2f18a08048a0a1a2013b60c40d59f81289",
+    "input_policy": "explicit records.jsonl paths; no discovery or globs"
+  },
+  "conditions": [
+    {
+      "dataset": "pet",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": false,
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "run_id": "1179828dcae88f6b",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/pet/clipseg-general/e0d454ce916c5ca9/1179828dcae88f6b/manifest.json",
+      "manifest_sha256": "f49a3b0b9b2fc3f968e0ce7b1546e1453afe7d170474de2cfcd68ff5ebec6669",
+      "source_artifact": {
+        "artifact_id": "e0d454ce916c5ca9",
+        "manifest_path": "outputs/binary_artifacts/pet/clipseg-general/e0d454ce916c5ca9/manifest.json",
+        "manifest_sha256": "3a7ee87f84e0c03baed3b77dc6b4f6610b4e189d752a58c8926a968e4be899ca"
+      },
+      "cardinality_error": {
+        "mean_predicted": 59390.5289753139,
+        "mean_observed": 75024.64131916054,
+        "signed_bias_predicted_minus_observed": -15634.112343846627,
+        "mean_absolute_error": 16739.167257447785,
+        "root_mean_squared_error": 31615.437607613425
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.33334807234554964,
+        "mean_observed": 0.4228188441780048,
+        "signed_bias_predicted_minus_observed": -0.0894707718324551,
+        "mean_absolute_error": 0.0917917784638295,
+        "root_mean_squared_error": 0.11642704009166076
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.05828697747139945,
+        "mean_observed": 0.0019078768056691197,
+        "signed_bias_predicted_minus_observed": 0.05637910066573033,
+        "mean_absolute_error": 0.05972577969379404,
+        "root_mean_squared_error": 0.09532187043478832,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.8014284183427456,
+        "variance": 0.01001778435443776,
+        "kolmogorov_smirnov_distance_to_uniform": 0.598718137997939,
+        "outside_central_90_percent_ratio": 0.008176614881439084,
+        "zero_observed_point_mass_ratio": 0.006268738075769964,
+        "mean_observed_cardinality_probability": 0.0002591352181676161,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.1124177334402064,
+            "observed_mean_foreground_fraction": 0.14281256913821036,
+            "signed_gap_predicted_minus_observed": -0.030394835698003955
+          },
+          {
+            "bin_index": 1,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.1770291366486792,
+            "observed_mean_foreground_fraction": 0.22628654478160432,
+            "signed_gap_predicted_minus_observed": -0.04925740813292512
+          },
+          {
+            "bin_index": 2,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.22409542041362665,
+            "observed_mean_foreground_fraction": 0.29392882665712683,
+            "signed_gap_predicted_minus_observed": -0.06983340624350018
+          },
+          {
+            "bin_index": 3,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.26418643195404884,
+            "observed_mean_foreground_fraction": 0.3409189737373745,
+            "signed_gap_predicted_minus_observed": -0.07673254178332567
+          },
+          {
+            "bin_index": 4,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.3013550680017047,
+            "observed_mean_foreground_fraction": 0.39285983291928644,
+            "signed_gap_predicted_minus_observed": -0.09150476491758175
+          },
+          {
+            "bin_index": 5,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.3383420358660718,
+            "observed_mean_foreground_fraction": 0.4388119739416438,
+            "signed_gap_predicted_minus_observed": -0.10046993807557197
+          },
+          {
+            "bin_index": 6,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.3805854708470494,
+            "observed_mean_foreground_fraction": 0.4910921156264267,
+            "signed_gap_predicted_minus_observed": -0.11050664477937727
+          },
+          {
+            "bin_index": 7,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.42812671930484186,
+            "observed_mean_foreground_fraction": 0.5467620271347349,
+            "signed_gap_predicted_minus_observed": -0.11863530782989301
+          },
+          {
+            "bin_index": 8,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.49431914344980776,
+            "observed_mean_foreground_fraction": 0.6184584752600131,
+            "signed_gap_predicted_minus_observed": -0.12413933181020531
+          },
+          {
+            "bin_index": 9,
+            "num_images": 366,
+            "predicted_mean_foreground_fraction": 0.6137877042157548,
+            "observed_mean_foreground_fraction": 0.7371134912677951,
+            "signed_gap_predicted_minus_observed": -0.12332578705204034
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "pet",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "run_id": "cb31274eb8831620",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/pet/clipseg-target/7261edbb5f763435/cb31274eb8831620/manifest.json",
+      "manifest_sha256": "dd9cb37ac44a0adf437ffee80dd674f3e121edb1528226e559bde774351bc0cf",
+      "source_artifact": {
+        "artifact_id": "7261edbb5f763435",
+        "manifest_path": "outputs/binary_artifacts/pet/clipseg-target/7261edbb5f763435/manifest.json",
+        "manifest_sha256": "63209620844cf2caa074c6ee726d58a8579483fd8f8586cdfdf9c1ea48e03d9d"
+      },
+      "cardinality_error": {
+        "mean_predicted": 77140.10517236803,
+        "mean_observed": 75024.64131916054,
+        "signed_bias_predicted_minus_observed": 2115.463853207486,
+        "mean_absolute_error": 3448.1024743607272,
+        "root_mean_squared_error": 28976.859971466954
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.4326135889921538,
+        "mean_observed": 0.4228188441780048,
+        "signed_bias_predicted_minus_observed": 0.009794744814149067,
+        "mean_absolute_error": 0.01751588238014418,
+        "root_mean_squared_error": 0.040900178705330005
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.000145714739162417,
+        "mean_observed": 0.0019078768056691197,
+        "signed_bias_predicted_minus_observed": -0.0017621620665067025,
+        "mean_absolute_error": 0.0020130927473688423,
+        "root_mean_squared_error": 0.043286013162269266,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.4245741809216885,
+        "variance": 0.03173371705985702,
+        "kolmogorov_smirnov_distance_to_uniform": 0.23725185924785352,
+        "outside_central_90_percent_ratio": 0.009539384028345598,
+        "zero_observed_point_mass_ratio": 0.005723630417007359,
+        "mean_observed_cardinality_probability": 9.69497354795842e-05,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.14132050586274,
+            "observed_mean_foreground_fraction": 0.13639011867975068,
+            "signed_gap_predicted_minus_observed": 0.004930387182989326
+          },
+          {
+            "bin_index": 1,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.22626287085040622,
+            "observed_mean_foreground_fraction": 0.22044107879324903,
+            "signed_gap_predicted_minus_observed": 0.005821792057157188
+          },
+          {
+            "bin_index": 2,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.28870767592217494,
+            "observed_mean_foreground_fraction": 0.282527176648009,
+            "signed_gap_predicted_minus_observed": 0.006180499274165918
+          },
+          {
+            "bin_index": 3,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.3435954663553945,
+            "observed_mean_foreground_fraction": 0.33666580214939723,
+            "signed_gap_predicted_minus_observed": 0.006929664205997277
+          },
+          {
+            "bin_index": 4,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.3927515579374356,
+            "observed_mean_foreground_fraction": 0.38667602947697194,
+            "signed_gap_predicted_minus_observed": 0.006075528460463664
+          },
+          {
+            "bin_index": 5,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.44439932222673323,
+            "observed_mean_foreground_fraction": 0.43566172374306633,
+            "signed_gap_predicted_minus_observed": 0.008737598483666897
+          },
+          {
+            "bin_index": 6,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.5004165872372509,
+            "observed_mean_foreground_fraction": 0.48825631439438394,
+            "signed_gap_predicted_minus_observed": 0.01216027284286697
+          },
+          {
+            "bin_index": 7,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.5624266327380268,
+            "observed_mean_foreground_fraction": 0.5508016174168173,
+            "signed_gap_predicted_minus_observed": 0.01162501532120952
+          },
+          {
+            "bin_index": 8,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.6433529439321588,
+            "observed_mean_foreground_fraction": 0.6339849080142664,
+            "signed_gap_predicted_minus_observed": 0.00936803591789237
+          },
+          {
+            "bin_index": 9,
+            "num_images": 366,
+            "predicted_mean_foreground_fraction": 0.7838593999134987,
+            "observed_mean_foreground_fraction": 0.7576961446725675,
+            "signed_gap_predicted_minus_observed": 0.026163255240931216
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "pet",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "run_id": "071590f6d0f528b5",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/pet/deeplabv3-target/ced4dc6e67bc178f/071590f6d0f528b5/manifest.json",
+      "manifest_sha256": "9bcfe04fd5246f326cd561db1a5371552ed2d988e5cbebe2676004839e7f1852",
+      "source_artifact": {
+        "artifact_id": "ced4dc6e67bc178f",
+        "manifest_path": "outputs/binary_artifacts/pet/deeplabv3-target/ced4dc6e67bc178f/manifest.json",
+        "manifest_sha256": "6902b90780b75b74015c613c4eae78debdd51315a40146a7daabc393c124c403"
+      },
+      "cardinality_error": {
+        "mean_predicted": 76071.2012002008,
+        "mean_observed": 75024.64131916054,
+        "signed_bias_predicted_minus_observed": 1046.5598810402707,
+        "mean_absolute_error": 3968.9521914987167,
+        "root_mean_squared_error": 28593.712696763425
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.4271973750545986,
+        "mean_observed": 0.4228188441780048,
+        "signed_bias_predicted_minus_observed": 0.0043785308765938126,
+        "mean_absolute_error": 0.020603838721831257,
+        "root_mean_squared_error": 0.04726552254263254
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 9.863862032200213e-05,
+        "mean_observed": 0.0019078768056691197,
+        "signed_bias_predicted_minus_observed": -0.0018092381853471176,
+        "mean_absolute_error": 0.0020041394929009907,
+        "root_mean_squared_error": 0.043659640858137234,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.48814514656238034,
+        "variance": 0.04997314753041496,
+        "kolmogorov_smirnov_distance_to_uniform": 0.11673640222803916,
+        "outside_central_90_percent_ratio": 0.023984736985554648,
+        "zero_observed_point_mass_ratio": 0.013082583810302535,
+        "mean_observed_cardinality_probability": 8.179760475609949e-05,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.13700131566455026,
+            "observed_mean_foreground_fraction": 0.13652006796329136,
+            "signed_gap_predicted_minus_observed": 0.00048124770125890226
+          },
+          {
+            "bin_index": 1,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.22324050334976955,
+            "observed_mean_foreground_fraction": 0.22243265469824983,
+            "signed_gap_predicted_minus_observed": 0.000807848651519727
+          },
+          {
+            "bin_index": 2,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.2841010223812239,
+            "observed_mean_foreground_fraction": 0.2835642034892721,
+            "signed_gap_predicted_minus_observed": 0.0005368188919518402
+          },
+          {
+            "bin_index": 3,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.3390346652842853,
+            "observed_mean_foreground_fraction": 0.33871456811193873,
+            "signed_gap_predicted_minus_observed": 0.0003200971723465451
+          },
+          {
+            "bin_index": 4,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.38706165385311525,
+            "observed_mean_foreground_fraction": 0.3859163265488099,
+            "signed_gap_predicted_minus_observed": 0.0011453273043053325
+          },
+          {
+            "bin_index": 5,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.43962196721383784,
+            "observed_mean_foreground_fraction": 0.43600693963982506,
+            "signed_gap_predicted_minus_observed": 0.0036150275740127746
+          },
+          {
+            "bin_index": 6,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.49472907816459416,
+            "observed_mean_foreground_fraction": 0.4915443761855711,
+            "signed_gap_predicted_minus_observed": 0.0031847019790230413
+          },
+          {
+            "bin_index": 7,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.5580862222706235,
+            "observed_mean_foreground_fraction": 0.5502862168528679,
+            "signed_gap_predicted_minus_observed": 0.007800005417755607
+          },
+          {
+            "bin_index": 8,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.6365710341619174,
+            "observed_mean_foreground_fraction": 0.6332875324268716,
+            "signed_gap_predicted_minus_observed": 0.0032835017350457685
+          },
+          {
+            "bin_index": 9,
+            "num_images": 366,
+            "predicted_mean_foreground_fraction": 0.77346980982269,
+            "observed_mean_foreground_fraction": 0.7508092627258781,
+            "signed_gap_predicted_minus_observed": 0.022660547096811867
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "pet",
+      "condition": "deeplabv3-external",
+      "model": "deeplabv3",
+      "split": "test",
+      "is_target_condition": false,
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "run_id": "40144619ffe4caa4",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/pet/deeplabv3-external/640ef98bcd028dc3/40144619ffe4caa4/manifest.json",
+      "manifest_sha256": "7092aa7270b72e865c0f4a34baf5faac2d27c14db5169a887064385f7a4c0656",
+      "source_artifact": {
+        "artifact_id": "640ef98bcd028dc3",
+        "manifest_path": "outputs/binary_artifacts/pet/deeplabv3-external/640ef98bcd028dc3/manifest.json",
+        "manifest_sha256": "b6a88350dd7414b56e8506602f6ab464a107f5bca414e06c0aebc013d064a22e"
+      },
+      "cardinality_error": {
+        "mean_predicted": 65453.99929356224,
+        "mean_observed": 75024.64131916054,
+        "signed_bias_predicted_minus_observed": -9570.6420255983,
+        "mean_absolute_error": 11319.285594293106,
+        "root_mean_squared_error": 27757.975025613363
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.36715942479920194,
+        "mean_observed": 0.4228188441780048,
+        "signed_bias_predicted_minus_observed": -0.055659419378802824,
+        "mean_absolute_error": 0.0618342194347761,
+        "root_mean_squared_error": 0.08275089550520175
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.006377521677932157,
+        "mean_observed": 0.0019078768056691197,
+        "signed_bias_predicted_minus_observed": 0.004469644872263037,
+        "mean_absolute_error": 0.008283753564358407,
+        "root_mean_squared_error": 0.06396314503180602,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.8978851985059674,
+        "variance": 0.025877037512225688,
+        "kolmogorov_smirnov_distance_to_uniform": 0.6795326876136922,
+        "outside_central_90_percent_ratio": 0.547288089397656,
+        "zero_observed_point_mass_ratio": 0.012810029980921232,
+        "mean_observed_cardinality_probability": 1.9441038751199077e-05,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.09357121992013616,
+            "observed_mean_foreground_fraction": 0.16071203010700638,
+            "signed_gap_predicted_minus_observed": -0.06714081018687022
+          },
+          {
+            "bin_index": 1,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.17009427199858976,
+            "observed_mean_foreground_fraction": 0.21888889601116124,
+            "signed_gap_predicted_minus_observed": -0.04879462401257148
+          },
+          {
+            "bin_index": 2,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.22588198533730533,
+            "observed_mean_foreground_fraction": 0.28299521621254276,
+            "signed_gap_predicted_minus_observed": -0.057113230875237425
+          },
+          {
+            "bin_index": 3,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.27664595413104404,
+            "observed_mean_foreground_fraction": 0.3372100290784046,
+            "signed_gap_predicted_minus_observed": -0.06056407494736055
+          },
+          {
+            "bin_index": 4,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.3218253179575946,
+            "observed_mean_foreground_fraction": 0.381408291390374,
+            "signed_gap_predicted_minus_observed": -0.05958297343277941
+          },
+          {
+            "bin_index": 5,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.37123535380808825,
+            "observed_mean_foreground_fraction": 0.4308390167431932,
+            "signed_gap_predicted_minus_observed": -0.05960366293510494
+          },
+          {
+            "bin_index": 6,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.42729152848485147,
+            "observed_mean_foreground_fraction": 0.48395507004456295,
+            "signed_gap_predicted_minus_observed": -0.05666354155971148
+          },
+          {
+            "bin_index": 7,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.490718169863951,
+            "observed_mean_foreground_fraction": 0.5486840997292294,
+            "signed_gap_predicted_minus_observed": -0.057965929865278376
+          },
+          {
+            "bin_index": 8,
+            "num_images": 367,
+            "predicted_mean_foreground_fraction": 0.5723244101330719,
+            "observed_mean_foreground_fraction": 0.6312232289886738,
+            "signed_gap_predicted_minus_observed": -0.05889881885560189
+          },
+          {
+            "bin_index": 9,
+            "num_images": 366,
+            "predicted_mean_foreground_fraction": 0.7229755626184746,
+            "observed_mean_foreground_fraction": 0.7531727102489342,
+            "signed_gap_predicted_minus_observed": -0.030197147630459553
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": false,
+      "num_images": 200,
+      "num_pixels": 66651381,
+      "run_id": "18c270468bd02e75",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/kvasir/clipseg-general/eb7304bdd945035d/18c270468bd02e75/manifest.json",
+      "manifest_sha256": "3c1807413927765bcdadce3b38ccce57a70495d68395ee67cdc55050363bb04a",
+      "source_artifact": {
+        "artifact_id": "eb7304bdd945035d",
+        "manifest_path": "outputs/binary_artifacts/kvasir/clipseg-general/eb7304bdd945035d/manifest.json",
+        "manifest_sha256": "b2cafd736eda658aff739ce9a78836a116b5b93d167af672f60933360bfab271"
+      },
+      "cardinality_error": {
+        "mean_predicted": 127466.30406437218,
+        "mean_observed": 49411.29,
+        "signed_bias_predicted_minus_observed": 78055.01406437217,
+        "mean_absolute_error": 82377.51992408384,
+        "root_mean_squared_error": 108700.87093723749
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.37439224871172544,
+        "mean_observed": 0.148535694397053,
+        "signed_bias_predicted_minus_observed": 0.2258565543146724,
+        "mean_absolute_error": 0.2403907504920245,
+        "root_mean_squared_error": 0.2810536372181664
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.31647552102804183,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.31647552102804183,
+        "mean_absolute_error": 0.31647552102804183,
+        "root_mean_squared_error": 0.33017548047829415,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.43459072190606535,
+        "variance": 0.013610780427410667,
+        "kolmogorov_smirnov_distance_to_uniform": 0.3270832926117452,
+        "outside_central_90_percent_ratio": 0.0,
+        "zero_observed_point_mass_ratio": 0.475,
+        "mean_observed_cardinality_probability": 3.368481993675232e-06,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.20564936280905322,
+            "observed_mean_foreground_fraction": 0.09917799292010787,
+            "signed_gap_predicted_minus_observed": 0.10647136988894534
+          },
+          {
+            "bin_index": 1,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.2659314704446573,
+            "observed_mean_foreground_fraction": 0.1608044325938013,
+            "signed_gap_predicted_minus_observed": 0.105127037850856
+          },
+          {
+            "bin_index": 2,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.2970188324803845,
+            "observed_mean_foreground_fraction": 0.18296938741095709,
+            "signed_gap_predicted_minus_observed": 0.11404944506942744
+          },
+          {
+            "bin_index": 3,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.32869032141432275,
+            "observed_mean_foreground_fraction": 0.15644563268712341,
+            "signed_gap_predicted_minus_observed": 0.17224468872719934
+          },
+          {
+            "bin_index": 4,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.3581368030084443,
+            "observed_mean_foreground_fraction": 0.20706105453483867,
+            "signed_gap_predicted_minus_observed": 0.15107574847360564
+          },
+          {
+            "bin_index": 5,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.38383049419575316,
+            "observed_mean_foreground_fraction": 0.1379660254570653,
+            "signed_gap_predicted_minus_observed": 0.24586446873868786
+          },
+          {
+            "bin_index": 6,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.41705127664722835,
+            "observed_mean_foreground_fraction": 0.1315556124819183,
+            "signed_gap_predicted_minus_observed": 0.28549566416531
+          },
+          {
+            "bin_index": 7,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.4487794895463038,
+            "observed_mean_foreground_fraction": 0.18652458944289915,
+            "signed_gap_predicted_minus_observed": 0.2622549001034047
+          },
+          {
+            "bin_index": 8,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.48253768624085486,
+            "observed_mean_foreground_fraction": 0.10984224138425576,
+            "signed_gap_predicted_minus_observed": 0.3726954448565991
+          },
+          {
+            "bin_index": 9,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.556296750330252,
+            "observed_mean_foreground_fraction": 0.11300997505756327,
+            "signed_gap_predicted_minus_observed": 0.4432867752726888
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 200,
+      "num_pixels": 66651381,
+      "run_id": "2d72e0ec5a943cca",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/kvasir/clipseg-target/7ce9cddd0f9704fd/2d72e0ec5a943cca/manifest.json",
+      "manifest_sha256": "74f6aa231671f8f8332ce7c896f977bd40759af8299cbdb85048330630af2822",
+      "source_artifact": {
+        "artifact_id": "7ce9cddd0f9704fd",
+        "manifest_path": "outputs/binary_artifacts/kvasir/clipseg-target/7ce9cddd0f9704fd/manifest.json",
+        "manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8"
+      },
+      "cardinality_error": {
+        "mean_predicted": 49268.987671414965,
+        "mean_observed": 49411.29,
+        "signed_bias_predicted_minus_observed": -142.30232858502538,
+        "mean_absolute_error": 12697.346690049337,
+        "root_mean_squared_error": 27690.469256285385
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.14496756599887767,
+        "mean_observed": 0.148535694397053,
+        "signed_bias_predicted_minus_observed": -0.0035681283981753285,
+        "mean_absolute_error": 0.037300103806408615,
+        "root_mean_squared_error": 0.07082233682238546
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.04658680595457554,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.04658680595457554,
+        "mean_absolute_error": 0.04658680595457554,
+        "root_mean_squared_error": 0.1478828313952696,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.548846642350574,
+        "variance": 0.07304582756429073,
+        "kolmogorov_smirnov_distance_to_uniform": 0.10579672614523905,
+        "outside_central_90_percent_ratio": 0.065,
+        "zero_observed_point_mass_ratio": 0.04,
+        "mean_observed_cardinality_probability": 5.0469043198972944e-05,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.019489050737040912,
+            "observed_mean_foreground_fraction": 0.02750530017058552,
+            "signed_gap_predicted_minus_observed": -0.00801624943354461
+          },
+          {
+            "bin_index": 1,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.03778501659521776,
+            "observed_mean_foreground_fraction": 0.054998440059829436,
+            "signed_gap_predicted_minus_observed": -0.017213423464611674
+          },
+          {
+            "bin_index": 2,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.06083567160354504,
+            "observed_mean_foreground_fraction": 0.06093079019570703,
+            "signed_gap_predicted_minus_observed": -9.511859216199126e-05
+          },
+          {
+            "bin_index": 3,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08579109297359555,
+            "observed_mean_foreground_fraction": 0.09487808897947295,
+            "signed_gap_predicted_minus_observed": -0.009086996005877396
+          },
+          {
+            "bin_index": 4,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.1033114292690764,
+            "observed_mean_foreground_fraction": 0.11581988710432134,
+            "signed_gap_predicted_minus_observed": -0.012508457835244943
+          },
+          {
+            "bin_index": 5,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.12545887373118086,
+            "observed_mean_foreground_fraction": 0.11908547221791814,
+            "signed_gap_predicted_minus_observed": 0.006373401513262725
+          },
+          {
+            "bin_index": 6,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.1556237690341497,
+            "observed_mean_foreground_fraction": 0.13730009174591434,
+            "signed_gap_predicted_minus_observed": 0.018323677288235363
+          },
+          {
+            "bin_index": 7,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.20319162042587385,
+            "observed_mean_foreground_fraction": 0.21250923516831963,
+            "signed_gap_predicted_minus_observed": -0.009317614742445773
+          },
+          {
+            "bin_index": 8,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.2650038023949354,
+            "observed_mean_foreground_fraction": 0.274947680005229,
+            "signed_gap_predicted_minus_observed": -0.009943877610293639
+          },
+          {
+            "bin_index": 9,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.3931853332241614,
+            "observed_mean_foreground_fraction": 0.3873819583232328,
+            "signed_gap_predicted_minus_observed": 0.005803374900928582
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 200,
+      "num_pixels": 66651381,
+      "run_id": "f8c96b78cf085dca",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/kvasir/deeplabv3-target/be7dedef6990d54c/f8c96b78cf085dca/manifest.json",
+      "manifest_sha256": "2815e925b220ba635609d4c91dd0b84ae033b223105d95c9fe61bfe38d1f804d",
+      "source_artifact": {
+        "artifact_id": "be7dedef6990d54c",
+        "manifest_path": "outputs/binary_artifacts/kvasir/deeplabv3-target/be7dedef6990d54c/manifest.json",
+        "manifest_sha256": "2050573de3eed869d71a158b51da6c8748c6dc6decf634cc15f9a6a7ccc15fa5"
+      },
+      "cardinality_error": {
+        "mean_predicted": 46395.02550975636,
+        "mean_observed": 49411.29,
+        "signed_bias_predicted_minus_observed": -3016.264490243646,
+        "mean_absolute_error": 9275.043473392074,
+        "root_mean_squared_error": 19310.088094737574
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.13791906725631814,
+        "mean_observed": 0.148535694397053,
+        "signed_bias_predicted_minus_observed": -0.010616627140734853,
+        "mean_absolute_error": 0.028306218907516972,
+        "root_mean_squared_error": 0.0599554695957434
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.01798440523445606,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.01798440523445606,
+        "mean_absolute_error": 0.01798440523445606,
+        "root_mean_squared_error": 0.08213693375878377,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.557011979166091,
+        "variance": 0.0726318316952954,
+        "kolmogorov_smirnov_distance_to_uniform": 0.11768141398282045,
+        "outside_central_90_percent_ratio": 0.1,
+        "zero_observed_point_mass_ratio": 0.01,
+        "mean_observed_cardinality_probability": 0.0001128826499916613,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.020279025599899143,
+            "observed_mean_foreground_fraction": 0.02900974894225967,
+            "signed_gap_predicted_minus_observed": -0.008730723342360528
+          },
+          {
+            "bin_index": 1,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.0350246515251663,
+            "observed_mean_foreground_fraction": 0.03875282118683027,
+            "signed_gap_predicted_minus_observed": -0.00372816966166397
+          },
+          {
+            "bin_index": 2,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.05012380196503955,
+            "observed_mean_foreground_fraction": 0.046924698455820944,
+            "signed_gap_predicted_minus_observed": 0.0031991035092186065
+          },
+          {
+            "bin_index": 3,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.07639365655265662,
+            "observed_mean_foreground_fraction": 0.11297243845864635,
+            "signed_gap_predicted_minus_observed": -0.03657878190598973
+          },
+          {
+            "bin_index": 4,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.10048170700743331,
+            "observed_mean_foreground_fraction": 0.089948369424693,
+            "signed_gap_predicted_minus_observed": 0.010533337582740304
+          },
+          {
+            "bin_index": 5,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.12504689336329136,
+            "observed_mean_foreground_fraction": 0.12440841981811115,
+            "signed_gap_predicted_minus_observed": 0.000638473545180207
+          },
+          {
+            "bin_index": 6,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.15186297407146107,
+            "observed_mean_foreground_fraction": 0.1670201407391366,
+            "signed_gap_predicted_minus_observed": -0.015157166667675526
+          },
+          {
+            "bin_index": 7,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.196290054503347,
+            "observed_mean_foreground_fraction": 0.18952352114732077,
+            "signed_gap_predicted_minus_observed": 0.0067665333560262275
+          },
+          {
+            "bin_index": 8,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.24821017357408898,
+            "observed_mean_foreground_fraction": 0.30163899131392646,
+            "signed_gap_predicted_minus_observed": -0.053428817739837486
+          },
+          {
+            "bin_index": 9,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.37547773440079835,
+            "observed_mean_foreground_fraction": 0.3851577944837849,
+            "signed_gap_predicted_minus_observed": -0.009680060082986552
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "fives",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": false,
+      "num_images": 200,
+      "num_pixels": 838860800,
+      "run_id": "8b4fe4f8766af7e8",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/fives/clipseg-general/cb5c08e73819574c/8b4fe4f8766af7e8/manifest.json",
+      "manifest_sha256": "485b596c6871f6287e82252c4809dd8a29505be5c742540627c2d66acf5c3c2d",
+      "source_artifact": {
+        "artifact_id": "cb5c08e73819574c",
+        "manifest_path": "outputs/binary_artifacts/fives/clipseg-general/cb5c08e73819574c/manifest.json",
+        "manifest_sha256": "977fd1d5362e68597695e38b2de381f73880df3c537a734a8d3a87427702a690"
+      },
+      "cardinality_error": {
+        "mean_predicted": 485612.5241393659,
+        "mean_observed": 337789.115,
+        "signed_bias_predicted_minus_observed": 147823.40913936577,
+        "mean_absolute_error": 334915.4197083767,
+        "root_mean_squared_error": 559808.7206631218
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.11577904799923083,
+        "mean_observed": 0.08053520083427429,
+        "signed_bias_predicted_minus_observed": 0.035243847164956515,
+        "mean_absolute_error": 0.07985005848607461,
+        "root_mean_squared_error": 0.133468799749165
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.27276145353913306,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.27276145353913306,
+        "mean_absolute_error": 0.27276145353913306,
+        "root_mean_squared_error": 0.325249970968476,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.7713594311397542,
+        "variance": 0.03273310647623303,
+        "kolmogorov_smirnov_distance_to_uniform": 0.4169561767578125,
+        "outside_central_90_percent_ratio": 0.14,
+        "zero_observed_point_mass_ratio": 0.51,
+        "mean_observed_cardinality_probability": 1.6395747661590576e-06,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.027000819441599135,
+            "observed_mean_foreground_fraction": 0.07329986095428467,
+            "signed_gap_predicted_minus_observed": -0.04629904151268554
+          },
+          {
+            "bin_index": 1,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.03703287772729304,
+            "observed_mean_foreground_fraction": 0.07560561895370484,
+            "signed_gap_predicted_minus_observed": -0.0385727412264118
+          },
+          {
+            "bin_index": 2,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.046299578691359915,
+            "observed_mean_foreground_fraction": 0.07284982204437256,
+            "signed_gap_predicted_minus_observed": -0.02655024335301264
+          },
+          {
+            "bin_index": 3,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.05453762737506433,
+            "observed_mean_foreground_fraction": 0.07044107913970947,
+            "signed_gap_predicted_minus_observed": -0.015903451764645138
+          },
+          {
+            "bin_index": 4,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.06882615402417087,
+            "observed_mean_foreground_fraction": 0.06173741817474365,
+            "signed_gap_predicted_minus_observed": 0.007088735849427222
+          },
+          {
+            "bin_index": 5,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08812930121139509,
+            "observed_mean_foreground_fraction": 0.0677790880203247,
+            "signed_gap_predicted_minus_observed": 0.020350213191070388
+          },
+          {
+            "bin_index": 6,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.11580240232002677,
+            "observed_mean_foreground_fraction": 0.07337310314178466,
+            "signed_gap_predicted_minus_observed": 0.042429299178242105
+          },
+          {
+            "bin_index": 7,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.1551809244688656,
+            "observed_mean_foreground_fraction": 0.1244125247001648,
+            "signed_gap_predicted_minus_observed": 0.030768399768700813
+          },
+          {
+            "bin_index": 8,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.23269774717127684,
+            "observed_mean_foreground_fraction": 0.1205869197845459,
+            "signed_gap_predicted_minus_observed": 0.11211082738673094
+          },
+          {
+            "bin_index": 9,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.3322830475612566,
+            "observed_mean_foreground_fraction": 0.06526657342910766,
+            "signed_gap_predicted_minus_observed": 0.2670164741321489
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "fives",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 200,
+      "num_pixels": 838860800,
+      "run_id": "dcc65d0b26b500f7",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/fives/clipseg-target/ef8e1b5176b92b87/dcc65d0b26b500f7/manifest.json",
+      "manifest_sha256": "b7f7534b6b04c0851e5099726a66350ab2a83bf880d13a21ba91012a35a64448",
+      "source_artifact": {
+        "artifact_id": "ef8e1b5176b92b87",
+        "manifest_path": "outputs/binary_artifacts/fives/clipseg-target/ef8e1b5176b92b87/manifest.json",
+        "manifest_sha256": "5ea7ca873b8d9d527706e4d2cccb3c12da758c5b31b831b164eb7fc32dfdb16e"
+      },
+      "cardinality_error": {
+        "mean_predicted": 367673.9891133293,
+        "mean_observed": 337789.115,
+        "signed_bias_predicted_minus_observed": 29884.87411332938,
+        "mean_absolute_error": 111741.04729891416,
+        "root_mean_squared_error": 398057.31643715943
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.08766031005700334,
+        "mean_observed": 0.08053520083427429,
+        "signed_bias_predicted_minus_observed": 0.007125109222729058,
+        "mean_absolute_error": 0.0266411417243276,
+        "root_mean_squared_error": 0.09490425978592859
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.26209296703338625,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.26209296703338625,
+        "mean_absolute_error": 0.26209296703338625,
+        "root_mean_squared_error": 0.2872556567298287,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.7330894520753239,
+        "variance": 0.0018784790789504802,
+        "kolmogorov_smirnov_distance_to_uniform": 0.6439693164309841,
+        "outside_central_90_percent_ratio": 0.01,
+        "zero_observed_point_mass_ratio": 0.115,
+        "mean_observed_cardinality_probability": 1.3100286014378072e-05,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.06923313337908142,
+            "observed_mean_foreground_fraction": 0.0539270281791687,
+            "signed_gap_predicted_minus_observed": 0.015306105199912719
+          },
+          {
+            "bin_index": 1,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.07729987729423879,
+            "observed_mean_foreground_fraction": 0.06321226358413697,
+            "signed_gap_predicted_minus_observed": 0.014087613710101823
+          },
+          {
+            "bin_index": 2,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08202886350084804,
+            "observed_mean_foreground_fraction": 0.07166690826416015,
+            "signed_gap_predicted_minus_observed": 0.010361955236687884
+          },
+          {
+            "bin_index": 3,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08525336139483963,
+            "observed_mean_foreground_fraction": 0.07528777122497558,
+            "signed_gap_predicted_minus_observed": 0.00996559016986405
+          },
+          {
+            "bin_index": 4,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08762655307394179,
+            "observed_mean_foreground_fraction": 0.07420250177383422,
+            "signed_gap_predicted_minus_observed": 0.01342405130010757
+          },
+          {
+            "bin_index": 5,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.089435851099231,
+            "observed_mean_foreground_fraction": 0.12307082414627075,
+            "signed_gap_predicted_minus_observed": -0.03363497304703976
+          },
+          {
+            "bin_index": 6,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.09098419251731954,
+            "observed_mean_foreground_fraction": 0.12403568029403686,
+            "signed_gap_predicted_minus_observed": -0.03305148777671732
+          },
+          {
+            "bin_index": 7,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.09297754866709576,
+            "observed_mean_foreground_fraction": 0.07661466598510742,
+            "signed_gap_predicted_minus_observed": 0.016362882681988336
+          },
+          {
+            "bin_index": 8,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.09564025698259274,
+            "observed_mean_foreground_fraction": 0.07390936613082885,
+            "signed_gap_predicted_minus_observed": 0.021730890851763884
+          },
+          {
+            "bin_index": 9,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.1061234626608448,
+            "observed_mean_foreground_fraction": 0.06942499876022339,
+            "signed_gap_predicted_minus_observed": 0.03669846390062141
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "fives",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 200,
+      "num_pixels": 838860800,
+      "run_id": "64afb986ad2ea474",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/fives/deeplabv3-target/e7e1e90e13ce3dfa/64afb986ad2ea474/manifest.json",
+      "manifest_sha256": "81be649ca10574df7fd60d8f786ca1a85ae5779bd54268006438b8a2bb9ef00d",
+      "source_artifact": {
+        "artifact_id": "e7e1e90e13ce3dfa",
+        "manifest_path": "outputs/binary_artifacts/fives/deeplabv3-target/e7e1e90e13ce3dfa/manifest.json",
+        "manifest_sha256": "fd33483e3e90d1508b3dc39354041f7299618524adc22326c4d1f65d7369bd87"
+      },
+      "cardinality_error": {
+        "mean_predicted": 368898.0764215302,
+        "mean_observed": 337789.115,
+        "signed_bias_predicted_minus_observed": 31108.961421530195,
+        "mean_absolute_error": 120704.59964380063,
+        "root_mean_squared_error": 561582.0742901183
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.08795215521372085,
+        "mean_observed": 0.08053520083427429,
+        "signed_bias_predicted_minus_observed": 0.007416954379446553,
+        "mean_absolute_error": 0.028778219138097912,
+        "root_mean_squared_error": 0.13389160020115812
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.015687302350997925,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.015687302350997925,
+        "mean_absolute_error": 0.015687302350997925,
+        "root_mean_squared_error": 0.0372123856838487,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.6014078704731038,
+        "variance": 0.011095848451112578,
+        "kolmogorov_smirnov_distance_to_uniform": 0.4588522452073162,
+        "outside_central_90_percent_ratio": 0.02,
+        "zero_observed_point_mass_ratio": 0.03,
+        "mean_observed_cardinality_probability": 1.5342390861405875e-06,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.030253334871005864,
+            "observed_mean_foreground_fraction": 0.029792046546936034,
+            "signed_gap_predicted_minus_observed": 0.00046128832406983067
+          },
+          {
+            "bin_index": 1,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.05533755578803938,
+            "observed_mean_foreground_fraction": 0.05323915481567383,
+            "signed_gap_predicted_minus_observed": 0.0020984009723655495
+          },
+          {
+            "bin_index": 2,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.0683166121908397,
+            "observed_mean_foreground_fraction": 0.06850732564926147,
+            "signed_gap_predicted_minus_observed": -0.0001907134584217679
+          },
+          {
+            "bin_index": 3,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.0738966245344688,
+            "observed_mean_foreground_fraction": 0.07418214082717896,
+            "signed_gap_predicted_minus_observed": -0.0002855162927101612
+          },
+          {
+            "bin_index": 4,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.07943096380421086,
+            "observed_mean_foreground_fraction": 0.16992480754852296,
+            "signed_gap_predicted_minus_observed": -0.0904938437443121
+          },
+          {
+            "bin_index": 5,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08335786927316371,
+            "observed_mean_foreground_fraction": 0.08128018379211426,
+            "signed_gap_predicted_minus_observed": 0.00207768548104946
+          },
+          {
+            "bin_index": 6,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08588410047772013,
+            "observed_mean_foreground_fraction": 0.08276255130767822,
+            "signed_gap_predicted_minus_observed": 0.0031215491700419123
+          },
+          {
+            "bin_index": 7,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.08887923318836109,
+            "observed_mean_foreground_fraction": 0.08378870487213134,
+            "signed_gap_predicted_minus_observed": 0.005090528316229748
+          },
+          {
+            "bin_index": 8,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.09285741257288972,
+            "observed_mean_foreground_fraction": 0.08861479759216309,
+            "signed_gap_predicted_minus_observed": 0.004242614980726631
+          },
+          {
+            "bin_index": 9,
+            "num_images": 20,
+            "predicted_mean_foreground_fraction": 0.22130784543650917,
+            "observed_mean_foreground_fraction": 0.07326029539108277,
+            "signed_gap_predicted_minus_observed": 0.1480475500454264
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "isic",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": false,
+      "num_images": 1000,
+      "num_pixels": 6615437579,
+      "run_id": "abd42456079a3fea",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/isic/clipseg-general/3e57aa259264c1be/abd42456079a3fea/manifest.json",
+      "manifest_sha256": "d6b618adcc96c6975c79794e30d5f841ff0c4ea91eb70868d472c4d6ac60152a",
+      "source_artifact": {
+        "artifact_id": "3e57aa259264c1be",
+        "manifest_path": "outputs/binary_artifacts/isic/clipseg-general/3e57aa259264c1be/manifest.json",
+        "manifest_sha256": "e11cf7fe164004bc5174066ef1d1f25a0af82e0ac6482018fe345c30fc0df115"
+      },
+      "cardinality_error": {
+        "mean_predicted": 1599060.0641904033,
+        "mean_observed": 1958798.917,
+        "signed_bias_predicted_minus_observed": -359738.85280959663,
+        "mean_absolute_error": 1519590.9304768555,
+        "root_mean_squared_error": 3170675.224521202
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.2657319698339537,
+        "mean_observed": 0.27985027293025955,
+        "signed_bias_predicted_minus_observed": -0.014118303096305858,
+        "mean_absolute_error": 0.22337124386042734,
+        "root_mean_squared_error": 0.2801640697256414
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.6041554035879672,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.6041554035879672,
+        "mean_absolute_error": 0.6041554035879672,
+        "root_mean_squared_error": 0.6220243194527226,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.6972049519495483,
+        "variance": 0.02396896475326095,
+        "kolmogorov_smirnov_distance_to_uniform": 0.405,
+        "outside_central_90_percent_ratio": 0.044,
+        "zero_observed_point_mass_ratio": 0.626,
+        "mean_observed_cardinality_probability": 3.045777790248394e-06,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.04800026246323769,
+            "observed_mean_foreground_fraction": 0.3409108692027285,
+            "signed_gap_predicted_minus_observed": -0.2929106067394908
+          },
+          {
+            "bin_index": 1,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.10413113931998379,
+            "observed_mean_foreground_fraction": 0.3371009419282025,
+            "signed_gap_predicted_minus_observed": -0.2329698026082187
+          },
+          {
+            "bin_index": 2,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.15583207155539752,
+            "observed_mean_foreground_fraction": 0.3377750311898579,
+            "signed_gap_predicted_minus_observed": -0.1819429596344604
+          },
+          {
+            "bin_index": 3,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.20652141369403984,
+            "observed_mean_foreground_fraction": 0.3225853748302999,
+            "signed_gap_predicted_minus_observed": -0.11606396113626008
+          },
+          {
+            "bin_index": 4,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.25443803597466225,
+            "observed_mean_foreground_fraction": 0.26615852879836427,
+            "signed_gap_predicted_minus_observed": -0.011720492823702022
+          },
+          {
+            "bin_index": 5,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.2939719333071762,
+            "observed_mean_foreground_fraction": 0.2695803687348428,
+            "signed_gap_predicted_minus_observed": 0.02439156457233338
+          },
+          {
+            "bin_index": 6,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.33150950292361203,
+            "observed_mean_foreground_fraction": 0.2475897622532137,
+            "signed_gap_predicted_minus_observed": 0.08391974067039834
+          },
+          {
+            "bin_index": 7,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.3700396809201181,
+            "observed_mean_foreground_fraction": 0.22667858525568046,
+            "signed_gap_predicted_minus_observed": 0.1433610956644376
+          },
+          {
+            "bin_index": 8,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.40882112991481534,
+            "observed_mean_foreground_fraction": 0.2129212266487934,
+            "signed_gap_predicted_minus_observed": 0.19589990326602194
+          },
+          {
+            "bin_index": 9,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.4840545282664941,
+            "observed_mean_foreground_fraction": 0.23720204046061208,
+            "signed_gap_predicted_minus_observed": 0.246852487805882
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "isic",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 1000,
+      "num_pixels": 6615437579,
+      "run_id": "eb77470c85ca4d7d",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/isic/clipseg-target/a5d30aa0ec8b0742/eb77470c85ca4d7d/manifest.json",
+      "manifest_sha256": "215f3225b1ee578e52489f3f82c9782e21532321affbf510615d55c92154010d",
+      "source_artifact": {
+        "artifact_id": "a5d30aa0ec8b0742",
+        "manifest_path": "outputs/binary_artifacts/isic/clipseg-target/a5d30aa0ec8b0742/manifest.json",
+        "manifest_sha256": "fe756c276aa3da2868b8d41d2ddc2eed1dcf36e553ada12206e6e945b490f980"
+      },
+      "cardinality_error": {
+        "mean_predicted": 2179200.4587254883,
+        "mean_observed": 1958798.917,
+        "signed_bias_predicted_minus_observed": 220401.54172548826,
+        "mean_absolute_error": 410391.1113560741,
+        "root_mean_squared_error": 911136.7188927646
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.322278983703854,
+        "mean_observed": 0.27985027293025955,
+        "signed_bias_predicted_minus_observed": 0.042428710773594516,
+        "mean_absolute_error": 0.06598428400170417,
+        "root_mean_squared_error": 0.11000904447706089
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.0022493208050727844,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.0022493208050727844,
+        "mean_absolute_error": 0.0022493208050727844,
+        "root_mean_squared_error": 0.016262841595782094,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.26177461890912856,
+        "variance": 0.05454785794049474,
+        "kolmogorov_smirnov_distance_to_uniform": 0.383615974775715,
+        "outside_central_90_percent_ratio": 0.142,
+        "zero_observed_point_mass_ratio": 0.154,
+        "mean_observed_cardinality_probability": 0.00024304138549268827,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.05229487601694472,
+            "observed_mean_foreground_fraction": 0.03974888307745304,
+            "signed_gap_predicted_minus_observed": 0.012545992939491678
+          },
+          {
+            "bin_index": 1,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.10624271749562088,
+            "observed_mean_foreground_fraction": 0.09347736105100854,
+            "signed_gap_predicted_minus_observed": 0.012765356444612339
+          },
+          {
+            "bin_index": 2,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.1487461729984048,
+            "observed_mean_foreground_fraction": 0.14296620803273194,
+            "signed_gap_predicted_minus_observed": 0.0057799649656728735
+          },
+          {
+            "bin_index": 3,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.19198621407802474,
+            "observed_mean_foreground_fraction": 0.15985124189337496,
+            "signed_gap_predicted_minus_observed": 0.03213497218464978
+          },
+          {
+            "bin_index": 4,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.23344809069310826,
+            "observed_mean_foreground_fraction": 0.19623757478518958,
+            "signed_gap_predicted_minus_observed": 0.037210515907918684
+          },
+          {
+            "bin_index": 5,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.2849091224734303,
+            "observed_mean_foreground_fraction": 0.2532613408253432,
+            "signed_gap_predicted_minus_observed": 0.031647781648087125
+          },
+          {
+            "bin_index": 6,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.3580170512248302,
+            "observed_mean_foreground_fraction": 0.3135689622981404,
+            "signed_gap_predicted_minus_observed": 0.04444808892668978
+          },
+          {
+            "bin_index": 7,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.4470199864427269,
+            "observed_mean_foreground_fraction": 0.38694734820867926,
+            "signed_gap_predicted_minus_observed": 0.060072638234047626
+          },
+          {
+            "bin_index": 8,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.585771309032827,
+            "observed_mean_foreground_fraction": 0.5044279487630557,
+            "signed_gap_predicted_minus_observed": 0.08134336026977129
+          },
+          {
+            "bin_index": 9,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.8143542965826227,
+            "observed_mean_foreground_fraction": 0.708015860367619,
+            "signed_gap_predicted_minus_observed": 0.10633843621500372
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "isic",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 1000,
+      "num_pixels": 6615437579,
+      "run_id": "a21603a44827ace0",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/isic/deeplabv3-target/48cf75646c61ecf4/a21603a44827ace0/manifest.json",
+      "manifest_sha256": "50cb35d1c5bea06244afc03f4d952d0755f34b0dddde9201a72d622bd70c00df",
+      "source_artifact": {
+        "artifact_id": "48cf75646c61ecf4",
+        "manifest_path": "outputs/binary_artifacts/isic/deeplabv3-target/48cf75646c61ecf4/manifest.json",
+        "manifest_sha256": "9e9634dd93434de85fc7ea5fc0de7972220960f1db0ce012d7e4a56f1ba3a4ba"
+      },
+      "cardinality_error": {
+        "mean_predicted": 2055454.7052765822,
+        "mean_observed": 1958798.917,
+        "signed_bias_predicted_minus_observed": 96655.7882765823,
+        "mean_absolute_error": 398172.6261202992,
+        "root_mean_squared_error": 941622.0700264309
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.30691559710338195,
+        "mean_observed": 0.27985027293025955,
+        "signed_bias_predicted_minus_observed": 0.027065324173122463,
+        "mean_absolute_error": 0.06733014204985047,
+        "root_mean_squared_error": 0.1250043184437964
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.006733052879571915,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.006733052879571915,
+        "mean_absolute_error": 0.006733052879571915,
+        "root_mean_squared_error": 0.0411778052928448,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.3145238665302512,
+        "variance": 0.07315217515039797,
+        "kolmogorov_smirnov_distance_to_uniform": 0.30556380862944305,
+        "outside_central_90_percent_ratio": 0.132,
+        "zero_observed_point_mass_ratio": 0.054,
+        "mean_observed_cardinality_probability": 0.0008046320988978551,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.04463607135195396,
+            "observed_mean_foreground_fraction": 0.05207857909345643,
+            "signed_gap_predicted_minus_observed": -0.0074425077415024715
+          },
+          {
+            "bin_index": 1,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.09404951977739535,
+            "observed_mean_foreground_fraction": 0.10771975214425954,
+            "signed_gap_predicted_minus_observed": -0.013670232366864182
+          },
+          {
+            "bin_index": 2,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.1404746678270713,
+            "observed_mean_foreground_fraction": 0.1414114294800035,
+            "signed_gap_predicted_minus_observed": -0.0009367616529321887
+          },
+          {
+            "bin_index": 3,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.18629186226742164,
+            "observed_mean_foreground_fraction": 0.17501105444501028,
+            "signed_gap_predicted_minus_observed": 0.011280807822411365
+          },
+          {
+            "bin_index": 4,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.22256247717823066,
+            "observed_mean_foreground_fraction": 0.20205253137760731,
+            "signed_gap_predicted_minus_observed": 0.020509945800623347
+          },
+          {
+            "bin_index": 5,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.26821123304246014,
+            "observed_mean_foreground_fraction": 0.24939799434206772,
+            "signed_gap_predicted_minus_observed": 0.01881323870039242
+          },
+          {
+            "bin_index": 6,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.33589081257847103,
+            "observed_mean_foreground_fraction": 0.30908746435900514,
+            "signed_gap_predicted_minus_observed": 0.026803348219465895
+          },
+          {
+            "bin_index": 7,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.4224141876725608,
+            "observed_mean_foreground_fraction": 0.3846175160910198,
+            "signed_gap_predicted_minus_observed": 0.037796671581540986
+          },
+          {
+            "bin_index": 8,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.5568587122215177,
+            "observed_mean_foreground_fraction": 0.48526660533759186,
+            "signed_gap_predicted_minus_observed": 0.07159210688392587
+          },
+          {
+            "bin_index": 9,
+            "num_images": 100,
+            "predicted_mean_foreground_fraction": 0.7977664271167374,
+            "observed_mean_foreground_fraction": 0.6918598026325736,
+            "signed_gap_predicted_minus_observed": 0.10590662448416377
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": false,
+      "num_images": 614,
+      "num_pixels": 165729396,
+      "run_id": "b2cabdfcac25d582",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/tn3k/clipseg-general/9626e945ef94b1e5/b2cabdfcac25d582/manifest.json",
+      "manifest_sha256": "4f9e2ef99154158a73a47be87a5a7e3a64b4704869b169a11548a0daa6682fdc",
+      "source_artifact": {
+        "artifact_id": "9626e945ef94b1e5",
+        "manifest_path": "outputs/binary_artifacts/tn3k/clipseg-general/9626e945ef94b1e5/manifest.json",
+        "manifest_sha256": "aa7d822e499095496e4111f66bfb472f2971c7164f5bc85895caef5fc5034210"
+      },
+      "cardinality_error": {
+        "mean_predicted": 11826.287441809665,
+        "mean_observed": 33616.167752443,
+        "signed_bias_predicted_minus_observed": -21789.88031063333,
+        "mean_absolute_error": 25600.015188509562,
+        "root_mean_squared_error": 53944.00842422525
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.04086248910622071,
+        "mean_observed": 0.12073057744579711,
+        "signed_bias_predicted_minus_observed": -0.0798680883395764,
+        "mean_absolute_error": 0.09314681401731445,
+        "root_mean_squared_error": 0.14828452766782926
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.851175615045239,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.851175615045239,
+        "mean_absolute_error": 0.851175615045239,
+        "root_mean_squared_error": 0.854605192485166,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.9168015990980632,
+        "variance": 0.002657435380964465,
+        "kolmogorov_smirnov_distance_to_uniform": 0.7753588151465798,
+        "outside_central_90_percent_ratio": 0.28175895765472314,
+        "zero_observed_point_mass_ratio": 0.16775244299674266,
+        "mean_observed_cardinality_probability": 2.8585596465132524e-06,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.015306797660599093,
+            "observed_mean_foreground_fraction": 0.06125902430610908,
+            "signed_gap_predicted_minus_observed": -0.045952226645509985
+          },
+          {
+            "bin_index": 1,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.02183700571266548,
+            "observed_mean_foreground_fraction": 0.1067982897006949,
+            "signed_gap_predicted_minus_observed": -0.08496128398802942
+          },
+          {
+            "bin_index": 2,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.025852359248087167,
+            "observed_mean_foreground_fraction": 0.1098550659952067,
+            "signed_gap_predicted_minus_observed": -0.08400270674711953
+          },
+          {
+            "bin_index": 3,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.03002698185569316,
+            "observed_mean_foreground_fraction": 0.10401180407019558,
+            "signed_gap_predicted_minus_observed": -0.07398482221450242
+          },
+          {
+            "bin_index": 4,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.0341637539405903,
+            "observed_mean_foreground_fraction": 0.11681160493680053,
+            "signed_gap_predicted_minus_observed": -0.08264785099621022
+          },
+          {
+            "bin_index": 5,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.03868527496561935,
+            "observed_mean_foreground_fraction": 0.11443662423884836,
+            "signed_gap_predicted_minus_observed": -0.07575134927322902
+          },
+          {
+            "bin_index": 6,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.04367569853022807,
+            "observed_mean_foreground_fraction": 0.1196292158784946,
+            "signed_gap_predicted_minus_observed": -0.07595351734826652
+          },
+          {
+            "bin_index": 7,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.051540280798997966,
+            "observed_mean_foreground_fraction": 0.14530077729143348,
+            "signed_gap_predicted_minus_observed": -0.09376049649243551
+          },
+          {
+            "bin_index": 8,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.06149154329329293,
+            "observed_mean_foreground_fraction": 0.1802126882859047,
+            "signed_gap_predicted_minus_observed": -0.11872114499261177
+          },
+          {
+            "bin_index": 9,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.08719973295721788,
+            "observed_mean_foreground_fraction": 0.15064638673315175,
+            "signed_gap_predicted_minus_observed": -0.06344665377593388
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 614,
+      "num_pixels": 165729396,
+      "run_id": "2af0ed87a886bf5c",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/tn3k/clipseg-target/603dc94883b5f395/2af0ed87a886bf5c/manifest.json",
+      "manifest_sha256": "973705459aee7ffe498bbccf435eeb6af57154f773a257db5641bdc4da246fca",
+      "source_artifact": {
+        "artifact_id": "603dc94883b5f395",
+        "manifest_path": "outputs/binary_artifacts/tn3k/clipseg-target/603dc94883b5f395/manifest.json",
+        "manifest_sha256": "259fba96dd6f14ee127839c4e4b1b254100a2f67aa163b6c61d62d9b4653eacd"
+      },
+      "cardinality_error": {
+        "mean_predicted": 36205.35521073607,
+        "mean_observed": 33616.167752443,
+        "signed_bias_predicted_minus_observed": 2589.187458293068,
+        "mean_absolute_error": 10480.385204687294,
+        "root_mean_squared_error": 20928.201094793592
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.1330133859047412,
+        "mean_observed": 0.12073057744579711,
+        "signed_bias_predicted_minus_observed": 0.012282808458944108,
+        "mean_absolute_error": 0.03809565436421165,
+        "root_mean_squared_error": 0.0578655537176615
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.09057555145034961,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.09057555145034961,
+        "mean_absolute_error": 0.09057555145034961,
+        "root_mean_squared_error": 0.1763390842887632,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.5188825284709463,
+        "variance": 0.05319214339569811,
+        "kolmogorov_smirnov_distance_to_uniform": 0.1104319082422078,
+        "outside_central_90_percent_ratio": 0.013029315960912053,
+        "zero_observed_point_mass_ratio": 0.030944625407166124,
+        "mean_observed_cardinality_probability": 7.12144005048644e-05,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.018585034354115983,
+            "observed_mean_foreground_fraction": 0.01814743205103451,
+            "signed_gap_predicted_minus_observed": 0.00043760230308147186
+          },
+          {
+            "bin_index": 1,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.03115718705950409,
+            "observed_mean_foreground_fraction": 0.032324383299577104,
+            "signed_gap_predicted_minus_observed": -0.0011671962400730158
+          },
+          {
+            "bin_index": 2,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.044324788510939114,
+            "observed_mean_foreground_fraction": 0.0388341361889035,
+            "signed_gap_predicted_minus_observed": 0.005490652322035612
+          },
+          {
+            "bin_index": 3,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.059847123601835445,
+            "observed_mean_foreground_fraction": 0.05139224195669471,
+            "signed_gap_predicted_minus_observed": 0.008454881645140737
+          },
+          {
+            "bin_index": 4,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.07858461456531643,
+            "observed_mean_foreground_fraction": 0.06116333925068777,
+            "signed_gap_predicted_minus_observed": 0.017421275314628656
+          },
+          {
+            "bin_index": 5,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.10568965489687866,
+            "observed_mean_foreground_fraction": 0.07970250123792422,
+            "signed_gap_predicted_minus_observed": 0.025987153658954446
+          },
+          {
+            "bin_index": 6,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.14762289825101751,
+            "observed_mean_foreground_fraction": 0.12064175306304749,
+            "signed_gap_predicted_minus_observed": 0.026981145187970026
+          },
+          {
+            "bin_index": 7,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.1947108349477677,
+            "observed_mean_foreground_fraction": 0.1863941961076437,
+            "signed_gap_predicted_minus_observed": 0.008316638840123985
+          },
+          {
+            "bin_index": 8,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.2588788369005632,
+            "observed_mean_foreground_fraction": 0.244880567440016,
+            "signed_gap_predicted_minus_observed": 0.013998269460547191
+          },
+          {
+            "bin_index": 9,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.39693189268230317,
+            "observed_mean_foreground_fraction": 0.37943545527698275,
+            "signed_gap_predicted_minus_observed": 0.01749643740532042
+          }
+        ]
+      }
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "split": "test",
+      "is_target_condition": true,
+      "num_images": 614,
+      "num_pixels": 165729396,
+      "run_id": "119a46ed4bf8dbe6",
+      "manifest_path": "outputs/binary_cardinality_diagnostics/tn3k/deeplabv3-target/efce266864cd5269/119a46ed4bf8dbe6/manifest.json",
+      "manifest_sha256": "ad93cdf467724faa65da9bd1906efcdd34b9709793db0f710d840cb7b39e49bf",
+      "source_artifact": {
+        "artifact_id": "efce266864cd5269",
+        "manifest_path": "outputs/binary_artifacts/tn3k/deeplabv3-target/efce266864cd5269/manifest.json",
+        "manifest_sha256": "3650248ad9a3cd84cd85bd6f88555df40e3d716c3f24310f12b7e1af600fe515"
+      },
+      "cardinality_error": {
+        "mean_predicted": 34374.785310326675,
+        "mean_observed": 33616.167752443,
+        "signed_bias_predicted_minus_observed": 758.6175578836712,
+        "mean_absolute_error": 5852.923445094808,
+        "root_mean_squared_error": 12752.177489327472
+      },
+      "foreground_fraction_error": {
+        "mean_predicted": 0.12513695001240913,
+        "mean_observed": 0.12073057744579711,
+        "signed_bias_predicted_minus_observed": 0.00440637256661201,
+        "mean_absolute_error": 0.02171645018673138,
+        "root_mean_squared_error": 0.03778300706311714
+      },
+      "empty_mask_identity": {
+        "mean_predicted": 0.03522859947567848,
+        "mean_observed": 0.0,
+        "signed_bias_predicted_minus_observed": 0.03522859947567848,
+        "mean_absolute_error": 0.03522859947567848,
+        "root_mean_squared_error": 0.12082296688478385,
+        "definition": "Q_p(K=0)=1-max_i p_i"
+      },
+      "randomized_cardinality_pit": {
+        "diagnostic_seed": 20260720,
+        "mean": 0.4856063914712559,
+        "variance": 0.05912617756216967,
+        "kolmogorov_smirnov_distance_to_uniform": 0.10567075296004091,
+        "outside_central_90_percent_ratio": 0.03420195439739414,
+        "zero_observed_point_mass_ratio": 0.003257328990228013,
+        "mean_observed_cardinality_probability": 0.0001565987897994367,
+        "uniform_reference": {
+          "mean": 0.5,
+          "variance": 0.08333333333333333,
+          "outside_central_90_percent_ratio": 0.1
+        },
+        "interpretation": "pooled pseudo-randomized label-proxy falsification diagnostic; not a pointwise posterior-calibration estimate"
+      },
+      "foreground_fraction_reliability": {
+        "strategy": "ten_equal_count_bins_sorted_by_predicted_mass",
+        "num_bins": 10,
+        "bins": [
+          {
+            "bin_index": 0,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.010531975263493846,
+            "observed_mean_foreground_fraction": 0.013637887150162667,
+            "signed_gap_predicted_minus_observed": -0.003105911886668821
+          },
+          {
+            "bin_index": 1,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.022002777532635694,
+            "observed_mean_foreground_fraction": 0.023791785932880102,
+            "signed_gap_predicted_minus_observed": -0.0017890084002444087
+          },
+          {
+            "bin_index": 2,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.03373417311418783,
+            "observed_mean_foreground_fraction": 0.0326790048195343,
+            "signed_gap_predicted_minus_observed": 0.001055168294653533
+          },
+          {
+            "bin_index": 3,
+            "num_images": 62,
+            "predicted_mean_foreground_fraction": 0.04801913204402633,
+            "observed_mean_foreground_fraction": 0.039631425629869585,
+            "signed_gap_predicted_minus_observed": 0.008387706414156745
+          },
+          {
+            "bin_index": 4,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.06342077430504388,
+            "observed_mean_foreground_fraction": 0.06127089831048696,
+            "signed_gap_predicted_minus_observed": 0.0021498759945569185
+          },
+          {
+            "bin_index": 5,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.0891704188704512,
+            "observed_mean_foreground_fraction": 0.08597003367950724,
+            "signed_gap_predicted_minus_observed": 0.003200385190943955
+          },
+          {
+            "bin_index": 6,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.13149638447954756,
+            "observed_mean_foreground_fraction": 0.11498993879512817,
+            "signed_gap_predicted_minus_observed": 0.01650644568441939
+          },
+          {
+            "bin_index": 7,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.1914796289197428,
+            "observed_mean_foreground_fraction": 0.18622955859142293,
+            "signed_gap_predicted_minus_observed": 0.005250070328319867
+          },
+          {
+            "bin_index": 8,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.2606553940505613,
+            "observed_mean_foreground_fraction": 0.26038127815274975,
+            "signed_gap_predicted_minus_observed": 0.00027411589781156653
+          },
+          {
+            "bin_index": 9,
+            "num_images": 61,
+            "predicted_mean_foreground_fraction": 0.4071909684639956,
+            "observed_mean_foreground_fraction": 0.3948417044823071,
+            "signed_gap_predicted_minus_observed": 0.012349263981688507
+          }
+        ]
+      }
+    }
+  ]
+}

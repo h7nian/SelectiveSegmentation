@@ -1,18 +1,14 @@
 \section*{Reproducibility Statement}
 
-Algorithm~\ref{alg:loss-indexed-confidence} specifies the score construction;
-Appendix~\ref{app:theory} gives complete proofs and separates posterior from
-numerical error; Sections~\ref{sec:experiments} and
-\ref{app:benchmark-protocol} freeze every cohort, action, loss, comparator, and
-empty-mask convention.  The supplement includes one-task-per-job scripts,
-strict manifest and hash validation, tie-aware AURC analysis, generated tables,
-and tests for the estimator, datasets, joins, and renderer.
+Algorithm~\ref{alg:loss-indexed-confidence} specifies the score;
+Appendix~\ref{app:theory} proves the bounds; Sections~\ref{sec:experiments}
+and~\ref{app:benchmark-protocol} freeze cohorts, actions, losses, comparators,
+and empty-mask rules.  The supplement provides one-job-per-experiment scripts,
+hash-validated manifests, tie-aware analysis, generated tables, and tests.
 
 \section*{Ethics Statement}
 
-The study creates no patient data and uses only released, de-identified
-research benchmarks under their source terms.  Dataset composition can encode
-device, acquisition, demographic, and annotation biases, so neither confidence
-ranking nor abstention should be interpreted as clinical validation.  Selective
-segmentation can defer low-confidence cases, but it cannot guarantee safety or
-replace domain-expert review.
+We create no patient data and use only released, de-identified research
+benchmarks.  Device, acquisition, demographic, and annotation biases can limit
+confidence rankings; abstention is not clinical validation, a safety guarantee,
+or a substitute for domain-expert review.

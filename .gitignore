@@ -11,7 +11,19 @@ dist/
 # Local datasets, model state, and experiment artifacts
 data/
 checkpoints/
-outputs/
+output/
+outputs/*
+!outputs/binary_campaign/
+outputs/binary_campaign/*
+!outputs/binary_campaign/campaign.lock.json
+!outputs/binary_artifacts/
+outputs/binary_artifacts/**
+!outputs/binary_artifacts/**/
+!outputs/binary_artifacts/**/manifest.json
+!outputs/binary_train/
+outputs/binary_train/**
+!outputs/binary_train/**/
+!outputs/binary_train/**/train_config.json
 wandb/
 
 # Local repository mirrors and audit workspaces

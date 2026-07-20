@@ -69,7 +69,7 @@ Both target-adapted schedules use the per-step multiplier
 \((1-s/S)^{0.9}\), gradient clipping at 1, and seed 0. Augmentation applies a
 shared random scale in \([0.5,2]\), a model-resolution crop with padded pixels
 excluded from loss, and a horizontal flip with probability \(0.5\). We retain
-the final epoch under this predeclared schedule. Frozen manifests record the
+the final epoch under this fixed schedule. Frozen manifests record the
 checkpoint, source, cohort, configuration, package, and device hashes or
 identifiers.
 
@@ -177,7 +177,7 @@ interpolation, and empty-mask choices.
 
 For Dice-Exact versus each \(M\in\{2,8,32\}\) midpoint score, we retain the
 mean, median, 95th percentile, and maximum absolute per-image score error,
-Spearman correlation, Kendall's \(\tau_b\), and exact-match fraction.
+Spearman correlation and Kendall's \(\tau_b\).
 Correlations use average ranks and are undefined when either score is constant.
 Separately, each locked probability map yields pixel-weighted Brier score,
 15-bin ECE, truth- and prediction-empty rates, mean distinct-mask count along
@@ -187,13 +187,18 @@ descriptive only: they do not tune a score and cannot identify the joint mask
 posterior.
 
 Empirical AURC is the exact expectation under uniform random ordering within
-every exact confidence tie. We also retain oracle AURC, random-order AURC, and
-normalized excess AURC whenever its denominator is nonzero. Each predeclared
-adjacent-geometry contrast uses the same 10,000 paired image-cluster bootstrap
-resamples for both scores and the observed risk \citep{efron1993}. Equal-tail
-intervals are pointwise. Holm's step-down transform \citep{holm1979} is applied
-separately to the 40-comparison Pet/Kvasir/FIVES core family and the
-24-comparison ISIC/TN3K extension family. Because the inputs are approximate
-bootstrap confidence-curve tail areas rather than exact null-calibrated
-\(p\)-values, we report them as multiplicity-aware evidence summaries and do
-not claim exact finite-sample family-wise error control.
+every exact confidence tie. The empirical hindsight oracle orders realized test
+losses; it is not the population-optimal ranking induced by \(C_L^\star\). We
+also retain random-order AURC and normalized excess AURC,
+\((\AURC-\AURC_{\rm oracle})/(\AURC_{\rm random}-\AURC_{\rm oracle})\), whenever
+the denominator is nonzero. This normalized quantity can exceed one when a
+ranking is worse than random and is undefined when the two references coincide.
+Each fixed adjacent-geometry contrast uses the same 10,000 paired image
+bootstrap resamples for both scores and the observed risk \citep{efron1993}.
+Every released row has a unique image identifier, so the implemented paired
+image bootstrap resamples images within each frozen condition. It does not claim
+patient-, video-, or eye-level resampling when such release identifiers are
+unavailable. Equal-tail intervals are pointwise and condition on the fitted
+checkpoint. All 64 fixed contrasts are released without filtering; no
+null-calibrated \(p\)-values, simultaneous intervals, or finite-sample
+family-wise-error guarantees are claimed.

@@ -1,0 +1,23 @@
+{
+  "spec_schema_version": 1,
+  "auxiliary_id": "binary-cardinality-diagnostics-v1",
+  "canonical_campaign_lock": {
+    "path": "outputs/binary_campaign/campaign.lock.json",
+    "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "campaign_id": "binary-midpoint-main-v1"
+  },
+  "protocol": {
+    "working_posterior": "shared-threshold",
+    "threshold_distribution": "Uniform(0,1)",
+    "mask_rule": "Y_T={i:foreground_probability_i>=T}",
+    "cardinality": "K(T)=|Y_T|",
+    "cdf_lower": "F_-(k)=Q_p(K<k)",
+    "cdf_upper": "F(k)=Q_p(K<=k)",
+    "randomized_pit": "F_-(k)+V[F(k)-F_-(k)]",
+    "diagnostic_seed": 20260720,
+    "randomizer": "sha256-top52-midpoint-v1",
+    "empty_mask_identity": "Q_p(K=0)=1-max_i foreground_probability_i"
+  },
+  "cpu_partitions": ["agsmall", "amdsmall", "msismall"],
+  "output_root": "outputs/binary_cardinality_diagnostics"
+}

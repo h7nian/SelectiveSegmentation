@@ -13,7 +13,9 @@ the numerical approximation. The focused benchmark instantiates the same
 framework with three losses: foreground Dice, image-diagonal-normalized
 penalized full Hausdorff distance (nHD), and its robust pooled 95th-percentile
 counterpart (nHD95). Rankings are evaluated against all three risks with
-tie-aware AURC. The manuscript is in [`docs/main.tex`](docs/main.tex).
+tie-aware AURC. Paper tables display raw AURC and AURC contrasts multiplied by
+100 for readability; computations and normalized AURC remain unscaled. The
+manuscript is in [`docs/main.tex`](docs/main.tex).
 
 Every canonical assembled row uses schema v2 and contains all three risks,
 the complete Dice/nHD/nHD95 midpoint ladder at `M in {2,8,32}`, common
@@ -22,18 +24,21 @@ analysis output also uses schema v2.
 
 ## Install
 
-Python 3.10 or newer is required. An editable install exposes the module
+Python 3.10 or newer is supported; Python 3.12.4 is the reference environment
+recorded by the canonical artifacts. An editable install exposes the module
 CLIs and two equivalent console entry points, `selectseg-train` and
-`selectseg-binary-eval`.
+`selectseg-binary-eval`. Install the exact recorded dependency set before the
+editable package when reproducing reported results:
 
 ```bash
 python -m venv .venv
-.venv/bin/python -m pip install -e ".[dev,plots]"
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install --no-deps -e .
 ```
 
-`requirements.txt` records the Python package versions used in the current
-environment. On the MSI cluster, load the Python module and
-source `scripts/slurm/env.sh` before running jobs.
+For development against compatible newer dependencies, `pip install -e
+".[dev,plots]"` remains available. On the MSI cluster, load the Python module
+and source `scripts/slurm/env.sh` before running jobs.
 
 ## Build the manuscript
 
@@ -66,7 +71,7 @@ selects a class from the ground truth.
 | `tn3k` | thyroid nodule | official `trainval` / `test` | `data/TN3K/extracted/Thyroid Dataset/tn3k` |
 
 Masks are validated as total binary labels at evaluation time. Pet's border
-is foreground by a predeclared policy. Kvasir-SEG thresholds the maximum JPEG
+is foreground by a fixed policy. Kvasir-SEG thresholds the maximum JPEG
 mask channel at 128 to reject compression residuals; FIVES maps every nonzero
 mask value to foreground. ISIC uses its lossless 0/255 lesion masks. TN3K also
 uses a threshold of 128 because its released masks are JPEG-compressed. Dataset
@@ -102,7 +107,7 @@ python -m selectseg.train \
 
 Repeat this for each target-adapted model path declared by the campaign config.
 
-The predeclared protocol is
+The immutable protocol is
 [`configs/binary_midpoint_main.json`](configs/binary_midpoint_main.json). Its
 cohorts are fixed before inference:
 
@@ -269,7 +274,7 @@ Slurm arrays or multi-experiment jobs are used.
    The strict aggregate revalidates each diagnostic payload (including
    descriptors when present), source-artifact manifest digest, condition,
    ordered sample-ID digest, and cohort count against the lock. It reports
-   Brier, ECE, truth/prediction empty rates, and predeclared M32 ladder-diversity
+   Brier, ECE, truth/prediction empty rates, and fixed M32 ladder-diversity
    summaries per condition without pooling or choosing example images.
 
 7. **Analyze and render.** Once all 16 assembled condition artifacts exist,
@@ -284,9 +289,9 @@ Slurm arrays or multi-experiment jobs are used.
        'outputs/binary_assembled/pet/clipseg-general/<run-id>/records.jsonl' \
        '<repeat for the other 15 locked conditions>' \
      --bootstrap-samples 10000 --bootstrap-workers 4 \
-     --output-dir outputs/binary_final_v2_analysis
+     --output-dir outputs/binary_final_v3_analysis
    python -m scripts.render_paper_tables \
-     --analysis outputs/binary_final_v2_analysis/analysis.json \
+     --analysis outputs/binary_final_v3_analysis/analysis.json \
      --output-dir docs/Tables
    ```
 
@@ -306,18 +311,18 @@ The analyzer consumes schema-v2 assembly rows and emits JSON, long-form CSV,
 and a LaTeX table. Its JSON binds the campaign/config SHA-256, analyzer source
 SHA-256, and every assembly manifest, records, sample-order, and cohort digest
 without storing machine-absolute paths. It reports raw,
-excess, and normalized AURC; paired image-level percentile-bootstrap intervals;
-two-sided approximate bootstrap tail probabilities; and their within-family
-Holm-transformed values. These are evidence summaries, not exact
-null-calibrated p-values or a finite-sample error-control claim. Exact score
-ties are averaged analytically rather than broken by input order.
+excess, and normalized AURC plus paired image-level percentile-bootstrap
+intervals. The manuscript renders all 64 fixed contrasts without filtering and
+does not render or interpret the legacy compatibility tail-area fields as
+significance tests.
+Exact score ties are averaged analytically rather than broken by input order.
 
 The same analysis object records Dice quadrature fidelity to Dice-Exact for
 every condition: per-image mean, median, 95th-percentile, and maximum absolute
 confidence error; Spearman and Kendall tau-b rank agreement; and the exact
 score-match fraction for `M=2,8,32`. The long-form CSV places these fields on
 the corresponding Dice-risk/Dice-midpoint rows. They are descriptive numerical
-checks and never enter the four contrasts or either Holm family.
+checks and never enter the four fixed contrasts.
 
 The renderer produces exactly six canonical three-loss tables:
 `main_results.tex`, `full_target_results.tex`, `complete_results.tex`,
@@ -335,7 +340,7 @@ paths, timestamps, or environment identities:
 ```bash
 python -m scripts.export_public_provenance \
   --campaign-lock outputs/binary_campaign/campaign.lock.json \
-  --analysis outputs/binary_final_v2_analysis/analysis.json \
+  --analysis outputs/binary_final_v3_analysis/analysis.json \
   --diagnostics-analysis outputs/binary_final_v2_diagnostics/diagnostics_analysis.json \
   --phase-receipt freeze outputs/binary_campaign/freeze.receipt.jsonl \
   --phase-receipt common outputs/binary_campaign/common.receipt.jsonl \
@@ -351,7 +356,7 @@ python -m scripts.export_public_provenance \
     torchvision/DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1 \
     torchvision-0.27.1 \
     cd0a25694c4a0f7106b38f4938bf90a874f2f241cc410b8f63c7024399538f06 \
-  --output outputs/binary_final_v2_analysis/public_provenance.json
+  --output outputs/binary_final_v3_analysis/public_provenance.json
 ```
 
 Repeat the training and base-model flags for every applicable artifact;
@@ -372,45 +377,474 @@ selects its first development-only images and must equal
 `expected_num_samples`. A limited artifact is a pipeline check only and cannot
 replace a full-cohort artifact in the main campaign lock or final analysis.
 
-Threshold robustness at `gamma in {0.3, 0.5, 0.7}` and convergence to the
-matched `M=128` reference are reproduced and analyzed with:
+### Locked numerical and deployment sensitivities
+
+The main campaign remains immutable. Two isolated auxiliary protocols reuse
+its frozen maps without rerunning model inference. First, submit one M128 job
+per locked condition:
 
 ```bash
-bash scripts/slurm/submit_threshold_robustness.sh
-python -m scripts.analyze_auxiliary_experiments
+python -m scripts.submit_m128_auxiliary \
+  --campaign-lock outputs/binary_campaign/campaign.lock.json
+python -m scripts.submit_m128_auxiliary \
+  --campaign-lock outputs/binary_campaign/campaign.lock.json --submit \
+  --receipt outputs/binary_m128_auxiliary_campaign/submit.receipt.jsonl
 ```
 
+Each job computes Dice, nHD, and nHD95 jointly for the same condition. M128 is
+a high-resolution numerical reference for the boundary losses, not an exact
+integral. The strict analyzer requires all 16 auxiliary and all 16 canonical
+record paths explicitly; `scripts/render_m128_auxiliary.py` then emits the
+appendix table from its analysis JSON.
+
+Deployment-action sensitivity uses a separate immutable lock and exactly one
+job per `(condition, gamma)` for `gamma in {0.3,0.7}`:
+
+```bash
+python -m scripts.submit_gamma_sensitivity \
+  --auxiliary-lock configs/auxiliary/binary_gamma_sensitivity-v1.lock.json
+python -m scripts.submit_gamma_sensitivity \
+  --auxiliary-lock configs/auxiliary/binary_gamma_sensitivity-v1.lock.json \
+  --submit \
+  --receipt outputs/binary_gamma_sensitivity_campaign/submit.receipt.jsonl
+```
+
+Every gamma job computes all three risks and all three M32 indexed scores in
+one pass. `scripts/analyze_gamma_sensitivity.py` requires the complete 32-run
+grid, the 16 canonical assemblies, the auxiliary lock, and the locked main
+analysis. This is a sensitivity analysis of the deployed action; it is not a
+test-set search for a favorable threshold.
+
+The analysis-only grouped diagnostic is generated from the 16 explicit
+canonical assembly paths with `scripts/analyze_working_risk_diagnostics.py`
+and rendered by `scripts/render_working_risk_diagnostics.py`. It reports
+action quality, primary-score ranking/accepted-set agreement, and matched
+working-risk reliability. One reference mask per image cannot validate the
+true conditional mask posterior.
+
+The publication reliability plots use a separate strict, write-once workflow;
+they do not modify the locked grouped-diagnostic artifact. The analyzer first
+validates the exact 16-condition cohort against the immutable campaign lock,
+then retains the ten target-adapted conditions. For each matched pair
+Dice-Exact--Dice, nHD-M32--nHD, and nHD95-M32--nHD95, it orders images by
+predicted working risk and `sample_id`, forms ten fixed equal-count bins, and
+uses 2,000 within-bin image-bootstrap resamples with seed `20260720` for
+pointwise 95% intervals on mean observed loss. The five rendered PDFs each
+contain two model rows and three matched-loss columns:
+
+```bash
+python -m scripts.analyze_matched_risk_reliability \
+  --campaign-lock outputs/binary_campaign/campaign.lock.json \
+  --inputs '<16 explicit canonical records.jsonl paths>' \
+  --output outputs/binary_matched_risk_reliability/analysis.json
+python -m scripts.render_matched_risk_reliability \
+  --analysis outputs/binary_matched_risk_reliability/analysis.json \
+  --output-dir outputs/binary_matched_risk_reliability/rendered
+```
+
+These are single-label descriptive plots, not estimates of pointwise
+conditional-risk calibration. Their intervals are pointwise rather than
+simultaneous, and labels do not fit, tune, or select a score, threshold, bin
+count, or image.
+
+The shared-threshold cardinality implications are audited in a separate,
+immutable auxiliary workflow, without changing the locked v1 marginal
+diagnostic schema:
+
+```bash
+python -m scripts.submit_cardinality_diagnostics \
+  --auxiliary-lock configs/auxiliary/binary_cardinality_diagnostics-v1.lock.json
+python -m scripts.submit_cardinality_diagnostics \
+  --auxiliary-lock configs/auxiliary/binary_cardinality_diagnostics-v1.lock.json \
+  --submit \
+  --receipt outputs/binary_cardinality_diagnostics_campaign/submissions.jsonl
+```
+
+Each CPU job processes exactly one frozen condition. For the observed truth
+cardinality `k`, it computes the exact shared-threshold bounds
+`F_-(k)=Q_p(K<k)` and `F(k)=Q_p(K<=k)` from two order statistics, together
+with `E_Q[K]=sum_i p_i`, `Q_p(K=0)=1-max_i p_i`, and a predeclared
+SHA-256 pseudo-randomized PIT realization (diagnostic seed `20260720`). After
+all 16 jobs finish, pass their paths explicitly to
+`scripts/analyze_cardinality_diagnostics.py`, then render with
+`scripts/render_cardinality_diagnostics.py`. These pooled, single-label
+quantities can falsify aggregate cardinality implications of `Q_p`; they
+cannot establish pointwise posterior calibration or validate the coupling.
+
+```bash
+python -m scripts.analyze_cardinality_diagnostics \
+  --auxiliary-lock configs/auxiliary/binary_cardinality_diagnostics-v1.lock.json \
+  --inputs <16-explicit-records.jsonl-paths> \
+  --output outputs/binary_cardinality_diagnostics_analysis/analysis.json
+python -m scripts.render_cardinality_diagnostics \
+  --analysis outputs/binary_cardinality_diagnostics_analysis/analysis.json \
+  --output-dir outputs/binary_cardinality_diagnostics_analysis/rendered
+```
+
+Scoring overhead is measured separately from inference and artifact I/O. The
+completed locked v1 benchmark measured the production joint M32 workload and
+Dice-Exact once per condition:
+
+```bash
+python -m scripts.submit_binary_runtime \
+  --campaign-lock outputs/binary_campaign/campaign.lock.json
+python -m scripts.submit_binary_runtime \
+  --campaign-lock outputs/binary_campaign/campaign.lock.json --submit \
+  --receipt outputs/binary_runtime_campaign/submit.receipt.jsonl
+```
+
+The benchmark compares the production joint Dice/nHD/nHD95-M32 workload with
+Dice-Exact on the same deterministic 16-map panel. Its wall-clock and peak-RSS
+summaries are hardware-dependent measurements, not claims about asymptotic
+complexity.
+
+The immutable v2 ladder completes the predeclared runtime experiment without
+altering the v1 config or artifacts. It times joint Dice/nHD/nHD95 confidence
+at each of `M in {2,8,32}` plus Dice-Exact, with one warm-up and four
+Williams-balanced-order measured repetitions. Every timed method receives the same
+preloaded deterministic 16-image panel; no confidence or boundary-distance
+result is reused across methods. Eight Python workers and one native numerical
+thread per worker remain fixed. Preview the exact 16-condition plan, then
+submit one CPU job per condition:
+
+```bash
+python -m scripts.submit_binary_runtime_ladder
+python -m scripts.submit_binary_runtime_ladder --submit \
+  --receipt outputs/binary_runtime_ladder_v2_campaign/submit.receipt.jsonl
+```
+
+The v2 config and lock are
+`configs/auxiliary/binary_runtime_ladder-v2.{json,lock.json}`; the lock SHA-256
+is checked by the default submitter. Results are isolated under
+`outputs/binary_runtime_ladder_v2/`. After all 16 jobs finish, pass the 16
+`records.jsonl` paths explicitly to the compatible strict analyzer:
+
+```bash
+python -m scripts.analyze_binary_runtime \
+  --campaign-lock outputs/binary_campaign/campaign.lock.json \
+  --benchmark-lock configs/auxiliary/binary_runtime_ladder-v2.lock.json \
+  --expected-benchmark-lock-sha256 3737c3751fd368f7abf55561493ea2eacbcd3ac788db72925a54cd3d7cdf9b33 \
+  --inputs <16-explicit-v2-records.jsonl-paths> \
+  --output outputs/binary_runtime_ladder_v2_analysis/analysis.json
+python -m scripts.render_binary_runtime \
+  --analysis outputs/binary_runtime_ladder_v2_analysis/analysis.json \
+  --output-dir outputs/binary_runtime_ladder_v2_analysis/rendered
+```
+
+The locked v2 run is complete for all 16 conditions. Its strict report is
+`outputs/binary_runtime_ladder_v2_analysis/analysis.json` (analysis ID
+`de16d8594844134a`), and the content-addressed renderer emits
+`outputs/binary_runtime_ladder_v2_analysis/rendered/binary_runtime.tex`. That
+generated file is mirrored exactly at `docs/Tables/binary_runtime.tex`.
+
+The renderer reports median milliseconds/image and images/second for all four
+workloads. Peak RSS remains an explicitly non-method-attributable process
+high-water mark. Hardware-dependent comparisons should be made within a
+condition; cross-node absolute timings are descriptive.
+
+After all sixteen jobs finish, aggregate only an explicit complete input list
+and render the content-addressed manuscript table:
+
+```bash
+python -m scripts.analyze_binary_runtime \
+  --campaign-lock outputs/binary_campaign/campaign.lock.json \
+  --inputs <16-explicit-runtime-records.jsonl-paths> \
+  --output outputs/binary_runtime_analysis/analysis.json
+python -m scripts.render_binary_runtime \
+  --analysis outputs/binary_runtime_analysis/analysis.json \
+  --output-dir outputs/binary_runtime_analysis/rendered
+```
+
+Training-seed robustness is isolated from the seed-0 campaign. The locked
+extension contains exactly five datasets by two target architectures by seeds
+1 and 2, hence 20 one-GPU training jobs balanced across `saffo-a100` and
+`apollo_agate`:
+
+```bash
+python -m scripts.submit_binary_seed_extension --phase train
+python -m scripts.submit_binary_seed_extension --phase train --submit \
+  --receipt outputs/binary_seed_extension_campaign/train-submissions.jsonl
+```
+
+Always reuse that append-only training receipt: it is the duplicate-submission
+guard for the twenty jobs already bound to this extension. The checkpoint and
+downstream locks intentionally follow the immutable path recorded inside the
+spec lock under `outputs/binary_seed_campaign/`.
+
+After all 20 final-epoch records validate, create the immutable checkpoint
+lock, submit exactly 20 freeze jobs, and create the downstream lock only after
+all frozen artifacts validate:
+
+```bash
+python -m scripts.submit_binary_seed_extension --phase checkpoint-lock \
+  --write-checkpoint-lock
+python -m scripts.submit_binary_seed_extension --phase freeze \
+  --expected-checkpoint-lock-sha256 <checkpoint-lock-sha256> --submit \
+  --receipt outputs/binary_seed_campaign/freeze-submissions.jsonl
+python -m scripts.submit_binary_seed_extension --phase downstream-lock \
+  --expected-checkpoint-lock-sha256 <checkpoint-lock-sha256> \
+  --write-downstream-lock
+```
+
+The downstream lock contains separate canonical-compatible seed-1 and seed-2
+campaigns. After recording the SHA-256 of
+`outputs/binary_seed_campaign/downstream.lock.json`, submit the post-freeze
+waves with these fixed append-only receipts:
+
+```bash
+python -m scripts.submit_binary_seed_extension --phase common \
+  --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+  --expected-downstream-lock-sha256 <downstream-lock-sha256> --submit \
+  --receipt outputs/binary_seed_campaign/common-submissions.jsonl
+python -m scripts.submit_binary_seed_extension --phase score \
+  --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+  --expected-downstream-lock-sha256 <downstream-lock-sha256> --submit \
+  --receipt outputs/binary_seed_campaign/score-submissions.jsonl
+python -m scripts.submit_binary_seed_extension --phase diagnose \
+  --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+  --expected-downstream-lock-sha256 <downstream-lock-sha256> --submit \
+  --receipt outputs/binary_seed_campaign/diagnose-submissions.jsonl
+```
+
+These are 20 common, 60 score, and 20 diagnostic jobs. Each experiment is an
+independent job; arrays are never used. `common`, `score`, and `diagnose` are
+separate waves and may overlap, but assembly must wait until all common and
+score outputs validate:
+
+```bash
+python -m scripts.submit_binary_seed_extension --phase assemble \
+  --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+  --expected-downstream-lock-sha256 <downstream-lock-sha256> --submit \
+  --receipt outputs/binary_seed_campaign/assemble-submissions.jsonl
+```
+
+After all 20 assemblies finish, the analysis planner revalidates all 30
+seed-0/1/2 assemblies and the locked seed-0 point estimates before submitting
+its single job. Use the SHA-256 of the canonical seed-0 analysis, and retain
+the fixed one-job receipt:
+
+```bash
+python -m scripts.submit_binary_seed_extension --phase analyze \
+  --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+  --expected-downstream-lock-sha256 <downstream-lock-sha256> \
+  --canonical-analysis outputs/binary_final_v3_analysis/analysis.json \
+  --expected-canonical-analysis-sha256 <canonical-analysis-sha256> --submit \
+  --receipt outputs/binary_seed_campaign/analyze-submissions.jsonl
+```
+
+The completed analysis is fixed at
+`outputs/binary_seed_analysis/analysis.json`. Hash it, then submit the one-job
+renderer with its own append-only receipt:
+
+```bash
+python -m scripts.submit_binary_seed_extension --phase render \
+  --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+  --expected-downstream-lock-sha256 <downstream-lock-sha256> \
+  --seed-analysis outputs/binary_seed_analysis/analysis.json \
+  --expected-seed-analysis-sha256 <seed-analysis-sha256> --submit \
+  --receipt outputs/binary_seed_campaign/render-submissions.jsonl
+```
+
+The renderer writes `outputs/binary_seed_analysis/seed_robustness.tex` and
+prints its SHA-256. Publication is a separate local, non-Slurm gate. It checks
+both supplied hashes, regenerates the expected TeX with the current renderer,
+and only then creates the fixed manuscript file. It never replaces a different
+existing table:
+
+```bash
+python -m scripts.publish_binary_seed_extension \
+  --analysis outputs/binary_seed_analysis/analysis.json \
+  --expected-analysis-sha256 <seed-analysis-sha256> \
+  --table outputs/binary_seed_analysis/seed_robustness.tex \
+  --expected-table-sha256 <seed-table-sha256>
+```
+
+Every retry must reuse the exact receipt path shown for its phase; changing a
+receipt path defeats duplicate-submission detection. The strict analysis joins
+the same held-out cohort across seeds 0/1/2, reports raw AURC without image
+pooling or seed-level hypothesis tests, and applies the predeclared Gate C. The
+table displays the three seed values and mean $\pm$ sample SD [range], with
+AURC contrasts multiplied by 100 only for display. Seed results remain a
+descriptive model-stochasticity analysis and are never pooled as extra images
+in the seed-0 bootstrap.
+
+The known-posterior mechanism study has a 12-cell pilot and a gated 360-cell
+full design. Each coupling--sharpness--morphology--replicate cell is one CPU
+job; no sampled masks are persisted:
+
+```bash
+python -m scripts.submit_synthetic_posterior --phase pilot
+python -m scripts.submit_synthetic_posterior --phase pilot --submit \
+  --receipt outputs/synthetic_posterior_campaign/pilot-submissions.jsonl
+```
+
+After all 12 pilot manifests exist, create the strict pilot analysis and record
+its SHA-256:
+
+```bash
+python -m scripts.analyze_synthetic_posterior \
+  --lock configs/auxiliary/synthetic_posterior-v1.lock.json \
+  --mode pilot \
+  --output outputs/synthetic_posterior_analysis/pilot-analysis.json
+sha256sum outputs/synthetic_posterior_analysis/pilot-analysis.json
+```
+
+Only a successful shared-threshold recovery/runtime gate permits the remaining
+348 jobs. Both preview and submission require the pilot analysis and its
+explicit expected digest. The submitter reloads all 12 pilot artifacts,
+revalidates their locked identities and provenance, and recomputes the gate
+before it constructs the full plan. Full submission must reuse the fixed
+append-only receipt:
+
+```bash
+python -m scripts.submit_synthetic_posterior --phase full \
+  --pilot-analysis outputs/synthetic_posterior_analysis/pilot-analysis.json \
+  --expected-pilot-analysis-sha256 <pilot-analysis-sha256>
+python -m scripts.submit_synthetic_posterior --phase full \
+  --pilot-analysis outputs/synthetic_posterior_analysis/pilot-analysis.json \
+  --expected-pilot-analysis-sha256 <pilot-analysis-sha256> --submit \
+  --receipt outputs/synthetic_posterior_campaign/full-submissions.jsonl
+```
+
+The completed 360-cell union is strictly aggregated and rendered with:
+
+```bash
+python -m scripts.analyze_synthetic_posterior \
+  --lock configs/auxiliary/synthetic_posterior-v1.lock.json \
+  --mode complete \
+  --output outputs/synthetic_posterior_analysis/complete_analysis.json
+python -m scripts.render_synthetic_posterior \
+  --analysis outputs/synthetic_posterior_analysis/complete_analysis.json \
+  --output-dir outputs/synthetic_posterior_analysis/complete_rendered
+```
+
+The study compares known true-posterior risk with the working-posterior score;
+it is mechanistic evidence, not a claim that any synthetic coupling represents
+clinical annotation variability. AURC regret is multiplied by 100 only in the
+rendered table and figure.
+
 The public mirror includes the campaign config and estimator spec, the
-immutable lock at `results/campaign.lock.json`, the redacted receipt-derived
-summary at `results/public_provenance.json`, the canonical analysis and CSV,
-and all 16 assembly manifests with their per-image `records.jsonl` files under
-`results/assembled/`. Raw receipts remain private because they contain
-scheduler and machine metadata. Generated paper tables record the analysis
-JSON SHA-256 in their source comments. Frozen probability maps, checkpoints,
-and raw datasets are not committed to Git; their identities remain hash-bound
-in the public manifests, and the source-dataset acquisition rules are given
-above. The locked 48-simulation campaign and all 16 strict assemblies are
-complete, covering 20,718 condition-specific rows.
+immutable lock at `results/campaign.lock.json`, and an identical compatibility
+copy at `outputs/binary_campaign/campaign.lock.json` so a clean clone can
+validate those hash-bound auxiliary locks and reproduce their exact job plans.
+It also includes the redacted
+receipt-derived summary at `results/public_provenance.json`, canonical v3
+analysis and CSV, all 16 assembly manifests with their per-image
+`records.jsonl` files under `results/assembled/`, ten seed-0 training configs,
+and the four retained seed-0 histories under `results/training/`. The v3
+analysis is a provenance refresh: its statistics and CSV are unchanged from
+v2, while its source digest binds the current analyzer after the display-only
+AURC scaling update. The immutable prior analysis and provenance are retained
+as `results/analysis_v2.json` and `results/public_provenance_v2.json`.
+
+For executable lock validation, the same ten training configs and all 16
+small frozen-artifact manifests are also present at the exact
+`outputs/binary_train/` and `outputs/binary_artifacts/` paths named by the
+immutable locks. The corresponding probability-map arrays and checkpoints are
+not duplicated there.
+
+Completed gamma, cardinality, matched-risk reliability, runtime-v1/v2, and
+synthetic-posterior analyses are included as well. The portable pilot analysis
+and its export sidecar preserve the exact successful Gate evidence that
+preceded the 348-cell full submission. Runtime and synthetic
+analyses are exported through `scripts/export_portable_analysis.py`: the
+statistical payload is unchanged, repository-internal absolute paths are made
+relative, and a deterministic sidecar binds the source and portable SHA-256
+digests. Raw receipts remain private because they contain scheduler and
+machine metadata. Generated paper tables record the analysis JSON SHA-256 in
+their source comments. Frozen probability maps, checkpoints, and raw datasets
+are not committed to Git; their identities remain hash-bound in the public
+manifests, and the source-dataset acquisition rules are given above. Therefore
+a clean checkout reproduces the locked analysis and paper tables from released
+per-image records, but not model training, inference, or qualitative-image
+generation without the separately acquired data and model artifacts. The
+locked 48-simulation campaign and all 16 strict assemblies are complete,
+covering 20,718 condition-specific rows.
 
 DeepLabV3 is supported for target fine-tuning.  Its external COCO checkpoint
 is only meaningful when the dataset vocabulary maps to checkpoint classes
 (Pet in the binary benchmark); it is not a zero-shot baseline for polyps or
 retinal vessels.
 
+### Rebuild the locked analysis from a clean checkout
+
+The shell enumeration below verifies that exactly 16 committed record files
+exist, then passes every path explicitly to the strict analyzer; the analyzer
+itself does not discover inputs. The two `cmp` calls certify exact canonical
+JSON and CSV reproduction.
+
+```bash
+mapfile -t analysis_inputs < <(
+  find results/assembled -type f -name records.jsonl -print | LC_ALL=C sort
+)
+test "${#analysis_inputs[@]}" -eq 16
+python -m scripts.analyze_binary \
+  --campaign-lock results/campaign.lock.json \
+  --inputs "${analysis_inputs[@]}" \
+  --bootstrap-samples 10000 --bootstrap-workers 4 \
+  --output-dir rebuild/analysis
+cmp rebuild/analysis/analysis.json results/analysis.json
+cmp rebuild/analysis/main_table.csv results/main_table.csv
+python -m scripts.render_paper_tables \
+  --analysis rebuild/analysis/analysis.json \
+  --output-dir rebuild/Tables
+for table in main_results full_target_results complete_results \
+  cross_loss_results quadrature_ablation statistical_tests results_complete; do
+  cmp "rebuild/Tables/${table}.tex" "docs/Tables/${table}.tex"
+done
+```
+
+### Build the anonymous analysis artifact
+
+The deterministic builder publishes only the byte-exact core needed for the
+16-record analysis and seven canonical tables. It excludes Git history,
+external URLs, identities, scheduler metadata, training artifacts, and private
+filesystem paths; every member is explicitly allowlisted, hash-covered, and
+rescanned by the verifier. From this orchestration workspace use:
+
+```bash
+python -m scripts.build_anonymous_analysis_artifact build \
+  --repo-root github \
+  --output output/artifacts/selective-segmentation-analysis-v3.tar.gz
+python -m scripts.build_anonymous_analysis_artifact verify \
+  output/artifacts/selective-segmentation-analysis-v3.tar.gz
+```
+
+Inside a clean public clone, replace `--repo-root github` with
+`--repo-root .`. The archive is deliberately an analysis-reproducibility
+artifact, not a claim that training or inference can be rerun without the
+external datasets, checkpoints, and frozen probability maps. During anonymous
+review, distribute the archive through the review system without linking the
+identity-bearing public repository.
+
 ## Verify
 
 ```bash
 python -m pytest -q tests/test_binary_framework.py \
+  tests/test_build_anonymous_analysis_artifact.py \
   tests/test_binary_eval.py tests/test_binary_baselines.py \
   tests/test_binary_boundary.py tests/test_binary_diagnostics.py \
   tests/test_analyze_binary_diagnostics.py tests/test_plot_risk_coverage.py \
   tests/test_binary_artifacts.py tests/test_freeze_binary_maps.py \
+  tests/test_download_binary_assets.py \
   tests/test_score_binary_simulation.py \
+  tests/test_score_binary_m128_auxiliary.py \
+  tests/test_gamma_sensitivity.py tests/test_analyze_gamma_sensitivity.py \
+  tests/test_analyze_m128_auxiliary.py \
+  tests/test_binary_runtime.py \
+  tests/test_cardinality_diagnostics.py \
+  tests/test_binary_seed_extension.py \
+  tests/test_publish_binary_seed_extension.py tests/test_synthetic_posterior.py \
+  tests/test_binary_qualitative_cases.py \
+  tests/test_analyze_working_risk_diagnostics.py \
+  tests/test_render_working_risk_diagnostics.py \
+  tests/test_matched_risk_reliability.py \
   tests/test_submit_binary_simulations.py \
   tests/test_assemble_binary_simulations.py \
   tests/test_binary_theory.py \
   tests/test_merge_binary_auxiliary.py tests/test_analyze_binary.py \
   tests/test_render_paper_tables.py tests/test_export_public_provenance.py \
+  tests/test_export_portable_analysis.py \
   tests/test_data.py
 python -m ruff check .
 ```
@@ -437,7 +871,10 @@ selectseg/binary_boundary.py  shared nHD/nHD95 digital-surface distances
 selectseg/score_binary_common.py  risks, Exact Dice, and common baselines
 selectseg/threshold_estimators.py  immutable quadrature specifications
 selectseg/score_binary_simulation.py  exactly one locked simulation per run
+selectseg/binary_seed_extension.py  isolated seed-1/2 training and freeze contract
+selectseg/synthetic_posterior.py  known-posterior coupling simulator
 selectseg/binary_diagnostics.py  streamed marginal/level-set diagnostics
+selectseg/cardinality_diagnostics.py  exact shared-threshold cardinality/PIT diagnostics
 selectseg/data.py              dataset specifications, validation, transforms
 selectseg/models.py            CLIPSeg and DeepLabV3 adapters
 selectseg/train.py             target fine-tuning CLI
@@ -447,8 +884,28 @@ scripts/diagnose_binary_artifact.py  one frozen-artifact diagnostic CLI
 scripts/analyze_binary_diagnostics.py  strict campaign-bound diagnostic aggregation
 scripts/analyze_binary.py      strict statistical analysis and table export
 scripts/export_public_provenance.py  deterministic redacted release provenance
+scripts/build_anonymous_analysis_artifact.py  deterministic anonymous core release
+scripts/export_portable_analysis.py  hash-bound portable auxiliary analyses
 scripts/plot_risk_coverage.py  deterministic tie-aware three-risk curves
-scripts/analyze_auxiliary_experiments.py  threshold/M=128 audit
+scripts/submit_m128_auxiliary.py  one locked M128 condition per CPU job
+scripts/analyze_m128_auxiliary.py  strict M32/M128/Exact numerical audit
+scripts/submit_gamma_sensitivity.py  one locked condition/gamma per CPU job
+scripts/analyze_gamma_sensitivity.py  strict deployment-action sensitivity
+scripts/analyze_working_risk_diagnostics.py  grouped loss/ranking diagnostics
+scripts/analyze_matched_risk_reliability.py  strict fixed-bin matched-risk analysis
+scripts/render_matched_risk_reliability.py  five target-condition reliability figures
+scripts/submit_cardinality_diagnostics.py  one exact cardinality job per condition
+scripts/analyze_cardinality_diagnostics.py  strict cardinality/PIT aggregation
+scripts/render_cardinality_diagnostics.py  compact target-condition diagnostic table
+scripts/submit_binary_runtime.py  one fixed-protocol runtime job per condition
+scripts/submit_binary_runtime_ladder.py  locked M2/M8/M32/Exact runtime ladder
+scripts/analyze_binary_runtime.py  strict hardware-dependent timing summary
+scripts/submit_binary_seed_extension.py  balanced private-A100 seed planner
+scripts/publish_binary_seed_extension.py  hash-bound write-once seed-table publisher
+scripts/submit_synthetic_posterior.py  gated one-cell-per-job synthetic planner
+scripts/analyze_synthetic_posterior.py  strict known-posterior analysis
+scripts/select_binary_qualitative_cases.py  mechanical post-analysis diagnostic case selection
+scripts/render_binary_qualitative_cases.py  artifact-bound probability/mask panels
 scripts/merge_binary_auxiliary.py  exact canonical/strong-score join
 scripts/render_paper_tables.py generated submission tables with top-1 marking
 tests/                         unit, schema, data, and pipeline tests

@@ -1043,6 +1043,12 @@ def _number(value):
     return "--" if value is None else f"{value:.4f}"
 
 
+def _aurc_number(value):
+    """Render raw AURC quantities on the manuscript's x100 display scale."""
+
+    return "--" if value is None else f"{100 * value:.3f}"
+
+
 def _best_result(value):
     return rf"\bestresult{{{value}}}"
 
@@ -1079,15 +1085,23 @@ def _tabular_start(groups, *, row_label):
     ]
 
 
-def _result_cell(group, risk_field, method_field, candidates, *, normalized):
+def _result_cell(
+    group,
+    risk_field,
+    method_field,
+    candidates,
+    *,
+    normalized,
+    highlight_best=True,
+):
     entries = []
     for condition in group:
         methods = condition["risks"][risk_field]["methods"]
         method = methods[method_field]
-        number = _number(method["aurc"])
+        number = _aurc_number(method["aurc"])
         if normalized:
             number += rf" ({_number(method['normalized_aurc'])})"
-        if _is_best(methods, method_field, candidates):
+        if highlight_best and _is_best(methods, method_field, candidates):
             number = _best_result(number)
         entries.append(f"{CONDITION_ABBREVIATIONS[condition['condition']]}: {number}")
     return r"\shortstack{" + r"\\".join(entries) + "}"
@@ -1136,7 +1150,7 @@ def _baseline_table(conditions, *, header):
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{Primary target-adapted results. Methods are rows and datasets "
-        r"are columns; each cell gives CLIP-T and DL-T raw AURC. The table follows "
+        r"are columns; each cell gives CLIP-T and DL-T raw AURC $\times100$. The table follows "
         r"the two adjacent geometric steps and includes SDC as the Dice-specific "
         r"reference; the complete 17-score panels are in the appendix. Lower is "
         r"better. Dark blue marks every exactly lowest unrounded AURC within each "
@@ -1176,9 +1190,8 @@ def _comparison_cell(group, spec):
         bootstrap = comparison["bootstrap"]
         entries.append(
             rf"{CONDITION_ABBREVIATIONS[condition['condition']]}: "
-            rf"{_number(comparison['difference_left_minus_right'])} "
-            rf"[{_number(bootstrap['ci_low'])}, {_number(bootstrap['ci_high'])}]; "
-            rf"{_number(bootstrap['p_value'])}/{_number(comparison['holm_adjusted_p_value'])}"
+            rf"{_aurc_number(comparison['difference_left_minus_right'])} "
+            rf"[{_aurc_number(bootstrap['ci_low'])}, {_aurc_number(bootstrap['ci_high'])}]"
         )
     return r"\shortstack{" + r"\\".join(entries) + "}"
 
@@ -1217,7 +1230,7 @@ def _complete_results_table(conditions, *, header, declared, label, caption_pref
                 r"\begin{table*}[t]",
                 r"\centering",
                 rf"\caption{{{caption_prefix} {risk_label}. Methods are rows and "
-                r"datasets are columns; each entry is raw AURC (nAURC), with "
+                r"datasets are columns; each entry is raw AURC $\times100$ (nAURC), with "
                 r"condition labels retained. Lower is better. Dark blue marks every "
                 r"lowest unrounded raw AURC within each condition.}",
                 rf"\label{{{panel_label}}}",
@@ -1269,10 +1282,10 @@ def render_cross_loss_results(conditions, *, header):
         r"\caption{Full $3\times3$ loss-indexed $M=32$ cross-loss matrix over all "
         r"16 unpooled conditions. Confidence methods are rows and evaluation risks "
         r"form blocks; datasets are columns and condition labels remain in every "
-        r"raw AURC (nAURC) entry. Lower is better. Dark blue marks every lowest "
+        r"raw AURC $\times100$ (nAURC) entry. Lower is better. Dark blue marks every lowest "
         r"unrounded raw AURC among the three indexed scores within each condition "
         r"and risk block. These cells are descriptive; paired inference is restricted "
-        r"to the four predeclared adjacent-geometry contrasts.}",
+        r"to the four fixed adjacent-geometry contrasts.}",
         r"\label{tab:cross-loss-results}",
         r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
         r"\resizebox{\textwidth}{!}{%",
@@ -1309,8 +1322,10 @@ def render_quadrature_ablation(conditions, *, header):
         r"\caption{Matched-loss quadrature ablation on target-adapted conditions. "
         r"Dice-Exact is the exact level-set oracle; $M=2,8,32$ are midpoint rules. "
         r"Methods are rows, datasets are columns, and cells retain CLIP-T and DL-T "
-        r"raw AURCs separately. Lower is better. Dark blue marks every lowest "
-        r"unrounded value within each matched condition and risk block.}",
+        r"raw AURCs $\times100$ separately. Lower AURC is better as a ranking outcome, but a "
+        r"coarser rule can win accidentally; numerical fidelity is judged against "
+        r"Dice-Exact below and against the high-resolution boundary reference in "
+        r"the auxiliary study. AURC need not improve monotonically with $M$.}",
         r"\label{tab:quadrature-ablation}",
         r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
         r"\resizebox{\textwidth}{!}{%",
@@ -1326,7 +1341,12 @@ def render_quadrature_ablation(conditions, *, header):
         for method_field in candidates:
             cells = [
                 _result_cell(
-                    group, risk_field, method_field, candidates, normalized=False
+                    group,
+                    risk_field,
+                    method_field,
+                    candidates,
+                    normalized=False,
+                    highlight_best=False,
                 )
                 for _, group in groups
             ]
@@ -1345,9 +1365,11 @@ def render_quadrature_ablation(conditions, *, header):
                 r"CLIP-T/DL-T in that order (a retained prefix identifies a lone "
                 r"condition in incomplete drafts). Error rows summarize "
                 r"$|C_{\mathrm{Dice},M}-C_{\mathrm{Dice},\mathrm{Exact}}|$; "
-                r"rank rows give Spearman $\rho$, Kendall $\tau_b$, and exact-score "
-                r"match percentage. These diagnostics are descriptive "
-                r"and do not enter the four contrasts or either Holm family.}",
+                r"rank rows give Spearman $\rho$ and Kendall $\tau_b$. Exact "
+                r"floating-point equality is omitted because continuous knot and "
+                r"midpoint sums are not expected to coincide bit-for-bit. These "
+                r"diagnostics are descriptive "
+                r"and do not enter the four fixed contrasts.}",
                 r"\label{tab:dice-quadrature-fidelity}",
                 r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
                 r"\resizebox{\textwidth}{!}{%",
@@ -1377,7 +1399,6 @@ def render_quadrature_ablation(conditions, *, header):
                 lambda summary: summary["rank_agreement"]["kendall_tau_b"],
                 False,
             ),
-            ("Exact match", lambda summary: summary["exact_match_fraction"], True),
         )
         for method_index, method_field in enumerate(DICE_QUADRATURE_METHODS):
             if method_index:
@@ -1400,19 +1421,19 @@ def render_quadrature_ablation(conditions, *, header):
 
 def render_statistical_tests(conditions, *, header):
     core_caption = (
-        r"\caption{Core-family subset of the 64 predeclared condition-level "
+        r"\caption{Pet/Kvasir/FIVES subset of the 64 fixed condition-level "
         r"adjacent-geometry contrasts (40 comparisons). "
-        r"Each entry is $\Delta=\operatorname{AURC}(\mathrm{left})-"
-        r"\operatorname{AURC}(\mathrm{right})$, its unadjusted 95\% paired "
-        r"image-cluster bootstrap interval, and raw/Holm-transformed approximate "
-        r"tail probabilities. Negative values favor the left score. Every row is "
-        r"reported without filtering, and no exact finite-sample error-control claim is made.}"
+        r"Each entry is $100\Delta$, where $\Delta=\operatorname{AURC}(\mathrm{left})-"
+        r"\operatorname{AURC}(\mathrm{right})$, and its pointwise 95\% paired "
+        r"image-bootstrap interval. Negative values favor the left score. Every "
+        r"fixed row is reported without filtering; the intervals condition on one "
+        r"fitted checkpoint and are descriptive rather than simultaneous tests.}"
     )
     extension_caption = (
-        r"\caption{Extension-family subset of the 64 predeclared condition-level "
+        r"\caption{ISIC/TN3K subset of the 64 fixed condition-level "
         r"adjacent-geometry contrasts (24 comparisons). Entries follow "
-        r"Table~\ref{tab:statistical-tests}; the Holm transform is applied to this "
-        r"extension family separately from the core family.}"
+        r"Table~\ref{tab:statistical-tests} and use the same pointwise paired "
+        r"image-bootstrap convention.}"
     )
     core = _contrast_table(
         conditions,

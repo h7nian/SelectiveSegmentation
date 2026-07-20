@@ -1,0 +1,1378 @@
+{
+  "analysis_id": "de16d8594844134a",
+  "artifact_type": "selectseg.binary_confidence_runtime_analysis",
+  "condition_sets": {
+    "all_conditions": [
+      "pet/clipseg-general",
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "pet/deeplabv3-external",
+      "kvasir/clipseg-general",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-general",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-general",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-general",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ],
+    "num_conditions": 16,
+    "num_target_conditions": 10,
+    "target_conditions": [
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ]
+  },
+  "conditions": [
+    {
+      "condition": "clipseg-general",
+      "dataset": "pet",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn35",
+        "partition": "agsmall"
+      },
+      "is_target_condition": false,
+      "m32_joint_over_dice_exact_time_ratio": 14.07150113575672,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 30.47677972295729,
+          "method": "dice_exact",
+          "milliseconds_per_image": 32.81186559375001,
+          "milliseconds_per_megapixel": 94.62241403207241,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.586790953,
+            "median": 0.5249898495,
+            "min": 0.518647895
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 20.084970232307267,
+          "method": "m2_joint",
+          "milliseconds_per_image": 49.78847309375,
+          "milliseconds_per_megapixel": 143.57932503535793,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.867076907,
+            "median": 0.7966155695,
+            "min": 0.690620356
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 2.165851349399642,
+          "method": "m32_joint",
+          "milliseconds_per_image": 461.71220396875003,
+          "milliseconds_per_megapixel": 1331.4794065203494,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 7.50884523,
+            "median": 7.3873952635,
+            "min": 6.903007192
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 7.4876099359554305,
+          "method": "m8_joint",
+          "milliseconds_per_image": 133.553965625,
+          "milliseconds_per_megapixel": 385.1411189920589,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 2.256046965,
+            "median": 2.13686345,
+            "min": 1.922569326
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 514052096,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 3110400,
+        "median": 170000.0,
+        "min": 14111,
+        "total": 5548261
+      }
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "pet",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7702 64-Core Processor",
+        "node_list": "cn1023",
+        "partition": "amdsmall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 19.608196444950533,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 34.23816713162276,
+          "method": "dice_exact",
+          "milliseconds_per_image": 29.2071709375,
+          "milliseconds_per_megapixel": 84.22724435638482,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.488185781,
+            "median": 0.467314735,
+            "min": 0.460292427
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 19.376053523334882,
+          "method": "m2_joint",
+          "milliseconds_per_image": 51.61009690625,
+          "milliseconds_per_megapixel": 148.8324991380182,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.866016568,
+            "median": 0.8257615505,
+            "min": 0.788560656
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 1.7461150610024467,
+          "method": "m32_joint",
+          "milliseconds_per_image": 572.69994534375,
+          "milliseconds_per_megapixel": 1651.5443533568446,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 10.003618215,
+            "median": 9.1631991255,
+            "min": 9.071685132
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 6.3906101116851595,
+          "method": "m8_joint",
+          "milliseconds_per_image": 156.47958215625002,
+          "milliseconds_per_megapixel": 451.2537017454659,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 2.517303864,
+            "median": 2.5036733145000003,
+            "min": 2.422311986
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 595132416,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 3110400,
+        "median": 170000.0,
+        "min": 14111,
+        "total": 5548261
+      }
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "pet",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn113",
+        "partition": "msismall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 13.006447600080577,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 37.99354101016821,
+          "method": "dice_exact",
+          "milliseconds_per_image": 26.32026321875,
+          "milliseconds_per_megapixel": 75.90201893890716,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.424136021,
+            "median": 0.4211242115,
+            "min": 0.396792675
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 27.852470221048396,
+          "method": "m2_joint",
+          "milliseconds_per_image": 35.9034581875,
+          "milliseconds_per_megapixel": 103.53790692254744,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.586507216,
+            "median": 0.574455331,
+            "min": 0.553926014
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 2.9211312864500245,
+          "method": "m32_joint",
+          "milliseconds_per_image": 342.333124375,
+          "milliseconds_per_megapixel": 987.2156320692195,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 5.537932126,
+            "median": 5.47732999,
+            "min": 5.384470866
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 9.229135561072976,
+          "method": "m8_joint",
+          "milliseconds_per_image": 108.35250965625,
+          "milliseconds_per_megapixel": 312.4655012624677,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 1.735984703,
+            "median": 1.7336401545000002,
+            "min": 1.696719266
+          }
+        }
+      },
+      "model": "deeplabv3",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 715862016,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 3110400,
+        "median": 170000.0,
+        "min": 14111,
+        "total": 5548261
+      }
+    },
+    {
+      "condition": "deeplabv3-external",
+      "dataset": "pet",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn118",
+        "partition": "agsmall"
+      },
+      "is_target_condition": false,
+      "m32_joint_over_dice_exact_time_ratio": 12.41773994468519,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 32.68730691543963,
+          "method": "dice_exact",
+          "milliseconds_per_image": 30.5929149375,
+          "milliseconds_per_megapixel": 88.22343415351224,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.517065267,
+            "median": 0.489486639,
+            "min": 0.46698148
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 27.60745259248672,
+          "method": "m2_joint",
+          "milliseconds_per_image": 36.2221033125,
+          "milliseconds_per_megapixel": 104.45681142253402,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.635433383,
+            "median": 0.5795536530000001,
+            "min": 0.558074673
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 2.6323072524505426,
+          "method": "m32_joint",
+          "milliseconds_per_image": 379.89486184375,
+          "milliseconds_per_megapixel": 1095.5356623453727,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 6.566994416,
+            "median": 6.0783177895,
+            "min": 5.377541193
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 8.696550615029722,
+          "method": "m8_joint",
+          "milliseconds_per_image": 114.98811934375,
+          "milliseconds_per_megapixel": 331.60118269490204,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 2.101186384,
+            "median": 1.8398099095,
+            "min": 1.664732373
+          }
+        }
+      },
+      "model": "deeplabv3",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 1105149952,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 3110400,
+        "median": 170000.0,
+        "min": 14111,
+        "total": 5548261
+      }
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "kvasir",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7702 64-Core Processor",
+        "node_list": "cn1147",
+        "partition": "amdsmall"
+      },
+      "is_target_condition": false,
+      "m32_joint_over_dice_exact_time_ratio": 17.23630352945166,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 91.26356820102923,
+          "method": "dice_exact",
+          "milliseconds_per_image": 10.95727484375,
+          "milliseconds_per_megapixel": 28.905519366123166,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.178420962,
+            "median": 0.1753163975,
+            "min": 0.172447507
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 52.02988169108933,
+          "method": "m2_joint",
+          "milliseconds_per_image": 19.219724656249998,
+          "milliseconds_per_megapixel": 50.70203414489296,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.308526671,
+            "median": 0.3075155945,
+            "min": 0.30694597
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 5.29484573331441,
+          "method": "m32_joint",
+          "milliseconds_per_image": 188.86291506250004,
+          "milliseconds_per_megapixel": 498.22430547094206,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 3.151495425,
+            "median": 3.0218066410000004,
+            "min": 2.939428424
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 18.502970305530077,
+          "method": "m8_joint",
+          "milliseconds_per_image": 54.0453766875,
+          "milliseconds_per_megapixel": 142.57282990223,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.881944087,
+            "median": 0.864726027,
+            "min": 0.846092448
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 559104000,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 1442360,
+        "median": 326611.5,
+        "min": 166415,
+        "total": 6065153
+      }
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "kvasir",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn144",
+        "partition": "msismall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 10.779465468011006,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 43.5338660378432,
+          "method": "dice_exact",
+          "milliseconds_per_image": 22.970622437499998,
+          "milliseconds_per_megapixel": 60.5969806532498,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.403031827,
+            "median": 0.36752995899999996,
+            "min": 0.335368499
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 39.552997924669036,
+          "method": "m2_joint",
+          "milliseconds_per_image": 25.282533625,
+          "milliseconds_per_megapixel": 66.69585054161041,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.447758748,
+            "median": 0.404520538,
+            "min": 0.367004745
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 4.03859228150354,
+          "method": "m32_joint",
+          "milliseconds_per_image": 247.61103134375,
+          "milliseconds_per_megapixel": 653.2030604174372,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 4.096969544,
+            "median": 3.9617765015,
+            "min": 3.941570773
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 13.762698106636417,
+          "method": "m8_joint",
+          "milliseconds_per_image": 72.66017115625002,
+          "milliseconds_per_megapixel": 191.6790456069287,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 1.238482535,
+            "median": 1.1625627385000001,
+            "min": 1.130289428
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 565645312,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 1442360,
+        "median": 326611.5,
+        "min": 166415,
+        "total": 6065153
+      }
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "kvasir",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn153",
+        "partition": "agsmall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 11.438858378788742,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 65.85162914697727,
+          "method": "dice_exact",
+          "milliseconds_per_image": 15.18565315625,
+          "milliseconds_per_megapixel": 40.06006946568372,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.246514528,
+            "median": 0.2429704505,
+            "min": 0.237704499
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 60.51846803224737,
+          "method": "m2_joint",
+          "milliseconds_per_image": 16.523881593749998,
+          "milliseconds_per_megapixel": 43.59034396988831,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.317543438,
+            "median": 0.26438210549999996,
+            "min": 0.230277193
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 5.7568357755951425,
+          "method": "m32_joint",
+          "milliseconds_per_image": 173.70653584375,
+          "milliseconds_per_megapixel": 458.24146126239526,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 2.836746115,
+            "median": 2.7793045735,
+            "min": 2.715187015
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 19.591633269584936,
+          "method": "m8_joint",
+          "milliseconds_per_image": 51.042196749999995,
+          "milliseconds_per_megapixel": 134.65037864667224,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.880470807,
+            "median": 0.816675148,
+            "min": 0.676852154
+          }
+        }
+      },
+      "model": "deeplabv3",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 564092928,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 1442360,
+        "median": 326611.5,
+        "min": 166415,
+        "total": 6065153
+      }
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "fives",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7702 64-Core Processor",
+        "node_list": "cn1149",
+        "partition": "amdsmall"
+      },
+      "is_target_condition": false,
+      "m32_joint_over_dice_exact_time_ratio": 13.892912865715525,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 8.504916933939418,
+          "method": "dice_exact",
+          "milliseconds_per_image": 117.57904371875,
+          "milliseconds_per_megapixel": 28.033028535544872,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 1.899169825,
+            "median": 1.8812646995,
+            "min": 1.867783255
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 6.077627290355387,
+          "method": "m2_joint",
+          "milliseconds_per_image": 164.53789484375,
+          "milliseconds_per_megapixel": 39.22889109700918,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 2.709526903,
+            "median": 2.6326063175,
+            "min": 2.591073711
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 0.6121766555469856,
+          "method": "m32_joint",
+          "milliseconds_per_image": 1633.51540921875,
+          "milliseconds_per_megapixel": 389.4604228064418,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 27.168177862,
+            "median": 26.1362465475,
+            "min": 25.288614212
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 2.1578147336498046,
+          "method": "m8_joint",
+          "milliseconds_per_image": 463.43181571875004,
+          "milliseconds_per_megapixel": 110.49075501412155,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 7.456999769,
+            "median": 7.4149090515000005,
+            "min": 7.201749057
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 2266140672,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 4194304,
+        "median": 4194304.0,
+        "min": 4194304,
+        "total": 67108864
+      }
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "fives",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn227",
+        "partition": "msismall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 9.80213865746539,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 6.484339339030691,
+          "method": "dice_exact",
+          "milliseconds_per_image": 154.21771559375,
+          "milliseconds_per_megapixel": 36.76836862415075,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 3.109253052,
+            "median": 2.4674834495,
+            "min": 2.319202165
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 5.989605272894796,
+          "method": "m2_joint",
+          "milliseconds_per_image": 166.9559101875,
+          "milliseconds_per_megapixel": 39.80539087951183,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 2.997189767,
+            "median": 2.671294563,
+            "min": 2.594151951
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 0.6615229151132406,
+          "method": "m32_joint",
+          "milliseconds_per_image": 1511.6634316875,
+          "milliseconds_per_megapixel": 360.40864746272564,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 24.829244791,
+            "median": 24.186614907,
+            "min": 22.474322751
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 2.408043065572821,
+          "method": "m8_joint",
+          "milliseconds_per_image": 415.27496509375,
+          "milliseconds_per_megapixel": 99.00926711410284,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 7.02232229,
+            "median": 6.6443994415,
+            "min": 6.591561414
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 2562166784,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 4194304,
+        "median": 4194304.0,
+        "min": 4194304,
+        "total": 67108864
+      }
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "fives",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn94",
+        "partition": "agsmall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 14.828787228353281,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 6.791687111997204,
+          "method": "dice_exact",
+          "milliseconds_per_image": 147.2388205625,
+          "milliseconds_per_megapixel": 35.10447038710117,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 2.552850392,
+            "median": 2.3558211289999997,
+            "min": 2.031101924
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 4.403970108258775,
+          "method": "m2_joint",
+          "milliseconds_per_image": 227.0678445625,
+          "milliseconds_per_megapixel": 54.137192860245705,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 4.011422371,
+            "median": 3.633085513,
+            "min": 3.279629174
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 0.4580069163721767,
+          "method": "m32_joint",
+          "milliseconds_per_image": 2183.3731418750003,
+          "milliseconds_per_megapixel": 520.5567221343518,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 37.440884874,
+            "median": 34.93397027,
+            "min": 32.230853842
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 1.6762544344926051,
+          "method": "m8_joint",
+          "milliseconds_per_image": 596.5681458749999,
+          "milliseconds_per_megapixel": 142.23292967677116,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 10.290778355,
+            "median": 9.545090334,
+            "min": 9.001460999
+          }
+        }
+      },
+      "model": "deeplabv3",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 3030605824,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 4194304,
+        "median": 4194304.0,
+        "min": 4194304,
+        "total": 67108864
+      }
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "isic",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7702 64-Core Processor",
+        "node_list": "cn1065",
+        "partition": "amdsmall"
+      },
+      "is_target_condition": false,
+      "m32_joint_over_dice_exact_time_ratio": 7.029455758836556,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 3.193980684687271,
+          "method": "dice_exact",
+          "milliseconds_per_image": 313.0889315625,
+          "milliseconds_per_megapixel": 42.1180599538686,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 5.174994747,
+            "median": 5.009422905,
+            "min": 4.912058887
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 4.439352438757173,
+          "method": "m2_joint",
+          "milliseconds_per_image": 225.25807846875,
+          "milliseconds_per_megapixel": 30.302678560663626,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 3.658470737,
+            "median": 3.6041292555,
+            "min": 3.473656392
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 0.45437097753580663,
+          "method": "m32_joint",
+          "milliseconds_per_image": 2200.8447929999998,
+          "milliseconds_per_megapixel": 296.06703909374494,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 35.666088957,
+            "median": 35.213516688,
+            "min": 34.902134478
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 1.4925880745153617,
+          "method": "m8_joint",
+          "milliseconds_per_image": 669.977214125,
+          "milliseconds_per_megapixel": 90.12819562613507,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 11.13674733,
+            "median": 10.719635426,
+            "min": 10.632209458
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 4554891264,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 30765352,
+        "median": 6546944.0,
+        "min": 307200,
+        "total": 118937646
+      }
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "isic",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn94",
+        "partition": "msismall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 13.102786374209048,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 2.8307056064799907,
+          "method": "dice_exact",
+          "milliseconds_per_image": 353.268809625,
+          "milliseconds_per_megapixel": 47.523228717676155,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 6.189403576,
+            "median": 5.652300954,
+            "min": 5.293351655
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 2.1340406168500126,
+          "method": "m2_joint",
+          "milliseconds_per_image": 468.59464253125003,
+          "milliseconds_per_megapixel": 63.03735219797439,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 8.443262076,
+            "median": 7.497514280500001,
+            "min": 6.798561242
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 0.2160384459943442,
+          "method": "m32_joint",
+          "milliseconds_per_image": 4628.8057451875,
+          "milliseconds_per_megapixel": 622.6867137003871,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 76.966629956,
+            "median": 74.060891923,
+            "min": 66.383740691
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 0.7927478252704672,
+          "method": "m8_joint",
+          "milliseconds_per_image": 1261.43518546875,
+          "milliseconds_per_megapixel": 169.69364743859148,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 21.889857819,
+            "median": 20.1829629675,
+            "min": 18.913721631
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 5892468736,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 30765352,
+        "median": 6546944.0,
+        "min": 307200,
+        "total": 118937646
+      }
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "isic",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn129",
+        "partition": "agsmall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 12.452066080757668,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 2.8290721858237435,
+          "method": "dice_exact",
+          "milliseconds_per_image": 353.47277634374996,
+          "milliseconds_per_megapixel": 47.55066719161399,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 6.19482975,
+            "median": 5.655564421499999,
+            "min": 5.131325547
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 2.306886719337416,
+          "method": "m2_joint",
+          "milliseconds_per_image": 433.48465775,
+          "milliseconds_per_megapixel": 58.314207126648526,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 7.247536306,
+            "median": 6.935754524,
+            "min": 6.558372061
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 0.22719701031747208,
+          "method": "m32_joint",
+          "milliseconds_per_image": 4401.46636878125,
+          "milliseconds_per_megapixel": 592.104050054093,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 72.282465987,
+            "median": 70.4234619005,
+            "min": 67.50989585
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 0.8249771133192824,
+          "method": "m8_joint",
+          "milliseconds_per_image": 1212.15483903125,
+          "milliseconds_per_megapixel": 163.06424481025965,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 19.759967124,
+            "median": 19.3944774245,
+            "min": 18.578860645
+          }
+        }
+      },
+      "model": "deeplabv3",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 5641129984,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 30765352,
+        "median": 6546944.0,
+        "min": 307200,
+        "total": 118937646
+      }
+    },
+    {
+      "condition": "clipseg-general",
+      "dataset": "tn3k",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7702 64-Core Processor",
+        "node_list": "cn1066",
+        "partition": "amdsmall"
+      },
+      "is_target_condition": false,
+      "m32_joint_over_dice_exact_time_ratio": 0.3143165684634893,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 113.2437797040867,
+          "method": "dice_exact",
+          "milliseconds_per_image": 8.83050709375,
+          "milliseconds_per_megapixel": 30.43998713786187,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.148821604,
+            "median": 0.1412881135,
+            "min": 0.135321395
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 2111.3962082491194,
+          "method": "m2_joint",
+          "milliseconds_per_image": 0.47362024999999996,
+          "milliseconds_per_megapixel": 1.6326349285688122,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.00791267,
+            "median": 0.007577924,
+            "min": 0.007204345
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 360.28574712962035,
+          "method": "m32_joint",
+          "milliseconds_per_image": 2.7755746875,
+          "milliseconds_per_megapixel": 9.567792301245493,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.046936221,
+            "median": 0.044409195,
+            "min": 0.036739989
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 1113.2509107870987,
+          "method": "m8_joint",
+          "milliseconds_per_image": 0.89827009375,
+          "milliseconds_per_megapixel": 3.096462050229127,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.016053119,
+            "median": 0.0143723215,
+            "min": 0.013850439
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 363339776,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 1052048,
+        "median": 163834.5,
+        "min": 73695,
+        "total": 4641530
+      }
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "tn3k",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn129",
+        "partition": "msismall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 7.76022804021884,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 75.84685921829809,
+          "method": "dice_exact",
+          "milliseconds_per_image": 13.1844615625,
+          "milliseconds_per_megapixel": 45.4486742518092,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.23475873,
+            "median": 0.210951385,
+            "min": 0.187366619
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 83.97050656664449,
+          "method": "m2_joint",
+          "milliseconds_per_image": 11.90894328125,
+          "milliseconds_per_megapixel": 41.05178518721197,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.245225441,
+            "median": 0.1905430925,
+            "min": 0.178860368
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 9.773792577384002,
+          "method": "m32_joint",
+          "milliseconds_per_image": 102.3144283125,
+          "milliseconds_per_megapixel": 352.6920763196618,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 1.712759266,
+            "median": 1.637030853,
+            "min": 1.525416593
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 30.997500415812095,
+          "method": "m8_joint",
+          "milliseconds_per_image": 32.26066575,
+          "milliseconds_per_megapixel": 111.20700544863439,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.597224374,
+            "median": 0.516170652,
+            "min": 0.436695464
+          }
+        }
+      },
+      "model": "clipseg",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 435847168,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 1052048,
+        "median": 163834.5,
+        "min": 73695,
+        "total": 4641530
+      }
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "tn3k",
+      "hardware": {
+        "affinity_cpu_count": 8,
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "node_list": "acn197",
+        "partition": "agsmall"
+      },
+      "is_target_condition": true,
+      "m32_joint_over_dice_exact_time_ratio": 7.004162467666056,
+      "methods": {
+        "dice_exact": {
+          "images_per_second": 66.56536790582115,
+          "method": "dice_exact",
+          "milliseconds_per_image": 15.022826906249998,
+          "milliseconds_per_megapixel": 51.78577548782405,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.275740136,
+            "median": 0.24036523049999997,
+            "min": 0.184561451
+          }
+        },
+        "m2_joint": {
+          "images_per_second": 73.0463186272703,
+          "method": "m2_joint",
+          "milliseconds_per_image": 13.68994384375,
+          "milliseconds_per_megapixel": 47.19114203721617,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.238917538,
+            "median": 0.2190391015,
+            "min": 0.204748988
+          }
+        },
+        "m32_joint": {
+          "images_per_second": 9.503687016558057,
+          "method": "m32_joint",
+          "milliseconds_per_image": 105.22232037500001,
+          "milliseconds_per_megapixel": 362.71598503079804,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 1.77958166,
+            "median": 1.6835571260000002,
+            "min": 1.531930846
+          }
+        },
+        "m8_joint": {
+          "images_per_second": 28.078075771702352,
+          "method": "m8_joint",
+          "milliseconds_per_image": 35.6149761875,
+          "milliseconds_per_megapixel": 122.76978043877772,
+          "num_trials": 4,
+          "panel_wall_seconds": {
+            "max": 0.645753784,
+            "median": 0.569839619,
+            "min": 0.476521286
+          }
+        }
+      },
+      "model": "deeplabv3",
+      "num_selected_images": 16,
+      "process_peak_rss_bytes": 468013056,
+      "process_peak_rss_scope": "process high-water RSS; includes Python, selected decoded maps, warm-up, and measured confidence computation; excludes model inference and unselected artifact payloads",
+      "selected_pixel_count": {
+        "max": 1052048,
+        "median": 163834.5,
+        "min": 73695,
+        "total": 4641530
+      }
+    }
+  ],
+  "provenance": {
+    "analysis_source_sha256": "90c361be9c9fa71cbec7bb8ca3e230bee4f0fe523856b1232cacf9bee2fba61a",
+    "benchmark_lock_sha256": "3737c3751fd368f7abf55561493ea2eacbcd3ac788db72925a54cd3d7cdf9b33",
+    "benchmark_spec_sha256": "d0041744c4823eb23788ecffbe3b8b354268cc1988fd2ed15d937b9c29a3cdd2",
+    "campaign_lock_path": "outputs/binary_campaign/campaign.lock.json",
+    "campaign_lock_sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "input_manifest_sha256": [
+      "e74020b1f0aab06beb62f03f7fa7c900c0f5eb43da65f557e8e9099291217b91",
+      "395daa77cd57a07aac254978e59487ce186f473e8a408f3425f7ba955fa40ffb",
+      "5c7f403e3161b5dc1ed6b752b8b0b3c8cf29965332fab8a2e7236fa07ab338f3",
+      "44184a47f4176d486e645d5aec58d7682df5377f1127c1fb12c8c1408bc62837",
+      "02cd462ae6b01b6b76e8aceddd75f28d8182d7933ea067cacf0b78118bc7348a",
+      "e4f48b69686e288083396cce6f36dc96f20da160851ceb9c1867500e67612e6b",
+      "0ccf7232353bd58c5a7a280fa52842cfd02ac253b37fef6829464f5ae4f43882",
+      "ff722fa079c4a289c25d48583630ab6283d9832fac4e5e7ec049fbc61b15b739",
+      "4b17546f5495a97d03a0b04125a786235d7eda30a7a0c61ae298925b26d442ad",
+      "5254a34225f905302bf14a14b954a4a12dc978f008fe0c92dd1d844733f7c1d4",
+      "556c0fc4aed55508d58870d28733c97f7ddd03c339de9ce6bb41cebfb346207c",
+      "d5160839a5c06d1fd6870813e968ce322c621cc0879d47abbd46623f6b1a6cd7",
+      "bcdf8fd58c91c804fa6c463e618f3cafc9cdfb20b94168ea9366831c9cebd0b1",
+      "dff5e8f3f1a5104ddc6d9c64ae34a1baa3eef54cef77bc2776e4fad58f0b587e",
+      "2bbc0f58fa88cd2cd194d832867443add3ce0b62e8f157b954044bacedaf40f2",
+      "a0957bb29de37763a4f541e2c94d81a440c33521d9433c61af3f6be606949005"
+    ],
+    "inputs": [
+      {
+        "condition": "clipseg-general",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/pet/clipseg-general/831113e7984af3a3/manifest.json",
+        "manifest_sha256": "e74020b1f0aab06beb62f03f7fa7c900c0f5eb43da65f557e8e9099291217b91",
+        "records_path": "outputs/binary_runtime_ladder_v2/pet/clipseg-general/831113e7984af3a3/records.jsonl",
+        "records_sha256": "bcefc43a8aac2a03dc9ce7c828575fd12d2e31aaddc4f204562d6d8007eb3006"
+      },
+      {
+        "condition": "clipseg-target",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/pet/clipseg-target/783a85f8940aa2f6/manifest.json",
+        "manifest_sha256": "395daa77cd57a07aac254978e59487ce186f473e8a408f3425f7ba955fa40ffb",
+        "records_path": "outputs/binary_runtime_ladder_v2/pet/clipseg-target/783a85f8940aa2f6/records.jsonl",
+        "records_sha256": "15068e7f1d174099856672f2fc357d9e5dfacd8ead9e236692f24f4634562c35"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/pet/deeplabv3-target/905f576c65137919/manifest.json",
+        "manifest_sha256": "5c7f403e3161b5dc1ed6b752b8b0b3c8cf29965332fab8a2e7236fa07ab338f3",
+        "records_path": "outputs/binary_runtime_ladder_v2/pet/deeplabv3-target/905f576c65137919/records.jsonl",
+        "records_sha256": "e70ba15a66d56ad2543922d833bf23663d50039af53bd2789f22ba82286ba4df"
+      },
+      {
+        "condition": "deeplabv3-external",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/pet/deeplabv3-external/f1b8af7159ece016/manifest.json",
+        "manifest_sha256": "44184a47f4176d486e645d5aec58d7682df5377f1127c1fb12c8c1408bc62837",
+        "records_path": "outputs/binary_runtime_ladder_v2/pet/deeplabv3-external/f1b8af7159ece016/records.jsonl",
+        "records_sha256": "f6460e4051e54001279ba25122857dbc8770d883a098d30c0bb181090d1f67c4"
+      },
+      {
+        "condition": "clipseg-general",
+        "dataset": "kvasir",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/kvasir/clipseg-general/1b72263bf6c39f90/manifest.json",
+        "manifest_sha256": "02cd462ae6b01b6b76e8aceddd75f28d8182d7933ea067cacf0b78118bc7348a",
+        "records_path": "outputs/binary_runtime_ladder_v2/kvasir/clipseg-general/1b72263bf6c39f90/records.jsonl",
+        "records_sha256": "44b61e30c6aa15ca6ca6eb51da745d4d096865c93563fbf207afe0e36e1c00dd"
+      },
+      {
+        "condition": "clipseg-target",
+        "dataset": "kvasir",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/kvasir/clipseg-target/3e64d7039e12d7ff/manifest.json",
+        "manifest_sha256": "e4f48b69686e288083396cce6f36dc96f20da160851ceb9c1867500e67612e6b",
+        "records_path": "outputs/binary_runtime_ladder_v2/kvasir/clipseg-target/3e64d7039e12d7ff/records.jsonl",
+        "records_sha256": "0fcb782ad9dbe36fd4c8d09a90864877cb20393eec9f73dd7b6bfabe8e4253d5"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "dataset": "kvasir",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/kvasir/deeplabv3-target/f4b16f92d94c15fc/manifest.json",
+        "manifest_sha256": "0ccf7232353bd58c5a7a280fa52842cfd02ac253b37fef6829464f5ae4f43882",
+        "records_path": "outputs/binary_runtime_ladder_v2/kvasir/deeplabv3-target/f4b16f92d94c15fc/records.jsonl",
+        "records_sha256": "53d2682c89f0894825674e26097d8969fbaf134685750ddb752e77764d77e473"
+      },
+      {
+        "condition": "clipseg-general",
+        "dataset": "fives",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/fives/clipseg-general/50912043300a3c07/manifest.json",
+        "manifest_sha256": "ff722fa079c4a289c25d48583630ab6283d9832fac4e5e7ec049fbc61b15b739",
+        "records_path": "outputs/binary_runtime_ladder_v2/fives/clipseg-general/50912043300a3c07/records.jsonl",
+        "records_sha256": "b54864e73f7b7f57aa9658a3a6baecda4fde1ac842e9f8af74e624bb2766c77d"
+      },
+      {
+        "condition": "clipseg-target",
+        "dataset": "fives",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/fives/clipseg-target/8a629eb46db8513c/manifest.json",
+        "manifest_sha256": "4b17546f5495a97d03a0b04125a786235d7eda30a7a0c61ae298925b26d442ad",
+        "records_path": "outputs/binary_runtime_ladder_v2/fives/clipseg-target/8a629eb46db8513c/records.jsonl",
+        "records_sha256": "1658458b3942ca3da3209e10c25aa36a9c2e18e5254522181d35826b8b13ea37"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "dataset": "fives",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/fives/deeplabv3-target/603ebbe738ef3ca3/manifest.json",
+        "manifest_sha256": "5254a34225f905302bf14a14b954a4a12dc978f008fe0c92dd1d844733f7c1d4",
+        "records_path": "outputs/binary_runtime_ladder_v2/fives/deeplabv3-target/603ebbe738ef3ca3/records.jsonl",
+        "records_sha256": "0d792487fc805bab95ccb46630e0058121fb23233787d9ad4a8ba59a9b843499"
+      },
+      {
+        "condition": "clipseg-general",
+        "dataset": "isic",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/isic/clipseg-general/3592bb9d0479f896/manifest.json",
+        "manifest_sha256": "556c0fc4aed55508d58870d28733c97f7ddd03c339de9ce6bb41cebfb346207c",
+        "records_path": "outputs/binary_runtime_ladder_v2/isic/clipseg-general/3592bb9d0479f896/records.jsonl",
+        "records_sha256": "0cae19faa2d4640ccaa02654043a5b9b431ee664d554e95ba2b4ce0658eabb11"
+      },
+      {
+        "condition": "clipseg-target",
+        "dataset": "isic",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/isic/clipseg-target/aadcaa08cf2336d4/manifest.json",
+        "manifest_sha256": "d5160839a5c06d1fd6870813e968ce322c621cc0879d47abbd46623f6b1a6cd7",
+        "records_path": "outputs/binary_runtime_ladder_v2/isic/clipseg-target/aadcaa08cf2336d4/records.jsonl",
+        "records_sha256": "77ba657723380913324c2e436e7d56ac783c8492473c5b17ad40667541e576ba"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "dataset": "isic",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/isic/deeplabv3-target/1da43a1aee301bfc/manifest.json",
+        "manifest_sha256": "bcdf8fd58c91c804fa6c463e618f3cafc9cdfb20b94168ea9366831c9cebd0b1",
+        "records_path": "outputs/binary_runtime_ladder_v2/isic/deeplabv3-target/1da43a1aee301bfc/records.jsonl",
+        "records_sha256": "b3c36ad0645784ec3c3c44b01b4698e0804e071b5c58769c3000bfac3a8ab1e7"
+      },
+      {
+        "condition": "clipseg-general",
+        "dataset": "tn3k",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/tn3k/clipseg-general/135334624bf5ac14/manifest.json",
+        "manifest_sha256": "dff5e8f3f1a5104ddc6d9c64ae34a1baa3eef54cef77bc2776e4fad58f0b587e",
+        "records_path": "outputs/binary_runtime_ladder_v2/tn3k/clipseg-general/135334624bf5ac14/records.jsonl",
+        "records_sha256": "10e3ab43c7eb481ce7e8faca9489ee22fe5955f8c9c1c4758c62cd17f528c6d1"
+      },
+      {
+        "condition": "clipseg-target",
+        "dataset": "tn3k",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/tn3k/clipseg-target/c20921f59f285a23/manifest.json",
+        "manifest_sha256": "2bbc0f58fa88cd2cd194d832867443add3ce0b62e8f157b954044bacedaf40f2",
+        "records_path": "outputs/binary_runtime_ladder_v2/tn3k/clipseg-target/c20921f59f285a23/records.jsonl",
+        "records_sha256": "80c91357ebaf310d78a92e08fd67f36361667dec5f9019fc4f384498fd1a1773"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "dataset": "tn3k",
+        "manifest_path": "outputs/binary_runtime_ladder_v2/tn3k/deeplabv3-target/81d37b076f72dbb6/manifest.json",
+        "manifest_sha256": "a0957bb29de37763a4f541e2c94d81a440c33521d9433c61af3f6be606949005",
+        "records_path": "outputs/binary_runtime_ladder_v2/tn3k/deeplabv3-target/81d37b076f72dbb6/records.jsonl",
+        "records_sha256": "09c81253c230e35c6eb9f6c54627fb0abdb7cc0f033a2406eda42a74ad7f46c3"
+      }
+    ],
+    "runtime_protocol_version": 2,
+    "runtime_source_sha256": "b13d50708da258e9c1706ded598c7bd81fc0c98a9335e7ba27e1f09813e08c4f"
+  },
+  "schema_version": 1,
+  "scope": {
+    "complexity_status": "separate from algorithmic complexity: Dice-Exact sorts N pixels in O(N log N); each joint midpoint method evaluates its declared number of candidate masks and boundary-distance computations",
+    "excluded": "model inference and artifact I/O",
+    "timed": "confidence computation on a preloaded deterministic panel",
+    "timing_status": "descriptive hardware-dependent wall-clock benchmark"
+  },
+  "target_ranges": {
+    "dice_exact_milliseconds_per_image": {
+      "max": 353.47277634374996,
+      "min": 13.1844615625
+    },
+    "m2_joint_milliseconds_per_image": {
+      "max": 468.59464253125003,
+      "min": 11.90894328125
+    },
+    "m32_joint_milliseconds_per_image": {
+      "max": 4628.8057451875,
+      "min": 102.3144283125
+    },
+    "m32_joint_over_dice_exact_time_ratio": {
+      "max": 19.608196444950533,
+      "min": 7.004162467666056
+    },
+    "m8_joint_milliseconds_per_image": {
+      "max": 1261.43518546875,
+      "min": 32.26066575
+    }
+  }
+}

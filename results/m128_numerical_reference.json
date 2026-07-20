@@ -1,0 +1,2390 @@
+{
+  "analysis_id": "716c4261bac734bd",
+  "artifact_type": "selectseg.binary_m128_numerical_reference_analysis",
+  "condition_sets": {
+    "all_conditions": [
+      "pet/clipseg-general",
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "pet/deeplabv3-external",
+      "kvasir/clipseg-general",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-general",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-general",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-general",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ],
+    "num_conditions": 16,
+    "num_target_conditions": 10,
+    "target_condition_definition": "clipseg-target and deeplabv3-target on each of five datasets",
+    "target_conditions": [
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ]
+  },
+  "conditions": [
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 9.107258553131548e-07,
+            "candidate": 0.07910441645311231,
+            "reference": 0.07910532717896762,
+            "signed_candidate_minus_reference": -9.107258553131548e-07,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.0032837986946105957,
+            "mean": 0.0008926541906459026,
+            "median": 0.0008911017893362128,
+            "p95": 0.0011335965337048559
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9986706682845639
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999962770950814
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0005729777125626084,
+            "candidate": 0.041183406716656615,
+            "reference": 0.040610429004094006,
+            "signed_candidate_minus_reference": 0.0005729777125626084,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.01574650006912877,
+            "mean": 0.005488886837043286,
+            "median": 0.005098392544385211,
+            "p95": 0.011421868362017617
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9141654321985738
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9884872235198532
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0007037889281841236,
+            "candidate": 0.0647095176183448,
+            "reference": 0.06400572869016068,
+            "signed_candidate_minus_reference": 0.0007037889281841236,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.015910674803841524,
+            "mean": 0.005285909766088879,
+            "median": 0.004957273367725834,
+            "p95": 0.01113615234448126
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9252744561405178
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.991777708039781
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-general",
+      "dataset": "pet",
+      "is_target_condition": false,
+      "model": "clipseg",
+      "num_images": 3669
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 2.2921862381460045e-05,
+            "candidate": 0.03316018527708746,
+            "reference": 0.033137263414706,
+            "signed_candidate_minus_reference": 2.2921862381460045e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.0021069013572233286,
+            "mean": 0.00041549791572272385,
+            "median": 0.0003444570048444992,
+            "p95": 0.0009591591717132024
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9931356262927359
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9998865751890722
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 8.713842405830285e-05,
+            "candidate": 0.02506291842016516,
+            "reference": 0.025150056844223462,
+            "signed_candidate_minus_reference": -8.713842405830285e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.010121188739449977,
+            "mean": 0.0008511932482915093,
+            "median": 0.0005863269887063302,
+            "p95": 0.002437897451648095
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.8993961312811842
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9843514639256379
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 1.994900132130939e-05,
+            "candidate": 0.04568752980043485,
+            "reference": 0.04566758079911354,
+            "signed_candidate_minus_reference": 1.994900132130939e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.01855889589632688,
+            "mean": 0.0017794121986259713,
+            "median": 0.0014790234809431563,
+            "p95": 0.004707794707463882
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9084005132453136
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9880334759295244
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-target",
+      "dataset": "pet",
+      "is_target_condition": true,
+      "model": "clipseg",
+      "num_images": 3669
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 1.174182815098096e-05,
+            "candidate": 0.03237231983000648,
+            "reference": 0.032360578001855496,
+            "signed_candidate_minus_reference": 1.174182815098096e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.0012679931265616035,
+            "mean": 0.0004218387570472341,
+            "median": 0.00037097798823358674,
+            "p95": 0.0008156947668774978
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.99166169560582
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9998866631412734
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0002855981234319675,
+            "candidate": 0.023928362804370322,
+            "reference": 0.023642764680938354,
+            "signed_candidate_minus_reference": 0.0002855981234319675,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.017006965863808857,
+            "mean": 0.0007840428227594821,
+            "median": 0.0005277361759512492,
+            "p95": 0.0022665684803819352
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9182175039003135
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9871036372397171
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.00019423891376006697,
+            "candidate": 0.04233718038577711,
+            "reference": 0.04214294147201704,
+            "signed_candidate_minus_reference": 0.00019423891376006697,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.014497534512824733,
+            "mean": 0.001512930474763279,
+            "median": 0.001249112523729709,
+            "p95": 0.0038265463705543807
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9331312808870809
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9923530325458592
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "pet",
+      "is_target_condition": true,
+      "model": "deeplabv3",
+      "num_images": 3669
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 2.9788204018360576e-05,
+            "candidate": 0.06811889038606576,
+            "reference": 0.0680891021820474,
+            "signed_candidate_minus_reference": 2.9788204018360576e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.0029711127281188965,
+            "mean": 0.0007173565869367372,
+            "median": 0.0007781617524629386,
+            "p95": 0.0012257115807420768
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9894069591285172
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9998008011410517
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 7.724884872117865e-05,
+            "candidate": 0.034475210624227995,
+            "reference": 0.034397961775506816,
+            "signed_candidate_minus_reference": 7.724884872117865e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.017416200115256075,
+            "mean": 0.001406818822334839,
+            "median": 0.0007929640739940333,
+            "p95": 0.005957697486354216
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9434460421770421
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.993059043148095
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.00016850428683468088,
+            "candidate": 0.05613637667089834,
+            "reference": 0.05630488095773302,
+            "signed_candidate_minus_reference": -0.00016850428683468088,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 3669,
+          "per_image_absolute_score_error": {
+            "max": 0.01815709326354009,
+            "mean": 0.0016781252737373326,
+            "median": 0.0010880954023643405,
+            "p95": 0.005820338800648653
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.960083121493556
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9971348165500112
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "deeplabv3-external",
+      "dataset": "pet",
+      "is_target_condition": false,
+      "model": "deeplabv3",
+      "num_images": 3669
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0005144392879614657,
+            "candidate": 0.5333924256148894,
+            "reference": 0.532877986326928,
+            "signed_candidate_minus_reference": 0.0005144392879614657,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.003294186859563508,
+            "mean": 0.0009259921179994223,
+            "median": 0.000931482465978406,
+            "p95": 0.0012607809191944816
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9991959798994975
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999864996624916
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0022026610500973653,
+            "candidate": 0.2526652290046696,
+            "reference": 0.25486789005476695,
+            "signed_candidate_minus_reference": -0.0022026610500973653,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.018174022429139347,
+            "mean": 0.005399058689503373,
+            "median": 0.004761051307588859,
+            "p95": 0.012794220083260192
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.959620074591249
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9971345501407535
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0021039063665055924,
+            "candidate": 0.30167423877033156,
+            "reference": 0.30377814513683715,
+            "signed_candidate_minus_reference": -0.0021039063665055924,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.017962367559575254,
+            "mean": 0.0053059586287534525,
+            "median": 0.004614685120665568,
+            "p95": 0.012785190745939116
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9595195645022634
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9972238024724707
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-general",
+      "dataset": "kvasir",
+      "is_target_condition": false,
+      "model": "clipseg",
+      "num_images": 200
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 1.2349831133989797e-05,
+            "candidate": 0.09086204488400164,
+            "reference": 0.09084969505286765,
+            "signed_candidate_minus_reference": 1.2349831133989797e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.00359383225440979,
+            "mean": 0.0009962811683731623,
+            "median": 0.0009648832858505027,
+            "p95": 0.00196907270660149
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9959798994974873
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999129978249458
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0004074899541387719,
+            "candidate": 0.04319338988949498,
+            "reference": 0.04278589993535621,
+            "signed_candidate_minus_reference": 0.0004074899541387719,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.015625,
+            "mean": 0.0029904120196992717,
+            "median": 0.001166393930483109,
+            "p95": 0.010270240824459757
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9580380935761857
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9959798964826146
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0017809865986963547,
+            "candidate": 0.10171526071903689,
+            "reference": 0.09993427412034053,
+            "signed_candidate_minus_reference": 0.0017809865986963547,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.017700638835129123,
+            "mean": 0.0032068543382108216,
+            "median": 0.001688748359118225,
+            "p95": 0.010861093264469152
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9661792062051903
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9976186886815143
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-target",
+      "dataset": "kvasir",
+      "is_target_condition": true,
+      "model": "clipseg",
+      "num_images": 200
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 2.159665261771554e-05,
+            "candidate": 0.05246659617169204,
+            "reference": 0.052444999519074324,
+            "signed_candidate_minus_reference": 2.159665261771554e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.0019540317097334545,
+            "mean": 0.000795957351725029,
+            "median": 0.000849301728454592,
+            "p95": 0.0015196906262548424
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9951758793969849
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9998769969249232
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0004118363727882643,
+            "candidate": 0.023890875163397468,
+            "reference": 0.024302711536185732,
+            "signed_candidate_minus_reference": -0.0004118363727882643,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.015262035004590169,
+            "mean": 0.0025686514562984273,
+            "median": 0.0014197052592904943,
+            "p95": 0.010804325302938456
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9247236180904521
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9871221780544515
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0008024898572920464,
+            "candidate": 0.07035616872220982,
+            "reference": 0.07115865857950186,
+            "signed_candidate_minus_reference": -0.0008024898572920464,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.017409337855597895,
+            "mean": 0.0028947680583082613,
+            "median": 0.0019267175668226943,
+            "p95": 0.010579614771350276
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9351758793969848
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9905467636690918
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "kvasir",
+      "is_target_condition": true,
+      "model": "deeplabv3",
+      "num_images": 200
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 7.896580472743775e-05,
+            "candidate": 0.898959640160644,
+            "reference": 0.8990386059653714,
+            "signed_candidate_minus_reference": -7.896580472743775e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.00390625,
+            "mean": 0.00046373821031841914,
+            "median": 0.000221880679791564,
+            "p95": 0.002235281467437741
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9986429546576793
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999711241840942
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0023069179333357615,
+            "candidate": 0.4604335984161297,
+            "reference": 0.4581266804827939,
+            "signed_candidate_minus_reference": 0.0023069179333357615,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.017046040986810063,
+            "mean": 0.007389136610745588,
+            "median": 0.007333032632150849,
+            "p95": 0.015625
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9673397042005446
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9982231816205683
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0018310261851666176,
+            "candidate": 0.5195200583518075,
+            "reference": 0.5176890321666409,
+            "signed_candidate_minus_reference": 0.0018310261851666176,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.01729240366616369,
+            "mean": 0.007453349859633565,
+            "median": 0.007304065167569235,
+            "p95": 0.015673603513149163
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.966535138246019
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9981541789639642
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-general",
+      "dataset": "fives",
+      "is_target_condition": false,
+      "model": "clipseg",
+      "num_images": 200
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 1.2706355870806263e-06,
+            "candidate": 0.8731119499864863,
+            "reference": 0.8731132206220734,
+            "signed_candidate_minus_reference": -1.2706355870806263e-06,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.0038809776306152344,
+            "mean": 0.0001843134212084957,
+            "median": 3.103825821126893e-05,
+            "p95": 0.0007930219173431271
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9998492323411582
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999977499406546
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.003242816039735419,
+            "candidate": 0.2630530437567771,
+            "reference": 0.26629585979651255,
+            "signed_candidate_minus_reference": -0.003242816039735419,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.015625,
+            "mean": 0.005224849527381471,
+            "median": 0.004987053133491015,
+            "p95": 0.012147285073467722
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9274080325144294
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9917591040962376
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.004555972017174892,
+            "candidate": 0.4055268852211323,
+            "reference": 0.4100828572383072,
+            "signed_candidate_minus_reference": -0.004555972017174892,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.01698253514362591,
+            "mean": 0.005098774965811085,
+            "median": 0.004525292692060312,
+            "p95": 0.012773902393072393
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9335411515499216
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9926463832655543
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-target",
+      "dataset": "fives",
+      "is_target_condition": true,
+      "model": "clipseg",
+      "num_images": 200
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 3.131632989350486e-05,
+            "candidate": 0.41103549602448797,
+            "reference": 0.4110668123543815,
+            "signed_candidate_minus_reference": -3.131632989350486e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.0006784223356680738,
+            "mean": 8.941871884553608e-05,
+            "median": 8.740442183644004e-05,
+            "p95": 0.00015001846972975683
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9995979697472235
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999939998454961
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0004930457277674619,
+            "candidate": 0.042889918415929776,
+            "reference": 0.042396872688162314,
+            "signed_candidate_minus_reference": 0.0004930457277674619,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.014014599578994202,
+            "mean": 0.005392365238755621,
+            "median": 0.005192169139498798,
+            "p95": 0.010148353420355976
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.8184833408714005
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9505422264623314
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0006400594607604421,
+            "candidate": 0.09201838099764052,
+            "reference": 0.09137832153688008,
+            "signed_candidate_minus_reference": 0.0006400594607604421,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 200,
+          "per_image_absolute_score_error": {
+            "max": 0.012915592690642796,
+            "mean": 0.004985896237055488,
+            "median": 0.0046691245759038075,
+            "p95": 0.009542519029166977
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.8780843258455198
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9731808094058423
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "fives",
+      "is_target_condition": true,
+      "model": "deeplabv3",
+      "num_images": 200
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 6.608858945988949e-06,
+            "candidate": 0.9874302933360388,
+            "reference": 0.9874236844770928,
+            "signed_candidate_minus_reference": 6.608858945988949e-06,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.00390625,
+            "mean": 0.001546754992344348,
+            "median": 0.0013733915984630585,
+            "p95": 0.003848043084144592
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9936924233576431
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9998632656387707
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 6.544303435795928e-05,
+            "candidate": 0.9651288348905511,
+            "reference": 0.9651942779249091,
+            "signed_candidate_minus_reference": -6.544303435795928e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.021389275609878355,
+            "mean": 0.007354767288831161,
+            "median": 0.0078125,
+            "p95": 0.015625
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9740911932560196
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9975849825883528
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.00011563879675835498,
+            "candidate": 0.970175058341651,
+            "reference": 0.9702906971384093,
+            "signed_candidate_minus_reference": -0.00011563879675835498,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.021000638766348168,
+            "mean": 0.007291217193375116,
+            "median": 0.0078125,
+            "p95": 0.015625
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9767018036072762
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9979551131050263
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-general",
+      "dataset": "isic",
+      "is_target_condition": false,
+      "model": "clipseg",
+      "num_images": 1000
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 3.1281280556128e-07,
+            "candidate": 0.07181696033285655,
+            "reference": 0.07181664752005099,
+            "signed_candidate_minus_reference": 3.1281280556128e-07,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.002272935153151856,
+            "mean": 0.0007164794800125278,
+            "median": 0.0006480309751373571,
+            "p95": 0.001419215232258563
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9943183183183183
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999263079263079
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 6.493138538210888e-05,
+            "candidate": 0.02497737366838561,
+            "reference": 0.02504230505376772,
+            "signed_candidate_minus_reference": -6.493138538210888e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.015184121287144164,
+            "mean": 0.0007656342693754173,
+            "median": 0.00038081053523117414,
+            "p95": 0.0019970041850447735
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9727327327327329
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9963464403464405
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 8.662654823275717e-05,
+            "candidate": 0.03385798047353317,
+            "reference": 0.033944607021765924,
+            "signed_candidate_minus_reference": -8.662654823275717e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.015157138365190767,
+            "mean": 0.0009224483928955816,
+            "median": 0.0005449183527551516,
+            "p95": 0.002491772596944695
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9763603603603603
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.99791782991783
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-target",
+      "dataset": "isic",
+      "is_target_condition": true,
+      "model": "clipseg",
+      "num_images": 1000
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 7.235400000664416e-05,
+            "candidate": 0.06362507658194187,
+            "reference": 0.06369743058194852,
+            "signed_candidate_minus_reference": -7.235400000664416e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.001650616029353777,
+            "mean": 0.0005085136184548696,
+            "median": 0.0004806878402539329,
+            "p95": 0.0011273064457506714
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.994862862862863
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.999943707943708
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 1.4303422682323402e-05,
+            "candidate": 0.025034964149052888,
+            "reference": 0.025020660726370565,
+            "signed_candidate_minus_reference": 1.4303422682323402e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.017567460127765333,
+            "mean": 0.0015243458907477272,
+            "median": 0.0007123507416064781,
+            "p95": 0.0059020323642390024
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9540140140140141
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9948119028119028
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 1.86563117216057e-05,
+            "candidate": 0.034140817718874505,
+            "reference": 0.0341221614071529,
+            "signed_candidate_minus_reference": 1.86563117216057e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 1000,
+          "per_image_absolute_score_error": {
+            "max": 0.019547731691174297,
+            "mean": 0.0017819408824617175,
+            "median": 0.0010270536266198445,
+            "p95": 0.005953140488036189
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9614454454454454
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9966445686445687
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "isic",
+      "is_target_condition": true,
+      "model": "deeplabv3",
+      "num_images": 1000
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0,
+            "candidate": 1.0,
+            "reference": 1.0,
+            "signed_candidate_minus_reference": 0.0,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.00390625,
+            "mean": 0.0019983630657729964,
+            "median": 0.0019976086914539337,
+            "p95": 0.003742242977023125
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9833749292418262
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9992829696057776
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0,
+            "candidate": 1.0,
+            "reference": 1.0,
+            "signed_candidate_minus_reference": 0.0,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.015625,
+            "mean": 0.007443505700325733,
+            "median": 0.0078125,
+            "p95": 0.015625
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.946563214937215
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9894741163717247
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0,
+            "candidate": 1.0,
+            "reference": 1.0,
+            "signed_candidate_minus_reference": 0.0,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.015625,
+            "mean": 0.007443505700325733,
+            "median": 0.0078125,
+            "p95": 0.015625
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.946563214937215
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9894741163717247
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-general",
+      "dataset": "tn3k",
+      "is_target_condition": false,
+      "model": "clipseg",
+      "num_images": 614
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 9.032076510132048e-05,
+            "candidate": 0.16127509939140472,
+            "reference": 0.16136542015650604,
+            "signed_candidate_minus_reference": -9.032076510132048e-05,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.003883540630340576,
+            "mean": 0.0005864115410696013,
+            "median": 0.0003760725079816618,
+            "p95": 0.001645195309944044
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9987352875921545
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999884134299863
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.00045646114785395653,
+            "candidate": 0.05890554195039522,
+            "reference": 0.059362003098249176,
+            "signed_candidate_minus_reference": -0.00045646114785395653,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.018730805204664025,
+            "mean": 0.005063057336329091,
+            "median": 0.004783071423812138,
+            "p95": 0.014541423001892937
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9507336845496583
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.995326704666224
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.00018836525985184427,
+            "candidate": 0.07259289876596793,
+            "reference": 0.07278126402581978,
+            "signed_candidate_minus_reference": -0.00018836525985184427,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.020700163673052607,
+            "mean": 0.005068351659020683,
+            "median": 0.00463437744902441,
+            "p95": 0.014253090306825415
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.954762149552865
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9963577553176475
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "clipseg-target",
+      "dataset": "tn3k",
+      "is_target_condition": true,
+      "model": "clipseg",
+      "num_images": 614
+    },
+    {
+      "comparisons": {
+        "dice_m128_vs_exact": {
+          "candidate_score": "confidence_dice_m128_aux",
+          "label": "Dice: M128 vs Exact",
+          "matched_risk": "risk_dice",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.00015116647829174767,
+            "candidate": 0.08413871691586358,
+            "reference": 0.08428988339415533,
+            "signed_candidate_minus_reference": -0.00015116647829174767,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "dice_m128_vs_exact",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.003854513168334961,
+            "mean": 0.0004980476649409663,
+            "median": 0.00045628976362652174,
+            "p95": 0.00106229000587167
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9974919098150283
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9999743903151845
+            }
+          },
+          "reference_interpretation": "exact level-set Dice is the numerical reference",
+          "reference_score": "confidence_dice_exact"
+        },
+        "nhd95_m32_vs_m128": {
+          "candidate_score": "confidence_nhd95_m32",
+          "label": "nHD95: M32 vs M128",
+          "matched_risk": "risk_nhd95",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0001184795006285537,
+            "candidate": 0.03095340820638253,
+            "reference": 0.030834928705753977,
+            "signed_candidate_minus_reference": 0.0001184795006285537,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd95_m32_vs_m128",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.019463341353570626,
+            "mean": 0.0033867189976767615,
+            "median": 0.001500373814031097,
+            "p95": 0.01320250537099449
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9247912343968628
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9883094505948667
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd95_m128_aux"
+        },
+        "nhd_m32_vs_m128": {
+          "candidate_score": "confidence_nhd_m32",
+          "label": "nHD: M32 vs M128",
+          "matched_risk": "risk_nhd",
+          "matched_risk_aurc": {
+            "absolute_gap": 0.0004355441595069315,
+            "candidate": 0.038177559157241116,
+            "reference": 0.037742014997734184,
+            "signed_candidate_minus_reference": 0.0004355441595069315,
+            "tie_policy": "analytic expectation over random within-score-tie order"
+          },
+          "name": "nhd_m32_vs_m128",
+          "num_images": 614,
+          "per_image_absolute_score_error": {
+            "max": 0.02011108802960472,
+            "mean": 0.0037190380792561113,
+            "median": 0.0019857945113321562,
+            "p95": 0.012859704854650397
+          },
+          "rank_agreement": {
+            "kendall_tau_b": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9336865234541863
+            },
+            "spearman_rho": {
+              "defined": true,
+              "undefined_reason": null,
+              "value": 0.9916931951345181
+            }
+          },
+          "reference_interpretation": "M128 is a high-resolution numerical reference, not exact",
+          "reference_score": "confidence_nhd_m128_aux"
+        }
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "tn3k",
+      "is_target_condition": true,
+      "model": "deeplabv3",
+      "num_images": 614
+    }
+  ],
+  "provenance": {
+    "analysis_source_sha256": "217837a0df3374b0d94610e915e4a6a9126fee5596a012bb5da131bcd5a9d684",
+    "canonical": {
+      "analysis_source_sha256": "82f511bfe1cf39dd55039d2f0f2a781c007a8c1ebf97adbed46b63f564dde2d7",
+      "binding": "campaign-lock",
+      "campaign_id": "binary-midpoint-main-v1",
+      "campaign_lock": {
+        "logical_name": "campaign.lock.json",
+        "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323"
+      },
+      "config_sha256": "36229c9e8fd245ec6391d528e9129e09a93d9074d9fa70544eea9d78a524c76a",
+      "inputs": [
+        {
+          "artifact_id": "cb5c08e73819574c",
+          "assembly_run_id": "74db5fc8c0672236",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-general/74db5fc8c0672236",
+          "manifest_sha256": "8d4ab2401962a6b0091e81f056d0beb179a580b4b9914953b496f126b9fdf459",
+          "num_samples": 200,
+          "records_sha256": "1ed5642002afcfed3a6a664e1a729301c7c63d7c9d9f8ee8920b229737945113",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "ef8e1b5176b92b87",
+          "assembly_run_id": "627922c22aa3aa21",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-target/627922c22aa3aa21",
+          "manifest_sha256": "6c480ccf6c4bda06c1dabc0077068dfa74734f223c5265978b7d9bb3c1cd2582",
+          "num_samples": 200,
+          "records_sha256": "53b64a4db8d6c65f2011c306da7a2866ac9ccafae50db569ddffb89694bf55da",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "e7e1e90e13ce3dfa",
+          "assembly_run_id": "a62d754378787146",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "fives",
+          "logical_id": "fives/deeplabv3-target/a62d754378787146",
+          "manifest_sha256": "3ba69d0db78bd9a26f4a7ae691ec7b9b531cdd84f5286793f0f059cd6265f04c",
+          "num_samples": 200,
+          "records_sha256": "682d628f273ccb99b77e629d9d6221e235dcc1817676c8373a44d6007386a53d",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "3e57aa259264c1be",
+          "assembly_run_id": "500bf2dd2f3564b2",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-general/500bf2dd2f3564b2",
+          "manifest_sha256": "8d35cfaf2ad7c764d93de245b1d8b9a0a8c6a454cc116c1626ac23018627c8fb",
+          "num_samples": 1000,
+          "records_sha256": "a879ad5b3002da79cc8e51426644de0f75aecad5f3f978bd0a06447e515fe0bd",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "a5d30aa0ec8b0742",
+          "assembly_run_id": "69fc681ff737f148",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-target/69fc681ff737f148",
+          "manifest_sha256": "ce9650af9919d408beba56f073cf77499a44cd411e153beb63971645d57535a6",
+          "num_samples": 1000,
+          "records_sha256": "719ba2ce4c86a26d7bf794068176fa0e3060f9c0c0b6928b94129fdb1671a273",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "48cf75646c61ecf4",
+          "assembly_run_id": "a42288ea78a340b1",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "isic",
+          "logical_id": "isic/deeplabv3-target/a42288ea78a340b1",
+          "manifest_sha256": "3404ed6cbcce55b8b519aaa2fd13a51b558d1dd3cc54e3e4600ae4b298610e02",
+          "num_samples": 1000,
+          "records_sha256": "c8717241ed1d2cf370fcd19dd8168680174cebb18b529ad3ca76bce9315845f3",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "eb7304bdd945035d",
+          "assembly_run_id": "8f5786edfc8d5993",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-general/8f5786edfc8d5993",
+          "manifest_sha256": "91c6ad4fdb6c7052918ff789509d9a555a14b2dbd8f79e97548d19f3b7659901",
+          "num_samples": 200,
+          "records_sha256": "3769b2cf04397136cb994c612b5bf5dcab5d2aa56b0f3bcef16df6f3b60dafca",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "7ce9cddd0f9704fd",
+          "assembly_run_id": "1a1c02b968ab86a4",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-target/1a1c02b968ab86a4",
+          "manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+          "num_samples": 200,
+          "records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "be7dedef6990d54c",
+          "assembly_run_id": "5cca940975b7f02d",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/deeplabv3-target/5cca940975b7f02d",
+          "manifest_sha256": "abb21d5d0c4d9d66c5480d71a71f1e1e33636f50b3e850557a92aa6f6fc212f6",
+          "num_samples": 200,
+          "records_sha256": "c210e787e37f241a9e0d0f306b51dcf3b24d2d15ea634c3e8ee581647eafaab4",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "e0d454ce916c5ca9",
+          "assembly_run_id": "88d2033138fc971a",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-general/88d2033138fc971a",
+          "manifest_sha256": "0850f7003911e783f54eaa48dad02666f9f55f5cbfaa753dc55c9ddfcf461b19",
+          "num_samples": 3669,
+          "records_sha256": "c94aaf290566fc85ec2eb6b56c3b1f13040579892e61c7334666ab68c3523f7f",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "7261edbb5f763435",
+          "assembly_run_id": "cd4341aaed2bda20",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-target/cd4341aaed2bda20",
+          "manifest_sha256": "d510aabf2d35321c77184b4bed66ed15c6f4602e38caff61632116a40b29b4e4",
+          "num_samples": 3669,
+          "records_sha256": "e07c768031e2843355512e9b9f15afef1d4e400852975f5631e17b38bf01ba44",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "640ef98bcd028dc3",
+          "assembly_run_id": "014bfe3ad787f51e",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-external",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-external/014bfe3ad787f51e",
+          "manifest_sha256": "97fa1c473d22203243a86a427379467862bc6ccc03c4e8b9a802dc5a5c2b5566",
+          "num_samples": 3669,
+          "records_sha256": "643faf11a0e6ae033943c44a0bd582bd3d9706a5794371c6ba07ad1bba9ad1ec",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "ced4dc6e67bc178f",
+          "assembly_run_id": "fd2f61c609c18fba",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-target/fd2f61c609c18fba",
+          "manifest_sha256": "33135196a6b2609ff4c80ef5b524e17b512b4b899b87b451f8298abdafceb235",
+          "num_samples": 3669,
+          "records_sha256": "cbaf7656084e3350ff3d47453ab1f2997e0bae17dd561a6b8427f9e4d269a1fc",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "9626e945ef94b1e5",
+          "assembly_run_id": "4faed2465c790f8c",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-general/4faed2465c790f8c",
+          "manifest_sha256": "3fe5b5d44e8687a886b61814b4648d32599f0c66a958d43463a6c611034c14e2",
+          "num_samples": 614,
+          "records_sha256": "6c02ca495f4d52279c26db05b11539cb9e749a63b5d7c71fcdd850a21de2c792",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "603dc94883b5f395",
+          "assembly_run_id": "eccb8f4f045a5473",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-target/eccb8f4f045a5473",
+          "manifest_sha256": "48b7ff7699fba82b2b348ea00fe4b8c32d6d23e272d90f2d04735a110bf81269",
+          "num_samples": 614,
+          "records_sha256": "66eba5b5a80ca8d6daf0866b81ddc96916ed918bbf97bfe67fd5df71f24ac453",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "efce266864cd5269",
+          "assembly_run_id": "01b4c3a58986cf27",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/deeplabv3-target/01b4c3a58986cf27",
+          "manifest_sha256": "8e6dc4173fb838f5f28779af3f2a1ff5df3cce4f08e8aa43a7c086b5ccf2cee8",
+          "num_samples": 614,
+          "records_sha256": "29762b78cdd4713ab460c88beab6b00e4e9315fbac88c6ce6b7f858653ae7dfb",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        }
+      ]
+    },
+    "m128_auxiliary": {
+      "binding": "campaign-lock",
+      "campaign_id": "binary-midpoint-main-v1",
+      "campaign_lock": {
+        "logical_name": "campaign.lock.json",
+        "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323"
+      },
+      "config_sha256": "36229c9e8fd245ec6391d528e9129e09a93d9074d9fa70544eea9d78a524c76a",
+      "inputs": [
+        {
+          "artifact_id": "e0d454ce916c5ca9",
+          "condition": "clipseg-general",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-general/cd332be7623830f5",
+          "manifest_path": "outputs/binary_m128_auxiliary/pet/clipseg-general/cd332be7623830f5/manifest.json",
+          "manifest_sha256": "d70bf16da50db8693c283f7e49bc22d30a5696658177838952993880364ee1a1",
+          "num_images": 3669,
+          "records_path": "outputs/binary_m128_auxiliary/pet/clipseg-general/cd332be7623830f5/records.jsonl",
+          "records_sha256": "7da1efaaf55750062652e6cbe2ec3067e0c5cda5d1ebb50c69b8933bcf52fda5",
+          "run_id": "cd332be7623830f5",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "7261edbb5f763435",
+          "condition": "clipseg-target",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-target/d42a48e2a7c02c0b",
+          "manifest_path": "outputs/binary_m128_auxiliary/pet/clipseg-target/d42a48e2a7c02c0b/manifest.json",
+          "manifest_sha256": "3517fee8c33f64fe8095d8efd82e89648934d9a5c64f4a3fa36b8b3f37016d07",
+          "num_images": 3669,
+          "records_path": "outputs/binary_m128_auxiliary/pet/clipseg-target/d42a48e2a7c02c0b/records.jsonl",
+          "records_sha256": "f2a60fd8e4344e4a6577dbb148007575530f9f61ea0fcc48d0a2e4dc5628b786",
+          "run_id": "d42a48e2a7c02c0b",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "ced4dc6e67bc178f",
+          "condition": "deeplabv3-target",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-target/4b87af595062fc11",
+          "manifest_path": "outputs/binary_m128_auxiliary/pet/deeplabv3-target/4b87af595062fc11/manifest.json",
+          "manifest_sha256": "962656c42e48a57ab9b399576447147220802095bc7dc777ffe388bfe7d29851",
+          "num_images": 3669,
+          "records_path": "outputs/binary_m128_auxiliary/pet/deeplabv3-target/4b87af595062fc11/records.jsonl",
+          "records_sha256": "b86d9d61c6c289f2552b1cf1d9166595de8e41f5de7763314b5c1e923bd5ea43",
+          "run_id": "4b87af595062fc11",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "640ef98bcd028dc3",
+          "condition": "deeplabv3-external",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-external/e8af98b12009a478",
+          "manifest_path": "outputs/binary_m128_auxiliary/pet/deeplabv3-external/e8af98b12009a478/manifest.json",
+          "manifest_sha256": "19c07e1f7a87662b18a5bf9b7638bc1a5e6e48896fa15128bd7d8c129ce337c6",
+          "num_images": 3669,
+          "records_path": "outputs/binary_m128_auxiliary/pet/deeplabv3-external/e8af98b12009a478/records.jsonl",
+          "records_sha256": "8172703daee554107695a9afa063fbff5c705752398af2c14af236d60770ca08",
+          "run_id": "e8af98b12009a478",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "eb7304bdd945035d",
+          "condition": "clipseg-general",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-general/1c141b40643c7a8c",
+          "manifest_path": "outputs/binary_m128_auxiliary/kvasir/clipseg-general/1c141b40643c7a8c/manifest.json",
+          "manifest_sha256": "03c5baf0447a9df618960a31ffa86540503bcfba62fc14720e50f8c61fccbc51",
+          "num_images": 200,
+          "records_path": "outputs/binary_m128_auxiliary/kvasir/clipseg-general/1c141b40643c7a8c/records.jsonl",
+          "records_sha256": "90d7276817e4083256bd274b40e87e14f32d51c926adc0fba6484fb127bad6d1",
+          "run_id": "1c141b40643c7a8c",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "7ce9cddd0f9704fd",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-target/d3a3773a2e4002a8",
+          "manifest_path": "outputs/binary_m128_auxiliary/kvasir/clipseg-target/d3a3773a2e4002a8/manifest.json",
+          "manifest_sha256": "47a10d991aaef21b99385ee1e68f917a182619c8e533217d3e0bbd450cbf2265",
+          "num_images": 200,
+          "records_path": "outputs/binary_m128_auxiliary/kvasir/clipseg-target/d3a3773a2e4002a8/records.jsonl",
+          "records_sha256": "6e56c4daec2bce9fdad09afcf15c66eff8724a7b4a840331d8d173c6814b1aa4",
+          "run_id": "d3a3773a2e4002a8",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "be7dedef6990d54c",
+          "condition": "deeplabv3-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/deeplabv3-target/35299ba40aee365d",
+          "manifest_path": "outputs/binary_m128_auxiliary/kvasir/deeplabv3-target/35299ba40aee365d/manifest.json",
+          "manifest_sha256": "e064169d1edce7516e8727da75ad4287bb348cc78d491832809a46baa401eec7",
+          "num_images": 200,
+          "records_path": "outputs/binary_m128_auxiliary/kvasir/deeplabv3-target/35299ba40aee365d/records.jsonl",
+          "records_sha256": "8fbad50c7900f6d1bac5d5b030245fd82f9a46eda574f02fba96d44c928f22e5",
+          "run_id": "35299ba40aee365d",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "cb5c08e73819574c",
+          "condition": "clipseg-general",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-general/e0640b4b2a438de7",
+          "manifest_path": "outputs/binary_m128_auxiliary/fives/clipseg-general/e0640b4b2a438de7/manifest.json",
+          "manifest_sha256": "0f66bbbe11f59c6f6a53c0d6ed5b0a87378b04d92df9510e7f9ec8f54e1f994d",
+          "num_images": 200,
+          "records_path": "outputs/binary_m128_auxiliary/fives/clipseg-general/e0640b4b2a438de7/records.jsonl",
+          "records_sha256": "ffad92ee3d02797ac4f188fddc8ef3b00604b7f341854f46c21906026541097f",
+          "run_id": "e0640b4b2a438de7",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "ef8e1b5176b92b87",
+          "condition": "clipseg-target",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-target/7264814843f14877",
+          "manifest_path": "outputs/binary_m128_auxiliary/fives/clipseg-target/7264814843f14877/manifest.json",
+          "manifest_sha256": "9c8a5378e9fade96d9ad4abef286618d41dddd8940ed2024f57a7c30bdafefa8",
+          "num_images": 200,
+          "records_path": "outputs/binary_m128_auxiliary/fives/clipseg-target/7264814843f14877/records.jsonl",
+          "records_sha256": "3813a5502aacc8a136598be7a4cee83b4d0ec65a99173eab01009d7524c107ed",
+          "run_id": "7264814843f14877",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "e7e1e90e13ce3dfa",
+          "condition": "deeplabv3-target",
+          "dataset": "fives",
+          "logical_id": "fives/deeplabv3-target/7f0aff2bc9c04171",
+          "manifest_path": "outputs/binary_m128_auxiliary/fives/deeplabv3-target/7f0aff2bc9c04171/manifest.json",
+          "manifest_sha256": "eeffbe414b8b814e8e2b76f100a9f067fbee1307a0ab71979010b11fc5f906e1",
+          "num_images": 200,
+          "records_path": "outputs/binary_m128_auxiliary/fives/deeplabv3-target/7f0aff2bc9c04171/records.jsonl",
+          "records_sha256": "3c1be6b81a9c425b7d069695bb818ab712cc64887ae35e85310eb4aa8015fa82",
+          "run_id": "7f0aff2bc9c04171",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "3e57aa259264c1be",
+          "condition": "clipseg-general",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-general/63a6d49fbd5f416c",
+          "manifest_path": "outputs/binary_m128_auxiliary/isic/clipseg-general/63a6d49fbd5f416c/manifest.json",
+          "manifest_sha256": "636dfb24226b41af25d0d9ab1de6974470d87f8bfa889be018d3c78bca9d0ec5",
+          "num_images": 1000,
+          "records_path": "outputs/binary_m128_auxiliary/isic/clipseg-general/63a6d49fbd5f416c/records.jsonl",
+          "records_sha256": "66a6a14e29b543be00f72e97c304f6e6d8a53457f2c386bcb8b4e3278721bb9d",
+          "run_id": "63a6d49fbd5f416c",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "a5d30aa0ec8b0742",
+          "condition": "clipseg-target",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-target/bb0cf8361667c6bd",
+          "manifest_path": "outputs/binary_m128_auxiliary/isic/clipseg-target/bb0cf8361667c6bd/manifest.json",
+          "manifest_sha256": "2d63b6504d45353c160dedfbabf005ebc554d6e1cba5ff38f737bd91241a893c",
+          "num_images": 1000,
+          "records_path": "outputs/binary_m128_auxiliary/isic/clipseg-target/bb0cf8361667c6bd/records.jsonl",
+          "records_sha256": "f0a409173b01f865cabcbe8dbdb30d1a30b0d353d8a50741f60bd981b154719a",
+          "run_id": "bb0cf8361667c6bd",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "48cf75646c61ecf4",
+          "condition": "deeplabv3-target",
+          "dataset": "isic",
+          "logical_id": "isic/deeplabv3-target/ea5b3222f7dd4075",
+          "manifest_path": "outputs/binary_m128_auxiliary/isic/deeplabv3-target/ea5b3222f7dd4075/manifest.json",
+          "manifest_sha256": "64c06cde63c564bdf484bbe377a9b837129d349f21670935291d7473ceaab367",
+          "num_images": 1000,
+          "records_path": "outputs/binary_m128_auxiliary/isic/deeplabv3-target/ea5b3222f7dd4075/records.jsonl",
+          "records_sha256": "769e9364b480dca6992944c2c0e53323a1f799747c6af4cf58a4bd229e9e5a2e",
+          "run_id": "ea5b3222f7dd4075",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "9626e945ef94b1e5",
+          "condition": "clipseg-general",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-general/b5f7444c82d36a94",
+          "manifest_path": "outputs/binary_m128_auxiliary/tn3k/clipseg-general/b5f7444c82d36a94/manifest.json",
+          "manifest_sha256": "3d0004db218b1fc0096b324408b32ecbaee0f3c750cb2fa226fb9405c206c323",
+          "num_images": 614,
+          "records_path": "outputs/binary_m128_auxiliary/tn3k/clipseg-general/b5f7444c82d36a94/records.jsonl",
+          "records_sha256": "bf7bff047f7e3dd87183cde79ef082ec72b4a098a68998e7d08b31a054ff0dd8",
+          "run_id": "b5f7444c82d36a94",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "603dc94883b5f395",
+          "condition": "clipseg-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-target/7dcb54277e31d0c3",
+          "manifest_path": "outputs/binary_m128_auxiliary/tn3k/clipseg-target/7dcb54277e31d0c3/manifest.json",
+          "manifest_sha256": "7bae52fb44c62482eb49bfc8c2d8ef904424da73423818fc71f147f103b9ba4c",
+          "num_images": 614,
+          "records_path": "outputs/binary_m128_auxiliary/tn3k/clipseg-target/7dcb54277e31d0c3/records.jsonl",
+          "records_sha256": "2f1aa9d36f914521607dd621c1b4b157765cafc29040f81b518df9890d5769e9",
+          "run_id": "7dcb54277e31d0c3",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "efce266864cd5269",
+          "condition": "deeplabv3-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/deeplabv3-target/50613163c7ec63fb",
+          "manifest_path": "outputs/binary_m128_auxiliary/tn3k/deeplabv3-target/50613163c7ec63fb/manifest.json",
+          "manifest_sha256": "c5f8cbf659fe1ce95d834d5d6486db17aa8918a7528d72031197fe75cf1ad1f1",
+          "num_images": 614,
+          "records_path": "outputs/binary_m128_auxiliary/tn3k/deeplabv3-target/50613163c7ec63fb/records.jsonl",
+          "records_sha256": "2337a252c3a74a6ef7bad239d23ade6823ead87128420bd84efdfef7dda05e94",
+          "run_id": "50613163c7ec63fb",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        }
+      ]
+    }
+  },
+  "schema_version": 1,
+  "scope": {
+    "m128_status": "M128 is a high-resolution uniform-midpoint numerical reference; it is not an exact integral",
+    "purpose": "numerical fidelity of M32 boundary quadrature against M128 and of Dice-M128 against the exact level-set Dice calculation",
+    "statistical_status": "descriptive numerical diagnostics on fixed held-out images; no hypothesis tests or condition-independence claims"
+  },
+  "specification": {
+    "aurc_gap": "absolute difference in tie-aware matched-risk AURC; within-score ties are averaged analytically",
+    "comparisons": [
+      {
+        "candidate_score": "confidence_dice_m128_aux",
+        "interpretation": "exact level-set Dice is the numerical reference",
+        "label": "Dice: M128 vs Exact",
+        "matched_risk": "risk_dice",
+        "name": "dice_m128_vs_exact",
+        "reference_score": "confidence_dice_exact"
+      },
+      {
+        "candidate_score": "confidence_nhd_m32",
+        "interpretation": "M128 is a high-resolution numerical reference, not exact",
+        "label": "nHD: M32 vs M128",
+        "matched_risk": "risk_nhd",
+        "name": "nhd_m32_vs_m128",
+        "reference_score": "confidence_nhd_m128_aux"
+      },
+      {
+        "candidate_score": "confidence_nhd95_m32",
+        "interpretation": "M128 is a high-resolution numerical reference, not exact",
+        "label": "nHD95: M32 vs M128",
+        "matched_risk": "risk_nhd95",
+        "name": "nhd95_m32_vs_m128",
+        "reference_score": "confidence_nhd95_m128_aux"
+      }
+    ],
+    "rank_agreement": "Spearman average-rank correlation and Kendall tau-b",
+    "score_error": "per-image absolute confidence difference"
+  },
+  "target_aggregate_ranges": {
+    "dice_m128_vs_exact": {
+      "label": "Dice: M128 vs Exact",
+      "matched_risk_aurc_absolute_gap": {
+        "max": 0.00015116647829174767,
+        "min": 3.1281280556128e-07
+      },
+      "num_target_conditions": 10,
+      "per_image_absolute_score_error": {
+        "max": {
+          "max": 0.003883540630340576,
+          "min": 0.0006784223356680738
+        },
+        "mean": {
+          "max": 0.0009962811683731623,
+          "min": 8.941871884553608e-05
+        },
+        "median": {
+          "max": 0.0009648832858505027,
+          "min": 3.103825821126893e-05
+        },
+        "p95": {
+          "max": 0.00196907270660149,
+          "min": 0.00015001846972975683
+        }
+      },
+      "rank_agreement": {
+        "kendall_tau_b": {
+          "max": 0.9998492323411582,
+          "min": 0.99166169560582
+        },
+        "spearman_rho": {
+          "max": 0.9999977499406546,
+          "min": 0.9998769969249232
+        }
+      }
+    },
+    "nhd95_m32_vs_m128": {
+      "label": "nHD95: M32 vs M128",
+      "matched_risk_aurc_absolute_gap": {
+        "max": 0.003242816039735419,
+        "min": 1.4303422682323402e-05
+      },
+      "num_target_conditions": 10,
+      "per_image_absolute_score_error": {
+        "max": {
+          "max": 0.019463341353570626,
+          "min": 0.010121188739449977
+        },
+        "mean": {
+          "max": 0.005392365238755621,
+          "min": 0.0007656342693754173
+        },
+        "median": {
+          "max": 0.005192169139498798,
+          "min": 0.00038081053523117414
+        },
+        "p95": {
+          "max": 0.014541423001892937,
+          "min": 0.0019970041850447735
+        }
+      },
+      "rank_agreement": {
+        "kendall_tau_b": {
+          "max": 0.9727327327327329,
+          "min": 0.8184833408714005
+        },
+        "spearman_rho": {
+          "max": 0.9963464403464405,
+          "min": 0.9505422264623314
+        }
+      }
+    },
+    "nhd_m32_vs_m128": {
+      "label": "nHD: M32 vs M128",
+      "matched_risk_aurc_absolute_gap": {
+        "max": 0.004555972017174892,
+        "min": 1.86563117216057e-05
+      },
+      "num_target_conditions": 10,
+      "per_image_absolute_score_error": {
+        "max": {
+          "max": 0.020700163673052607,
+          "min": 0.012915592690642796
+        },
+        "mean": {
+          "max": 0.005098774965811085,
+          "min": 0.0009224483928955816
+        },
+        "median": {
+          "max": 0.0046691245759038075,
+          "min": 0.0005449183527551516
+        },
+        "p95": {
+          "max": 0.014253090306825415,
+          "min": 0.002491772596944695
+        }
+      },
+      "rank_agreement": {
+        "kendall_tau_b": {
+          "max": 0.9763603603603603,
+          "min": 0.8780843258455198
+        },
+        "spearman_rho": {
+          "max": 0.99791782991783,
+          "min": 0.9731808094058423
+        }
+      }
+    }
+  }
+}

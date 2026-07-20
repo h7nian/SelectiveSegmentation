@@ -1,0 +1,36 @@
+{
+  "spec_schema_version": 1,
+  "benchmark_id": "binary-confidence-runtime-v1",
+  "protocol": {
+    "gamma": 0.5,
+    "m": 32,
+    "seed": 0,
+    "methods": [
+      "m32_joint",
+      "dice_exact"
+    ],
+    "sample_selection": {
+      "strategy": "deterministic_pixel_count_quantiles",
+      "max_samples": 16,
+      "include_size_endpoints": true,
+      "execution_order": "manifest_index"
+    },
+    "warmup_repetitions": 1,
+    "measured_repetitions": 4,
+    "measured_order": "alternating",
+    "timer": "time.perf_counter_ns"
+  },
+  "execution": {
+    "benchmark_workers": 8,
+    "native_threads_per_worker": 1,
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1",
+      "BLIS_NUM_THREADS": "1"
+    }
+  },
+  "output_root": "outputs/binary_runtime"
+}

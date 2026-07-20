@@ -1,0 +1,22 @@
+{
+  "lock_schema_version": 1,
+  "campaign_id": "binary-synthetic-coupling-v1",
+  "spec": {
+    "path": "configs/auxiliary/synthetic_posterior-v1.json",
+    "sha256": "17881d69de39857d0aea1a204cf09e68c743a257c7817702d99514b8e89bcf6c"
+  },
+  "code_sources": [
+    {
+      "path": "selectseg/synthetic_posterior.py",
+      "sha256": "c04696c8767c1c5ab8a62aa967baedd43bf7f1fc7317616767e3eb501561fa1f"
+    },
+    {
+      "path": "selectseg/binary_boundary.py",
+      "sha256": "d78266f5e5cdf46d16af5add8ebc8b2e5d4e676d5fcaba8615d502950dcc9785"
+    },
+    {
+      "path": "selectseg/binary_framework.py",
+      "sha256": "c8891a2756c3c17652886580448e19b0c4c79c0db1ed454d177197237feec48a"
+    }
+  ]
+}

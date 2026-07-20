@@ -57,6 +57,8 @@ TN3K_URL = (
     "id=1reHyY5eTZ5uePXMVMzFOq5j3eFOSp50F&export=download&confirm=t"
 )
 TN3K_SHA256 = "0ba1770076dab01b1f8fd661a227d80982168bc433de61c80fd266427b20cf60"
+CLIPSEG_MODEL_ID = "CIDAS/clipseg-rd64-refined"
+CLIPSEG_REVISION = "999e0328d9e10b484360c477313983f9afdd7050"
 
 
 def _sha256(path):
@@ -122,7 +124,9 @@ def download_fives():
     subprocess.run([unrar, "x", "-o+", str(archive), str(DATA_ROOT)], check=True)
     extracted = DATA_ROOT / FIVES_RELEASE_DIR
     if not extracted.is_dir():
-        raise RuntimeError(f"FIVES archive did not create expected directory {extracted}")
+        raise RuntimeError(
+            f"FIVES archive did not create expected directory {extracted}"
+        )
     extracted.replace(target)
 
 
@@ -164,12 +168,15 @@ def download_models():
     )
     from transformers import CLIPSegForImageSegmentation, CLIPSegProcessor
 
-    checkpoint = "CIDAS/clipseg-rd64-refined"
-    CLIPSegForImageSegmentation.from_pretrained(checkpoint)
-    CLIPSegProcessor.from_pretrained(checkpoint)
-    deeplabv3_resnet50(
-        weights=DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1
+    # Match the immutable base-model identity recorded by the public
+    # provenance and seed-extension lock.  Resolving the model name at the
+    # mutable upstream default revision would make a future clean download
+    # fail the locked file-hash checks even though the command was unchanged.
+    CLIPSegForImageSegmentation.from_pretrained(
+        CLIPSEG_MODEL_ID, revision=CLIPSEG_REVISION
     )
+    CLIPSegProcessor.from_pretrained(CLIPSEG_MODEL_ID, revision=CLIPSEG_REVISION)
+    deeplabv3_resnet50(weights=DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1)
 
 
 def parse_args():

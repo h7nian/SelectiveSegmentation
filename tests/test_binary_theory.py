@@ -87,6 +87,50 @@ def _dice_loss_bits(label, action):
     return 1 - 2 * (label & action).bit_count() / denominator
 
 
+def _levelset_mask_distribution(probabilities):
+    probabilities = np.asarray(probabilities, dtype=float)
+    distribution = np.zeros(1 << probabilities.size, dtype=float)
+    boundaries = np.unique(np.r_[0.0, probabilities, 1.0])
+    for lower, upper in zip(boundaries[:-1], boundaries[1:]):
+        if upper == lower:
+            continue
+        threshold = (lower + upper) / 2
+        mask = sum(
+            1 << index
+            for index, probability in enumerate(probabilities)
+            if probability >= threshold
+        )
+        distribution[mask] += upper - lower
+    assert distribution.sum() == pytest.approx(1.0)
+    return distribution
+
+
+def _dice_fixed_action_moments(distribution, action, pixel_count):
+    action_size = action.bit_count()
+    beta = np.zeros(pixel_count + 1, dtype=float)
+    marginals = np.zeros(pixel_count, dtype=float)
+    reciprocal_numerators = np.zeros(pixel_count, dtype=float)
+    expected_dice = 0.0
+    for label, mass in enumerate(distribution):
+        label_size = label.bit_count()
+        expected_dice += mass * (1 - _dice_loss_bits(label, action))
+        beta[label_size] += mass * (label & action).bit_count()
+        if action_size > 0:
+            for index in range(pixel_count):
+                if label & (1 << index):
+                    marginals[index] += mass
+                    reciprocal_numerators[index] += mass / (
+                        label_size + action_size
+                    )
+    kappa = np.divide(
+        reciprocal_numerators,
+        marginals,
+        out=np.zeros_like(marginals),
+        where=marginals > 0,
+    )
+    return expected_dice, beta, marginals, kappa
+
+
 def _finite_wasserstein(probability, approximation, costs):
     size = len(probability)
     equality = np.zeros((2 * size, size * size), dtype=float)
@@ -360,6 +404,88 @@ def test_jaccard_wasserstein_can_be_small_when_total_variation_is_one():
 
     assert wasserstein == pytest.approx(1 / (background_size + 1))
     assert wasserstein < total_variation / 100
+
+
+@pytest.mark.parametrize("seed", range(4))
+def test_fixed_action_dice_moment_identities_and_bounds(seed):
+    rng = np.random.default_rng(seed)
+    pixel_count = 3
+    masks = 1 << pixel_count
+    true_distribution = rng.dirichlet(np.ones(masks))
+    probabilities = rng.uniform(0.05, 0.95, size=pixel_count)
+    levelset_distribution = _levelset_mask_distribution(probabilities)
+
+    for action in range(1, masks):
+        action_size = action.bit_count()
+        true_dice, true_beta, true_marginals, true_kappa = (
+            _dice_fixed_action_moments(
+                true_distribution, action, pixel_count
+            )
+        )
+        levelset_dice, levelset_beta, levelset_marginals, levelset_kappa = (
+            _dice_fixed_action_moments(
+                levelset_distribution, action, pixel_count
+            )
+        )
+        assert levelset_marginals == pytest.approx(probabilities)
+
+        true_beta_identity = 2 * sum(
+            true_beta[size] / (size + action_size)
+            for size in range(1, pixel_count + 1)
+        )
+        true_kappa_identity = 2 * sum(
+            true_marginals[index] * true_kappa[index]
+            for index in range(pixel_count)
+            if action & (1 << index)
+        )
+        assert true_dice == pytest.approx(true_beta_identity)
+        assert true_dice == pytest.approx(true_kappa_identity)
+
+        discrepancy = abs(true_dice - levelset_dice)
+        beta_bound = 2 * sum(
+            abs(true_beta[size] - levelset_beta[size])
+            / (size + action_size)
+            for size in range(1, pixel_count + 1)
+        )
+        reciprocal_bound = (
+            2
+            / (action_size + 1)
+            * sum(
+                abs(true_marginals[index] - probabilities[index])
+                for index in range(pixel_count)
+                if action & (1 << index)
+            )
+            + 2
+            * sum(
+                probabilities[index]
+                * abs(true_kappa[index] - levelset_kappa[index])
+                for index in range(pixel_count)
+                if action & (1 << index)
+            )
+        )
+        assert discrepancy <= beta_bound + 1e-12
+        assert discrepancy <= reciprocal_bound + 1e-12
+
+
+def test_fixed_action_dice_empty_branch_and_independence_nonordering():
+    probabilities = np.array([0.5, 0.5])
+    levelset = _levelset_mask_distribution(probabilities)
+    independent = np.full(4, 0.25)
+
+    empty_discrepancy = abs(independent[0] - levelset[0])
+    assert levelset[0] == pytest.approx(1 - probabilities.max())
+    assert empty_discrepancy == pytest.approx(0.25)
+
+    action = 1
+    _, _, _, independent_kappa = _dice_fixed_action_moments(
+        independent, action, pixel_count=2
+    )
+    _, _, _, levelset_kappa = _dice_fixed_action_moments(
+        levelset, action, pixel_count=2
+    )
+    assert independent_kappa[0] == pytest.approx(5 / 12)
+    assert levelset_kappa[0] == pytest.approx(1 / 3)
+    assert independent_kappa[0] != pytest.approx(levelset_kappa[0])
 
 
 @pytest.mark.parametrize("seed", range(5))

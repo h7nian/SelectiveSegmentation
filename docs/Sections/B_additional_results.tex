@@ -1,9 +1,10 @@
 \section{Additional experimental results and reproducibility}
 \label{app:additional-results}
 
-The final tables are generated from one validated analysis object; no row is
-selected by its observed AURC, interval, or tail probability. This source
-intentionally contains no transcribed result values.
+The six core outcome tables are generated from one validated analysis object;
+each auxiliary table is generated from its own strictly validated analysis
+artifact. No row is selected by its observed AURC, interval, or tail
+probability. This source intentionally contains no transcribed result values.
 
 \subsection{Immutable campaign and execution graph}
 
@@ -47,9 +48,27 @@ training-configuration hashes without exporting private execution paths.
 
   \input{Tables/quadrature_ablation.tex}
 
-  \subsection{Paired uncertainty and multiplicity adjustment}
+  \IfFileExists{Tables/m128_numerical_reference.tex}{%
+    \input{Tables/m128_numerical_reference.tex}
+  }{%
+    \paragraph{M128 rendering guard.}
+    The high-resolution boundary audit appears only after all sixteen M128
+    artifacts pass the campaign-bound validator.
+  }
+
+  \subsection{Pointwise paired uncertainty}
 
   \input{Tables/statistical_tests.tex}
+
+  \IfFileExists{Tables/gamma_sensitivity.tex}{%
+    \subsection{Deployment-threshold sensitivity}
+
+    \input{Tables/gamma_sensitivity.tex}
+  }{%
+    \paragraph{Deployment-threshold rendering guard.}
+    The auxiliary \(\gamma\in\{.3,.7\}\) tables appear only after all 32
+    artifacts and the 16 canonical conditions pass the strict joined analyzer.
+  }
 }{%
   \paragraph{Rendering guard.}
   Complete numerical tables appear here only after the strict sixteen-condition
@@ -68,6 +87,171 @@ training-configuration hashes without exporting private execution paths.
   validator receives the immutable lock and sixteen explicit
   \texttt{diagnostics.json} files. Marginal calibration and ladder diversity
   are not treated as validation of the joint mask posterior.
+}
+
+\IfFileExists{Tables/cardinality_diagnostics.tex}{%
+  \subsection{Exact shared-threshold cardinality implications}
+
+  \input{Tables/cardinality_diagnostics.tex}
+}{%
+  \paragraph{Cardinality rendering guard.}
+  Exact cardinality-CDF, randomized-PIT, foreground-mass, and empty-mask
+  summaries appear only after all sixteen lock-bound auxiliary artifacts pass
+  strict aggregation. Favorable pooled values cannot validate \(Q_p\).
+}
+
+\IfFileExists{Tables/working_risk_diagnostics.tex}{%
+  \subsection{Action quality, ranking disagreement, and proxy--outcome agreement}
+
+  \input{Tables/working_risk_diagnostics.tex}
+}{%
+  \paragraph{Working-risk rendering guard.}
+  Action-quality, accepted-set, and grouped single-label agreement summaries appear only
+  after the strict analyzer joins all sixteen assembled conditions and the
+  renderer verifies the ten fixed target conditions. These descriptive
+  single-label diagnostics are not treated as validation of the true mask
+  posterior.
+}
+
+\IfFileExists{Figures/matched_risk_reliability_pet.pdf}{%
+  \subsection{Matched-risk reliability curves}
+
+  These plots compare predicted working risk, \(-C_{L,Q_p}(x)\), with the one
+  observed deployment loss available for each test image. Within each dataset,
+  rows are CLIP-T and DL-T, while columns are Dice-Exact against Dice loss,
+  nHD-M32 against nHD loss, and nHD95-M32 against nHD95 loss. Images are sorted
+  by predicted risk and sample identifier before being split into ten fixed
+  equal-count bins. Points are bin means and vertical bars are pointwise 95\%
+  intervals from 2,000 within-bin image-bootstrap resamples with fixed seed
+  20260720; the dashed line is identity. Held-out labels only form the plotted
+  means and intervals---they do not fit or select a score, action threshold,
+  binning rule, or image. With one reference mask per image, these descriptive
+  plots cannot establish pointwise conditional-risk calibration or validate
+  the shared-threshold posterior, and the intervals are not simultaneous bands.
+
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=.94\textwidth]{Figures/matched_risk_reliability_pet.pdf}
+    \caption{Matched-risk reliability on Oxford-IIIT Pet.}
+    \label{fig:matched-reliability-pet}
+  \end{figure*}
+}{%
+  \paragraph{Matched-risk reliability rendering guard.}
+  The five reliability figures appear only after the exact sixteen-condition
+  cohort passes campaign-lock validation and the write-once renderer verifies
+  all ten target conditions.
+}
+
+\IfFileExists{Figures/matched_risk_reliability_kvasir.pdf}{%
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=.94\textwidth]{Figures/matched_risk_reliability_kvasir.pdf}
+    \caption{Matched-risk reliability on Kvasir-SEG.}
+    \label{fig:matched-reliability-kvasir}
+  \end{figure*}
+}{}
+
+\IfFileExists{Figures/matched_risk_reliability_fives.pdf}{%
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=.94\textwidth]{Figures/matched_risk_reliability_fives.pdf}
+    \caption{Matched-risk reliability on FIVES.}
+    \label{fig:matched-reliability-fives}
+  \end{figure*}
+}{}
+
+\IfFileExists{Figures/matched_risk_reliability_isic.pdf}{%
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=.94\textwidth]{Figures/matched_risk_reliability_isic.pdf}
+    \caption{Matched-risk reliability on ISIC 2018.}
+    \label{fig:matched-reliability-isic}
+  \end{figure*}
+}{}
+
+\IfFileExists{Figures/matched_risk_reliability_tn3k.pdf}{%
+  \begin{figure*}[p]
+    \centering
+    \includegraphics[width=.94\textwidth]{Figures/matched_risk_reliability_tn3k.pdf}
+    \caption{Matched-risk reliability on TN3K.}
+    \label{fig:matched-reliability-tn3k}
+  \end{figure*}
+  \clearpage
+}{}
+
+\IfFileExists{Tables/synthetic_posterior_summary.tex}{%
+  \subsection{Known-posterior mechanism stress test}
+
+  \input{Tables/synthetic_posterior_summary.tex}
+
+  \IfFileExists{Figures/synthetic_posterior_summary.pdf}{%
+    \begin{figure*}[t]
+      \centering
+      \includegraphics[width=\textwidth]{Figures/synthetic_posterior_summary.pdf}
+      \caption{Known-posterior stress test by probability sharpness. The top
+      row reports mean absolute working-risk error; the bottom row reports mean
+      AURC regret multiplied by 100 for display. Curves average over three
+      morphologies and ten independently seeded replicates. The
+      shared-threshold law is correctly specified; the other couplings expose
+      loss-dependent misspecification.}
+      \label{fig:synthetic-posterior}
+    \end{figure*}
+  }{}
+
+  Mean analytically computed mask-law TV is zero for the shared-threshold
+  control and approximately one for all three non-nested alternatives. This
+  does not make the loss error one:
+  mask-law TV ignores whether transported masks are close in the geometry used
+  by the deployment loss. The machine-readable analysis therefore also reports
+  empirical loss-pushforward Wasserstein distance for all three losses and
+  paired mask-transport upper bounds for Dice and nHD. No mask-Wasserstein
+  corollary is asserted for nHD95, and finite-posterior Monte Carlo standard
+  errors are reported separately from misspecification.
+}{%
+  \paragraph{Known-posterior rendering guard.}
+  The mechanism table and figure appear only after all 360 locked synthetic
+  cells pass the strict complete analyzer.
+}
+
+\IfFileExists{Tables/binary_runtime.tex}{%
+  \subsection{Confidence-computation runtime}
+
+  \input{Tables/binary_runtime.tex}
+}{%
+  \paragraph{Runtime rendering guard.}
+  Hardware-dependent timing appears only after all sixteen fixed-protocol
+  runtime jobs pass the campaign-bound analyzer.
+}
+
+\IfFileExists{Tables/seed_robustness.tex}{%
+  \subsection{Training-seed sensitivity}
+
+  \input{Tables/seed_robustness.tex}
+}{%
+  \paragraph{Training-seed rendering guard.}
+  The three-seed table appears only after all twenty new checkpoints complete
+  the freeze, score, assembly, and strict cross-seed analysis pipeline.
+}
+
+\IfFileExists{Figures/qualitative_cases.tex}{%
+  \subsection{Mechanically selected failure and disagreement cases}
+
+  Selection is a post-analysis diagnostic over the two target-adapted
+  conditions per dataset. The script applies stated numerical rules before any
+  visual inspection. Within each dataset it
+  chooses the largest primary region--boundary rank gap, the largest
+  worst--robust-boundary rank gap, an empty deployed action when one exists,
+  and the largest observed-minus-working-risk Dice gap, avoiding repeated
+  sample identifiers when possible. The panels diagnose these numerical
+  criteria; they are not representative examples and were not chosen for
+  visual appeal. Frozen artifacts do not hash-bind the source RGB images, so
+  only probability, truth, action, and boundary arrays are displayed.
+
+  \input{Figures/qualitative_cases.tex}
+}{%
+  \paragraph{Qualitative rendering guard.}
+  Qualitative panels appear only after the campaign-bound selector and renderer
+  publish their content-addressed artifacts.
 }
 
 \IfFileExists{Figures/risk_coverage_complete.tex}{%

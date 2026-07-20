@@ -12,7 +12,7 @@ separate marginal calibration error from dependence-model error.
 Dice is naturally bounded, but surface distances require an explicit empty-mask
 rule. Assigning a one-sided empty comparison the image diagonal, a fixed cap, or an
 application-specific cost produces different losses and can change the ranking. Our
-normalized penalized HD95 is one predeclared choice. The published SDC baseline's
+normalized penalized HD95 is one fixed choice. The published SDC baseline's
 empty--empty Dice value also differs from ours, so its theoretical approximation
 guarantee does not automatically cover empty deployed masks under our loss.
 Dropping undefined cases would change the target population and is not equivalent.
@@ -22,7 +22,7 @@ Equation~\eqref{eq:decomp} separates numerical and posterior terms but does not 
 the latter small by assertion, and the variation constant can be loose. The
 population \(L^1\) bound yields the AURC-regret envelope in
 Corollary~\ref{app:cor:aurc-regret}, but its posterior term remains even as
-\(M\to\infty\), and the \(1/c\) dependence is weakest at very low coverage. Thus a
+\(M\to\infty\), and the resulting control is weakest at very low coverage. Thus a
 larger \(M\) need not improve empirical AURC monotonically. A pairwise margin is
 still needed to guarantee exact ordering; aggregate AURC control does not provide
 rank recovery for every close pair.
@@ -37,16 +37,17 @@ scope. Finally, AURC measures ranking; it does not imply that a confidence value
 calibrated as a probability or an absolute forecast of loss.
 
 \paragraph{Empirical generality and training variability.}
-Even the predeclared five-native-binary-dataset design and two model families
+Even the fixed five-native-binary-dataset design and two model families
 cannot establish that metric-aligned
 confidence will dominate across architectures, shifts, or annotation protocols.
 Our paired comparisons deliberately condition on each fixed probability map and
 therefore isolate confidence ranking, not segmentation-model accuracy. The paired
-image-cluster bootstrap quantifies held-out image variation for a fixed fitted
-checkpoint; its percentile intervals and tail probabilities are approximate, and
-their Holm-transformed values do not carry an exact finite-sample family-wise
-error guarantee. With one predeclared training seed they also do not include
+image bootstrap quantifies held-out image variation for a fixed fitted
+checkpoint; its percentile intervals are pointwise and do not carry a
+simultaneous family-wise-error guarantee. With one fixed training seed they also do not include
 optimization or training-sample variability. Repeated training runs and external-site validation would be
 needed for that broader claim. Moreover, model conditions reuse the same held-out
 images within each dataset; condition-specific rows are paired evaluations, not
-independent images.
+independent images. Release-level patient, video, or eye identifiers are not
+available uniformly across the five cohorts, so the intervals should not be read
+as patient-clustered evidence.

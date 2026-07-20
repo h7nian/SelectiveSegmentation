@@ -1,0 +1,3985 @@
+{
+  "analysis_id": "d8b9bb9a80d94d8ab9f5cb10132f1547242949db9283e3fe48a20683ada5e27e",
+  "analysis_schema_version": 1,
+  "campaign_id": "binary-synthetic-coupling-v1",
+  "coupling_summaries": [
+    {
+      "coupling": "bimodal_antithetic",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.02745879919907478,
+              "mean_aurc_regret": 0.00036418736363675225,
+              "mean_aurc_regret_mc_se": 0.0002880878026141507,
+              "mean_kendall_tau_b_risk_ranking": 0.9227053140096619,
+              "mean_signed_score_error": 0.02690063144923374,
+              "mean_spearman_risk_ranking": 0.9855072463768115
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.027368950286886125,
+              "mean_aurc_regret": 0.00038171133129899965,
+              "mean_aurc_regret_mc_se": 0.0002911485663148388,
+              "mean_kendall_tau_b_risk_ranking": 0.9178743961352658,
+              "mean_signed_score_error": 0.026765615614626818,
+              "mean_spearman_risk_ranking": 0.9840579710144927
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03380754747373297,
+              "mean_aurc_regret": 0.0006707313978821794,
+              "mean_aurc_regret_mc_se": 0.00028576103295761796,
+              "mean_kendall_tau_b_risk_ranking": 0.9009661835748792,
+              "mean_signed_score_error": 0.00501420514441019,
+              "mean_spearman_risk_ranking": 0.9785507246376811
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.02701273141566932,
+              "mean_aurc_regret": 0.00035774959749387364,
+              "mean_aurc_regret_mc_se": 0.0002887672175356178,
+              "mean_kendall_tau_b_risk_ranking": 0.92512077294686,
+              "mean_signed_score_error": 0.026178021022498704,
+              "mean_spearman_risk_ranking": 0.9857971014492751
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.02536482769121588,
+              "mean_aurc_regret": 0.00030091846054664434,
+              "mean_aurc_regret_mc_se": 0.0003432223493391536,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.022569149474497452,
+              "mean_spearman_risk_ranking": 0.9869565217391303
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.029041208121678572,
+          "mean_true_risk_mc_se": 0.001568846340325783
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.030830091270508148,
+              "mean_aurc_regret": 0.0011690592924732794,
+              "mean_aurc_regret_mc_se": 0.00022760287675625918,
+              "mean_kendall_tau_b_risk_ranking": 0.7053140096618358,
+              "mean_signed_score_error": 0.030479226164564416,
+              "mean_spearman_risk_ranking": 0.8507246376811594
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.012326696566741598,
+              "mean_aurc_regret": 0.0007609006698789273,
+              "mean_aurc_regret_mc_se": 0.00016154328934163818,
+              "mean_kendall_tau_b_risk_ranking": 0.8035025833760621,
+              "mean_signed_score_error": -0.012292860439943527,
+              "mean_spearman_risk_ranking": 0.9186899208962456
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.02983020779431808,
+              "mean_aurc_regret": 0.001183503388179713,
+              "mean_aurc_regret_mc_se": 0.00021837133614580027,
+              "mean_kendall_tau_b_risk_ranking": 0.6763285024154589,
+              "mean_signed_score_error": 0.029004764575312033,
+              "mean_spearman_risk_ranking": 0.8272463768115941
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.028160192314928483,
+              "mean_aurc_regret": 0.0005492892193339136,
+              "mean_aurc_regret_mc_se": 0.0001680403313304103,
+              "mean_kendall_tau_b_risk_ranking": 0.7795061540380188,
+              "mean_signed_score_error": 0.025067421637900943,
+              "mean_spearman_risk_ranking": 0.9102980112742663
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.03109812250046373,
+          "mean_true_risk_mc_se": 0.0004062228085006815
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.03172599266269328,
+              "mean_aurc_regret": 0.0010348876047487632,
+              "mean_aurc_regret_mc_se": 0.00021092034092536486,
+              "mean_kendall_tau_b_risk_ranking": 0.6932367149758454,
+              "mean_signed_score_error": 0.03144661200353729,
+              "mean_spearman_risk_ranking": 0.8524637681159418
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.010733154933429018,
+              "mean_aurc_regret": 0.0008530273544198226,
+              "mean_aurc_regret_mc_se": 0.00021886388719647722,
+              "mean_kendall_tau_b_risk_ranking": 0.7705405480710706,
+              "mean_signed_score_error": -0.010733154933429018,
+              "mean_spearman_risk_ranking": 0.8878553579274003
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.030680762048222704,
+              "mean_aurc_regret": 0.0010377263022807077,
+              "mean_aurc_regret_mc_se": 0.0002054912510625658,
+              "mean_kendall_tau_b_risk_ranking": 0.6884057971014492,
+              "mean_signed_score_error": 0.030128159193947065,
+              "mean_spearman_risk_ranking": 0.833623188405797
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.028432551516999572,
+              "mean_aurc_regret": 0.0003927814499666236,
+              "mean_aurc_regret_mc_se": 0.0001618754694050966,
+              "mean_kendall_tau_b_risk_ranking": 0.7737297017353676,
+              "mean_signed_score_error": 0.02675696685220585,
+              "mean_spearman_risk_ranking": 0.9215530995373712
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.03174802294290056,
+          "mean_true_risk_mc_se": 0.00038787054298835053
+        }
+      },
+      "num_cells": 3,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.039072787949952864,
+        "mean_exact_tv": 0.9844928590260508,
+        "mean_paired_jaccard_transport_upper_bound": 0.3791465417297362,
+        "mean_paired_nhd_transport_upper_bound": 0.13684014546381487
+      },
+      "runtime_seconds": {
+        "maximum": 25.869496366998646,
+        "mean": 22.538598724679712
+      }
+    },
+    {
+      "coupling": "independent_bernoulli",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.007881776811540677,
+              "mean_aurc_regret": 0.0002022572444033329,
+              "mean_aurc_regret_mc_se": 2.0736399524398346e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9685990338164251,
+              "mean_signed_score_error": 0.006528002960629582,
+              "mean_spearman_risk_ranking": 0.9942028985507245
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0077693030113379705,
+              "mean_aurc_regret": 0.00019045060951687157,
+              "mean_aurc_regret_mc_se": 2.080721999847829e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9734299516908212,
+              "mean_signed_score_error": 0.006392987126022663,
+              "mean_spearman_risk_ranking": 0.994782608695652
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.030446805165601196,
+              "mean_aurc_regret": 0.0006312964789442765,
+              "mean_aurc_regret_mc_se": 3.733904330313148e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9227053140096618,
+              "mean_signed_score_error": -0.01535842334419397,
+              "mean_spearman_risk_ranking": 0.9840579710144928
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.007376297699159758,
+              "mean_aurc_regret": 0.00020383909581815166,
+              "mean_aurc_regret_mc_se": 2.1700056537201992e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.966183574879227,
+              "mean_signed_score_error": 0.005805392533894546,
+              "mean_spearman_risk_ranking": 0.9939130434782607
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.008660681303663532,
+              "mean_aurc_regret": 0.00020656757148122817,
+              "mean_aurc_regret_mc_se": 2.1331938180914493e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9613526570048309,
+              "mean_signed_score_error": 0.002196520985893292,
+              "mean_spearman_risk_ranking": 0.9933333333333332
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.15194088325027666,
+          "mean_true_risk_mc_se": 0.00019951629431343818
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.08350739257787836,
+              "mean_aurc_regret": 0.0008646296167157999,
+              "mean_aurc_regret_mc_se": 0.00010275524017297385,
+              "mean_kendall_tau_b_risk_ranking": 0.8067632850241546,
+              "mean_signed_score_error": -0.08350739257787836,
+              "mean_spearman_risk_ranking": 0.9443478260869563
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.12627947918238627,
+              "mean_aurc_regret": 0.005165872674731832,
+              "mean_aurc_regret_mc_se": 0.00017210725430838553,
+              "mean_kendall_tau_b_risk_ranking": 0.6610510805948849,
+              "mean_signed_score_error": -0.12627947918238627,
+              "mean_spearman_risk_ranking": 0.7894916922807119
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.08498185416713076,
+              "mean_aurc_regret": 0.001565028184882351,
+              "mean_aurc_regret_mc_se": 0.000122988882799812,
+              "mean_kendall_tau_b_risk_ranking": 0.8164251207729469,
+              "mean_signed_score_error": -0.08498185416713076,
+              "mean_spearman_risk_ranking": 0.9385507246376812
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.08891919710454181,
+              "mean_aurc_regret": 0.002859924079060753,
+              "mean_aurc_regret_mc_se": 0.0001207339146605066,
+              "mean_kendall_tau_b_risk_ranking": 0.7177664980506098,
+              "mean_signed_score_error": -0.08891919710454181,
+              "mean_spearman_risk_ranking": 0.8535432918226489
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.13474640769305354,
+          "mean_true_risk_mc_se": 0.0002581600025169264
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.02404044962247055,
+              "mean_aurc_regret": 0.0004617077635505386,
+              "mean_aurc_regret_mc_se": 2.8132368267699424e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449276,
+              "mean_signed_score_error": -0.013874836945514751,
+              "mean_spearman_risk_ranking": 0.9530434782608695
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.05605460388248106,
+              "mean_aurc_regret": 0.0038368460384151045,
+              "mean_aurc_regret_mc_se": 6.715400415931356e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.6441027166700074,
+              "mean_signed_score_error": -0.05605460388248106,
+              "mean_spearman_risk_ranking": 0.7647113137166223
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.02485250682090299,
+              "mean_aurc_regret": 0.0007620290497127383,
+              "mean_aurc_regret_mc_se": 3.8611424798612946e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8164251207729469,
+              "mean_signed_score_error": -0.015193289755104977,
+              "mean_spearman_risk_ranking": 0.9385507246376811
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.03369969365711505,
+              "mean_aurc_regret": 0.001259102933545947,
+              "mean_aurc_regret_mc_se": 3.4136906060454407e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7667494967833958,
+              "mean_signed_score_error": -0.018564482096846188,
+              "mean_spearman_risk_ranking": 0.8888120993280971
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0808923454918462,
+          "mean_true_risk_mc_se": 9.339012707454998e-05
+        }
+      },
+      "num_cells": 3,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.039072787949952864,
+        "mean_exact_tv": 0.9999999999999999,
+        "mean_paired_jaccard_transport_upper_bound": 0.5228778589797386,
+        "mean_paired_nhd_transport_upper_bound": 0.2238952895048815
+      },
+      "runtime_seconds": {
+        "maximum": 26.982100521971006,
+        "mean": 24.510151695333963
+      }
+    },
+    {
+      "coupling": "local_block_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.008244267312504017,
+              "mean_aurc_regret": 0.00025755383609496474,
+              "mean_aurc_regret_mc_se": 0.00013484326510429612,
+              "mean_kendall_tau_b_risk_ranking": 0.9444444444444445,
+              "mean_signed_score_error": 0.006328948476186349,
+              "mean_spearman_risk_ranking": 0.9878260869565216
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.00814384041126402,
+              "mean_aurc_regret": 0.0002522956701215782,
+              "mean_aurc_regret_mc_se": 0.00013342084098048377,
+              "mean_kendall_tau_b_risk_ranking": 0.9444444444444445,
+              "mean_signed_score_error": 0.00619393264157943,
+              "mean_spearman_risk_ranking": 0.9878260869565216
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.031258074607299936,
+              "mean_aurc_regret": 0.0007503217393464804,
+              "mean_aurc_regret_mc_se": 0.00011940412273059851,
+              "mean_kendall_tau_b_risk_ranking": 0.9033816425120773,
+              "mean_signed_score_error": -0.0155574778286372,
+              "mean_spearman_risk_ranking": 0.9765217391304346
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.007943651345923883,
+              "mean_aurc_regret": 0.0002596604839380419,
+              "mean_aurc_regret_mc_se": 0.0001368639090653429,
+              "mean_kendall_tau_b_risk_ranking": 0.9420289855072465,
+              "mean_signed_score_error": 0.0056063380494513135,
+              "mean_spearman_risk_ranking": 0.9875362318840578
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.009492471901429468,
+              "mean_aurc_regret": 0.0002753040154621726,
+              "mean_aurc_regret_mc_se": 0.00011127178176312118,
+              "mean_kendall_tau_b_risk_ranking": 0.9227053140096619,
+              "mean_signed_score_error": 0.0019974665014500593,
+              "mean_spearman_risk_ranking": 0.9843478260869564
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.09831534183504453,
+          "mean_true_risk_mc_se": 0.0008413492609777555
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.031245691672613415,
+              "mean_aurc_regret": 0.00118138777863349,
+              "mean_aurc_regret_mc_se": 0.00014525527031587443,
+              "mean_kendall_tau_b_risk_ranking": 0.7705314009661836,
+              "mean_signed_score_error": -0.022809828934979848,
+              "mean_spearman_risk_ranking": 0.9110144927536231
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.06558191553948779,
+              "mean_aurc_regret": 0.001834794696551972,
+              "mean_aurc_regret_mc_se": 0.0001271063273044573,
+              "mean_kendall_tau_b_risk_ranking": 0.7480033181948564,
+              "mean_signed_score_error": -0.06558191553948779,
+              "mean_spearman_risk_ranking": 0.8886205698651164
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.03276008966711892,
+              "mean_aurc_regret": 0.0013773865879051935,
+              "mean_aurc_regret_mc_se": 0.00018127429716849252,
+              "mean_kendall_tau_b_risk_ranking": 0.7415458937198068,
+              "mean_signed_score_error": -0.02428429052423223,
+              "mean_spearman_risk_ranking": 0.8924637681159419
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.03925122307910818,
+              "mean_aurc_regret": 0.0010053327026726653,
+              "mean_aurc_regret_mc_se": 0.00015470261732482068,
+              "mean_kendall_tau_b_risk_ranking": 0.7960855199847267,
+              "mean_signed_score_error": -0.028221633461643317,
+              "mean_spearman_risk_ranking": 0.9214244238782298
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.07845620336523773,
+          "mean_true_risk_mc_se": 0.00035153013912926997
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.024189206027775897,
+              "mean_aurc_regret": 0.0005306309661675506,
+              "mean_aurc_regret_mc_se": 9.315904259194533e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8260869565217391,
+              "mean_signed_score_error": -0.009020309201213154,
+              "mean_spearman_risk_ranking": 0.9394202898550724
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.05120007613817946,
+              "mean_aurc_regret": 0.0025178569316190516,
+              "mean_aurc_regret_mc_se": 0.00015409697010518715,
+              "mean_kendall_tau_b_risk_ranking": 0.6996814569662919,
+              "mean_signed_score_error": -0.05120007613817946,
+              "mean_spearman_risk_ranking": 0.8400668141022116
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.025120904931266893,
+              "mean_aurc_regret": 0.0008398053249292747,
+              "mean_aurc_regret_mc_se": 0.00015388264749636606,
+              "mean_kendall_tau_b_risk_ranking": 0.7971014492753623,
+              "mean_signed_score_error": -0.010338762010803379,
+              "mean_spearman_risk_ranking": 0.9199999999999999
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0342598467969765,
+              "mean_aurc_regret": 0.0006910768299787165,
+              "mean_aurc_regret_mc_se": 0.00014808034105856944,
+              "mean_kendall_tau_b_risk_ranking": 0.8247868098200611,
+              "mean_signed_score_error": -0.013709954352544592,
+              "mean_spearman_risk_ranking": 0.9382353871407133
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.06762617804222994,
+          "mean_true_risk_mc_se": 0.00032075135025753243
+        }
+      },
+      "num_cells": 3,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.039051645166431344,
+        "mean_exact_tv": 0.9999332000131266,
+        "mean_paired_jaccard_transport_upper_bound": 0.5175169123636683,
+        "mean_paired_nhd_transport_upper_bound": 0.17349632716871657
+      },
+      "runtime_seconds": {
+        "maximum": 27.906738472054712,
+        "mean": 23.15772285768374
+      }
+    },
+    {
+      "coupling": "shared_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.00749876904769652,
+              "mean_aurc_regret": 0.0007663178577548649,
+              "mean_aurc_regret_mc_se": 0.0004017440957632308,
+              "mean_kendall_tau_b_risk_ranking": 0.9130434782608696,
+              "mean_signed_score_error": 0.0007684987661284098,
+              "mean_spearman_risk_ranking": 0.9823188405797101
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.007500471343358166,
+              "mean_aurc_regret": 0.0008047756775680925,
+              "mean_aurc_regret_mc_se": 0.0004130699597732791,
+              "mean_kendall_tau_b_risk_ranking": 0.9082125603864735,
+              "mean_signed_score_error": 0.0006334829315214893,
+              "mean_spearman_risk_ranking": 0.9805797101449274
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03382348922123788,
+              "mean_aurc_regret": 0.0009940228362424707,
+              "mean_aurc_regret_mc_se": 0.00037722010554119937,
+              "mean_kendall_tau_b_risk_ranking": 0.8913043478260869,
+              "mean_signed_score_error": -0.02111792753869514,
+              "mean_spearman_risk_ranking": 0.974782608695652
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.007507860430346429,
+              "mean_aurc_regret": 0.0007622164004692326,
+              "mean_aurc_regret_mc_se": 0.00039300546696759223,
+              "mean_kendall_tau_b_risk_ranking": 0.9154589371980677,
+              "mean_signed_score_error": 4.588833939337438e-05,
+              "mean_spearman_risk_ranking": 0.9826086956521737
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.008729765339725809,
+              "mean_aurc_regret": 0.0006969934013080492,
+              "mean_aurc_regret_mc_se": 0.00047099202894310995,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724639,
+              "mean_signed_score_error": -0.003562983208607881,
+              "mean_spearman_risk_ranking": 0.9814492753623189
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.001932944682239736
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.004471325956004321,
+              "mean_aurc_regret": 0.00027731372224927786,
+              "mean_aurc_regret_mc_se": 0.00046487572874325645,
+              "mean_kendall_tau_b_risk_ranking": 0.8816425120772946,
+              "mean_signed_score_error": 0.00019434221097724706,
+              "mean_spearman_risk_ranking": 0.9707246376811592
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.04257774439353069,
+              "mean_aurc_regret": 0.00441587997706393,
+              "mean_aurc_regret_mc_se": 0.0006713980795949771,
+              "mean_kendall_tau_b_risk_ranking": 0.6347126691209489,
+              "mean_signed_score_error": -0.04257774439353069,
+              "mean_spearman_risk_ranking": 0.8107467158534147
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.006083280227496164,
+              "mean_aurc_regret": 0.0011332905552947174,
+              "mean_aurc_regret_mc_se": 0.0005643045248372135,
+              "mean_kendall_tau_b_risk_ranking": 0.8285024154589372,
+              "mean_signed_score_error": -0.001280119378275139,
+              "mean_spearman_risk_ranking": 0.9457971014492753
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.015301409189923844,
+              "mean_aurc_regret": 0.002562791056711422,
+              "mean_aurc_regret_mc_se": 0.0006536674175104932,
+              "mean_kendall_tau_b_risk_ranking": 0.7163391405490579,
+              "mean_signed_score_error": -0.005217462315686224,
+              "mean_spearman_risk_ranking": 0.875810263965285
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0012926106468350235
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.004489364915076741,
+              "mean_aurc_regret": 0.0002831088263712973,
+              "mean_aurc_regret_mc_se": 0.00048191880569784423,
+              "mean_kendall_tau_b_risk_ranking": 0.8647342995169082,
+              "mean_signed_score_error": 0.00019306319462568486,
+              "mean_spearman_risk_ranking": 0.964927536231884
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.04198670374234063,
+              "mean_aurc_regret": 0.005565297738239426,
+              "mean_aurc_regret_mc_se": 0.0007653332538582921,
+              "mean_kendall_tau_b_risk_ranking": 0.5826791529800778,
+              "mean_signed_score_error": -0.04198670374234063,
+              "mean_spearman_risk_ranking": 0.7422154093350892
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005939787884559625,
+              "mean_aurc_regret": 0.001112228905013313,
+              "mean_aurc_regret_mc_se": 0.0005989376008189921,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449276,
+              "mean_signed_score_error": -0.0011253896149645407,
+              "mean_spearman_risk_ranking": 0.956231884057971
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.014981673442507754,
+              "mean_aurc_regret": 0.0024271936189261324,
+              "mean_aurc_regret_mc_se": 0.0006213691671939629,
+              "mean_kendall_tau_b_risk_ranking": 0.7299062484796727,
+              "mean_signed_score_error": -0.004496581956705752,
+              "mean_spearman_risk_ranking": 0.8921051969154483
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0012940420927144774
+        }
+      },
+      "num_cells": 3,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0,
+        "mean_exact_tv": 0.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.0,
+        "mean_paired_nhd_transport_upper_bound": 0.0
+      },
+      "runtime_seconds": {
+        "maximum": 28.38185598095879,
+        "mean": 20.56582400231855
+      }
+    }
+  ],
+  "created_utc": "2026-07-20T07:04:00+00:00",
+  "groups": [
+    {
+      "coupling": "bimodal_antithetic",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.05008010175727151,
+              "mean_aurc_regret": 0.0002475028986251848,
+              "mean_aurc_regret_mc_se": 0.00028536509891107946,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.05008010175727151,
+              "mean_spearman_risk_ranking": 0.9878260869565217
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0500530154780322,
+              "mean_aurc_regret": 0.0002534582783336736,
+              "mean_aurc_regret_mc_se": 0.0002804464523556444,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.0500530154780322,
+              "mean_spearman_risk_ranking": 0.9869565217391304
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.05572275009862909,
+              "mean_aurc_regret": 0.0006052754353492729,
+              "mean_aurc_regret_mc_se": 0.0003644918932202043,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.053938826566379605,
+              "mean_spearman_risk_ranking": 0.9808695652173912
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.05015810510123531,
+              "mean_aurc_regret": 0.00022818960019654888,
+              "mean_aurc_regret_mc_se": 0.0002874033436754809,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.05015810510123531,
+              "mean_spearman_risk_ranking": 0.988695652173913
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.05107227804096768,
+              "mean_aurc_regret": 0.0002203001447715902,
+              "mean_aurc_regret_mc_se": 0.00034145804454625633,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.05107227804096768,
+              "mean_spearman_risk_ranking": 0.9895652173913043
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.05334627929607927,
+          "mean_true_risk_mc_se": 0.0020654500191635747
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0756447322183872,
+              "mean_aurc_regret": 0.002919595208133327,
+              "mean_aurc_regret_mc_se": 0.00048771214735305435,
+              "mean_kendall_tau_b_risk_ranking": 0.5,
+              "mean_signed_score_error": 0.0756447322183872,
+              "mean_spearman_risk_ranking": 0.6913043478260869
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.01873384828271098,
+              "mean_aurc_regret": 0.00047588683280161415,
+              "mean_aurc_regret_mc_se": 0.00024013991097094657,
+              "mean_kendall_tau_b_risk_ranking": 0.8577492032361056,
+              "mean_signed_score_error": -0.01873384828271098,
+              "mean_spearman_risk_ranking": 0.9547337190335154
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.07326809897134101,
+              "mean_aurc_regret": 0.0027784874208845872,
+              "mean_aurc_regret_mc_se": 0.0004413620169163937,
+              "mean_kendall_tau_b_risk_ranking": 0.5217391304347826,
+              "mean_signed_score_error": 0.07326809897134101,
+              "mean_spearman_risk_ranking": 0.6878260869565217
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.07610638394920329,
+              "mean_aurc_regret": 0.0010438134190630388,
+              "mean_aurc_regret_mc_se": 0.0003185431867073375,
+              "mean_kendall_tau_b_risk_ranking": 0.7418230864498432,
+              "mean_signed_score_error": 0.07382932835767674,
+              "mean_spearman_risk_ranking": 0.8929970396756161
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.07621707292502918,
+          "mean_true_risk_mc_se": 0.0006754182011397964
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.07793859130809962,
+              "mean_aurc_regret": 0.0025005335339387535,
+              "mean_aurc_regret_mc_se": 0.00044135888848525844,
+              "mean_kendall_tau_b_risk_ranking": 0.5144927536231884,
+              "mean_signed_score_error": 0.07793859130809962,
+              "mean_spearman_risk_ranking": 0.706086956521739
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.016341748453739213,
+              "mean_aurc_regret": 0.0006665195933872187,
+              "mean_aurc_regret_mc_se": 0.00034151534983055973,
+              "mean_kendall_tau_b_risk_ranking": 0.8446530265013353,
+              "mean_signed_score_error": -0.016341748453739213,
+              "mean_spearman_risk_ranking": 0.9480231791672331
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.07587675134089744,
+              "mean_aurc_regret": 0.0024140254416995244,
+              "mean_aurc_regret_mc_se": 0.00042545212448348173,
+              "mean_kendall_tau_b_risk_ranking": 0.5072463768115942,
+              "mean_signed_score_error": 0.07587675134089744,
+              "mean_spearman_risk_ranking": 0.6747826086956521
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.07766695304173364,
+              "mean_aurc_regret": 0.000840838505238875,
+              "mean_aurc_regret_mc_se": 0.00027559512003249957,
+              "mean_kendall_tau_b_risk_ranking": 0.6956521739130435,
+              "mean_signed_score_error": 0.07681086362028615,
+              "mean_spearman_risk_ranking": 0.8791304347826084
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.07803731641377794,
+          "mean_true_risk_mc_se": 0.000634956667517769
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.09750546193686234,
+        "mean_exact_tv": 0.9932954935593127,
+        "mean_paired_jaccard_transport_upper_bound": 0.5268016129375709,
+        "mean_paired_nhd_transport_upper_bound": 0.2386345232544332
+      },
+      "runtime_seconds": {
+        "maximum": 25.597699915000703,
+        "mean": 25.597699915000703
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "bimodal_antithetic",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.02518354556053727,
+              "mean_aurc_regret": 0.0006680326900461442,
+              "mean_aurc_regret_mc_se": 0.00029519475101986244,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.02518354556053727,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.025110687616344177,
+              "mean_aurc_regret": 0.0006680326900461442,
+              "mean_aurc_regret_mc_se": 0.00029519475101986244,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.025110687616344177,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.02357218962896816,
+              "mean_aurc_regret": 0.0006126229071576617,
+              "mean_aurc_regret_mc_se": 0.00034130673278800924,
+              "mean_kendall_tau_b_risk_ranking": 0.9420289855072465,
+              "mean_signed_score_error": -0.016768508439547383,
+              "mean_spearman_risk_ranking": 0.988695652173913
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.024551374708414675,
+              "mean_aurc_regret": 0.0006680326900461442,
+              "mean_aurc_regret_mc_se": 0.00029519475101986244,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.024551374708414675,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.019555317637831197,
+              "mean_aurc_regret": 0.0004566588850487274,
+              "mean_aurc_regret_mc_se": 0.00040871581721010057,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.019169149046471264,
+              "mean_spearman_risk_ranking": 0.988695652173913
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.02537815267509681,
+          "mean_true_risk_mc_se": 0.0016475631712133097
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.015925950103770913,
+              "mean_aurc_regret": 0.0005202532804613261,
+              "mean_aurc_regret_mc_se": 0.00012762570132817817,
+              "mean_kendall_tau_b_risk_ranking": 0.7463768115942029,
+              "mean_signed_score_error": 0.01591164049549572,
+              "mean_spearman_risk_ranking": 0.8947826086956522
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.009970427263937683,
+              "mean_aurc_regret": 0.0009670833246477051,
+              "mean_aurc_regret_mc_se": 0.00016593182438024622,
+              "mean_kendall_tau_b_risk_ranking": 0.8194165650645404,
+              "mean_signed_score_error": -0.00986891888354347,
+              "mean_spearman_risk_ranking": 0.9261556768035923
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01504525510474596,
+              "mean_aurc_regret": 0.0006215457021000667,
+              "mean_aurc_regret_mc_se": 0.00014192836878764174,
+              "mean_kendall_tau_b_risk_ranking": 0.7318840579710145,
+              "mean_signed_score_error": 0.014107270908206807,
+              "mean_spearman_risk_ranking": 0.868695652173913
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0070333347031357255,
+              "mean_aurc_regret": 0.0001415730495652398,
+              "mean_aurc_regret_mc_se": 0.00014192720511965138,
+              "mean_kendall_tau_b_risk_ranking": 0.8877830946859249,
+              "mean_signed_score_error": 0.0021381158338460524,
+              "mean_spearman_risk_ranking": 0.9731995707975071
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.01594187705310886,
+          "mean_true_risk_mc_se": 0.0003703808732264732
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0164150341933723,
+              "mean_aurc_regret": 0.0005125595911018299,
+              "mean_aurc_regret_mc_se": 0.00012172655581190334,
+              "mean_kendall_tau_b_risk_ranking": 0.7318840579710145,
+              "mean_signed_score_error": 0.01640183891222421,
+              "mean_spearman_risk_ranking": 0.8965217391304346
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008372685831656753,
+              "mean_aurc_regret": 0.0005033930493017341,
+              "mean_aurc_regret_mc_se": 0.0001577718229044677,
+              "mean_kendall_tau_b_risk_ranking": 0.850099356947887,
+              "mean_signed_score_error": -0.008372685831656753,
+              "mean_spearman_risk_ranking": 0.9449439250474582
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.015312663977603785,
+              "mean_aurc_regret": 0.0006023505681169994,
+              "mean_aurc_regret_mc_se": 0.0001189765003568542,
+              "mean_kendall_tau_b_risk_ranking": 0.717391304347826,
+              "mean_signed_score_error": 0.014652998177603354,
+              "mean_spearman_risk_ranking": 0.8739130434782607
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0062743580005158416,
+              "mean_aurc_regret": 0.0001496168318479707,
+              "mean_aurc_regret_mc_se": 0.00013514992643012946,
+              "mean_kendall_tau_b_risk_ranking": 0.861336814648831,
+              "mean_signed_score_error": 0.003392982632973428,
+              "mean_spearman_risk_ranking": 0.9632214625241678
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.01604733302044779,
+          "mean_true_risk_mc_se": 0.00035969334560501744
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.01929299277010964,
+        "mean_exact_tv": 0.9919282176644177,
+        "mean_paired_jaccard_transport_upper_bound": 0.38124987082600387,
+        "mean_paired_nhd_transport_upper_bound": 0.11563080201449831
+      },
+      "runtime_seconds": {
+        "maximum": 25.869496366998646,
+        "mean": 25.869496366998646
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "bimodal_antithetic",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.007112750279415554,
+              "mean_aurc_regret": 0.0001770265022389278,
+              "mean_aurc_regret_mc_se": 0.00028370355791151023,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.00543824702989245,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0069431477662819895,
+              "mean_aurc_regret": 0.00022364302551718118,
+              "mean_aurc_regret_mc_se": 0.00029780449556900975,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.005133143749504081,
+              "mean_spearman_risk_ranking": 0.9817391304347826
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.022127702693601647,
+              "mean_aurc_regret": 0.0007942958511396037,
+              "mean_aurc_regret_mc_se": 0.00015148447286464034,
+              "mean_kendall_tau_b_risk_ranking": 0.8623188405797101,
+              "mean_signed_score_error": -0.022127702693601647,
+              "mean_spearman_risk_ranking": 0.9660869565217389
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.00632871443735798,
+              "mean_aurc_regret": 0.0001770265022389278,
+              "mean_aurc_regret_mc_se": 0.00028370355791151023,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.0038245832578461298,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.005466887394848759,
+              "mean_aurc_regret": 0.00022579635181961544,
+              "mean_aurc_regret_mc_se": 0.00027949318626110394,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.002533978663946586,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.008399192393859644,
+          "mean_true_risk_mc_se": 0.0009935258306004644
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.000919591489366323,
+              "mean_aurc_regret": 6.732938882518524e-05,
+              "mean_aurc_regret_mc_se": 6.747078158754497e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": -0.0001186942201896685,
+              "mean_spearman_risk_ranking": 0.9660869565217389
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008275814153576132,
+              "mean_aurc_regret": 0.0008397318521874628,
+              "mean_aurc_regret_mc_se": 7.855813267372172e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7333419818275401,
+              "mean_signed_score_error": -0.008275814153576132,
+              "mean_spearman_risk_ranking": 0.8751803668516288
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0011772693068672739,
+              "mean_aurc_regret": 0.0001504770415544851,
+              "mean_aurc_regret_mc_se": 7.182362273336536e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.0003610761536117291,
+              "mean_spearman_risk_ranking": 0.9252173913043478
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0013408582924464216,
+              "mean_aurc_regret": 0.00046248118937346205,
+              "mean_aurc_regret_mc_se": 4.3650602164242e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7089122809782883,
+              "mean_signed_score_error": -0.0007651792778199611,
+              "mean_spearman_risk_ranking": 0.864697423349676
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0011354175232531506,
+          "mean_true_risk_mc_se": 0.00017286935113577505
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0008243524866079162,
+              "mean_aurc_regret": 9.156968920570607e-05,
+              "mean_aurc_regret_mc_se": 6.967557847893276e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -5.942097119571744e-07,
+              "mean_spearman_risk_ranking": 0.954782608695652
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.007485030514891092,
+              "mean_aurc_regret": 0.001389169420570515,
+              "mean_aurc_regret_mc_se": 0.0001573044888544042,
+              "mean_kendall_tau_b_risk_ranking": 0.6168692607639895,
+              "mean_signed_score_error": -0.007485030514891092,
+              "mean_spearman_risk_ranking": 0.77059896956751
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0008528708261668913,
+              "mean_aurc_regret": 9.680289702559963e-05,
+              "mean_aurc_regret_mc_se": 7.204512834736142e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449275,
+              "mean_signed_score_error": -0.0001452719366595957,
+              "mean_spearman_risk_ranking": 0.9521739130434782
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0013563435087492325,
+              "mean_aurc_regret": 0.00018788901281302506,
+              "mean_aurc_regret_mc_se": 7.488136175266076e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7642001166442284,
+              "mean_signed_score_error": 6.70543033579779e-05,
+              "mean_spearman_risk_ranking": 0.9223074013053374
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0011594193944759437,
+          "mean_true_risk_mc_se": 0.00016896161584226515
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0004199091428866153,
+        "mean_exact_tv": 0.9682548658544218,
+        "mean_paired_jaccard_transport_upper_bound": 0.229388141425634,
+        "mean_paired_nhd_transport_upper_bound": 0.05625511112251306
+      },
+      "runtime_seconds": {
+        "maximum": 16.148599892039783,
+        "mean": 16.148599892039783
+      },
+      "sharpness": "sharp"
+    },
+    {
+      "coupling": "independent_bernoulli",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.015226852910160888,
+              "mean_aurc_regret": 0.000585362607933404,
+              "mean_aurc_regret_mc_se": 3.5757252938347205e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.01162387424867267,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.015218001014418614,
+              "mean_aurc_regret": 0.0005575560403077162,
+              "mean_aurc_regret_mc_se": 3.350304525943906e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.01159678796943337,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.02978254640644092,
+              "mean_aurc_regret": 0.0013105938658711236,
+              "mean_aurc_regret_mc_se": 4.810258520675453e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.015482599057780766,
+              "mean_spearman_risk_ranking": 0.9756521739130434
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.015350940175308414,
+              "mean_aurc_regret": 0.0005901081621778603,
+              "mean_aurc_regret_mc_se": 3.864822397675814e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.011701877592636476,
+              "mean_spearman_risk_ranking": 0.9843478260869565
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.015557030363216906,
+              "mean_aurc_regret": 0.0004872715708775788,
+              "mean_aurc_regret_mc_se": 3.2379188007749156e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.012616050532368838,
+              "mean_spearman_risk_ranking": 0.9878260869565217
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.22243259196213105,
+          "mean_true_risk_mc_se": 0.0002238299781839527
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.09446470213652648,
+              "mean_aurc_regret": 0.0012065677518035833,
+              "mean_aurc_regret_mc_se": 0.00011669495865259621,
+              "mean_kendall_tau_b_risk_ranking": 0.7898550724637681,
+              "mean_signed_score_error": -0.09446470213652648,
+              "mean_spearman_risk_ranking": 0.9365217391304346
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.18884328263762465,
+              "mean_aurc_regret": 0.008654798203305308,
+              "mean_aurc_regret_mc_se": 0.0002466753965154531,
+              "mean_kendall_tau_b_risk_ranking": 0.4288746016180528,
+              "mean_signed_score_error": -0.18884328263762465,
+              "mean_spearman_risk_ranking": 0.5670645737247645
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.09684133538357269,
+              "mean_aurc_regret": 0.0031738648245943357,
+              "mean_aurc_regret_mc_se": 0.00024238873253179554,
+              "mean_kendall_tau_b_risk_ranking": 0.782608695652174,
+              "mean_signed_score_error": -0.09684133538357269,
+              "mean_spearman_risk_ranking": 0.9252173913043478
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.09628010599723692,
+              "mean_aurc_regret": 0.005977899282952531,
+              "mean_aurc_regret_mc_se": 0.0002526747395535811,
+              "mean_kendall_tau_b_risk_ranking": 0.5527309271587066,
+              "mean_signed_score_error": -0.09628010599723692,
+              "mean_spearman_risk_ranking": 0.7177034171771878
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.2213856806796445,
+          "mean_true_risk_mc_se": 0.00028849710778169223
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.024151654178723937,
+              "mean_aurc_regret": 0.0003044818281126016,
+              "mean_aurc_regret_mc_se": 1.5818170987155485e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": 0.005251097775836388,
+              "mean_spearman_risk_ranking": 0.9669565217391304
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.08902924198600244,
+              "mean_aurc_regret": 0.007413862894960099,
+              "mean_aurc_regret_mc_se": 0.00012415084331740984,
+              "mean_kendall_tau_b_risk_ranking": 0.40750803910152145,
+              "mean_signed_score_error": -0.08902924198600244,
+              "mean_spearman_risk_ranking": 0.5417275309527047
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.023583588435366537,
+              "mean_aurc_regret": 0.0011842193879433305,
+              "mean_aurc_regret_mc_se": 4.90204167655634e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": 0.003189257808634209,
+              "mean_spearman_risk_ranking": 0.9530434782608694
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.039113844660406925,
+              "mean_aurc_regret": 0.003280039680173069,
+              "mean_aurc_regret_mc_se": 6.105382299359026e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.5869565217391304,
+              "mean_signed_score_error": 0.004123370088022926,
+              "mean_spearman_risk_ranking": 0.7460869565217391
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.15766388475434337,
+          "mean_true_risk_mc_se": 0.00010912973922956751
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.09750546193686234,
+        "mean_exact_tv": 1.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.7050639512121606,
+        "mean_paired_nhd_transport_upper_bound": 0.35942147519756235
+      },
+      "runtime_seconds": {
+        "maximum": 26.982100521971006,
+        "mean": 26.982100521971006
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "independent_bernoulli",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.006144205637810831,
+              "mean_aurc_regret": 0.0,
+              "mean_aurc_regret_mc_se": 1.9694758168560876e-05,
+              "mean_kendall_tau_b_risk_ranking": 1.0,
+              "mean_signed_score_error": 0.005692920707867564,
+              "mean_spearman_risk_ranking": 0.9999999999999999
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.006031592207012572,
+              "mean_aurc_regret": 0.0,
+              "mean_aurc_regret_mc_se": 1.9694758168560876e-05,
+              "mean_kendall_tau_b_risk_ranking": 1.0,
+              "mean_signed_score_error": 0.00562006276367447,
+              "mean_spearman_risk_ranking": 0.9999999999999999
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03625913329221709,
+              "mean_aurc_regret": 0.00019914261303866088,
+              "mean_aurc_regret_mc_se": 2.86603999817756e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9492753623188406,
+              "mean_signed_score_error": -0.03625913329221709,
+              "mean_spearman_risk_ranking": 0.9921739130434782
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005569712666618979,
+              "mean_aurc_regret": 0.0,
+              "mean_aurc_regret_mc_se": 1.9694758168560876e-05,
+              "mean_kendall_tau_b_risk_ranking": 1.0,
+              "mean_signed_score_error": 0.00506074985574497,
+              "mean_spearman_risk_ranking": 0.9999999999999999
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.00472000177928317,
+              "mean_aurc_regret": 9.910436672333489e-05,
+              "mean_aurc_regret_mc_se": 2.6181437830488067e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9710144927536233,
+              "mean_signed_score_error": -0.00032147580619844063,
+              "mean_spearman_risk_ranking": 0.9956521739130434
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.15559707149526322,
+          "mean_true_risk_mc_se": 0.0002184705711149766
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.1040889684243889,
+              "mean_aurc_regret": 0.0009326421517591443,
+              "mean_aurc_regret_mc_se": 0.00014214283595548368,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -0.1040889684243889,
+              "mean_spearman_risk_ranking": 0.954782608695652
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.1298695278034281,
+              "mean_aurc_regret": 0.00367904021268714,
+              "mean_aurc_regret_mc_se": 0.0001600827741195794,
+              "mean_kendall_tau_b_risk_ranking": 0.793942474958907,
+              "mean_signed_score_error": -0.1298695278034281,
+              "mean_spearman_risk_ranking": 0.9096007590454348
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.10589333801167783,
+              "mean_aurc_regret": 0.0009032279007020472,
+              "mean_aurc_regret_mc_se": 7.8038548831352e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8478260869565217,
+              "mean_signed_score_error": -0.10589333801167783,
+              "mean_spearman_risk_ranking": 0.9478260869565217
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.11786249308603858,
+              "mean_aurc_regret": 0.0005329032651165411,
+              "mean_aurc_regret_mc_se": 7.655137664548496e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8362106327539625,
+              "mean_signed_score_error": -0.11786249308603858,
+              "mean_spearman_risk_ranking": 0.9535873985243821
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.13054015927094176,
+          "mean_true_risk_mc_se": 0.0002971707894401762
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.030550276601112373,
+              "mean_aurc_regret": 0.0008585048521809746,
+              "mean_aurc_regret_mc_se": 4.4460509809802356e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.0294561905248053,
+              "mean_spearman_risk_ranking": 0.9199999999999999
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.05423071526868627,
+              "mean_aurc_regret": 0.0011641361277876239,
+              "mean_aurc_regret_mc_se": 2.1571319420488507e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.850099356947887,
+              "mean_signed_score_error": -0.05423071526868627,
+              "mean_spearman_risk_ranking": 0.9449439250474582
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.033409836212819455,
+              "mean_aurc_regret": 0.0008367871521042652,
+              "mean_aurc_regret_mc_se": 4.4081387235006315e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.03120503125942616,
+              "mean_spearman_risk_ranking": 0.906086956521739
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.04463346673643282,
+              "mean_aurc_regret": 0.00024140568289725273,
+              "mean_aurc_regret_mc_se": 2.074072210382102e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.861336814648831,
+              "mean_signed_score_error": -0.042465046804056085,
+              "mean_spearman_risk_ranking": 0.9614804386425154
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.06477222697106892,
+          "mean_true_risk_mc_se": 0.000102398091901332
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.01929299277010964,
+        "mean_exact_tv": 1.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.5406787159544415,
+        "mean_paired_nhd_transport_upper_bound": 0.2120283867726378
+      },
+      "runtime_seconds": {
+        "maximum": 21.428198070032522,
+        "mean": 21.428198070032522
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "independent_bernoulli",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.0022742718866503135,
+              "mean_aurc_regret": 2.1409125276594665e-05,
+              "mean_aurc_regret_mc_se": 6.75718746628696e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9782608695652174,
+              "mean_signed_score_error": 0.0022672139253485137,
+              "mean_spearman_risk_ranking": 0.997391304347826
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0020583158125827244,
+              "mean_aurc_regret": 1.379578824289851e-05,
+              "mean_aurc_regret_mc_se": 9.223856567434935e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9855072463768115,
+              "mean_signed_score_error": 0.0019621106449601456,
+              "mean_spearman_risk_ranking": 0.9982608695652172
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.025298735798145584,
+              "mean_aurc_regret": 0.00038415295792304516,
+              "mean_aurc_regret_mc_se": 3.525414472086431e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": -0.025298735798145584,
+              "mean_spearman_risk_ranking": 0.9843478260869565
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.00120824025555188,
+              "mean_aurc_regret": 2.1409125276594665e-05,
+              "mean_aurc_regret_mc_se": 6.75718746628696e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9782608695652174,
+              "mean_signed_score_error": 0.0006535501533021943,
+              "mean_spearman_risk_ranking": 0.997391304347826
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0057050117684905215,
+              "mean_aurc_regret": 3.3326776842770856e-05,
+              "mean_aurc_regret_mc_se": 5.4351887045062536e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9782608695652174,
+              "mean_signed_score_error": -0.0057050117684905215,
+              "mean_spearman_risk_ranking": 0.9965217391304346
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.07779298629343566,
+          "mean_true_risk_mc_se": 0.00015624833364138535
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.05196850717271966,
+              "mean_aurc_regret": 0.0004546789465846718,
+              "mean_aurc_regret_mc_se": 4.9427925910841664e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7971014492753623,
+              "mean_signed_score_error": -0.05196850717271966,
+              "mean_spearman_risk_ranking": 0.9417391304347826
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.06012562710610613,
+              "mean_aurc_regret": 0.003163779608203049,
+              "mean_aurc_regret_mc_se": 0.00010956359229012409,
+              "mean_kendall_tau_b_risk_ranking": 0.760336165207695,
+              "mean_signed_score_error": -0.06012562710610613,
+              "mean_spearman_risk_ranking": 0.8918097440719367
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.052210889106141724,
+              "mean_aurc_regret": 0.0006179918293506698,
+              "mean_aurc_regret_mc_se": 4.8539367036288444e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8188405797101449,
+              "mean_signed_score_error": -0.052210889106141724,
+              "mean_spearman_risk_ranking": 0.9426086956521739
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.052614992230349954,
+              "mean_aurc_regret": 0.002068969689113187,
+              "mean_aurc_regret_mc_se": 3.297562778245371e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.76435793423916,
+              "mean_signed_score_error": -0.052614992230349954,
+              "mean_spearman_risk_ranking": 0.8893390597663767
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.052313383128574385,
+          "mean_true_risk_mc_se": 0.00018881211032891086
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.017419418087575342,
+              "mean_aurc_regret": 0.00022213661035803967,
+              "mean_aurc_regret_mc_se": 2.411842400614043e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8768115942028986,
+              "mean_signed_score_error": -0.017419418087575342,
+              "mean_spearman_risk_ranking": 0.9721739130434782
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.024903854392754474,
+              "mean_aurc_regret": 0.002932539092497591,
+              "mean_aurc_regret_mc_se": 5.5739849740042344e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.6747007539606136,
+              "mean_signed_score_error": -0.024903854392754474,
+              "mean_spearman_risk_ranking": 0.8074624851497041
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01756409581452298,
+              "mean_aurc_regret": 0.0002650806090906191,
+              "mean_aurc_regret_mc_se": 2.2732470395269115e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449275,
+              "mean_signed_score_error": -0.01756409581452298,
+              "mean_spearman_risk_ranking": 0.9565217391304346
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.017351769574505405,
+              "mean_aurc_regret": 0.00025586343756751895,
+              "mean_aurc_regret_mc_se": 2.061617308395195e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8519551539622259,
+              "mean_signed_score_error": -0.017351769574505405,
+              "mean_spearman_risk_ranking": 0.958868902820037
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.02024092475012629,
+          "mean_true_risk_mc_se": 6.864255009275044e-05
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0004199091428866153,
+        "mean_exact_tv": 0.9999999999999994,
+        "mean_paired_jaccard_transport_upper_bound": 0.32289090977261353,
+        "mean_paired_nhd_transport_upper_bound": 0.10023600654444431
+      },
+      "runtime_seconds": {
+        "maximum": 25.120156493998365,
+        "mean": 25.120156493998365
+      },
+      "sharpness": "sharp"
+    },
+    {
+      "coupling": "local_block_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.015566798700485301,
+              "mean_aurc_regret": 0.0005895728207791495,
+              "mean_aurc_regret_mc_se": 0.00024080697373435322,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.012173255817773584,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.015574662119820002,
+              "mean_aurc_regret": 0.0005636333793283543,
+              "mean_aurc_regret_mc_se": 0.0002337080397345565,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.012146169538534283,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.031069809709106527,
+              "mean_aurc_regret": 0.0013269098747636932,
+              "mean_aurc_regret_mc_se": 0.00020820237226006657,
+              "mean_kendall_tau_b_risk_ranking": 0.8840579710144928,
+              "mean_signed_score_error": 0.01603198062688168,
+              "mean_spearman_risk_ranking": 0.9660869565217389
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01567285191291953,
+              "mean_aurc_regret": 0.0005958927643083811,
+              "mean_aurc_regret_mc_se": 0.0002468689056174935,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.01225125916173739,
+              "mean_spearman_risk_ranking": 0.9817391304347826
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.015606467778723905,
+              "mean_aurc_regret": 0.0005828607105981543,
+              "mean_aurc_regret_mc_se": 0.00018235812406205672,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.013165432101469752,
+              "mean_spearman_risk_ranking": 0.9799999999999999
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.14294474993032777,
+          "mean_true_risk_mc_se": 0.0011581477276314265
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.030021280296217468,
+              "mean_aurc_regret": 0.001498700311746315,
+              "mean_aurc_regret_mc_se": 0.00015378697457098445,
+              "mean_kendall_tau_b_risk_ranking": 0.7898550724637681,
+              "mean_signed_score_error": -0.006582659936835975,
+              "mean_spearman_risk_ranking": 0.9113043478260868
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.10096124043793415,
+              "mean_aurc_regret": 0.0011860132709496651,
+              "mean_aurc_regret_mc_se": 0.00013825045983416884,
+              "mean_kendall_tau_b_risk_ranking": 0.6997427710610334,
+              "mean_signed_score_error": -0.10096124043793415,
+              "mean_spearman_risk_ranking": 0.8672237539525333
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.03137354701629019,
+              "mean_aurc_regret": 0.001950656655883537,
+              "mean_aurc_regret_mc_se": 0.00024124513830394903,
+              "mean_kendall_tau_b_risk_ranking": 0.7101449275362319,
+              "mean_signed_score_error": -0.008959293183882161,
+              "mean_spearman_risk_ranking": 0.8791304347826084
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.03863215355957389,
+              "mean_aurc_regret": 0.0011005966348300866,
+              "mean_aurc_regret_mc_se": 0.0002636444202416234,
+              "mean_kendall_tau_b_risk_ranking": 0.7418230864498432,
+              "mean_signed_score_error": -0.008398063797546429,
+              "mean_spearman_risk_ranking": 0.8964768138195054
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.14448871347476464,
+          "mean_true_risk_mc_se": 0.0005064212216443561
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.02876124464004488,
+              "mean_aurc_regret": 0.0005114418215646233,
+              "mean_aurc_regret_mc_se": 5.2433526886714255e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8550724637681159,
+              "mean_signed_score_error": 0.013876188738621226,
+              "mean_spearman_risk_ranking": 0.9556521739130434
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.0804041510232176,
+              "mean_aurc_regret": 0.0036961968532919776,
+              "mean_aurc_regret_mc_se": 0.0002666810886755825,
+              "mean_kendall_tau_b_risk_ranking": 0.563102017667557,
+              "mean_signed_score_error": -0.0804041510232176,
+              "mean_spearman_risk_ranking": 0.76016605149815
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.02797367154102842,
+              "mean_aurc_regret": 0.00130451725695932,
+              "mean_aurc_regret_mc_se": 0.0002503636512613339,
+              "mean_kendall_tau_b_risk_ranking": 0.8043478260869565,
+              "mean_signed_score_error": 0.011814348771419047,
+              "mean_spearman_risk_ranking": 0.9295652173913044
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.045007275644441604,
+              "mean_aurc_regret": 0.0016250581221101401,
+              "mean_aurc_regret_mc_se": 0.0002850748035989702,
+              "mean_kendall_tau_b_risk_ranking": 0.7318840579710145,
+              "mean_signed_score_error": 0.012748461050807763,
+              "mean_spearman_risk_ranking": 0.886086956521739
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.13197353590863645,
+          "mean_true_risk_mc_se": 0.0004608671346891407
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.09745213279578042,
+        "mean_exact_tv": 0.9999125836144364,
+        "mean_paired_jaccard_transport_upper_bound": 0.6994290316901095,
+        "mean_paired_nhd_transport_upper_bound": 0.2949416161706827
+      },
+      "runtime_seconds": {
+        "maximum": 27.906738472054712,
+        "mean": 27.906738472054712
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "local_block_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.006664227878689603,
+              "mean_aurc_regret": 0.00013186133536283173,
+              "mean_aurc_regret_mc_se": 0.00011979343744298754,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.004593302555879065,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0065704930055242835,
+              "mean_aurc_regret": 0.00013186133536283173,
+              "mean_aurc_regret_mc_se": 0.00011979343744298754,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.004520444611685971,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.037358751444205585,
+              "mean_aurc_regret": 0.0005470056082050034,
+              "mean_aurc_regret_mc_se": 8.419367172147214e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": -0.037358751444205585,
+              "mean_spearman_risk_ranking": 0.9765217391304346
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.006372644704554755,
+              "mean_aurc_regret": 0.00013186133536283173,
+              "mean_aurc_regret_mc_se": 0.00011979343744298754,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.00396113170375647,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.006965240663277574,
+              "mean_aurc_regret": 0.00015116660259659187,
+              "mean_aurc_regret_mc_se": 0.0001038516943803855,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": -0.0014210939581869402,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.10012980627562203,
+          "mean_true_risk_mc_se": 0.0008872753200487822
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.03945524987466329,
+              "mean_aurc_regret": 0.0017994743648769573,
+              "mean_aurc_regret_mc_se": 0.00023250072081955846,
+              "mean_kendall_tau_b_risk_ranking": 0.6956521739130435,
+              "mean_signed_score_error": -0.03758628202114408,
+              "mean_spearman_risk_ranking": 0.8695652173913043
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.06336684140018325,
+              "mean_aurc_regret": 0.0023221109761444314,
+              "mean_aurc_regret_mc_se": 0.00019848616907831165,
+              "mean_kendall_tau_b_risk_ranking": 0.810925201695996,
+              "mean_signed_score_error": -0.06336684140018325,
+              "mean_spearman_risk_ranking": 0.9215570885374375
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.04240379520468502,
+              "mean_aurc_regret": 0.0018366109782976536,
+              "mean_aurc_regret_mc_se": 0.00023762334243441482,
+              "mean_kendall_tau_b_risk_ranking": 0.6956521739130435,
+              "mean_signed_score_error": -0.03939065160843298,
+              "mean_spearman_risk_ranking": 0.8504347826086956
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.05421448577316088,
+              "mean_aurc_regret": 0.0007392215825251236,
+              "mean_aurc_regret_mc_se": 0.00014154389713203963,
+              "mean_kendall_tau_b_risk_ranking": 0.8583131164390893,
+              "mean_signed_score_error": -0.05135980668279374,
+              "mean_spearman_risk_ranking": 0.9614322674336321
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.06621337004049667,
+          "mean_true_risk_mc_se": 0.00035617639837320675
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.02691505494013488,
+              "mean_aurc_regret": 0.0008410660933981379,
+              "mean_aurc_regret_mc_se": 0.00014934455075468604,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.024045797839112756,
+              "mean_spearman_risk_ranking": 0.9043478260869565
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.048820322582993715,
+              "mean_aurc_regret": 0.0011737251353872158,
+              "mean_aurc_regret_mc_se": 0.0001037586299310079,
+              "mean_kendall_tau_b_risk_ranking": 0.8419644348718306,
+              "mean_signed_score_error": -0.048820322582993715,
+              "mean_spearman_risk_ranking": 0.9444922310106284
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.030353047022676688,
+              "mean_aurc_regret": 0.0009268060556382185,
+              "mean_aurc_regret_mc_se": 0.0001391676064597758,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.025794638573733614,
+              "mean_spearman_risk_ranking": 0.8852173913043477
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.04094859475640992,
+              "mean_aurc_regret": 0.00019358069659811128,
+              "mean_aurc_regret_mc_se": 7.147096612817722e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8978341373034425,
+              "mean_signed_score_error": -0.03705465411836354,
+              "mean_spearman_risk_ranking": 0.9714913259620165
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.05351987183448207,
+          "mean_true_risk_mc_se": 0.0003322875738801747
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0192828937142562,
+        "mean_exact_tv": 0.9999711427657041,
+        "mean_paired_jaccard_transport_upper_bound": 0.5339367464949758,
+        "mean_paired_nhd_transport_upper_bound": 0.15279352677017302
+      },
+      "runtime_seconds": {
+        "maximum": 24.14121355302632,
+        "mean": 24.14121355302632
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "local_block_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.0025017753583371446,
+              "mean_aurc_regret": 5.122735214291296e-05,
+              "mean_aurc_regret_mc_se": 4.392938413554763e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9710144927536233,
+              "mean_signed_score_error": 0.0022202870549064,
+              "mean_spearman_risk_ranking": 0.9956521739130434
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.002286366108447777,
+              "mean_aurc_regret": 6.139229567354854e-05,
+              "mean_aurc_regret_mc_se": 4.676104576390731e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9637681159420289,
+              "mean_signed_score_error": 0.0019151837745180322,
+              "mean_spearman_risk_ranking": 0.994782608695652
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.0253456626685877,
+              "mean_aurc_regret": 0.0003770497350707447,
+              "mean_aurc_regret_mc_se": 6.58163242102568e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": -0.0253456626685877,
+              "mean_spearman_risk_ranking": 0.9869565217391304
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0017854574202973625,
+              "mean_aurc_regret": 5.122735214291296e-05,
+              "mean_aurc_regret_mc_se": 4.392938413554763e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9710144927536233,
+              "mean_signed_score_error": 0.0006066232828600809,
+              "mean_spearman_risk_ranking": 0.9956521739130434
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.005905707262286925,
+              "mean_aurc_regret": 9.18847331917716e-05,
+              "mean_aurc_regret_mc_se": 4.760552684692134e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9420289855072465,
+              "mean_signed_score_error": -0.005751938638932635,
+              "mean_spearman_risk_ranking": 0.9904347826086956
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.05187146929918382,
+          "mean_true_risk_mc_se": 0.000478624735253058
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.024260544846959487,
+              "mean_aurc_regret": 0.0002459886592771979,
+              "mean_aurc_regret_mc_se": 4.9478115557080306e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8260869565217391,
+              "mean_signed_score_error": -0.024260544846959487,
+              "mean_spearman_risk_ranking": 0.9521739130434782
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03241766478034595,
+              "mean_aurc_regret": 0.001996259842561819,
+              "mean_aurc_regret_mc_se": 4.458235300089143e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7333419818275401,
+              "mean_signed_score_error": -0.03241766478034595,
+              "mean_spearman_risk_ranking": 0.8770808671053782
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.024502926780381556,
+              "mean_aurc_regret": 0.0003448921295343896,
+              "mean_aurc_regret_mc_se": 6.495441076711364e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8188405797101449,
+              "mean_signed_score_error": -0.024502926780381556,
+              "mean_spearman_risk_ranking": 0.9478260869565217
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.02490702990458978,
+              "mean_aurc_regret": 0.001176179890662786,
+              "mean_aurc_regret_mc_se": 5.8919534600798935e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7881203570652479,
+              "mean_signed_score_error": -0.02490702990458978,
+              "mean_spearman_risk_ranking": 0.9063641903815517
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.02466652658045187,
+          "mean_true_risk_mc_se": 0.000191992797370247
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.016891318503147932,
+              "mean_aurc_regret": 0.00023938498353989063,
+              "mean_aurc_regret_mc_se": 7.769905013443571e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8478260869565217,
+              "mean_signed_score_error": -0.016891318503147932,
+              "mean_spearman_risk_ranking": 0.9582608695652173
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.02437575480832707,
+              "mean_aurc_regret": 0.0026836488061779615,
+              "mean_aurc_regret_mc_se": 9.185119170897103e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.6939779183594883,
+              "mean_signed_score_error": -0.02437575480832707,
+              "mean_spearman_risk_ranking": 0.8155421597978563
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01703599623009557,
+              "mean_aurc_regret": 0.00028809266219028545,
+              "mean_aurc_regret_mc_se": 7.211668476798847e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8115942028985507,
+              "mean_signed_score_error": -0.01703599623009557,
+              "mean_spearman_risk_ranking": 0.9452173913043478
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.016823669990077998,
+              "mean_aurc_regret": 0.0002545916712278981,
+              "mean_aurc_regret_mc_se": 8.769525344856089e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8446422341857261,
+              "mean_signed_score_error": -0.016823669990077998,
+              "mean_spearman_risk_ranking": 0.9571278789383846
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.017385126383571287,
+          "mean_true_risk_mc_se": 0.00016909934220328193
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0004199089892573975,
+        "mean_exact_tv": 0.9999158736592394,
+        "mean_paired_jaccard_transport_upper_bound": 0.3191849589059194,
+        "mean_paired_nhd_transport_upper_bound": 0.07275383856529405
+      },
+      "runtime_seconds": {
+        "maximum": 17.425216547970194,
+        "mean": 17.425216547970194
+      },
+      "sharpness": "sharp"
+    },
+    {
+      "coupling": "shared_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.009109989850211992,
+              "mean_aurc_regret": 0.0008464572247691149,
+              "mean_aurc_regret_mc_se": 0.000357479059103114,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": -0.0003792816516814725,
+              "mean_spearman_risk_ranking": 0.9782608695652173
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.009127177288430875,
+              "mean_aurc_regret": 0.0009117624048558537,
+              "mean_aurc_regret_mc_se": 0.00037254696419359933,
+              "mean_kendall_tau_b_risk_ranking": 0.891304347826087,
+              "mean_signed_score_error": -0.0004063679309207734,
+              "mean_spearman_risk_ranking": 0.9765217391304346
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03293051970442278,
+              "mean_aurc_regret": 0.0011773252885384222,
+              "mean_aurc_regret_mc_se": 0.0004509899221219927,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": 0.003479443157426624,
+              "mean_spearman_risk_ranking": 0.9695652173913042
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.009160750348140421,
+              "mean_aurc_regret": 0.0008341528529122177,
+              "mean_aurc_regret_mc_se": 0.00033126317271619843,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": -0.0003012783077176659,
+              "mean_spearman_risk_ranking": 0.9791304347826085
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.009424974418515962,
+              "mean_aurc_regret": 0.00088145462730288,
+              "mean_aurc_regret_mc_se": 0.0003393434602023145,
+              "mean_kendall_tau_b_risk_ranking": 0.891304347826087,
+              "mean_signed_score_error": 0.0006128946320146956,
+              "mean_spearman_risk_ranking": 0.9747826086956521
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0026385847239441054
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.008465936892785431,
+              "mean_aurc_regret": 0.0005971756206594181,
+              "mean_aurc_regret_mc_se": 0.0008855167206443257,
+              "mean_kendall_tau_b_risk_ranking": 0.8840579710144928,
+              "mean_signed_score_error": 0.00028493762938719874,
+              "mean_spearman_risk_ranking": 0.9713043478260868
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.09409364287171097,
+              "mean_aurc_regret": 0.009412497330338054,
+              "mean_aurc_regret_mc_se": 0.0014173388441221838,
+              "mean_kendall_tau_b_risk_ranking": 0.5417363388859614,
+              "mean_signed_score_error": -0.09409364287171097,
+              "mean_spearman_risk_ranking": 0.7425220537121338
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.011714017617287492,
+              "mean_aurc_regret": 0.0029371221013298476,
+              "mean_aurc_regret_mc_se": 0.0012150057310849351,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -0.002091695617658987,
+              "mean_spearman_risk_ranking": 0.9486956521739129
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.02953176405088448,
+              "mean_aurc_regret": 0.005895046557846895,
+              "mean_aurc_regret_mc_se": 0.0012440493638398355,
+              "mean_kendall_tau_b_risk_ranking": 0.6690953328763292,
+              "mean_signed_score_error": -0.0015304662313232562,
+              "mean_spearman_risk_ranking": 0.8521096934849157
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.002443586514344412
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.008501194837582833,
+              "mean_aurc_regret": 0.000560432501304331,
+              "mean_aurc_regret_mc_se": 0.0008805488428734779,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.0003135764470469082,
+              "mean_spearman_risk_ranking": 0.9739130434782608
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.09396676331479192,
+              "mean_aurc_regret": 0.011916112942051804,
+              "mean_aurc_regret_mc_se": 0.0014315431295491116,
+              "mean_kendall_tau_b_risk_ranking": 0.511237358145545,
+              "mean_signed_score_error": -0.09396676331479192,
+              "mean_spearman_risk_ranking": 0.7169152244301518
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.011472864538755637,
+              "mean_aurc_regret": 0.0028951104117094784,
+              "mean_aurc_regret_mc_se": 0.0012751104316534741,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -0.0017482635201552705,
+              "mean_spearman_risk_ranking": 0.9521739130434782
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.029146087652495434,
+              "mean_aurc_regret": 0.005348167888956534,
+              "mean_aurc_regret_mc_se": 0.001185698172868946,
+              "mean_kendall_tau_b_risk_ranking": 0.7028985507246377,
+              "mean_signed_score_error": -0.0008141512407665533,
+              "mean_spearman_risk_ranking": 0.8669565217391304
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.002447051585639491
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0,
+        "mean_exact_tv": 0.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.0,
+        "mean_paired_nhd_transport_upper_bound": 0.0
+      },
+      "runtime_seconds": {
+        "maximum": 28.38185598095879,
+        "mean": 28.38185598095879
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "shared_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.008169934003884141,
+              "mean_aurc_regret": 0.0012313491247671338,
+              "mean_aurc_regret_mc_se": 0.0004748828703228299,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.0026661220284251164,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.00815317665402386,
+              "mean_aurc_regret": 0.0012313491247671338,
+              "mean_aurc_regret_mc_se": 0.0004748828703228299,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.0025932640842320233,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.04099265415743834,
+              "mean_aurc_regret": 0.0009738986742950095,
+              "mean_aurc_regret_mc_se": 0.00046059309914988494,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": -0.039285931971659534,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.008034442087751193,
+              "mean_aurc_regret": 0.0012313491247671338,
+              "mean_aurc_regret_mc_se": 0.0004748828703228299,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.0020339511763025225,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.008453688714242147,
+              "mean_aurc_regret": 0.0009422548595617308,
+              "mean_aurc_regret_mc_se": 0.0006915197214372736,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.0033482744856408882,
+              "mean_spearman_risk_ranking": 0.9878260869565217
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.002025286309124619
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.003963755132645557,
+              "mean_aurc_regret": 0.00018509377561656132,
+              "mean_aurc_regret_mc_se": 0.00039788041827123685,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.0008438341922759246,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.024936725186763264,
+              "mean_aurc_regret": 0.0029397304097730503,
+              "mean_aurc_regret_mc_se": 0.0004932268755770404,
+              "mean_kendall_tau_b_risk_ranking": 0.6920461145363735,
+              "mean_signed_score_error": -0.024936725186763264,
+              "mean_spearman_risk_ranking": 0.8534979821983454
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005310542556612082,
+              "mean_aurc_regret": 0.00033592862108899196,
+              "mean_aurc_regret_mc_se": 0.0003553229872957767,
+              "mean_kendall_tau_b_risk_ranking": 0.891304347826087,
+              "mean_signed_score_error": -0.0009605353950129873,
+              "mean_spearman_risk_ranking": 0.9756521739130434
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.01483300296803085,
+              "mean_aurc_regret": 0.0013953825863204164,
+              "mean_aurc_regret_mc_se": 0.0006273955206295013,
+              "mean_kendall_tau_b_risk_ranking": 0.7551681925751643,
+              "mean_signed_score_error": -0.01292969046937374,
+              "mean_spearman_risk_ranking": 0.9039032287657993
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0011653620259363877
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.003956335200997057,
+              "mean_aurc_regret": 0.00019215549684543226,
+              "mean_aurc_regret_mc_se": 0.00044731524974939884,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.0007895129257617595,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.023985011818119212,
+              "mean_aurc_regret": 0.003056423452033004,
+              "mean_aurc_regret_mc_se": 0.0006702706516696465,
+              "mean_kendall_tau_b_risk_ranking": 0.6874009154267603,
+              "mean_signed_score_error": -0.023985011818119212,
+              "mean_spearman_risk_ranking": 0.8275034754717701
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005330486018636077,
+              "mean_aurc_regret": 0.0003555681851808157,
+              "mean_aurc_regret_mc_se": 0.00040703609397832035,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": -0.0009593278088591001,
+              "mean_spearman_risk_ranking": 0.9721739130434782
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.014364200372942268,
+              "mean_aurc_regret": 0.0017415145148306846,
+              "mean_aurc_regret_mc_se": 0.0005608830796971243,
+              "mean_kendall_tau_b_risk_ranking": 0.737245917623152,
+              "mean_signed_score_error": -0.012219343353489025,
+              "mean_spearman_risk_ranking": 0.9014151147255091
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0011663491099810194
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0,
+        "mean_exact_tv": 0.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.0,
+        "mean_paired_nhd_transport_upper_bound": 0.0
+      },
+      "runtime_seconds": {
+        "maximum": 20.797698136011604,
+        "mean": 20.797698136011604
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "shared_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.005216383288993427,
+              "mean_aurc_regret": 0.00022114722372834628,
+              "mean_aurc_regret_mc_se": 0.00037287035786374837,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 1.8655921641585912e-05,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.005221060087619765,
+              "mean_aurc_regret": 0.00027121550308129017,
+              "mean_aurc_regret_mc_se": 0.0003917800448034079,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": -0.0002864473587467821,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.027547293801852512,
+              "mean_aurc_regret": 0.00083084454589398,
+              "mean_aurc_regret_mc_se": 0.0002200772953517205,
+              "mean_kendall_tau_b_risk_ranking": 0.8768115942028986,
+              "mean_signed_score_error": -0.027547293801852512,
+              "mean_spearman_risk_ranking": 0.9686956521739128
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005328388855147676,
+              "mean_aurc_regret": 0.00022114722372834628,
+              "mean_aurc_regret_mc_se": 0.00037287035786374837,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.0015950078504047335,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.008310632886419317,
+              "mean_aurc_regret": 0.00026727071705953676,
+              "mean_aurc_regret_mc_se": 0.00038211290518974173,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.00795356977219745,
+              "mean_spearman_risk_ranking": 0.9817391304347826
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0011349630136504834
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0009842858425819748,
+              "mean_aurc_regret": 4.9671770471854115e-05,
+              "mean_aurc_regret_mc_se": 0.00011123004731420674,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449275,
+              "mean_signed_score_error": -0.0005457451887313822,
+              "mean_spearman_risk_ranking": 0.9556521739130434
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008702865122117846,
+              "mean_aurc_regret": 0.0008954121910806842,
+              "mean_aurc_regret_mc_se": 0.00010362851908570726,
+              "mean_kendall_tau_b_risk_ranking": 0.670355553940512,
+              "mean_signed_score_error": -0.008702865122117846,
+              "mean_spearman_risk_ranking": 0.8362201116497648
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0012252805085889212,
+              "mean_aurc_regret": 0.00012682094346531253,
+              "mean_aurc_regret_mc_se": 0.00012258485613092854,
+              "mean_kendall_tau_b_risk_ranking": 0.7608695652173914,
+              "mean_signed_score_error": -0.0007881271221534428,
+              "mean_spearman_risk_ranking": 0.9130434782608695
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.001539460550856205,
+              "mean_aurc_regret": 0.00039794402596695505,
+              "mean_aurc_regret_mc_se": 8.955736806214264e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7247538961956802,
+              "mean_signed_score_error": -0.0011922302463616748,
+              "mean_spearman_risk_ranking": 0.8714178696451399
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.00026888340022427086
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0010105647066503325,
+              "mean_aurc_regret": 9.673848096412863e-05,
+              "mean_aurc_regret_mc_se": 0.00011789232447065589,
+              "mean_kendall_tau_b_risk_ranking": 0.7971014492753623,
+              "mean_signed_score_error": -0.000523899788931613,
+              "mean_spearman_risk_ranking": 0.9382608695652173
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008008336094110747,
+              "mean_aurc_regret": 0.0017233568206334697,
+              "mean_aurc_regret_mc_se": 0.00019418598035611816,
+              "mean_kendall_tau_b_risk_ranking": 0.5493991853679282,
+              "mean_signed_score_error": -0.008008336094110747,
+              "mean_spearman_risk_ranking": 0.6822275281033461
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0010160130962871606,
+              "mean_aurc_regret": 8.600811814964485e-05,
+              "mean_aurc_regret_mc_se": 0.00011466627682518195,
+              "mean_kendall_tau_b_risk_ranking": 0.8188405797101449,
+              "mean_signed_score_error": -0.0006685775158792516,
+              "mean_spearman_risk_ranking": 0.9443478260869566
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0014347323020855616,
+              "mean_aurc_regret": 0.00019189845299117866,
+              "mean_aurc_regret_mc_se": 0.00011752624901581833,
+              "mean_kendall_tau_b_risk_ranking": 0.7495742770912287,
+              "mean_signed_score_error": -0.0004562512758616779,
+              "mean_spearman_risk_ranking": 0.9079439542817055
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.000268725582522922
+        }
+      },
+      "morphology": "disk",
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0,
+        "mean_exact_tv": 0.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.0,
+        "mean_paired_nhd_transport_upper_bound": 0.0
+      },
+      "runtime_seconds": {
+        "maximum": 12.517917889985256,
+        "mean": 12.517917889985256
+      },
+      "sharpness": "sharp"
+    }
+  ],
+  "headline_groups": [
+    {
+      "coupling": "bimodal_antithetic",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.05008010175727151,
+              "mean_aurc_regret": 0.0002475028986251848,
+              "mean_aurc_regret_mc_se": 0.00028536509891107946,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.05008010175727151,
+              "mean_spearman_risk_ranking": 0.9878260869565217
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0500530154780322,
+              "mean_aurc_regret": 0.0002534582783336736,
+              "mean_aurc_regret_mc_se": 0.0002804464523556444,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.0500530154780322,
+              "mean_spearman_risk_ranking": 0.9869565217391304
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.05572275009862909,
+              "mean_aurc_regret": 0.0006052754353492729,
+              "mean_aurc_regret_mc_se": 0.0003644918932202043,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.053938826566379605,
+              "mean_spearman_risk_ranking": 0.9808695652173912
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.05015810510123531,
+              "mean_aurc_regret": 0.00022818960019654888,
+              "mean_aurc_regret_mc_se": 0.0002874033436754809,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.05015810510123531,
+              "mean_spearman_risk_ranking": 0.988695652173913
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.05107227804096768,
+              "mean_aurc_regret": 0.0002203001447715902,
+              "mean_aurc_regret_mc_se": 0.00034145804454625633,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.05107227804096768,
+              "mean_spearman_risk_ranking": 0.9895652173913043
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.05334627929607927,
+          "mean_true_risk_mc_se": 0.0020654500191635747
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0756447322183872,
+              "mean_aurc_regret": 0.002919595208133327,
+              "mean_aurc_regret_mc_se": 0.00048771214735305435,
+              "mean_kendall_tau_b_risk_ranking": 0.5,
+              "mean_signed_score_error": 0.0756447322183872,
+              "mean_spearman_risk_ranking": 0.6913043478260869
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.01873384828271098,
+              "mean_aurc_regret": 0.00047588683280161415,
+              "mean_aurc_regret_mc_se": 0.00024013991097094657,
+              "mean_kendall_tau_b_risk_ranking": 0.8577492032361056,
+              "mean_signed_score_error": -0.01873384828271098,
+              "mean_spearman_risk_ranking": 0.9547337190335154
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.07326809897134101,
+              "mean_aurc_regret": 0.0027784874208845872,
+              "mean_aurc_regret_mc_se": 0.0004413620169163937,
+              "mean_kendall_tau_b_risk_ranking": 0.5217391304347826,
+              "mean_signed_score_error": 0.07326809897134101,
+              "mean_spearman_risk_ranking": 0.6878260869565217
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.07610638394920329,
+              "mean_aurc_regret": 0.0010438134190630388,
+              "mean_aurc_regret_mc_se": 0.0003185431867073375,
+              "mean_kendall_tau_b_risk_ranking": 0.7418230864498432,
+              "mean_signed_score_error": 0.07382932835767674,
+              "mean_spearman_risk_ranking": 0.8929970396756161
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.07621707292502918,
+          "mean_true_risk_mc_se": 0.0006754182011397964
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.07793859130809962,
+              "mean_aurc_regret": 0.0025005335339387535,
+              "mean_aurc_regret_mc_se": 0.00044135888848525844,
+              "mean_kendall_tau_b_risk_ranking": 0.5144927536231884,
+              "mean_signed_score_error": 0.07793859130809962,
+              "mean_spearman_risk_ranking": 0.706086956521739
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.016341748453739213,
+              "mean_aurc_regret": 0.0006665195933872187,
+              "mean_aurc_regret_mc_se": 0.00034151534983055973,
+              "mean_kendall_tau_b_risk_ranking": 0.8446530265013353,
+              "mean_signed_score_error": -0.016341748453739213,
+              "mean_spearman_risk_ranking": 0.9480231791672331
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.07587675134089744,
+              "mean_aurc_regret": 0.0024140254416995244,
+              "mean_aurc_regret_mc_se": 0.00042545212448348173,
+              "mean_kendall_tau_b_risk_ranking": 0.5072463768115942,
+              "mean_signed_score_error": 0.07587675134089744,
+              "mean_spearman_risk_ranking": 0.6747826086956521
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.07766695304173364,
+              "mean_aurc_regret": 0.000840838505238875,
+              "mean_aurc_regret_mc_se": 0.00027559512003249957,
+              "mean_kendall_tau_b_risk_ranking": 0.6956521739130435,
+              "mean_signed_score_error": 0.07681086362028615,
+              "mean_spearman_risk_ranking": 0.8791304347826084
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.07803731641377794,
+          "mean_true_risk_mc_se": 0.000634956667517769
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.09750546193686234,
+        "mean_exact_tv": 0.9932954935593127,
+        "mean_paired_jaccard_transport_upper_bound": 0.5268016129375709,
+        "mean_paired_nhd_transport_upper_bound": 0.2386345232544332
+      },
+      "runtime_seconds": {
+        "maximum": 25.597699915000703,
+        "mean": 25.597699915000703
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "bimodal_antithetic",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.02518354556053727,
+              "mean_aurc_regret": 0.0006680326900461442,
+              "mean_aurc_regret_mc_se": 0.00029519475101986244,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.02518354556053727,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.025110687616344177,
+              "mean_aurc_regret": 0.0006680326900461442,
+              "mean_aurc_regret_mc_se": 0.00029519475101986244,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.025110687616344177,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.02357218962896816,
+              "mean_aurc_regret": 0.0006126229071576617,
+              "mean_aurc_regret_mc_se": 0.00034130673278800924,
+              "mean_kendall_tau_b_risk_ranking": 0.9420289855072465,
+              "mean_signed_score_error": -0.016768508439547383,
+              "mean_spearman_risk_ranking": 0.988695652173913
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.024551374708414675,
+              "mean_aurc_regret": 0.0006680326900461442,
+              "mean_aurc_regret_mc_se": 0.00029519475101986244,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.024551374708414675,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.019555317637831197,
+              "mean_aurc_regret": 0.0004566588850487274,
+              "mean_aurc_regret_mc_se": 0.00040871581721010057,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.019169149046471264,
+              "mean_spearman_risk_ranking": 0.988695652173913
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.02537815267509681,
+          "mean_true_risk_mc_se": 0.0016475631712133097
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.015925950103770913,
+              "mean_aurc_regret": 0.0005202532804613261,
+              "mean_aurc_regret_mc_se": 0.00012762570132817817,
+              "mean_kendall_tau_b_risk_ranking": 0.7463768115942029,
+              "mean_signed_score_error": 0.01591164049549572,
+              "mean_spearman_risk_ranking": 0.8947826086956522
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.009970427263937683,
+              "mean_aurc_regret": 0.0009670833246477051,
+              "mean_aurc_regret_mc_se": 0.00016593182438024622,
+              "mean_kendall_tau_b_risk_ranking": 0.8194165650645404,
+              "mean_signed_score_error": -0.00986891888354347,
+              "mean_spearman_risk_ranking": 0.9261556768035923
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01504525510474596,
+              "mean_aurc_regret": 0.0006215457021000667,
+              "mean_aurc_regret_mc_se": 0.00014192836878764174,
+              "mean_kendall_tau_b_risk_ranking": 0.7318840579710145,
+              "mean_signed_score_error": 0.014107270908206807,
+              "mean_spearman_risk_ranking": 0.868695652173913
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0070333347031357255,
+              "mean_aurc_regret": 0.0001415730495652398,
+              "mean_aurc_regret_mc_se": 0.00014192720511965138,
+              "mean_kendall_tau_b_risk_ranking": 0.8877830946859249,
+              "mean_signed_score_error": 0.0021381158338460524,
+              "mean_spearman_risk_ranking": 0.9731995707975071
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.01594187705310886,
+          "mean_true_risk_mc_se": 0.0003703808732264732
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0164150341933723,
+              "mean_aurc_regret": 0.0005125595911018299,
+              "mean_aurc_regret_mc_se": 0.00012172655581190334,
+              "mean_kendall_tau_b_risk_ranking": 0.7318840579710145,
+              "mean_signed_score_error": 0.01640183891222421,
+              "mean_spearman_risk_ranking": 0.8965217391304346
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008372685831656753,
+              "mean_aurc_regret": 0.0005033930493017341,
+              "mean_aurc_regret_mc_se": 0.0001577718229044677,
+              "mean_kendall_tau_b_risk_ranking": 0.850099356947887,
+              "mean_signed_score_error": -0.008372685831656753,
+              "mean_spearman_risk_ranking": 0.9449439250474582
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.015312663977603785,
+              "mean_aurc_regret": 0.0006023505681169994,
+              "mean_aurc_regret_mc_se": 0.0001189765003568542,
+              "mean_kendall_tau_b_risk_ranking": 0.717391304347826,
+              "mean_signed_score_error": 0.014652998177603354,
+              "mean_spearman_risk_ranking": 0.8739130434782607
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0062743580005158416,
+              "mean_aurc_regret": 0.0001496168318479707,
+              "mean_aurc_regret_mc_se": 0.00013514992643012946,
+              "mean_kendall_tau_b_risk_ranking": 0.861336814648831,
+              "mean_signed_score_error": 0.003392982632973428,
+              "mean_spearman_risk_ranking": 0.9632214625241678
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.01604733302044779,
+          "mean_true_risk_mc_se": 0.00035969334560501744
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.01929299277010964,
+        "mean_exact_tv": 0.9919282176644177,
+        "mean_paired_jaccard_transport_upper_bound": 0.38124987082600387,
+        "mean_paired_nhd_transport_upper_bound": 0.11563080201449831
+      },
+      "runtime_seconds": {
+        "maximum": 25.869496366998646,
+        "mean": 25.869496366998646
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "bimodal_antithetic",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.007112750279415554,
+              "mean_aurc_regret": 0.0001770265022389278,
+              "mean_aurc_regret_mc_se": 0.00028370355791151023,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.00543824702989245,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0069431477662819895,
+              "mean_aurc_regret": 0.00022364302551718118,
+              "mean_aurc_regret_mc_se": 0.00029780449556900975,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.005133143749504081,
+              "mean_spearman_risk_ranking": 0.9817391304347826
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.022127702693601647,
+              "mean_aurc_regret": 0.0007942958511396037,
+              "mean_aurc_regret_mc_se": 0.00015148447286464034,
+              "mean_kendall_tau_b_risk_ranking": 0.8623188405797101,
+              "mean_signed_score_error": -0.022127702693601647,
+              "mean_spearman_risk_ranking": 0.9660869565217389
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.00632871443735798,
+              "mean_aurc_regret": 0.0001770265022389278,
+              "mean_aurc_regret_mc_se": 0.00028370355791151023,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.0038245832578461298,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.005466887394848759,
+              "mean_aurc_regret": 0.00022579635181961544,
+              "mean_aurc_regret_mc_se": 0.00027949318626110394,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.002533978663946586,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.008399192393859644,
+          "mean_true_risk_mc_se": 0.0009935258306004644
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.000919591489366323,
+              "mean_aurc_regret": 6.732938882518524e-05,
+              "mean_aurc_regret_mc_se": 6.747078158754497e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": -0.0001186942201896685,
+              "mean_spearman_risk_ranking": 0.9660869565217389
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008275814153576132,
+              "mean_aurc_regret": 0.0008397318521874628,
+              "mean_aurc_regret_mc_se": 7.855813267372172e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7333419818275401,
+              "mean_signed_score_error": -0.008275814153576132,
+              "mean_spearman_risk_ranking": 0.8751803668516288
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0011772693068672739,
+              "mean_aurc_regret": 0.0001504770415544851,
+              "mean_aurc_regret_mc_se": 7.182362273336536e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.0003610761536117291,
+              "mean_spearman_risk_ranking": 0.9252173913043478
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0013408582924464216,
+              "mean_aurc_regret": 0.00046248118937346205,
+              "mean_aurc_regret_mc_se": 4.3650602164242e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7089122809782883,
+              "mean_signed_score_error": -0.0007651792778199611,
+              "mean_spearman_risk_ranking": 0.864697423349676
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0011354175232531506,
+          "mean_true_risk_mc_se": 0.00017286935113577505
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0008243524866079162,
+              "mean_aurc_regret": 9.156968920570607e-05,
+              "mean_aurc_regret_mc_se": 6.967557847893276e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -5.942097119571744e-07,
+              "mean_spearman_risk_ranking": 0.954782608695652
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.007485030514891092,
+              "mean_aurc_regret": 0.001389169420570515,
+              "mean_aurc_regret_mc_se": 0.0001573044888544042,
+              "mean_kendall_tau_b_risk_ranking": 0.6168692607639895,
+              "mean_signed_score_error": -0.007485030514891092,
+              "mean_spearman_risk_ranking": 0.77059896956751
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0008528708261668913,
+              "mean_aurc_regret": 9.680289702559963e-05,
+              "mean_aurc_regret_mc_se": 7.204512834736142e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449275,
+              "mean_signed_score_error": -0.0001452719366595957,
+              "mean_spearman_risk_ranking": 0.9521739130434782
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0013563435087492325,
+              "mean_aurc_regret": 0.00018788901281302506,
+              "mean_aurc_regret_mc_se": 7.488136175266076e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7642001166442284,
+              "mean_signed_score_error": 6.70543033579779e-05,
+              "mean_spearman_risk_ranking": 0.9223074013053374
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0011594193944759437,
+          "mean_true_risk_mc_se": 0.00016896161584226515
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0004199091428866153,
+        "mean_exact_tv": 0.9682548658544218,
+        "mean_paired_jaccard_transport_upper_bound": 0.229388141425634,
+        "mean_paired_nhd_transport_upper_bound": 0.05625511112251306
+      },
+      "runtime_seconds": {
+        "maximum": 16.148599892039783,
+        "mean": 16.148599892039783
+      },
+      "sharpness": "sharp"
+    },
+    {
+      "coupling": "independent_bernoulli",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.015226852910160888,
+              "mean_aurc_regret": 0.000585362607933404,
+              "mean_aurc_regret_mc_se": 3.5757252938347205e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.01162387424867267,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.015218001014418614,
+              "mean_aurc_regret": 0.0005575560403077162,
+              "mean_aurc_regret_mc_se": 3.350304525943906e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.01159678796943337,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.02978254640644092,
+              "mean_aurc_regret": 0.0013105938658711236,
+              "mean_aurc_regret_mc_se": 4.810258520675453e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.015482599057780766,
+              "mean_spearman_risk_ranking": 0.9756521739130434
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.015350940175308414,
+              "mean_aurc_regret": 0.0005901081621778603,
+              "mean_aurc_regret_mc_se": 3.864822397675814e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.011701877592636476,
+              "mean_spearman_risk_ranking": 0.9843478260869565
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.015557030363216906,
+              "mean_aurc_regret": 0.0004872715708775788,
+              "mean_aurc_regret_mc_se": 3.2379188007749156e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.012616050532368838,
+              "mean_spearman_risk_ranking": 0.9878260869565217
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.22243259196213105,
+          "mean_true_risk_mc_se": 0.0002238299781839527
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.09446470213652648,
+              "mean_aurc_regret": 0.0012065677518035833,
+              "mean_aurc_regret_mc_se": 0.00011669495865259621,
+              "mean_kendall_tau_b_risk_ranking": 0.7898550724637681,
+              "mean_signed_score_error": -0.09446470213652648,
+              "mean_spearman_risk_ranking": 0.9365217391304346
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.18884328263762465,
+              "mean_aurc_regret": 0.008654798203305308,
+              "mean_aurc_regret_mc_se": 0.0002466753965154531,
+              "mean_kendall_tau_b_risk_ranking": 0.4288746016180528,
+              "mean_signed_score_error": -0.18884328263762465,
+              "mean_spearman_risk_ranking": 0.5670645737247645
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.09684133538357269,
+              "mean_aurc_regret": 0.0031738648245943357,
+              "mean_aurc_regret_mc_se": 0.00024238873253179554,
+              "mean_kendall_tau_b_risk_ranking": 0.782608695652174,
+              "mean_signed_score_error": -0.09684133538357269,
+              "mean_spearman_risk_ranking": 0.9252173913043478
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.09628010599723692,
+              "mean_aurc_regret": 0.005977899282952531,
+              "mean_aurc_regret_mc_se": 0.0002526747395535811,
+              "mean_kendall_tau_b_risk_ranking": 0.5527309271587066,
+              "mean_signed_score_error": -0.09628010599723692,
+              "mean_spearman_risk_ranking": 0.7177034171771878
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.2213856806796445,
+          "mean_true_risk_mc_se": 0.00028849710778169223
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.024151654178723937,
+              "mean_aurc_regret": 0.0003044818281126016,
+              "mean_aurc_regret_mc_se": 1.5818170987155485e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": 0.005251097775836388,
+              "mean_spearman_risk_ranking": 0.9669565217391304
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.08902924198600244,
+              "mean_aurc_regret": 0.007413862894960099,
+              "mean_aurc_regret_mc_se": 0.00012415084331740984,
+              "mean_kendall_tau_b_risk_ranking": 0.40750803910152145,
+              "mean_signed_score_error": -0.08902924198600244,
+              "mean_spearman_risk_ranking": 0.5417275309527047
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.023583588435366537,
+              "mean_aurc_regret": 0.0011842193879433305,
+              "mean_aurc_regret_mc_se": 4.90204167655634e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": 0.003189257808634209,
+              "mean_spearman_risk_ranking": 0.9530434782608694
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.039113844660406925,
+              "mean_aurc_regret": 0.003280039680173069,
+              "mean_aurc_regret_mc_se": 6.105382299359026e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.5869565217391304,
+              "mean_signed_score_error": 0.004123370088022926,
+              "mean_spearman_risk_ranking": 0.7460869565217391
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.15766388475434337,
+          "mean_true_risk_mc_se": 0.00010912973922956751
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.09750546193686234,
+        "mean_exact_tv": 1.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.7050639512121606,
+        "mean_paired_nhd_transport_upper_bound": 0.35942147519756235
+      },
+      "runtime_seconds": {
+        "maximum": 26.982100521971006,
+        "mean": 26.982100521971006
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "independent_bernoulli",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.006144205637810831,
+              "mean_aurc_regret": 0.0,
+              "mean_aurc_regret_mc_se": 1.9694758168560876e-05,
+              "mean_kendall_tau_b_risk_ranking": 1.0,
+              "mean_signed_score_error": 0.005692920707867564,
+              "mean_spearman_risk_ranking": 0.9999999999999999
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.006031592207012572,
+              "mean_aurc_regret": 0.0,
+              "mean_aurc_regret_mc_se": 1.9694758168560876e-05,
+              "mean_kendall_tau_b_risk_ranking": 1.0,
+              "mean_signed_score_error": 0.00562006276367447,
+              "mean_spearman_risk_ranking": 0.9999999999999999
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03625913329221709,
+              "mean_aurc_regret": 0.00019914261303866088,
+              "mean_aurc_regret_mc_se": 2.86603999817756e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9492753623188406,
+              "mean_signed_score_error": -0.03625913329221709,
+              "mean_spearman_risk_ranking": 0.9921739130434782
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005569712666618979,
+              "mean_aurc_regret": 0.0,
+              "mean_aurc_regret_mc_se": 1.9694758168560876e-05,
+              "mean_kendall_tau_b_risk_ranking": 1.0,
+              "mean_signed_score_error": 0.00506074985574497,
+              "mean_spearman_risk_ranking": 0.9999999999999999
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.00472000177928317,
+              "mean_aurc_regret": 9.910436672333489e-05,
+              "mean_aurc_regret_mc_se": 2.6181437830488067e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9710144927536233,
+              "mean_signed_score_error": -0.00032147580619844063,
+              "mean_spearman_risk_ranking": 0.9956521739130434
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.15559707149526322,
+          "mean_true_risk_mc_se": 0.0002184705711149766
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.1040889684243889,
+              "mean_aurc_regret": 0.0009326421517591443,
+              "mean_aurc_regret_mc_se": 0.00014214283595548368,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -0.1040889684243889,
+              "mean_spearman_risk_ranking": 0.954782608695652
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.1298695278034281,
+              "mean_aurc_regret": 0.00367904021268714,
+              "mean_aurc_regret_mc_se": 0.0001600827741195794,
+              "mean_kendall_tau_b_risk_ranking": 0.793942474958907,
+              "mean_signed_score_error": -0.1298695278034281,
+              "mean_spearman_risk_ranking": 0.9096007590454348
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.10589333801167783,
+              "mean_aurc_regret": 0.0009032279007020472,
+              "mean_aurc_regret_mc_se": 7.8038548831352e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8478260869565217,
+              "mean_signed_score_error": -0.10589333801167783,
+              "mean_spearman_risk_ranking": 0.9478260869565217
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.11786249308603858,
+              "mean_aurc_regret": 0.0005329032651165411,
+              "mean_aurc_regret_mc_se": 7.655137664548496e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8362106327539625,
+              "mean_signed_score_error": -0.11786249308603858,
+              "mean_spearman_risk_ranking": 0.9535873985243821
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.13054015927094176,
+          "mean_true_risk_mc_se": 0.0002971707894401762
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.030550276601112373,
+              "mean_aurc_regret": 0.0008585048521809746,
+              "mean_aurc_regret_mc_se": 4.4460509809802356e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.0294561905248053,
+              "mean_spearman_risk_ranking": 0.9199999999999999
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.05423071526868627,
+              "mean_aurc_regret": 0.0011641361277876239,
+              "mean_aurc_regret_mc_se": 2.1571319420488507e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.850099356947887,
+              "mean_signed_score_error": -0.05423071526868627,
+              "mean_spearman_risk_ranking": 0.9449439250474582
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.033409836212819455,
+              "mean_aurc_regret": 0.0008367871521042652,
+              "mean_aurc_regret_mc_se": 4.4081387235006315e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.03120503125942616,
+              "mean_spearman_risk_ranking": 0.906086956521739
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.04463346673643282,
+              "mean_aurc_regret": 0.00024140568289725273,
+              "mean_aurc_regret_mc_se": 2.074072210382102e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.861336814648831,
+              "mean_signed_score_error": -0.042465046804056085,
+              "mean_spearman_risk_ranking": 0.9614804386425154
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.06477222697106892,
+          "mean_true_risk_mc_se": 0.000102398091901332
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.01929299277010964,
+        "mean_exact_tv": 1.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.5406787159544415,
+        "mean_paired_nhd_transport_upper_bound": 0.2120283867726378
+      },
+      "runtime_seconds": {
+        "maximum": 21.428198070032522,
+        "mean": 21.428198070032522
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "independent_bernoulli",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.0022742718866503135,
+              "mean_aurc_regret": 2.1409125276594665e-05,
+              "mean_aurc_regret_mc_se": 6.75718746628696e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9782608695652174,
+              "mean_signed_score_error": 0.0022672139253485137,
+              "mean_spearman_risk_ranking": 0.997391304347826
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0020583158125827244,
+              "mean_aurc_regret": 1.379578824289851e-05,
+              "mean_aurc_regret_mc_se": 9.223856567434935e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9855072463768115,
+              "mean_signed_score_error": 0.0019621106449601456,
+              "mean_spearman_risk_ranking": 0.9982608695652172
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.025298735798145584,
+              "mean_aurc_regret": 0.00038415295792304516,
+              "mean_aurc_regret_mc_se": 3.525414472086431e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": -0.025298735798145584,
+              "mean_spearman_risk_ranking": 0.9843478260869565
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.00120824025555188,
+              "mean_aurc_regret": 2.1409125276594665e-05,
+              "mean_aurc_regret_mc_se": 6.75718746628696e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9782608695652174,
+              "mean_signed_score_error": 0.0006535501533021943,
+              "mean_spearman_risk_ranking": 0.997391304347826
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0057050117684905215,
+              "mean_aurc_regret": 3.3326776842770856e-05,
+              "mean_aurc_regret_mc_se": 5.4351887045062536e-06,
+              "mean_kendall_tau_b_risk_ranking": 0.9782608695652174,
+              "mean_signed_score_error": -0.0057050117684905215,
+              "mean_spearman_risk_ranking": 0.9965217391304346
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.07779298629343566,
+          "mean_true_risk_mc_se": 0.00015624833364138535
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.05196850717271966,
+              "mean_aurc_regret": 0.0004546789465846718,
+              "mean_aurc_regret_mc_se": 4.9427925910841664e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7971014492753623,
+              "mean_signed_score_error": -0.05196850717271966,
+              "mean_spearman_risk_ranking": 0.9417391304347826
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.06012562710610613,
+              "mean_aurc_regret": 0.003163779608203049,
+              "mean_aurc_regret_mc_se": 0.00010956359229012409,
+              "mean_kendall_tau_b_risk_ranking": 0.760336165207695,
+              "mean_signed_score_error": -0.06012562710610613,
+              "mean_spearman_risk_ranking": 0.8918097440719367
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.052210889106141724,
+              "mean_aurc_regret": 0.0006179918293506698,
+              "mean_aurc_regret_mc_se": 4.8539367036288444e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8188405797101449,
+              "mean_signed_score_error": -0.052210889106141724,
+              "mean_spearman_risk_ranking": 0.9426086956521739
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.052614992230349954,
+              "mean_aurc_regret": 0.002068969689113187,
+              "mean_aurc_regret_mc_se": 3.297562778245371e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.76435793423916,
+              "mean_signed_score_error": -0.052614992230349954,
+              "mean_spearman_risk_ranking": 0.8893390597663767
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.052313383128574385,
+          "mean_true_risk_mc_se": 0.00018881211032891086
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.017419418087575342,
+              "mean_aurc_regret": 0.00022213661035803967,
+              "mean_aurc_regret_mc_se": 2.411842400614043e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8768115942028986,
+              "mean_signed_score_error": -0.017419418087575342,
+              "mean_spearman_risk_ranking": 0.9721739130434782
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.024903854392754474,
+              "mean_aurc_regret": 0.002932539092497591,
+              "mean_aurc_regret_mc_se": 5.5739849740042344e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.6747007539606136,
+              "mean_signed_score_error": -0.024903854392754474,
+              "mean_spearman_risk_ranking": 0.8074624851497041
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01756409581452298,
+              "mean_aurc_regret": 0.0002650806090906191,
+              "mean_aurc_regret_mc_se": 2.2732470395269115e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449275,
+              "mean_signed_score_error": -0.01756409581452298,
+              "mean_spearman_risk_ranking": 0.9565217391304346
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.017351769574505405,
+              "mean_aurc_regret": 0.00025586343756751895,
+              "mean_aurc_regret_mc_se": 2.061617308395195e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8519551539622259,
+              "mean_signed_score_error": -0.017351769574505405,
+              "mean_spearman_risk_ranking": 0.958868902820037
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.02024092475012629,
+          "mean_true_risk_mc_se": 6.864255009275044e-05
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0004199091428866153,
+        "mean_exact_tv": 0.9999999999999994,
+        "mean_paired_jaccard_transport_upper_bound": 0.32289090977261353,
+        "mean_paired_nhd_transport_upper_bound": 0.10023600654444431
+      },
+      "runtime_seconds": {
+        "maximum": 25.120156493998365,
+        "mean": 25.120156493998365
+      },
+      "sharpness": "sharp"
+    },
+    {
+      "coupling": "local_block_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.015566798700485301,
+              "mean_aurc_regret": 0.0005895728207791495,
+              "mean_aurc_regret_mc_se": 0.00024080697373435322,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": 0.012173255817773584,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.015574662119820002,
+              "mean_aurc_regret": 0.0005636333793283543,
+              "mean_aurc_regret_mc_se": 0.0002337080397345565,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.012146169538534283,
+              "mean_spearman_risk_ranking": 0.983478260869565
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.031069809709106527,
+              "mean_aurc_regret": 0.0013269098747636932,
+              "mean_aurc_regret_mc_se": 0.00020820237226006657,
+              "mean_kendall_tau_b_risk_ranking": 0.8840579710144928,
+              "mean_signed_score_error": 0.01603198062688168,
+              "mean_spearman_risk_ranking": 0.9660869565217389
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01567285191291953,
+              "mean_aurc_regret": 0.0005958927643083811,
+              "mean_aurc_regret_mc_se": 0.0002468689056174935,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.01225125916173739,
+              "mean_spearman_risk_ranking": 0.9817391304347826
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.015606467778723905,
+              "mean_aurc_regret": 0.0005828607105981543,
+              "mean_aurc_regret_mc_se": 0.00018235812406205672,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.013165432101469752,
+              "mean_spearman_risk_ranking": 0.9799999999999999
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.14294474993032777,
+          "mean_true_risk_mc_se": 0.0011581477276314265
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.030021280296217468,
+              "mean_aurc_regret": 0.001498700311746315,
+              "mean_aurc_regret_mc_se": 0.00015378697457098445,
+              "mean_kendall_tau_b_risk_ranking": 0.7898550724637681,
+              "mean_signed_score_error": -0.006582659936835975,
+              "mean_spearman_risk_ranking": 0.9113043478260868
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.10096124043793415,
+              "mean_aurc_regret": 0.0011860132709496651,
+              "mean_aurc_regret_mc_se": 0.00013825045983416884,
+              "mean_kendall_tau_b_risk_ranking": 0.6997427710610334,
+              "mean_signed_score_error": -0.10096124043793415,
+              "mean_spearman_risk_ranking": 0.8672237539525333
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.03137354701629019,
+              "mean_aurc_regret": 0.001950656655883537,
+              "mean_aurc_regret_mc_se": 0.00024124513830394903,
+              "mean_kendall_tau_b_risk_ranking": 0.7101449275362319,
+              "mean_signed_score_error": -0.008959293183882161,
+              "mean_spearman_risk_ranking": 0.8791304347826084
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.03863215355957389,
+              "mean_aurc_regret": 0.0011005966348300866,
+              "mean_aurc_regret_mc_se": 0.0002636444202416234,
+              "mean_kendall_tau_b_risk_ranking": 0.7418230864498432,
+              "mean_signed_score_error": -0.008398063797546429,
+              "mean_spearman_risk_ranking": 0.8964768138195054
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.14448871347476464,
+          "mean_true_risk_mc_se": 0.0005064212216443561
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.02876124464004488,
+              "mean_aurc_regret": 0.0005114418215646233,
+              "mean_aurc_regret_mc_se": 5.2433526886714255e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8550724637681159,
+              "mean_signed_score_error": 0.013876188738621226,
+              "mean_spearman_risk_ranking": 0.9556521739130434
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.0804041510232176,
+              "mean_aurc_regret": 0.0036961968532919776,
+              "mean_aurc_regret_mc_se": 0.0002666810886755825,
+              "mean_kendall_tau_b_risk_ranking": 0.563102017667557,
+              "mean_signed_score_error": -0.0804041510232176,
+              "mean_spearman_risk_ranking": 0.76016605149815
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.02797367154102842,
+              "mean_aurc_regret": 0.00130451725695932,
+              "mean_aurc_regret_mc_se": 0.0002503636512613339,
+              "mean_kendall_tau_b_risk_ranking": 0.8043478260869565,
+              "mean_signed_score_error": 0.011814348771419047,
+              "mean_spearman_risk_ranking": 0.9295652173913044
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.045007275644441604,
+              "mean_aurc_regret": 0.0016250581221101401,
+              "mean_aurc_regret_mc_se": 0.0002850748035989702,
+              "mean_kendall_tau_b_risk_ranking": 0.7318840579710145,
+              "mean_signed_score_error": 0.012748461050807763,
+              "mean_spearman_risk_ranking": 0.886086956521739
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.13197353590863645,
+          "mean_true_risk_mc_se": 0.0004608671346891407
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.09745213279578042,
+        "mean_exact_tv": 0.9999125836144364,
+        "mean_paired_jaccard_transport_upper_bound": 0.6994290316901095,
+        "mean_paired_nhd_transport_upper_bound": 0.2949416161706827
+      },
+      "runtime_seconds": {
+        "maximum": 27.906738472054712,
+        "mean": 27.906738472054712
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "local_block_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.006664227878689603,
+              "mean_aurc_regret": 0.00013186133536283173,
+              "mean_aurc_regret_mc_se": 0.00011979343744298754,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.004593302555879065,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.0065704930055242835,
+              "mean_aurc_regret": 0.00013186133536283173,
+              "mean_aurc_regret_mc_se": 0.00011979343744298754,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.004520444611685971,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.037358751444205585,
+              "mean_aurc_regret": 0.0005470056082050034,
+              "mean_aurc_regret_mc_se": 8.419367172147214e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": -0.037358751444205585,
+              "mean_spearman_risk_ranking": 0.9765217391304346
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.006372644704554755,
+              "mean_aurc_regret": 0.00013186133536283173,
+              "mean_aurc_regret_mc_se": 0.00011979343744298754,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 0.00396113170375647,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.006965240663277574,
+              "mean_aurc_regret": 0.00015116660259659187,
+              "mean_aurc_regret_mc_se": 0.0001038516943803855,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": -0.0014210939581869402,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.10012980627562203,
+          "mean_true_risk_mc_se": 0.0008872753200487822
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.03945524987466329,
+              "mean_aurc_regret": 0.0017994743648769573,
+              "mean_aurc_regret_mc_se": 0.00023250072081955846,
+              "mean_kendall_tau_b_risk_ranking": 0.6956521739130435,
+              "mean_signed_score_error": -0.03758628202114408,
+              "mean_spearman_risk_ranking": 0.8695652173913043
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.06336684140018325,
+              "mean_aurc_regret": 0.0023221109761444314,
+              "mean_aurc_regret_mc_se": 0.00019848616907831165,
+              "mean_kendall_tau_b_risk_ranking": 0.810925201695996,
+              "mean_signed_score_error": -0.06336684140018325,
+              "mean_spearman_risk_ranking": 0.9215570885374375
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.04240379520468502,
+              "mean_aurc_regret": 0.0018366109782976536,
+              "mean_aurc_regret_mc_se": 0.00023762334243441482,
+              "mean_kendall_tau_b_risk_ranking": 0.6956521739130435,
+              "mean_signed_score_error": -0.03939065160843298,
+              "mean_spearman_risk_ranking": 0.8504347826086956
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.05421448577316088,
+              "mean_aurc_regret": 0.0007392215825251236,
+              "mean_aurc_regret_mc_se": 0.00014154389713203963,
+              "mean_kendall_tau_b_risk_ranking": 0.8583131164390893,
+              "mean_signed_score_error": -0.05135980668279374,
+              "mean_spearman_risk_ranking": 0.9614322674336321
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.06621337004049667,
+          "mean_true_risk_mc_se": 0.00035617639837320675
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.02691505494013488,
+              "mean_aurc_regret": 0.0008410660933981379,
+              "mean_aurc_regret_mc_se": 0.00014934455075468604,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.024045797839112756,
+              "mean_spearman_risk_ranking": 0.9043478260869565
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.048820322582993715,
+              "mean_aurc_regret": 0.0011737251353872158,
+              "mean_aurc_regret_mc_se": 0.0001037586299310079,
+              "mean_kendall_tau_b_risk_ranking": 0.8419644348718306,
+              "mean_signed_score_error": -0.048820322582993715,
+              "mean_spearman_risk_ranking": 0.9444922310106284
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.030353047022676688,
+              "mean_aurc_regret": 0.0009268060556382185,
+              "mean_aurc_regret_mc_se": 0.0001391676064597758,
+              "mean_kendall_tau_b_risk_ranking": 0.7753623188405797,
+              "mean_signed_score_error": -0.025794638573733614,
+              "mean_spearman_risk_ranking": 0.8852173913043477
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.04094859475640992,
+              "mean_aurc_regret": 0.00019358069659811128,
+              "mean_aurc_regret_mc_se": 7.147096612817722e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8978341373034425,
+              "mean_signed_score_error": -0.03705465411836354,
+              "mean_spearman_risk_ranking": 0.9714913259620165
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.05351987183448207,
+          "mean_true_risk_mc_se": 0.0003322875738801747
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0192828937142562,
+        "mean_exact_tv": 0.9999711427657041,
+        "mean_paired_jaccard_transport_upper_bound": 0.5339367464949758,
+        "mean_paired_nhd_transport_upper_bound": 0.15279352677017302
+      },
+      "runtime_seconds": {
+        "maximum": 24.14121355302632,
+        "mean": 24.14121355302632
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "local_block_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.0025017753583371446,
+              "mean_aurc_regret": 5.122735214291296e-05,
+              "mean_aurc_regret_mc_se": 4.392938413554763e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9710144927536233,
+              "mean_signed_score_error": 0.0022202870549064,
+              "mean_spearman_risk_ranking": 0.9956521739130434
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.002286366108447777,
+              "mean_aurc_regret": 6.139229567354854e-05,
+              "mean_aurc_regret_mc_se": 4.676104576390731e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9637681159420289,
+              "mean_signed_score_error": 0.0019151837745180322,
+              "mean_spearman_risk_ranking": 0.994782608695652
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.0253456626685877,
+              "mean_aurc_regret": 0.0003770497350707447,
+              "mean_aurc_regret_mc_se": 6.58163242102568e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": -0.0253456626685877,
+              "mean_spearman_risk_ranking": 0.9869565217391304
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0017854574202973625,
+              "mean_aurc_regret": 5.122735214291296e-05,
+              "mean_aurc_regret_mc_se": 4.392938413554763e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9710144927536233,
+              "mean_signed_score_error": 0.0006066232828600809,
+              "mean_spearman_risk_ranking": 0.9956521739130434
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.005905707262286925,
+              "mean_aurc_regret": 9.18847331917716e-05,
+              "mean_aurc_regret_mc_se": 4.760552684692134e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.9420289855072465,
+              "mean_signed_score_error": -0.005751938638932635,
+              "mean_spearman_risk_ranking": 0.9904347826086956
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.05187146929918382,
+          "mean_true_risk_mc_se": 0.000478624735253058
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.024260544846959487,
+              "mean_aurc_regret": 0.0002459886592771979,
+              "mean_aurc_regret_mc_se": 4.9478115557080306e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8260869565217391,
+              "mean_signed_score_error": -0.024260544846959487,
+              "mean_spearman_risk_ranking": 0.9521739130434782
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03241766478034595,
+              "mean_aurc_regret": 0.001996259842561819,
+              "mean_aurc_regret_mc_se": 4.458235300089143e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7333419818275401,
+              "mean_signed_score_error": -0.03241766478034595,
+              "mean_spearman_risk_ranking": 0.8770808671053782
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.024502926780381556,
+              "mean_aurc_regret": 0.0003448921295343896,
+              "mean_aurc_regret_mc_se": 6.495441076711364e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8188405797101449,
+              "mean_signed_score_error": -0.024502926780381556,
+              "mean_spearman_risk_ranking": 0.9478260869565217
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.02490702990458978,
+              "mean_aurc_regret": 0.001176179890662786,
+              "mean_aurc_regret_mc_se": 5.8919534600798935e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7881203570652479,
+              "mean_signed_score_error": -0.02490702990458978,
+              "mean_spearman_risk_ranking": 0.9063641903815517
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.02466652658045187,
+          "mean_true_risk_mc_se": 0.000191992797370247
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.016891318503147932,
+              "mean_aurc_regret": 0.00023938498353989063,
+              "mean_aurc_regret_mc_se": 7.769905013443571e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8478260869565217,
+              "mean_signed_score_error": -0.016891318503147932,
+              "mean_spearman_risk_ranking": 0.9582608695652173
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.02437575480832707,
+              "mean_aurc_regret": 0.0026836488061779615,
+              "mean_aurc_regret_mc_se": 9.185119170897103e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.6939779183594883,
+              "mean_signed_score_error": -0.02437575480832707,
+              "mean_spearman_risk_ranking": 0.8155421597978563
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.01703599623009557,
+              "mean_aurc_regret": 0.00028809266219028545,
+              "mean_aurc_regret_mc_se": 7.211668476798847e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8115942028985507,
+              "mean_signed_score_error": -0.01703599623009557,
+              "mean_spearman_risk_ranking": 0.9452173913043478
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.016823669990077998,
+              "mean_aurc_regret": 0.0002545916712278981,
+              "mean_aurc_regret_mc_se": 8.769525344856089e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.8446422341857261,
+              "mean_signed_score_error": -0.016823669990077998,
+              "mean_spearman_risk_ranking": 0.9571278789383846
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.017385126383571287,
+          "mean_true_risk_mc_se": 0.00016909934220328193
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0004199089892573975,
+        "mean_exact_tv": 0.9999158736592394,
+        "mean_paired_jaccard_transport_upper_bound": 0.3191849589059194,
+        "mean_paired_nhd_transport_upper_bound": 0.07275383856529405
+      },
+      "runtime_seconds": {
+        "maximum": 17.425216547970194,
+        "mean": 17.425216547970194
+      },
+      "sharpness": "sharp"
+    },
+    {
+      "coupling": "shared_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.009109989850211992,
+              "mean_aurc_regret": 0.0008464572247691149,
+              "mean_aurc_regret_mc_se": 0.000357479059103114,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": -0.0003792816516814725,
+              "mean_spearman_risk_ranking": 0.9782608695652173
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.009127177288430875,
+              "mean_aurc_regret": 0.0009117624048558537,
+              "mean_aurc_regret_mc_se": 0.00037254696419359933,
+              "mean_kendall_tau_b_risk_ranking": 0.891304347826087,
+              "mean_signed_score_error": -0.0004063679309207734,
+              "mean_spearman_risk_ranking": 0.9765217391304346
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.03293051970442278,
+              "mean_aurc_regret": 0.0011773252885384222,
+              "mean_aurc_regret_mc_se": 0.0004509899221219927,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": 0.003479443157426624,
+              "mean_spearman_risk_ranking": 0.9695652173913042
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.009160750348140421,
+              "mean_aurc_regret": 0.0008341528529122177,
+              "mean_aurc_regret_mc_se": 0.00033126317271619843,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": -0.0003012783077176659,
+              "mean_spearman_risk_ranking": 0.9791304347826085
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.009424974418515962,
+              "mean_aurc_regret": 0.00088145462730288,
+              "mean_aurc_regret_mc_se": 0.0003393434602023145,
+              "mean_kendall_tau_b_risk_ranking": 0.891304347826087,
+              "mean_signed_score_error": 0.0006128946320146956,
+              "mean_spearman_risk_ranking": 0.9747826086956521
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0026385847239441054
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.008465936892785431,
+              "mean_aurc_regret": 0.0005971756206594181,
+              "mean_aurc_regret_mc_se": 0.0008855167206443257,
+              "mean_kendall_tau_b_risk_ranking": 0.8840579710144928,
+              "mean_signed_score_error": 0.00028493762938719874,
+              "mean_spearman_risk_ranking": 0.9713043478260868
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.09409364287171097,
+              "mean_aurc_regret": 0.009412497330338054,
+              "mean_aurc_regret_mc_se": 0.0014173388441221838,
+              "mean_kendall_tau_b_risk_ranking": 0.5417363388859614,
+              "mean_signed_score_error": -0.09409364287171097,
+              "mean_spearman_risk_ranking": 0.7425220537121338
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.011714017617287492,
+              "mean_aurc_regret": 0.0029371221013298476,
+              "mean_aurc_regret_mc_se": 0.0012150057310849351,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -0.002091695617658987,
+              "mean_spearman_risk_ranking": 0.9486956521739129
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.02953176405088448,
+              "mean_aurc_regret": 0.005895046557846895,
+              "mean_aurc_regret_mc_se": 0.0012440493638398355,
+              "mean_kendall_tau_b_risk_ranking": 0.6690953328763292,
+              "mean_signed_score_error": -0.0015304662313232562,
+              "mean_spearman_risk_ranking": 0.8521096934849157
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.002443586514344412
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.008501194837582833,
+              "mean_aurc_regret": 0.000560432501304331,
+              "mean_aurc_regret_mc_se": 0.0008805488428734779,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.0003135764470469082,
+              "mean_spearman_risk_ranking": 0.9739130434782608
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.09396676331479192,
+              "mean_aurc_regret": 0.011916112942051804,
+              "mean_aurc_regret_mc_se": 0.0014315431295491116,
+              "mean_kendall_tau_b_risk_ranking": 0.511237358145545,
+              "mean_signed_score_error": -0.09396676331479192,
+              "mean_spearman_risk_ranking": 0.7169152244301518
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.011472864538755637,
+              "mean_aurc_regret": 0.0028951104117094784,
+              "mean_aurc_regret_mc_se": 0.0012751104316534741,
+              "mean_kendall_tau_b_risk_ranking": 0.8333333333333333,
+              "mean_signed_score_error": -0.0017482635201552705,
+              "mean_spearman_risk_ranking": 0.9521739130434782
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.029146087652495434,
+              "mean_aurc_regret": 0.005348167888956534,
+              "mean_aurc_regret_mc_se": 0.001185698172868946,
+              "mean_kendall_tau_b_risk_ranking": 0.7028985507246377,
+              "mean_signed_score_error": -0.0008141512407665533,
+              "mean_spearman_risk_ranking": 0.8669565217391304
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.002447051585639491
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0,
+        "mean_exact_tv": 0.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.0,
+        "mean_paired_nhd_transport_upper_bound": 0.0
+      },
+      "runtime_seconds": {
+        "maximum": 28.38185598095879,
+        "mean": 28.38185598095879
+      },
+      "sharpness": "diffuse"
+    },
+    {
+      "coupling": "shared_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.008169934003884141,
+              "mean_aurc_regret": 0.0012313491247671338,
+              "mean_aurc_regret_mc_se": 0.0004748828703228299,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.0026661220284251164,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.00815317665402386,
+              "mean_aurc_regret": 0.0012313491247671338,
+              "mean_aurc_regret_mc_se": 0.0004748828703228299,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.0025932640842320233,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.04099265415743834,
+              "mean_aurc_regret": 0.0009738986742950095,
+              "mean_aurc_regret_mc_se": 0.00046059309914988494,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": -0.039285931971659534,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.008034442087751193,
+              "mean_aurc_regret": 0.0012313491247671338,
+              "mean_aurc_regret_mc_se": 0.0004748828703228299,
+              "mean_kendall_tau_b_risk_ranking": 0.9057971014492754,
+              "mean_signed_score_error": 0.0020339511763025225,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.008453688714242147,
+              "mean_aurc_regret": 0.0009422548595617308,
+              "mean_aurc_regret_mc_se": 0.0006915197214372736,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.0033482744856408882,
+              "mean_spearman_risk_ranking": 0.9878260869565217
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.002025286309124619
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.003963755132645557,
+              "mean_aurc_regret": 0.00018509377561656132,
+              "mean_aurc_regret_mc_se": 0.00039788041827123685,
+              "mean_kendall_tau_b_risk_ranking": 0.9202898550724637,
+              "mean_signed_score_error": 0.0008438341922759246,
+              "mean_spearman_risk_ranking": 0.9852173913043477
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.024936725186763264,
+              "mean_aurc_regret": 0.0029397304097730503,
+              "mean_aurc_regret_mc_se": 0.0004932268755770404,
+              "mean_kendall_tau_b_risk_ranking": 0.6920461145363735,
+              "mean_signed_score_error": -0.024936725186763264,
+              "mean_spearman_risk_ranking": 0.8534979821983454
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005310542556612082,
+              "mean_aurc_regret": 0.00033592862108899196,
+              "mean_aurc_regret_mc_se": 0.0003553229872957767,
+              "mean_kendall_tau_b_risk_ranking": 0.891304347826087,
+              "mean_signed_score_error": -0.0009605353950129873,
+              "mean_spearman_risk_ranking": 0.9756521739130434
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.01483300296803085,
+              "mean_aurc_regret": 0.0013953825863204164,
+              "mean_aurc_regret_mc_se": 0.0006273955206295013,
+              "mean_kendall_tau_b_risk_ranking": 0.7551681925751643,
+              "mean_signed_score_error": -0.01292969046937374,
+              "mean_spearman_risk_ranking": 0.9039032287657993
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0011653620259363877
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.003956335200997057,
+              "mean_aurc_regret": 0.00019215549684543226,
+              "mean_aurc_regret_mc_se": 0.00044731524974939884,
+              "mean_kendall_tau_b_risk_ranking": 0.8985507246376812,
+              "mean_signed_score_error": 0.0007895129257617595,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.023985011818119212,
+              "mean_aurc_regret": 0.003056423452033004,
+              "mean_aurc_regret_mc_se": 0.0006702706516696465,
+              "mean_kendall_tau_b_risk_ranking": 0.6874009154267603,
+              "mean_signed_score_error": -0.023985011818119212,
+              "mean_spearman_risk_ranking": 0.8275034754717701
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005330486018636077,
+              "mean_aurc_regret": 0.0003555681851808157,
+              "mean_aurc_regret_mc_se": 0.00040703609397832035,
+              "mean_kendall_tau_b_risk_ranking": 0.8695652173913043,
+              "mean_signed_score_error": -0.0009593278088591001,
+              "mean_spearman_risk_ranking": 0.9721739130434782
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.014364200372942268,
+              "mean_aurc_regret": 0.0017415145148306846,
+              "mean_aurc_regret_mc_se": 0.0005608830796971243,
+              "mean_kendall_tau_b_risk_ranking": 0.737245917623152,
+              "mean_signed_score_error": -0.012219343353489025,
+              "mean_spearman_risk_ranking": 0.9014151147255091
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0011663491099810194
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0,
+        "mean_exact_tv": 0.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.0,
+        "mean_paired_nhd_transport_upper_bound": 0.0
+      },
+      "runtime_seconds": {
+        "maximum": 20.797698136011604,
+        "mean": 20.797698136011604
+      },
+      "sharpness": "medium"
+    },
+    {
+      "coupling": "shared_threshold",
+      "losses": {
+        "dice": {
+          "estimators": {
+            "exact": {
+              "mean_absolute_score_error": 0.005216383288993427,
+              "mean_aurc_regret": 0.00022114722372834628,
+              "mean_aurc_regret_mc_se": 0.00037287035786374837,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": 1.8655921641585912e-05,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m128": {
+              "mean_absolute_score_error": 0.005221060087619765,
+              "mean_aurc_regret": 0.00027121550308129017,
+              "mean_aurc_regret_mc_se": 0.0003917800448034079,
+              "mean_kendall_tau_b_risk_ranking": 0.927536231884058,
+              "mean_signed_score_error": -0.0002864473587467821,
+              "mean_spearman_risk_ranking": 0.9826086956521738
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.027547293801852512,
+              "mean_aurc_regret": 0.00083084454589398,
+              "mean_aurc_regret_mc_se": 0.0002200772953517205,
+              "mean_kendall_tau_b_risk_ranking": 0.8768115942028986,
+              "mean_signed_score_error": -0.027547293801852512,
+              "mean_spearman_risk_ranking": 0.9686956521739128
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.005328388855147676,
+              "mean_aurc_regret": 0.00022114722372834628,
+              "mean_aurc_regret_mc_se": 0.00037287035786374837,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.0015950078504047335,
+              "mean_spearman_risk_ranking": 0.9860869565217389
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.008310632886419317,
+              "mean_aurc_regret": 0.00026727071705953676,
+              "mean_aurc_regret_mc_se": 0.00038211290518974173,
+              "mean_kendall_tau_b_risk_ranking": 0.9347826086956522,
+              "mean_signed_score_error": -0.00795356977219745,
+              "mean_spearman_risk_ranking": 0.9817391304347826
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.0011349630136504834
+        },
+        "nhd": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0009842858425819748,
+              "mean_aurc_regret": 4.9671770471854115e-05,
+              "mean_aurc_regret_mc_se": 0.00011123004731420674,
+              "mean_kendall_tau_b_risk_ranking": 0.8405797101449275,
+              "mean_signed_score_error": -0.0005457451887313822,
+              "mean_spearman_risk_ranking": 0.9556521739130434
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008702865122117846,
+              "mean_aurc_regret": 0.0008954121910806842,
+              "mean_aurc_regret_mc_se": 0.00010362851908570726,
+              "mean_kendall_tau_b_risk_ranking": 0.670355553940512,
+              "mean_signed_score_error": -0.008702865122117846,
+              "mean_spearman_risk_ranking": 0.8362201116497648
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0012252805085889212,
+              "mean_aurc_regret": 0.00012682094346531253,
+              "mean_aurc_regret_mc_se": 0.00012258485613092854,
+              "mean_kendall_tau_b_risk_ranking": 0.7608695652173914,
+              "mean_signed_score_error": -0.0007881271221534428,
+              "mean_spearman_risk_ranking": 0.9130434782608695
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.001539460550856205,
+              "mean_aurc_regret": 0.00039794402596695505,
+              "mean_aurc_regret_mc_se": 8.955736806214264e-05,
+              "mean_kendall_tau_b_risk_ranking": 0.7247538961956802,
+              "mean_signed_score_error": -0.0011922302463616748,
+              "mean_spearman_risk_ranking": 0.8714178696451399
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.00026888340022427086
+        },
+        "nhd95": {
+          "estimators": {
+            "m128": {
+              "mean_absolute_score_error": 0.0010105647066503325,
+              "mean_aurc_regret": 9.673848096412863e-05,
+              "mean_aurc_regret_mc_se": 0.00011789232447065589,
+              "mean_kendall_tau_b_risk_ranking": 0.7971014492753623,
+              "mean_signed_score_error": -0.000523899788931613,
+              "mean_spearman_risk_ranking": 0.9382608695652173
+            },
+            "m2": {
+              "mean_absolute_score_error": 0.008008336094110747,
+              "mean_aurc_regret": 0.0017233568206334697,
+              "mean_aurc_regret_mc_se": 0.00019418598035611816,
+              "mean_kendall_tau_b_risk_ranking": 0.5493991853679282,
+              "mean_signed_score_error": -0.008008336094110747,
+              "mean_spearman_risk_ranking": 0.6822275281033461
+            },
+            "m32": {
+              "mean_absolute_score_error": 0.0010160130962871606,
+              "mean_aurc_regret": 8.600811814964485e-05,
+              "mean_aurc_regret_mc_se": 0.00011466627682518195,
+              "mean_kendall_tau_b_risk_ranking": 0.8188405797101449,
+              "mean_signed_score_error": -0.0006685775158792516,
+              "mean_spearman_risk_ranking": 0.9443478260869566
+            },
+            "m8": {
+              "mean_absolute_score_error": 0.0014347323020855616,
+              "mean_aurc_regret": 0.00019189845299117866,
+              "mean_aurc_regret_mc_se": 0.00011752624901581833,
+              "mean_kendall_tau_b_risk_ranking": 0.7495742770912287,
+              "mean_signed_score_error": -0.0004562512758616779,
+              "mean_spearman_risk_ranking": 0.9079439542817055
+            }
+          },
+          "mean_loss_pushforward_w1_empirical": 0.0,
+          "mean_true_risk_mc_se": 0.000268725582522922
+        }
+      },
+      "num_cells": 1,
+      "posterior_discrepancy": {
+        "mean_empty_event_tv_lower_bound": 0.0,
+        "mean_exact_tv": 0.0,
+        "mean_paired_jaccard_transport_upper_bound": 0.0,
+        "mean_paired_nhd_transport_upper_bound": 0.0
+      },
+      "runtime_seconds": {
+        "maximum": 12.517917889985256,
+        "mean": 12.517917889985256
+      },
+      "sharpness": "sharp"
+    }
+  ],
+  "interpretation": {
+    "hd95": "No HD95 mask-Wasserstein corollary is asserted.",
+    "monte_carlo": "True conditional risks and paired transport costs are Monte Carlo estimates with separately reported posterior-integration SE.",
+    "target": "misspecification of Q_p under known mask-posterior couplings",
+    "total_variation": "exact for all four constructed finite posterior laws",
+    "wasserstein": "Jaccard/full-HD paired costs upper-bound optimal mask transport; scalar empirical pushforward W1 applies to all losses."
+  },
+  "lock": {
+    "path": "configs/auxiliary/synthetic_posterior-v1.lock.json",
+    "sha256": "d064d6d0a4f42dc5436a2e4c74d75b861861b15fa491aea794c51b7ea1c88a90"
+  },
+  "mode": "pilot",
+  "num_cells": 12,
+  "pilot_gate": {
+    "criteria": {
+      "maximum_runtime_seconds": 10800,
+      "shared_threshold_exact_dice_within_three_mc_se": true,
+      "shared_threshold_paired_mc_identity": true
+    },
+    "observed_maximum_runtime_seconds": 28.38185598095879,
+    "passed": true,
+    "reasons": []
+  },
+  "source_manifests": [
+    {
+      "path": "outputs/synthetic_posterior_pilot/shared_threshold/diffuse/disk/replicate-00/9b07ed597d547ecf3138b8c1c2d306c298483da3116838045084ccd4b5f6a522/manifest.json",
+      "sha256": "2d751e35e363f8d8a23ff3fad5598e827161ea60d6e5348aa32b003aca0ac9e3"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/shared_threshold/medium/disk/replicate-00/a53063297b546b7fee22c886edbcf733230e1cb062f59ec022124184274f1ea4/manifest.json",
+      "sha256": "3570dde5c36f12fe02a507e9f1378199d725304e4ac1d805712e860b244e5e70"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/shared_threshold/sharp/disk/replicate-00/0dfd681f242b629f05e339d48c1dbf4024005cf73b1a1aad77db2dfda69ce366/manifest.json",
+      "sha256": "3065ff816a36e89d4de5939560b4e0f470cd6aa782ee95e3f175e7f4807a64f7"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/independent_bernoulli/diffuse/disk/replicate-00/06be4fb838a9c592eaf29c04db9bf1f8510c19450da43589e7d801b284fcd4ac/manifest.json",
+      "sha256": "0a21bdc96dedeb3c432f8005ce23e7651cfa4fdc3554f6ceb9a3d2517ca7eac9"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/independent_bernoulli/medium/disk/replicate-00/c2e58f14defa08b235c23b1e2228805d16270175a13192f5c67e60e5de768279/manifest.json",
+      "sha256": "32573d88720e60865f0965ed226ce9bcd2c3d859c95f4f7df1c8f889cee98ecb"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/independent_bernoulli/sharp/disk/replicate-00/f12fa4fed1d945c2fd41d874b6d8b9c42c930a689d6146892d811ef20495127f/manifest.json",
+      "sha256": "ca97f7e80bb8fe45b300301fb2d39ed7c9573b8061bc84cf98d6de8e5cd461c8"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/local_block_threshold/diffuse/disk/replicate-00/81254702e755c42e969042cef903a0d95e8e7c3442ba5848157859d5ff962aea/manifest.json",
+      "sha256": "59176ff65bf1cea9d1361bcf4ebd2887cc3e7c15750184e37ff981282a2edff2"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/local_block_threshold/medium/disk/replicate-00/f5b454cedecb2e7d245a8e853f18346d73384625cae74cddfe4919eb67814215/manifest.json",
+      "sha256": "b62389d74ebc4785ab17af1189a03c1ac4c857d710acdd79d835978a3149897a"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/local_block_threshold/sharp/disk/replicate-00/caf37d6cebab3cd33ae002050673e1e5413017d75a952f5719cb9e40ff49a9f3/manifest.json",
+      "sha256": "5e137cc9c3d159bacccdc3ebd0c0602d564a4f48c1b4dbeb78e7d7ee019c8cfe"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/bimodal_antithetic/diffuse/disk/replicate-00/95abb5be3fe174b42233ef9185ce10f3b27d77a5d06d2acc6a161f39f5857092/manifest.json",
+      "sha256": "f0d011ab26ed98a7c49e43c75f8ba969e27ee87743d6528182186cb751008809"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/bimodal_antithetic/medium/disk/replicate-00/fb9bf07831ee39fd1c8146c60394a5238df3fb89c7357fc40e18d8d58caced87/manifest.json",
+      "sha256": "035284ce9795c9dff1df30640716c130a1813e02d3568f05657a72b5fae21a59"
+    },
+    {
+      "path": "outputs/synthetic_posterior_pilot/bimodal_antithetic/sharp/disk/replicate-00/095d1cd0fd1fa56b560b6a9bea62c62d906d72c1edb8c67ebd037aeb713e93f2/manifest.json",
+      "sha256": "9ba90e1b030977b0c5cdd3941707799756b23b9679599530e54c4ebef944cdc8"
+    }
+  ]
+}

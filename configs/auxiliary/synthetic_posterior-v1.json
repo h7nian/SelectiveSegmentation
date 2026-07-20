@@ -1,0 +1,68 @@
+{
+  "spec_schema_version": 1,
+  "campaign_id": "binary-synthetic-coupling-v1",
+  "base_seed": 2026071900,
+  "grid": {
+    "couplings": [
+      "shared_threshold",
+      "independent_bernoulli",
+      "local_block_threshold",
+      "bimodal_antithetic"
+    ],
+    "sharpness_levels": [
+      "diffuse",
+      "medium",
+      "sharp"
+    ],
+    "morphologies": [
+      "disk",
+      "elongated",
+      "two_component"
+    ],
+    "replicates": 10
+  },
+  "pilot": {
+    "morphology": "disk",
+    "replicate": 0
+  },
+  "protocol": {
+    "height": 32,
+    "width": 32,
+    "cohort_size": 24,
+    "posterior_draws": 512,
+    "mc_batches": 8,
+    "workers_per_job": 4,
+    "gamma": 0.5,
+    "m_values": [
+      2,
+      8,
+      32,
+      128
+    ],
+    "sharpness_pixels": {
+      "diffuse": 3.0,
+      "medium": 1.5,
+      "sharp": 0.7
+    },
+    "local_block_size": 8,
+    "losses": [
+      "dice",
+      "nhd",
+      "nhd95"
+    ],
+    "empty_convention": "empty-empty=0; one-sided-empty=1",
+    "distance_normalization": "image diagonal",
+    "threshold_rule": "deterministic midpoint under Uniform(0,1)",
+    "dice_exact": true
+  },
+  "cpu_partitions": [
+    "agsmall",
+    "amdsmall",
+    "msismall"
+  ],
+  "paths": {
+    "pilot_output_root": "outputs/synthetic_posterior_pilot",
+    "main_output_root": "outputs/synthetic_posterior_main",
+    "analysis_output_root": "outputs/synthetic_posterior_analysis"
+  }
+}

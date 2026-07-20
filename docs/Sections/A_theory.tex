@@ -25,8 +25,8 @@ for the deployment threshold $\gamma$; none of the results below requires
 $\gamma=1/2$.
 
 We assume that $(x,A,B)\mapsto L_x(A,B)$ is jointly measurable and that the
-deployment loss is uniformly bounded, with
-$B_x\leq B<\infty$ on the image population under study.
+deployment loss is uniformly bounded:
+$0\leq L_x(A,B)\leq B_x\leq B<\infty$ on the image population under study.
 The subscript permits a spatial loss to use the native image geometry.
 Losses that are ordinarily undefined on empty masks are extended to the
 whole of $\mathcal{Y}\times\mathcal{Y}$.  In the experiments, the binary
@@ -567,13 +567,133 @@ is no resolution-independent converse from small Jaccard--Wasserstein distance
 to small TV. This result is Dice-specific; we do not assert the required metric
 or Lipschitz property for pooled penalized nHD95.
 
+\begin{proposition}[Fixed-action Dice moments]
+\label{app:prop:dice-cardinality}
+Fix $x$ and an action $A\subseteq\Omega$, and let $m:=|A|$. For a mask law
+$R$, write
+\begin{equation*}
+  S:=|Y|,
+  \qquad
+  \pi_i^R:=\Prb_R(i\in Y),
+  \qquad
+  \beta_s^R(A)
+  :=\Ex_R\!\left[
+      |Y\cap A|\mathbf 1\{S=s\}\right].
+\end{equation*}
+When $m>0$, define
+\begin{equation*}
+  \kappa_{i,m}^R
+  :=
+  \begin{cases}
+    \Ex_R[(S+m)^{-1}\mid i\in Y],&\pi_i^R>0,\\
+    0,&\pi_i^R=0.
+  \end{cases}
+\end{equation*}
+Then
+\begin{equation}
+  \Ex_R[\Dice(Y,A)]
+  =
+  2\sum_{s=1}^{|\Omega|}
+      \frac{\beta_s^R(A)}{s+m}
+  =
+  2\sum_{i\in A}\pi_i^R\kappa_{i,m}^R.
+  \label{app:eq:dice-cardinality}
+\end{equation}
+Let $\pi_i:=\Prb_{P_x}(i\in Y)$. Since $Q_p$ has marginals $p_i$, every
+nonempty $A$ satisfies
+\begin{align}
+  \Delta_{L^{\Dice},\{A\}}(P_x,Q_p)
+  &\leq
+  2\sum_{s=1}^{|\Omega|}
+    \frac{|\beta_s^{P_x}(A)-\beta_s^{Q_p}(A)|}{s+m},
+  \label{app:eq:dice-overlap-cardinality-bound}\\
+  \Delta_{L^{\Dice},\{A\}}(P_x,Q_p)
+  &\leq
+  \frac{2}{m+1}\sum_{i\in A}|\pi_i-p_i|
+  +
+  2\sum_{i\in A}p_i
+    |\kappa_{i,m}^{P_x}-\kappa_{i,m}^{Q_p}|.
+  \label{app:eq:dice-reciprocal-cardinality-bound}
+\end{align}
+For the empty action, the exact discrepancy is
+\begin{equation}
+  \Delta_{L^{\Dice},\{\varnothing\}}(P_x,Q_p)
+  =
+  \left|
+    \Prb_{P_x}(Y=\varnothing)
+    -
+    \left(1-\max_{i\in\Omega}p_i\right)
+  \right|.
+  \label{app:eq:dice-empty-action}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Suppose first that $m>0$. The Dice denominator is then positive for every
+$Y$, and
+\begin{equation*}
+  \Dice(Y,A)
+  =
+  \frac{2}{S+m}
+  \sum_{i\in A}\mathbf 1\{i\in Y\}.
+\end{equation*}
+Partitioning by $S=s$ gives the first equality in
+\eqref{app:eq:dice-cardinality}. Taking expectations termwise and conditioning
+on $i\in Y$ gives the second. Subtracting the two overlap--cardinality
+representations and applying the triangle inequality proves
+\eqref{app:eq:dice-overlap-cardinality-bound}.
+
+For the second bound, add and subtract
+$p_i\kappa_{i,m}^{P_x}$ inside each summand:
+\begin{align*}
+  &2\left|
+    \sum_{i\in A}
+      \bigl(
+        \pi_i\kappa_{i,m}^{P_x}
+        -
+        p_i\kappa_{i,m}^{Q_p}
+      \bigr)
+    \right|\\
+  &\quad\leq
+  2\sum_{i\in A}|\pi_i-p_i|\kappa_{i,m}^{P_x}
+  +
+  2\sum_{i\in A}p_i
+    |\kappa_{i,m}^{P_x}-\kappa_{i,m}^{Q_p}|.
+\end{align*}
+On $i\in Y$, $S\geq1$, so
+$\kappa_{i,m}^{P_x}\leq1/(m+1)$, proving
+\eqref{app:eq:dice-reciprocal-cardinality-bound}. Absolute differences of
+expected Dice and expected Dice loss coincide.
+
+If $A=\varnothing$, the declared convention gives
+$\Dice(Y,A)=\mathbf 1\{Y=\varnothing\}$. Under $Q_p$, the level-set mask is
+empty exactly when $T>\max_i p_i$, an event of probability
+$1-\max_i p_i$. This proves \eqref{app:eq:dice-empty-action}.
+\end{proof}
+
+For a fixed action, Equation~\eqref{app:eq:dice-cardinality} requires only the
+$|\Omega|$ aggregated overlap--cardinality moments $\beta_s^R(A)$, rather than
+a complete joint mask law. Bayes-optimal F-measure prediction over a variable
+action instead uses a quadratic family of pixel--cardinality moments
+\citep{waegeman2014}. Exact marginals remove the first term of
+\eqref{app:eq:dice-reciprocal-cardinality-bound}, but agreement of the
+reciprocal-cardinality terms remains sufficient, not necessary. The
+working-posterior term is computable: for $p_i>0$,
+\begin{equation*}
+  \kappa_{i,m}^{Q_p}
+  =
+  \frac{1}{p_i}\int_0^{p_i}\frac{dt}{|Y_t|+m}.
+\end{equation*}
+Relative to the comonotone $Q_p$, reciprocal-cardinality agreement and
+conditional pixel independence are not logically ordered.
+
 \subsection{Full surface Hausdorff geometry}
 
 Fix an image $x$. Let $S_x(A)$ be the chosen digital surface of mask $A$, with
 $S_x(\varnothing)=\varnothing$ and $S_x(A)\neq\varnothing$ for every nonempty
 $A$. Pixel centers carry their native-coordinate Euclidean distance
 $\|u-v\|_x$, and
-the image-diagonal normalizer $D_x$ is assumed to upper-bound the diameter of
+the positive image-diagonal normalizer $D_x>0$ is assumed to upper-bound the diameter of
 the pixel grid. For nonempty surface sets $U,V$, write
 \begin{equation*}
   h_x(U,V):=\max\!\left\{
@@ -641,7 +761,8 @@ For $Y=A\cup\{z\}$, pooling directed distances between $S_x(Y)$ and $S_x(A)$
 gives 200 zeros and one remote distance, so the empirical 95th percentile is
 zero. Now replace $z$ by a one-pixel-thick pattern $R$ containing $z$ and 20
 additional pixels within a fixed $k$-pixel diameter, and set $Y'=A\cup R$.
-The pattern can be chosen with no eroded interior, hence $S_x(Y')=Y'$. Then
+The pattern can be chosen with no eroded interior, hence $S_x(Y')=Y'$, while
+all its added points remain at distance $\Theta(D_x)$ from $A$. Then
 $d_{H,x}(Y,Y')\leq k/D_x$, but the new pool has 200 zeros and 21 remote
 distances, so its 95th percentile is remote. On growing grids, keep $k$ fixed
 and place $z$ at a fixed fraction of the diagonal: the ground-cost change tends
@@ -672,8 +793,7 @@ every $c\in(0,1]$,
   0\leq R(c;g)-R^\star(c)
   \leq\min\!\left\{B,\frac{\eta}{c}\right\}.
 \end{equation*}
-In particular, the bound $\min\{B,2\eta/c\}$ also holds. If instead
-$\|r-\widetilde r\|_\infty\leq\epsilon$ in essential supremum, then
+If instead $\|r-\widetilde r\|_\infty\leq\epsilon$ in essential supremum, then
 \begin{equation*}
   0\leq R(c;g)-R^\star(c)\leq\min\{B,2\epsilon\}
   \qquad\text{for every }c\in(0,1].
@@ -761,9 +881,9 @@ $\delta_H(x):=W_{1,d_{H,x}}(P_x,Q_{p_x})$, yielding
   \leq\Psi_1\!\left(
     \frac{\mathbb E[V(H_X)]}{2M}
     +\mathbb E[\delta_H(X)]
-  \right),
+  \right).
 \end{equation*}
-This corollary concerns full Hausdorff, not nHD95.
+This bound concerns full Hausdorff, not nHD95.
 For exact level-set Dice, Corollary~\ref{app:cor:exact-dice} removes the
 quadrature term. Lemma~\ref{app:lem:dice-jaccard} then gives the sharper
 Dice-specific chain

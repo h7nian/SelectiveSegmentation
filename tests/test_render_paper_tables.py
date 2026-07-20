@@ -306,7 +306,7 @@ def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
             assert table.count(f"\n{label} &") == len(RISKS)
         assert table.count(r"\shortstack{") == len(RISKS) * len(METHODS) * 5
         assert r"\bestresult{" in table
-        assert "raw AURC (nAURC)" in table
+        assert r"raw AURC $\times100$ (nAURC)" in table
 
     cross = tables["cross_loss_results.tex"]
     assert "Full $3\\times3$" in cross
@@ -325,13 +325,14 @@ def test_quadrature_table_includes_exact_and_all_declared_midpoint_rules():
     assert table.count("\nDice-Exact &") == 1
     for count in (2, 8, 32):
         assert table.count(f"\nDice-M{count} &") == 1
-        assert table.count(f"\nDice-M{count} / ") == 7
+        assert table.count(f"\nDice-M{count} / ") == 6
     for prefix in ("nHD", "nHD95"):
         for count in (2, 8, 32):
             assert table.count(f"\n{prefix}-M{count} &") == 1
     assert table.count(r"\shortstack{") == (4 + 3 + 3) * 5
     assert "exact level-set oracle" in table
-    assert r"\bestresult{" in table
+    assert r"\bestresult{" not in table
+    assert "AURC need not improve monotonically" in table
     assert r"\label{tab:dice-quadrature-fidelity}" in table
     for statistic in (
         "Mean abs. error",
@@ -340,10 +341,10 @@ def test_quadrature_table_includes_exact_and_all_declared_midpoint_rules():
         "Max abs. error",
         r"Spearman $\rho$",
         r"Kendall $\tau_b$",
-        "Exact match",
     ):
         assert table.count(f"/ {statistic} &") == 3
-    assert "do not enter the four contrasts" in table
+    assert "Exact match" not in table
+    assert "do not enter the four fixed contrasts" in table
 
 
 def test_final_renderer_requires_numerical_validation():
@@ -363,7 +364,7 @@ def test_final_renderer_requires_numerical_validation():
 def test_full_contrast_table_reports_four_contrasts_and_all_64_conditions():
     table = render_tables(_analysis(), source_hash="d" * 64)["statistical_tests.tex"]
 
-    assert "subset of the 64 predeclared" in table
+    assert "subset of the 64 fixed" in table
     assert "40 comparisons" in table
     assert "24 comparisons" in table
     assert r"\label{tab:statistical-tests}" in table
@@ -372,8 +373,10 @@ def test_full_contrast_table_reports_four_contrasts_and_all_64_conditions():
     for spec in CONTRASTS:
         row = f"{METHODS[spec.left]} $-$ {METHODS[spec.right]} / {RISKS[spec.risk]}"
         assert table.count(f"\n{row} &") == 2
-    assert "raw/Holm-transformed" in table
-    assert "no exact finite-sample error-control claim" in table
+    assert "pointwise 95\\% paired" in table
+    assert "Holm" not in table
+    assert "tail probabilities" not in table
+    assert "descriptive rather than simultaneous tests" in table
     assert "significant" not in table.lower()
     assert "significance" not in table.lower()
 

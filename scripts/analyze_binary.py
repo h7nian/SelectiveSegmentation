@@ -1270,17 +1270,22 @@ def _latex_number(value):
     return "--" if value is None else f"{value:.4f}"
 
 
+def _latex_aurc(value):
+    return "--" if value is None else f"{100 * value:.4f}"
+
+
 def write_latex(result, path):
     lines = [
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{Loss-indexed confidence for binary selective segmentation. "
-        r"AURC and excess AURC are in the risk's normalized units; normalized "
+        r"AURC and excess AURC are multiplied by 100 for display only; normalized "
         r"AURC is zero for the oracle and one for random ordering.}",
         r"\label{tab:binary-main}",
         r"\begin{tabular}{lllrrr}",
         r"\toprule",
-        r"Dataset & Condition & Confidence & AURC & E-AURC & nAURC \\",
+        r"Dataset & Condition & Confidence & AURC $\times100$ & "
+        r"E-AURC $\times100$ & nAURC \\",
         r"\midrule",
     ]
     for risk_position, (risk_field, risk_label) in enumerate(RISKS):
@@ -1299,8 +1304,8 @@ def write_latex(result, path):
                             _latex_escape(condition["dataset"]),
                             _latex_escape(condition["condition"]),
                             _latex_escape(method["label"]),
-                            _latex_number(method["aurc"]),
-                            _latex_number(method["excess_aurc"]),
+                            _latex_aurc(method["aurc"]),
+                            _latex_aurc(method["excess_aurc"]),
                             _latex_number(method["normalized_aurc"]),
                         ]
                     )

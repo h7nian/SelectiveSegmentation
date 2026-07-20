@@ -8,7 +8,7 @@
       "schema_version": 1
     },
     "selective": {
-      "artifact_sha256": "a46d0f0b65efbfca6a06df0ed8468921060137ed0cfd06167fe7d05fa8f427f1",
+      "artifact_sha256": "fe6dc9a1f4f45322cccc70070c126cfec84cd654e724c3947ae7f6f95d8ce064",
       "condition_count": 16,
       "image_cluster_count": 20718,
       "row_count": 20718,

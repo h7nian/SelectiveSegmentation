@@ -1,0 +1,93 @@
+{
+  "lock_schema_version": 1,
+  "auxiliary_id": "binary-cardinality-diagnostics-v1",
+  "spec": {
+    "path": "configs/auxiliary/binary_cardinality_diagnostics-v1.json",
+    "sha256": "d4b1f8584d64fc8ce8959e7b896fa14f0ad9697ecf056af5589e39ca5056c2e0"
+  },
+  "canonical_campaign_lock": {
+    "path": "outputs/binary_campaign/campaign.lock.json",
+    "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "campaign_id": "binary-midpoint-main-v1"
+  },
+  "protocol": {
+    "working_posterior": "shared-threshold",
+    "threshold_distribution": "Uniform(0,1)",
+    "mask_rule": "Y_T={i:foreground_probability_i>=T}",
+    "cardinality": "K(T)=|Y_T|",
+    "cdf_lower": "F_-(k)=Q_p(K<k)",
+    "cdf_upper": "F(k)=Q_p(K<=k)",
+    "randomized_pit": "F_-(k)+V[F(k)-F_-(k)]",
+    "diagnostic_seed": 20260720,
+    "randomizer": "sha256-top52-midpoint-v1",
+    "empty_mask_identity": "Q_p(K=0)=1-max_i foreground_probability_i"
+  },
+  "cpu_partitions": ["agsmall", "amdsmall", "msismall"],
+  "output_root": "outputs/binary_cardinality_diagnostics",
+  "artifacts": [
+    {
+      "manifest_path": "outputs/binary_artifacts/pet/clipseg-general/e0d454ce916c5ca9/manifest.json",
+      "manifest_sha256": "3a7ee87f84e0c03baed3b77dc6b4f6610b4e189d752a58c8926a968e4be899ca"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/pet/clipseg-target/7261edbb5f763435/manifest.json",
+      "manifest_sha256": "63209620844cf2caa074c6ee726d58a8579483fd8f8586cdfdf9c1ea48e03d9d"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/pet/deeplabv3-target/ced4dc6e67bc178f/manifest.json",
+      "manifest_sha256": "6902b90780b75b74015c613c4eae78debdd51315a40146a7daabc393c124c403"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/pet/deeplabv3-external/640ef98bcd028dc3/manifest.json",
+      "manifest_sha256": "b6a88350dd7414b56e8506602f6ab464a107f5bca414e06c0aebc013d064a22e"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/kvasir/clipseg-general/eb7304bdd945035d/manifest.json",
+      "manifest_sha256": "b2cafd736eda658aff739ce9a78836a116b5b93d167af672f60933360bfab271"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/kvasir/clipseg-target/7ce9cddd0f9704fd/manifest.json",
+      "manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/kvasir/deeplabv3-target/be7dedef6990d54c/manifest.json",
+      "manifest_sha256": "2050573de3eed869d71a158b51da6c8748c6dc6decf634cc15f9a6a7ccc15fa5"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/fives/clipseg-general/cb5c08e73819574c/manifest.json",
+      "manifest_sha256": "977fd1d5362e68597695e38b2de381f73880df3c537a734a8d3a87427702a690"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/fives/clipseg-target/ef8e1b5176b92b87/manifest.json",
+      "manifest_sha256": "5ea7ca873b8d9d527706e4d2cccb3c12da758c5b31b831b164eb7fc32dfdb16e"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/fives/deeplabv3-target/e7e1e90e13ce3dfa/manifest.json",
+      "manifest_sha256": "fd33483e3e90d1508b3dc39354041f7299618524adc22326c4d1f65d7369bd87"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/isic/clipseg-general/3e57aa259264c1be/manifest.json",
+      "manifest_sha256": "e11cf7fe164004bc5174066ef1d1f25a0af82e0ac6482018fe345c30fc0df115"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/isic/clipseg-target/a5d30aa0ec8b0742/manifest.json",
+      "manifest_sha256": "fe756c276aa3da2868b8d41d2ddc2eed1dcf36e553ada12206e6e945b490f980"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/isic/deeplabv3-target/48cf75646c61ecf4/manifest.json",
+      "manifest_sha256": "9e9634dd93434de85fc7ea5fc0de7972220960f1db0ce012d7e4a56f1ba3a4ba"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/tn3k/clipseg-general/9626e945ef94b1e5/manifest.json",
+      "manifest_sha256": "aa7d822e499095496e4111f66bfb472f2971c7164f5bc85895caef5fc5034210"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/tn3k/clipseg-target/603dc94883b5f395/manifest.json",
+      "manifest_sha256": "259fba96dd6f14ee127839c4e4b1b254100a2f67aa163b6c61d62d9b4653eacd"
+    },
+    {
+      "manifest_path": "outputs/binary_artifacts/tn3k/deeplabv3-target/efce266864cd5269/manifest.json",
+      "manifest_sha256": "3650248ad9a3cd84cd85bd6f88555df40e3d716c3f24310f12b7e1af600fe515"
+    }
+  ]
+}

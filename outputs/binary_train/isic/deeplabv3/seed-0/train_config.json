@@ -1,0 +1,13 @@
+{
+  "model": "deeplabv3",
+  "dataset": "isic",
+  "data_root": "data",
+  "output_dir": "outputs/binary_train/isic/deeplabv3/seed-0",
+  "epochs": "40",
+  "batch_size": "16",
+  "lr": "0.005",
+  "weight_decay": "0.0001",
+  "num_workers": "8",
+  "seed": "0",
+  "limit_batches": "None"
+}

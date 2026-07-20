@@ -1,0 +1,163 @@
+{
+  "spec_schema_version": 1,
+  "auxiliary_id": "binary-target-seed-extension-v1",
+  "primary_campaign": {
+    "campaign_id": "binary-midpoint-main-v1",
+    "training_seed": 0
+  },
+  "protocol": {
+    "training_seeds": [1, 2],
+    "gamma": 0.5,
+    "m_values": [2, 8, 32],
+    "quadrature_rule": "midpoint-v1",
+    "quadrature_seed": 0,
+    "checkpoint_rule": "final_epoch_40"
+  },
+  "data_root": "data",
+  "datasets": [
+    {
+      "name": "pet",
+      "train_split": "trainval",
+      "eval_split": "test",
+      "train_count": 3680,
+      "train_sample_id_sha256": "ce4e4c12d4f2724b6916c6b87f6e9ad191eb8344039e86eecb27f3ba8a93c3a1",
+      "eval_count": 3669,
+      "eval_sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d",
+      "prompts": ["cat", "dog"],
+      "prompt_classes": [1, 1],
+      "freeze_batch_size": 8
+    },
+    {
+      "name": "kvasir",
+      "train_split": "train",
+      "eval_split": "test",
+      "train_count": 800,
+      "train_sample_id_sha256": "7c18e49401ecaf450f68e698e6642b654f65be14bc1c73872089dfce4a3f0739",
+      "eval_count": 200,
+      "eval_sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f",
+      "prompts": ["polyp"],
+      "prompt_classes": [1],
+      "freeze_batch_size": 8
+    },
+    {
+      "name": "fives",
+      "train_split": "train",
+      "eval_split": "test",
+      "train_count": 600,
+      "train_sample_id_sha256": "66f05f00f7b76e7871aa7452ae31be830dd3bb7bddcde63f6e36307ac12148ac",
+      "eval_count": 200,
+      "eval_sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d",
+      "prompts": ["retinal blood vessels"],
+      "prompt_classes": [1],
+      "freeze_batch_size": 4
+    },
+    {
+      "name": "isic",
+      "train_split": "train",
+      "eval_split": "test",
+      "train_count": 2594,
+      "train_sample_id_sha256": "b67ac10bc80b3201763c849f071907f60b27d526e0fc90f42f856a2fff1d8113",
+      "eval_count": 1000,
+      "eval_sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6",
+      "prompts": ["skin lesion"],
+      "prompt_classes": [1],
+      "freeze_batch_size": 4
+    },
+    {
+      "name": "tn3k",
+      "train_split": "train",
+      "eval_split": "test",
+      "train_count": 2879,
+      "train_sample_id_sha256": "788754073d9a2443b81ab4c542d280b9fde5ac99db321ee8e7906b75a6ee8dd1",
+      "eval_count": 614,
+      "eval_sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9",
+      "prompts": ["thyroid nodule"],
+      "prompt_classes": [1],
+      "freeze_batch_size": 4
+    }
+  ],
+  "models": [
+    {
+      "name": "clipseg",
+      "condition": "clipseg-target",
+      "epochs": 40,
+      "batch_size": 32,
+      "learning_rate": 0.0001,
+      "weight_decay": 0.0001,
+      "num_workers": 8,
+      "optimizer": "AdamW",
+      "scheduler": "polynomial_power_0.9_per_step",
+      "gradient_clip_norm": 1.0,
+      "autocast_dtype": "bfloat16",
+      "image_size": 352,
+      "trainable_scope": "decoder_only"
+    },
+    {
+      "name": "deeplabv3",
+      "condition": "deeplabv3-target",
+      "epochs": 40,
+      "batch_size": 16,
+      "learning_rate": 0.005,
+      "weight_decay": 0.0001,
+      "num_workers": 8,
+      "optimizer": "SGD_momentum_0.9",
+      "scheduler": "polynomial_power_0.9_per_step",
+      "gradient_clip_norm": 1.0,
+      "autocast_dtype": "bfloat16",
+      "image_size": 512,
+      "trainable_scope": "end_to_end"
+    }
+  ],
+  "training_preprocessing": {
+    "minimum_random_scale": 0.5,
+    "maximum_random_scale": 2.0,
+    "random_crop": true,
+    "horizontal_flip_probability": 0.5,
+    "negative_prompt_probability": 0.25,
+    "drop_last": true
+  },
+  "freeze_preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "environment": {
+    "python": "3.12.4",
+    "numpy": "2.5.1",
+    "torch": "2.12.1",
+    "torchvision": "0.27.1",
+    "transformers": "5.13.0",
+    "cuda_runtime": "13.0"
+  },
+  "gpu_profiles": [
+    {
+      "partition": "saffo-a100",
+      "account": "ssafo",
+      "gres": "gpu:a100:1"
+    },
+    {
+      "partition": "apollo_agate",
+      "account": "ssafo",
+      "gres": "gpu:a100:1"
+    }
+  ],
+  "partition_assignment": "balanced_dataset_model_seed_parity_v1",
+  "paths": {
+    "train_root": "outputs/binary_train_seed_extension",
+    "checkpoint_lock": "outputs/binary_seed_campaign/checkpoints.lock.json",
+    "artifact_root": "outputs/binary_seed_artifacts",
+    "freeze_record_root": "outputs/binary_seed_freeze_records",
+    "common_root": "outputs/binary_seed_common",
+    "simulation_root": "outputs/binary_seed_simulations",
+    "assembly_root": "outputs/binary_seed_assembled",
+    "diagnostic_root": "outputs/binary_seed_diagnostics",
+    "analysis_root": "outputs/binary_seed_analysis"
+  },
+  "downstream_job_design": {
+    "common_jobs": 20,
+    "m_score_jobs": 60,
+    "assembly_jobs": 20,
+    "diagnostic_jobs": 20,
+    "analysis_jobs": 1,
+    "render_jobs": 1
+  }
+}

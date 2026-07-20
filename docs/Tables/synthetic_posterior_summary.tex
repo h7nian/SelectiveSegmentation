@@ -1,0 +1,25 @@
+% Auto-generated from synthetic analysis SHA-256: 584a92390767ea72f1b7ef655fec64ddc011bd6830478e692cbb9edeaa5b9863
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\caption{Known-posterior stress test. Each pair reports mean absolute M32 working-risk error and mean AURC regret (lower is better), aggregated over the completed synthetic cells. AURC regret is multiplied by 100 for display only.}
+\label{tab:synthetic-posterior}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{Dice} & \multicolumn{2}{c}{nHD} & \multicolumn{2}{c}{nHD95} \\
+Coupling & $|\widetilde r-r^\star|$ & $100\times$AURC reg. & $|\widetilde r-r^\star|$ & $100\times$AURC reg. & $|\widetilde r-r^\star|$ & $100\times$AURC reg. \\
+\midrule
+Shared threshold & 0.0087 & 0.0715 & 0.0084 & 0.0917 & 0.0085 & 0.0991 \\
+Independent Bernoulli & 0.0148 & 0.0244 & 0.0614 & 0.2667 & 0.0442 & 0.1519 \\
+Local block threshold & 0.0135 & 0.0346 & 0.0450 & 0.1624 & 0.0463 & 0.1279 \\
+Bimodal antithetic & 0.0393 & 0.0558 & 0.0602 & 0.1144 & 0.0617 & 0.0823 \\
+\bottomrule
+\end{tabular}%
+}
+\vspace{2pt}
+\begin{minipage}{0.98\linewidth}\footnotesize
+True conditional risks are Monte Carlo estimates; their posterior-draw Monte Carlo SE is reported in the machine-readable analysis. Scalar loss-pushforward $W_1$ is reported for all losses, but no HD95 mask-Wasserstein corollary is claimed. M128 is a numerical reference for boundary losses; Dice-Exact is the only exact threshold integral.
+\end{minipage}
+\end{table*}

@@ -1,0 +1,183 @@
+{
+  "analyses": {
+    "diagnostics": {
+      "artifact_sha256": "9af6daac57da5d257a8c3229503c12b0f31345a0d6b9416ebd0b0d76e75cb1b5",
+      "condition_count": 16,
+      "image_count": 20718,
+      "pixel_count": 25679292356,
+      "schema_version": 1
+    },
+    "selective": {
+      "artifact_sha256": "a46d0f0b65efbfca6a06df0ed8468921060137ed0cfd06167fe7d05fa8f427f1",
+      "condition_count": 16,
+      "image_cluster_count": 20718,
+      "row_count": 20718,
+      "schema_version": 2
+    }
+  },
+  "artifact_type": "selectseg.public_provenance",
+  "base_models": [
+    {
+      "identifier": "CIDAS/clipseg-rd64-refined",
+      "model_id": "clipseg",
+      "revision": "999e0328d9e10b484360c477313983f9afdd7050",
+      "weights_sha256": "d00ca85d6b859f9d07b7cfb8ef26fe9771cb275b34c9368f2ecf603139307f55"
+    },
+    {
+      "identifier": "torchvision/DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1",
+      "model_id": "deeplabv3",
+      "revision": "torchvision-0.27.1",
+      "weights_sha256": "cd0a25694c4a0f7106b38f4938bf90a874f2f241cc410b8f63c7024399538f06"
+    }
+  ],
+  "campaign": {
+    "campaign_id": "binary-midpoint-main-v1",
+    "condition_count": 16,
+    "config_sha256": "36229c9e8fd245ec6391d528e9129e09a93d9074d9fa70544eea9d78a524c76a",
+    "datasets": [
+      {
+        "condition_count": 3,
+        "dataset_id": "fives",
+        "locked_sample_count": 600
+      },
+      {
+        "condition_count": 3,
+        "dataset_id": "isic",
+        "locked_sample_count": 3000
+      },
+      {
+        "condition_count": 3,
+        "dataset_id": "kvasir",
+        "locked_sample_count": 600
+      },
+      {
+        "condition_count": 4,
+        "dataset_id": "pet",
+        "locked_sample_count": 14676
+      },
+      {
+        "condition_count": 3,
+        "dataset_id": "tn3k",
+        "locked_sample_count": 1842
+      }
+    ],
+    "estimator": {
+      "estimator_id": "midpoint-v1",
+      "spec_sha256": "ec7853c8dac78c0dc02bab833fba2545c7712b2ec5cc1803cf5ae8fc14167a84",
+      "target_measure": "uniform-threshold"
+    },
+    "lock_sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "locked_sample_count": 20718,
+    "protocol": {
+      "gamma_count": 1,
+      "m_count": 3,
+      "quadrature_rule": "midpoint-v1",
+      "seed_count": 1
+    }
+  },
+  "phases": [
+    {
+      "completed_count": 16,
+      "phase_id": "freeze",
+      "receipt_sha256": "69d8f629606e25011b4432a64d45a575744c6e477e084e2823c651b265c1b126",
+      "submitted_count": 16
+    },
+    {
+      "completed_count": 16,
+      "phase_id": "common",
+      "receipt_sha256": "95f4a45bc28b8496ced58db7645105b076153e112ee7b5265f69c95e031b8ada",
+      "submitted_count": 16
+    },
+    {
+      "completed_count": 48,
+      "phase_id": "score",
+      "receipt_sha256": "fe46202623bcad885b6cbde8e0804210486962c26313da8891c47d44e950f938",
+      "submitted_count": 48
+    },
+    {
+      "completed_count": 16,
+      "phase_id": "assemble",
+      "receipt_sha256": "6099d354bc1b39f90799c05c254138cceb85aa8d94fb520c165e0f0cc160a6cd",
+      "submitted_count": 16
+    },
+    {
+      "completed_count": 16,
+      "phase_id": "diagnose",
+      "receipt_sha256": "5ed02d2cfc1405fcb4fe51726d6ba040775a583541d7b0df2d42dd047c3fd7a3",
+      "submitted_count": 16
+    }
+  ],
+  "schema_version": 1,
+  "training": [
+    {
+      "checkpoint_sha256": "6f8f196d8a89202738b3c908552bd55e93b8c3ca1c19c7f6ec79ae77275d9e43",
+      "config_sha256": "abefb9c90c1276776be99f8b0ce52849a9478592635f4a6cd36f322a5d20475c",
+      "history_record_count": 0,
+      "history_sha256": null,
+      "logical_id": "fives/clipseg/seed-0"
+    },
+    {
+      "checkpoint_sha256": "ed6ec767d275c11edeab04f0c14255a0271167e020847135c3b0d0e2719dd389",
+      "config_sha256": "6faf034c204e8f6ac5022e6bcb4ab3b533910221d9e491af49e9e4e4ab6cd6a2",
+      "history_record_count": 0,
+      "history_sha256": null,
+      "logical_id": "fives/deeplabv3/seed-0"
+    },
+    {
+      "checkpoint_sha256": "8a8d29290e21b5c12741488b236242c647a04d0fac99e1674109d6018e7decae",
+      "config_sha256": "ee2d69252192d853da4d92fb288ab4a6cd2c75e6c5ba6e5af0f1737f278a8991",
+      "history_record_count": 40,
+      "history_sha256": "b99906cc3c41e95169330a6bf5af55aeec6d96491e766c189b7bc135c106ee57",
+      "logical_id": "isic/clipseg/seed-0"
+    },
+    {
+      "checkpoint_sha256": "2d40aaa7e5cd6363677c6f65af559df2ce3250d956d052d70bad2d7407661b28",
+      "config_sha256": "22ad3967c6e732c96997589d98b39fb5880c9452ad1ca1b4a18a2e6c596b327d",
+      "history_record_count": 40,
+      "history_sha256": "b8358ed01e781d57a56c5a219624363b97824c9eee426a79dbb5d94a422e6416",
+      "logical_id": "isic/deeplabv3/seed-0"
+    },
+    {
+      "checkpoint_sha256": "0d457d64fb9a048cfec8a2217599f8db965ebb560892dc9043282a3a60d839a8",
+      "config_sha256": "1b9355ce249d4e6d4bd78783fbb58330ab3b4e88169a11e18c9eae3131aedce7",
+      "history_record_count": 0,
+      "history_sha256": null,
+      "logical_id": "kvasir/clipseg/seed-0"
+    },
+    {
+      "checkpoint_sha256": "ffe500c671270b14761c97d78d552a398ae44a90d131b55db728a0c17df3bd88",
+      "config_sha256": "ff4bed1b840dd8232c3ef283b924eb1aa4430f5e1a5841c8391d73030c0e5a35",
+      "history_record_count": 0,
+      "history_sha256": null,
+      "logical_id": "kvasir/deeplabv3/seed-0"
+    },
+    {
+      "checkpoint_sha256": "0b62aa359ae1d4e4df2741de2fe61836322925ec1461764dc6529e4e3fe5bed2",
+      "config_sha256": "2bebdc9b91f3ab94a226c83c0c50bcd327699631a0f5288de0e885c4dba0c47a",
+      "history_record_count": 0,
+      "history_sha256": null,
+      "logical_id": "pet/clipseg/seed-0"
+    },
+    {
+      "checkpoint_sha256": "9a67e8b1be718df9543423852696a7a59aec40a151e19736b85fe6cea9e1fb40",
+      "config_sha256": "927681933b6fb6d196bd5f4bdd428055ac257cced70ef1e1c7ec74a5bb1aa3aa",
+      "history_record_count": 0,
+      "history_sha256": null,
+      "logical_id": "pet/deeplabv3/seed-0"
+    },
+    {
+      "checkpoint_sha256": "09c2b17250f0dc810e0b960746b79ed9f63a0ae67951b2b1258e7fffe8d938cf",
+      "config_sha256": "663ca5f9c90b77e82516c855ab2e5b86fcc255e5a900be7df0c04683aeb67c03",
+      "history_record_count": 40,
+      "history_sha256": "b3eff36f96d0d760ca8013c486d9a84c69106f0c433ee58fffe5b3aecd6893e7",
+      "logical_id": "tn3k/clipseg/seed-0"
+    },
+    {
+      "checkpoint_sha256": "9e7e44ddaa0291e1ff0a3f56c0900c3481d5617bd717af7cafa3299b1deda16e",
+      "config_sha256": "3f71561f50c48e8ce1e5a72e36db65415b1047d9ae31b401064fdb49261a99c6",
+      "history_record_count": 40,
+      "history_sha256": "ef9c46603161088b5b786a5b1f16d1a97093e9ce470a9787b2d45366aa1df287",
+      "logical_id": "tn3k/deeplabv3/seed-0"
+    }
+  ]
+}

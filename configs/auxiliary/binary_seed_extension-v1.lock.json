@@ -1,0 +1,154 @@
+{
+  "lock_schema_version": 1,
+  "auxiliary_id": "binary-target-seed-extension-v1",
+  "spec": {
+    "path": "configs/auxiliary/binary_seed_extension-v1.json",
+    "sha256": "8c861e6421270fc16378ca5408db6abaedd47cf0356b0cb2d82f86f7d2d76696"
+  },
+  "canonical_campaign_lock": {
+    "path": "outputs/binary_campaign/campaign.lock.json",
+    "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "campaign_id": "binary-midpoint-main-v1"
+  },
+  "estimator_spec": {
+    "path": "configs/estimators/midpoint-v1.json",
+    "sha256": "ec7853c8dac78c0dc02bab833fba2545c7712b2ec5cc1803cf5ae8fc14167a84"
+  },
+  "source_files": [
+    {
+      "path": "selectseg/train.py",
+      "sha256": "a3b76d6637e1d8f1283d2571d16f17dc0c7d1ad7432d3d30a7d945bdeeca897e"
+    },
+    {
+      "path": "selectseg/data.py",
+      "sha256": "ecd7b2997d2d7476caec84b61460d88426841e1a1d5946e2c6c7f5e8f8231c83"
+    },
+    {
+      "path": "selectseg/models.py",
+      "sha256": "890094a67063e307e0fc49792bec1792f46db0de29dabbdd72b44d148431f39c"
+    },
+    {
+      "path": "selectseg/freeze_binary_maps.py",
+      "sha256": "3f46efc766effc72a9cd3e9f405e268d38e0a7424efc3cc284347d0b59d65052"
+    },
+    {
+      "path": "selectseg/binary_artifacts.py",
+      "sha256": "b158c3637dad22893293178ed8250eda5cdf2d648d9d2ee5d56fed3c2fecd652"
+    }
+  ],
+  "base_model_files": [
+    {
+      "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/config.json",
+      "sha256": "c023375966d31b3b1392764f7bd91df47098ce19f62f11b0263d8eedcf708bcd"
+    },
+    {
+      "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/merges.txt",
+      "sha256": "9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a"
+    },
+    {
+      "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/model.safetensors",
+      "sha256": "d00ca85d6b859f9d07b7cfb8ef26fe9771cb275b34c9368f2ecf603139307f55"
+    },
+    {
+      "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/preprocessor_config.json",
+      "sha256": "4fb09ebcfd7651205ca8299b993c30088e5535ef350a72d46c5c4580eeac0440"
+    },
+    {
+      "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/special_tokens_map.json",
+      "sha256": "c4864a9376a8401918425bed71fc14fc0e81f9b59ec45c1cf96cccb2df508eac"
+    },
+    {
+      "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/tokenizer_config.json",
+      "sha256": "4c75d57fd9bd0be8478ad2d6f8b9cebdd4a45338eb108547329c2b6333476ca6"
+    },
+    {
+      "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/vocab.json",
+      "sha256": "e089ad92ba36837a0d31433e555c8f45fe601ab5c221d4f607ded32d9f7a4349"
+    },
+    {
+      "path": "data/cache/torch/hub/checkpoints/deeplabv3_resnet50_coco-cd0a2569.pth",
+      "sha256": "cd0a25694c4a0f7106b38f4938bf90a874f2f241cc410b8f63c7024399538f06"
+    }
+  ],
+  "reference_seed0_train_configs": [
+    {
+      "dataset": "pet",
+      "model": "clipseg",
+      "path": "outputs/binary_train/pet/clipseg/seed-0/train_config.json",
+      "sha256": "2bebdc9b91f3ab94a226c83c0c50bcd327699631a0f5288de0e885c4dba0c47a"
+    },
+    {
+      "dataset": "pet",
+      "model": "deeplabv3",
+      "path": "outputs/binary_train/pet/deeplabv3/seed-0/train_config.json",
+      "sha256": "927681933b6fb6d196bd5f4bdd428055ac257cced70ef1e1c7ec74a5bb1aa3aa"
+    },
+    {
+      "dataset": "kvasir",
+      "model": "clipseg",
+      "path": "outputs/binary_train/kvasir/clipseg/seed-0/train_config.json",
+      "sha256": "1b9355ce249d4e6d4bd78783fbb58330ab3b4e88169a11e18c9eae3131aedce7"
+    },
+    {
+      "dataset": "kvasir",
+      "model": "deeplabv3",
+      "path": "outputs/binary_train/kvasir/deeplabv3/seed-0/train_config.json",
+      "sha256": "ff4bed1b840dd8232c3ef283b924eb1aa4430f5e1a5841c8391d73030c0e5a35"
+    },
+    {
+      "dataset": "fives",
+      "model": "clipseg",
+      "path": "outputs/binary_train/fives/clipseg/seed-0/train_config.json",
+      "sha256": "abefb9c90c1276776be99f8b0ce52849a9478592635f4a6cd36f322a5d20475c"
+    },
+    {
+      "dataset": "fives",
+      "model": "deeplabv3",
+      "path": "outputs/binary_train/fives/deeplabv3/seed-0/train_config.json",
+      "sha256": "6faf034c204e8f6ac5022e6bcb4ab3b533910221d9e491af49e9e4e4ab6cd6a2"
+    },
+    {
+      "dataset": "isic",
+      "model": "clipseg",
+      "path": "outputs/binary_train/isic/clipseg/seed-0/train_config.json",
+      "sha256": "ee2d69252192d853da4d92fb288ab4a6cd2c75e6c5ba6e5af0f1737f278a8991"
+    },
+    {
+      "dataset": "isic",
+      "model": "deeplabv3",
+      "path": "outputs/binary_train/isic/deeplabv3/seed-0/train_config.json",
+      "sha256": "22ad3967c6e732c96997589d98b39fb5880c9452ad1ca1b4a18a2e6c596b327d"
+    },
+    {
+      "dataset": "tn3k",
+      "model": "clipseg",
+      "path": "outputs/binary_train/tn3k/clipseg/seed-0/train_config.json",
+      "sha256": "663ca5f9c90b77e82516c855ab2e5b86fcc255e5a900be7df0c04683aeb67c03"
+    },
+    {
+      "dataset": "tn3k",
+      "model": "deeplabv3",
+      "path": "outputs/binary_train/tn3k/deeplabv3/seed-0/train_config.json",
+      "sha256": "3f71561f50c48e8ce1e5a72e36db65415b1047d9ae31b401064fdb49261a99c6"
+    }
+  ],
+  "scheduler_validation": {
+    "checked_date": "2026-07-19",
+    "method": "sbatch --test-only with the exact account and GRES tuple",
+    "profiles": [
+      {
+        "partition": "saffo-a100",
+        "account": "ssafo",
+        "gres": "gpu:a100:1",
+        "result": "accepted"
+      },
+      {
+        "partition": "apollo_agate",
+        "account": "ssafo",
+        "gres": "gpu:a100:1",
+        "result": "accepted"
+      }
+    ],
+    "local_configuration_evidence": "Both partition node sets are Type=a100 in /etc/slurm/gres.conf; submission re-runs a non-submitting preflight before any job is sent."
+  }
+}

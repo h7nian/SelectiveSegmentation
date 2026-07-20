@@ -3,87 +3,66 @@
 
 \subsection{Five datasets, sixteen frozen conditions}
 
-We study five native-binary tasks: Oxford-IIIT Pet, Kvasir-SEG polyps, FIVES
-retinal vessels, ISIC 2018 skin lesions, and TN3K thyroid nodules
+We evaluate Oxford-IIIT Pet, Kvasir-SEG, FIVES, ISIC 2018, and TN3K
 \citep{parkhi2012cats,jha2020kvasir,jin2022fives,codella2019isic,
-gong2023thyroid}. Official splits are used except for Kvasir, whose 800/200
-split is fixed by SHA-256 order. Empty references remain in the cohort.
-
+gong2023thyroid}, using official splits except for a fixed SHA-256 Kvasir split.
 Each dataset has \textsc{CLIPSeg-General}, \textsc{CLIPSeg-Target}, and
-\textsc{DeepLabV3-Target}; Pet additionally has a released
-\textsc{DeepLabV3-External} cat/dog condition, giving sixteen conditions.
-Target models follow one frozen 40-epoch schedule and seed 0. No test label
-selects a checkpoint, hyperparameter, or condition. Within a condition every
-score receives the same frozen native-resolution probability map and action,
-isolating ranking from segmentation quality. Appendix~\ref{app:benchmark-protocol}
-specifies cohorts, prompts, training, checkpoints, and integrity checks.
+\textsc{DeepLabV3-Target}; Pet also has a released
+\textsc{DeepLabV3-External} cat/dog model, giving sixteen conditions. Target
+models use one fixed 40-epoch schedule and seed 0; no test label selects a
+checkpoint or hyperparameter. Every score within a condition receives the same
+frozen native-resolution map and action. Headline counts use the ten target
+conditions; the other six are fixed stress controls. Empty references remain,
+and Appendix~\ref{app:benchmark-protocol} specifies all cohorts and training.
 
 \subsection{One action, three geometric losses}
 
-The deployed action is fixed once,
+The action is fixed once as \(\Yhat=\{i:p_i\geq0.5\}\); integration thresholds
+change only candidate masks. Besides \(L_{\Dice}=1-\Dice\), let \(D(A,B)\)
+pool both directed nearest distances between inner digital surfaces. On an
+\(H\times W\) native grid with \(D_x=\sqrt{H^2+W^2}\),
 \begin{equation*}
-  \Yhat(x)=\{i:p_i(x)\geq0.5\}.
-\end{equation*}
-An integration threshold changes only a candidate mask. Besides
-\(L_{\Dice}=1-\Dice\), let \(D(A,B)\) pool both directed nearest distances
-between inner digital surfaces. On an \(H\times W\) native grid with
-\(D_x=\sqrt{H^2+W^2}\),
-\begin{equation*}
-  L_{\mathrm{nHD},x}=\frac{\max D(A,B)}{D_x},
-  \qquad
+  L_{\mathrm{nHD},x}=\frac{\max D(A,B)}{D_x},\qquad
   L_{\mathrm{nHD95},x}=\frac{Q_{0.95}(D(A,B))}{D_x}.
 \end{equation*}
-The percentile follows pooling. Empty--empty costs zero and a one-sided empty
-pair costs one, so all primary risks lie in \([0,1]\). Raw native-pixel HD and
-HD95 are retained descriptively; Appendix~\ref{app:benchmark-protocol} fixes
-surface, quantile, resizing, and empty-mask conventions.
+Empty--empty costs zero and a one-sided empty pair costs one. The appendix fixes
+surface, spacing, pooling, resizing, and raw-pixel descriptive variants.
 
-\subsection{Scores and the complete cross-loss design}
+\subsection{Scores and comparisons}
 
-For each of the three losses we compute midpoint confidence
+For each loss we compute
 \begin{equation*}
-  C_{L,M}(x)=-\frac1M\sum_{m=1}^M
-  L\!\left(\{i:p_i(x)\geq(m-1/2)/M\},\Yhat(x)\right)
+  C_{L,M}=-\frac1M\sum_{m=1}^M
+  L\!\left(\{i:p_i\geq(m-1/2)/M\},\Yhat\right),
+  \qquad M\in\{2,8,32\},
 \end{equation*}
-at \(M\in\{2,8,32\}\); the three \(M=32\) scores are primary. Dice-Exact
-is the probability-knot oracle from Corollary~\ref{app:cor:exact-dice}.
-Seven single-map references---SDC, mean maximum probability, mean negative
-entropy, QFR-Entropy, PLM-10/PLA-10-Entropy, MMMC-Entropy, and foreground
-entropy---complete seventeen scores \citep{sdc,guarino2026aggregation,
-holder2021uncertainty}.
+with the three M32 scores primary and Dice-Exact as the probability-knot oracle.
+Seven fixed single-map references---SDC, mean maximum probability, mean negative
+entropy, QFR-Entropy, PLM/PLA-10-Entropy, MMMC-Entropy, and foreground
+entropy---give seventeen scores \citep{sdc,guarino2026aggregation,
+holder2021uncertainty}. The three primary indexed scores form a complete
+\(3\times3\) score--risk matrix. Four confirmatory contrasts compare the adjacent
+steps Dice--nHD under Dice/nHD risk and nHD--nHD95 under nHD/nHD95 risk; all
+nonadjacent or mismatched cells are descriptive. The M-ladder, M128 boundary
+reference, and Dice-Exact audit numerical sensitivity.
 
-Dice-M32, nHD-M32, and nHD95-M32 are evaluated under all three risks, producing
-the full \(3\times3\) indexed-score matrix. The only predeclared primary contrasts are
-the two adjacent geometric steps under their neighboring risks:
-\begin{equation*}
-\begin{aligned}
-  &\AURC(\text{Dice-M32})-\AURC(\text{nHD-M32})
-    &&\text{under Dice and nHD},\\
-  &\AURC(\text{nHD-M32})-\AURC(\text{nHD95-M32})
-    &&\text{under nHD and nHD95}.
-\end{aligned}
-\end{equation*}
-All nonadjacent and mismatched cells are descriptive. The \(M\)-ladder and
-Dice-Exact additionally separate quadrature error from posterior discrepancy
-using direct score errors and rank agreement.
+\subsection{Locked analysis and stress tests}
 
-\subsection{Locked analysis and paired inference}
+Immutable manifests bind sample order, maps, labels, checkpoints, and hashes.
+One-task-per-job stages freeze each condition, score each
+\((\text{condition},M)\) shard, and reject mismatched assemblies. Separate locked
+diagnostics examine marginals, action quality, accepted-set agreement, and exact
+\(Q_p\) cardinality implications; one label per image can expose incompatibility
+but cannot validate a conditional posterior. A 360-cell known-posterior study
+separates numerical from coupling error, while a fixed
+\(\gamma\in\{.3,.7\}\) analysis tests action sensitivity without tuning the
+primary \(\gamma=.5\) action. Appendix~\ref{app:benchmark-protocol} gives their
+complete designs and the predeclared warning rules.
 
-One immutable manifest per condition binds ordered samples, probability maps,
-labels, checkpoints, source fingerprints, and hashes. Independent Slurm jobs
-freeze each condition, compute common quantities, compute each
-\((\text{condition},M)\) score shard, and strictly assemble only matching
-identities. A separate locked diagnostic reports marginal Brier/ECE, empty-mask
-rates, and level-set ladder diversity; none validates the joint posterior or
-tunes a method.
-
-We compute tie-aware empirical AURC as the exact expectation over uniform
-ordering within score ties; lower is better. Each of the four contrasts per
-condition receives a 95\% pointwise interval and approximate two-sided tail
-probability from 10,000 paired image-cluster bootstrap resamples
-\citep{efron1993}. Holm transforms are applied separately to the predeclared
-40-comparison Pet/Kvasir/FIVES core and 24-comparison ISIC/TN3K extension
-families \citep{holm1979}. We treat them as multiplicity-aware evidence
-summaries, not exact finite-sample family-wise-error guarantees. Appendix
-\ref{app:benchmark-protocol} gives every score, diagnostic, AURC, bootstrap,
-and multiplicity convention.
+We use tie-aware empirical AURC, exactly averaging uniform order within ties.
+Displayed raw AURC, gaps/regrets, and contrasts are multiplied by \(100\); nAURC
+and all computations are unscaled. Each fixed contrast receives a pointwise 95\%
+interval from 10,000 paired image-bootstrap resamples \citep{efron1993}. We
+report all 64 rows without converting bootstrap confidence curves into
+null-calibrated \(p\)-values or simultaneous claims. The empirical hindsight
+oracle orders realized losses and is distinct from \(C_L^\star\).

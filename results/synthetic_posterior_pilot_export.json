@@ -1,0 +1,13 @@
+{
+  "export_schema_version": 1,
+  "portable": {
+    "path": "outputs/public_auxiliary/synthetic_posterior_pilot_analysis.json",
+    "sha256": "42c97f9dd8294d127018c87bf7ce765546ec2d3428f927342944f555afbd24b7"
+  },
+  "rewritten_absolute_path_count": 13,
+  "source": {
+    "path": "outputs/synthetic_posterior_analysis/analysis.json",
+    "sha256": "c339eac9fb5f24ce5453ed4e4de45058d0e4ba41c5ab371e30d5d5b9f7fc28ac"
+  },
+  "transformation": "repository_absolute_paths_to_relative_posix_v1"
+}

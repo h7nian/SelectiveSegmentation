@@ -1,0 +1,1299 @@
+{
+  "artifact_type": "selectseg.binary_qualitative_case_selection",
+  "condition_counts": {
+    "datasets": 5,
+    "eligible_target_conditions": 10,
+    "validated_conditions": 16
+  },
+  "datasets": [
+    {
+      "cases": [
+        {
+          "case_type": "dice_vs_nhd_rank_disagreement",
+          "condition": "deeplabv3-target",
+          "dataset": "pet",
+          "duplicate_fallback_used": false,
+          "height": 375,
+          "image_id": "wheaten_terrier_87",
+          "image_index": 3554,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.9419302071973827,
+            "confidence_nhd95_m32": 0.05288985823336968,
+            "confidence_nhd_m32": 0.008451472191930208
+          },
+          "prediction_foreground_fraction": 0.047568,
+          "provenance": {
+            "artifact_id": "ced4dc6e67bc178f",
+            "artifact_manifest_path": "outputs/binary_artifacts/pet/deeplabv3-target/ced4dc6e67bc178f/manifest.json",
+            "artifact_manifest_sha256": "6902b90780b75b74015c613c4eae78debdd51315a40146a7daabc393c124c403",
+            "assembly_manifest_sha256": "33135196a6b2609ff4c80ef5b524e17b512b4b899b87b451f8298abdafceb235",
+            "assembly_records_sha256": "cbaf7656084e3350ff3d47453ab1f2997e0bae17dd561a6b8427f9e4d269a1fc",
+            "sample_payload_path": "samples/00003554.npz",
+            "sample_payload_sha256": "89343515ae8f88da798af131965b4d9bfb50f0454f01b2d9c7a29e90413a7659"
+          },
+          "risks": {
+            "risk_dice": 0.0393909683372744,
+            "risk_nhd": 0.0096,
+            "risk_nhd95": 0.0064
+          },
+          "sample_id": "wheaten_terrier_87",
+          "scores": {
+            "confidence_dice_m32": -0.06279308707954008,
+            "confidence_nhd95_m32": -0.0067138706002676,
+            "confidence_nhd_m32": -0.008480904399373006
+          },
+          "selection_objective": 0.9334787350054525,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.9334787350054525,
+            "left_normalized_safety_rank": 0.9419302071973827,
+            "left_score_field": "confidence_dice_m32",
+            "right_normalized_safety_rank": 0.008451472191930208,
+            "right_score_field": "confidence_nhd_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.044906666666666664,
+          "width": 500
+        },
+        {
+          "case_type": "nhd_vs_nhd95_rank_disagreement",
+          "condition": "deeplabv3-target",
+          "dataset": "pet",
+          "duplicate_fallback_used": false,
+          "height": 375,
+          "image_id": "Russian_Blue_77",
+          "image_index": 2756,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.08206106870229007,
+            "confidence_nhd95_m32": 0.03871319520174482,
+            "confidence_nhd_m32": 0.8375136314067612
+          },
+          "prediction_foreground_fraction": 0.5960426666666667,
+          "provenance": {
+            "artifact_id": "ced4dc6e67bc178f",
+            "artifact_manifest_path": "outputs/binary_artifacts/pet/deeplabv3-target/ced4dc6e67bc178f/manifest.json",
+            "artifact_manifest_sha256": "6902b90780b75b74015c613c4eae78debdd51315a40146a7daabc393c124c403",
+            "assembly_manifest_sha256": "33135196a6b2609ff4c80ef5b524e17b512b4b899b87b451f8298abdafceb235",
+            "assembly_records_sha256": "cbaf7656084e3350ff3d47453ab1f2997e0bae17dd561a6b8427f9e4d269a1fc",
+            "sample_payload_path": "samples/00002756.npz",
+            "sample_payload_sha256": "d1b23d2dff350df1f4d5bc4d08a6216f08698ff8428e8598416b09737d535a52"
+          },
+          "risks": {
+            "risk_dice": 0.017236230404763964,
+            "risk_nhd": 0.03534515525499923,
+            "risk_nhd95": 0.0096
+          },
+          "sample_id": "Russian_Blue_77",
+          "scores": {
+            "confidence_dice_m32": -0.01747844736623928,
+            "confidence_nhd95_m32": -0.006427429618701789,
+            "confidence_nhd_m32": -0.05727589111801336
+          },
+          "selection_objective": 0.7988004362050163,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.7988004362050163,
+            "left_normalized_safety_rank": 0.8375136314067612,
+            "left_score_field": "confidence_nhd_m32",
+            "right_normalized_safety_rank": 0.03871319520174482,
+            "right_score_field": "confidence_nhd95_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.6005066666666666,
+          "width": 500
+        },
+        {
+          "case_type": "empty_action",
+          "duplicate_fallback_used": false,
+          "reason": "no deployed empty action exists in either target condition",
+          "status": "unavailable"
+        },
+        {
+          "case_type": "confident_failure",
+          "condition": "deeplabv3-target",
+          "dataset": "pet",
+          "duplicate_fallback_used": false,
+          "height": 353,
+          "image_id": "Persian_259",
+          "image_index": 2292,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.0,
+            "confidence_nhd95_m32": 0.0,
+            "confidence_nhd_m32": 0.0
+          },
+          "prediction_foreground_fraction": 1.0,
+          "provenance": {
+            "artifact_id": "ced4dc6e67bc178f",
+            "artifact_manifest_path": "outputs/binary_artifacts/pet/deeplabv3-target/ced4dc6e67bc178f/manifest.json",
+            "artifact_manifest_sha256": "6902b90780b75b74015c613c4eae78debdd51315a40146a7daabc393c124c403",
+            "assembly_manifest_sha256": "33135196a6b2609ff4c80ef5b524e17b512b4b899b87b451f8298abdafceb235",
+            "assembly_records_sha256": "cbaf7656084e3350ff3d47453ab1f2997e0bae17dd561a6b8427f9e4d269a1fc",
+            "sample_payload_path": "samples/00002292.npz",
+            "sample_payload_sha256": "0585e735a8e3e17fbddef3bafd629ede80c647dc5ca2030c36b9b0a0da006422"
+          },
+          "risks": {
+            "risk_dice": 1.0,
+            "risk_nhd": 1.0,
+            "risk_nhd95": 1.0
+          },
+          "sample_id": "Persian_259",
+          "scores": {
+            "confidence_dice_m32": -0.0003137844608767648,
+            "confidence_nhd95_m32": -0.000584807622332892,
+            "confidence_nhd_m32": -0.001754422866998676
+          },
+          "selection_objective": 0.9996862155391233,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 1.0,
+            "observed_minus_predicted_risk_gap": 0.9996862155391233,
+            "predicted_working_risk": 0.0003137844608767648,
+            "score_field": "confidence_dice_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.0,
+          "width": 470
+        }
+      ],
+      "dataset": "pet",
+      "target_conditions": [
+        "clipseg-target",
+        "deeplabv3-target"
+      ]
+    },
+    {
+      "cases": [
+        {
+          "case_type": "dice_vs_nhd_rank_disagreement",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "duplicate_fallback_used": false,
+          "height": 530,
+          "image_id": "cju3xjqtpikx50817tppy6g84",
+          "image_index": 85,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.23115577889447236,
+            "confidence_nhd95_m32": 0.38190954773869346,
+            "confidence_nhd_m32": 0.7889447236180904
+          },
+          "prediction_foreground_fraction": 0.15493235454710913,
+          "provenance": {
+            "artifact_id": "7ce9cddd0f9704fd",
+            "artifact_manifest_path": "outputs/binary_artifacts/kvasir/clipseg-target/7ce9cddd0f9704fd/manifest.json",
+            "artifact_manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8",
+            "assembly_manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+            "assembly_records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+            "sample_payload_path": "samples/00000085.npz",
+            "sample_payload_sha256": "df1001e6a4831aa30b2c80451f8da40188aff81d776b816165776f694b2ca48e"
+          },
+          "risks": {
+            "risk_dice": 0.04821735503131064,
+            "risk_nhd": 0.19581046765948273,
+            "risk_nhd95": 0.021418301330534167
+          },
+          "sample_id": "cju3xjqtpikx50817tppy6g84",
+          "scores": {
+            "confidence_dice_m32": -0.06876401541435731,
+            "confidence_nhd95_m32": -0.03260543863821126,
+            "confidence_nhd_m32": -0.1403486112977742
+          },
+          "selection_objective": 0.5577889447236181,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.5577889447236181,
+            "left_normalized_safety_rank": 0.23115577889447236,
+            "left_score_field": "confidence_dice_m32",
+            "right_normalized_safety_rank": 0.7889447236180904,
+            "right_score_field": "confidence_nhd_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.1468543347691561,
+          "width": 622
+        },
+        {
+          "case_type": "nhd_vs_nhd95_rank_disagreement",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "duplicate_fallback_used": false,
+          "height": 528,
+          "image_id": "cju2zm0axztpe0988r8s9twjr",
+          "image_index": 60,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.5477386934673367,
+            "confidence_nhd95_m32": 0.35175879396984927,
+            "confidence_nhd_m32": 0.5728643216080402
+          },
+          "prediction_foreground_fraction": 0.06866518313147527,
+          "provenance": {
+            "artifact_id": "7ce9cddd0f9704fd",
+            "artifact_manifest_path": "outputs/binary_artifacts/kvasir/clipseg-target/7ce9cddd0f9704fd/manifest.json",
+            "artifact_manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8",
+            "assembly_manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+            "assembly_records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+            "sample_payload_path": "samples/00000060.npz",
+            "sample_payload_sha256": "0f87f4b44a9f9ddf0514d7fec8a1d2dd3434ef12f8fe7a7ad28e43a4945ab319"
+          },
+          "risks": {
+            "risk_dice": 0.041566396849704645,
+            "risk_nhd": 0.08831827589152791,
+            "risk_nhd95": 0.015032814135395384
+          },
+          "sample_id": "cju2zm0axztpe0988r8s9twjr",
+          "scores": {
+            "confidence_dice_m32": -0.11653197477685398,
+            "confidence_nhd95_m32": -0.030468410284325106,
+            "confidence_nhd_m32": -0.08131211185021496
+          },
+          "selection_objective": 0.22110552763819097,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.22110552763819097,
+            "left_normalized_safety_rank": 0.5728643216080402,
+            "left_score_field": "confidence_nhd_m32",
+            "right_normalized_safety_rank": 0.35175879396984927,
+            "right_score_field": "confidence_nhd95_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.07029463981711173,
+          "width": 623
+        },
+        {
+          "case_type": "empty_action",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "duplicate_fallback_used": false,
+          "height": 530,
+          "image_id": "cju160wshltz10993i1gmqxbe",
+          "image_index": 5,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.9346733668341709,
+            "confidence_nhd95_m32": 0.9899497487437185,
+            "confidence_nhd_m32": 0.9899497487437185
+          },
+          "prediction_foreground_fraction": 0.0,
+          "provenance": {
+            "artifact_id": "7ce9cddd0f9704fd",
+            "artifact_manifest_path": "outputs/binary_artifacts/kvasir/clipseg-target/7ce9cddd0f9704fd/manifest.json",
+            "artifact_manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8",
+            "assembly_manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+            "assembly_records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+            "sample_payload_path": "samples/00000005.npz",
+            "sample_payload_sha256": "c951423d16ec3896f825e537af0f3e0a1743b37e922bb7e603a3eebc873d8403"
+          },
+          "risks": {
+            "risk_dice": 1.0,
+            "risk_nhd": 1.0,
+            "risk_nhd95": 1.0
+          },
+          "sample_id": "cju160wshltz10993i1gmqxbe",
+          "scores": {
+            "confidence_dice_m32": -0.5,
+            "confidence_nhd95_m32": -0.5,
+            "confidence_nhd_m32": -0.5
+          },
+          "selection_objective": 1.0,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 1.0
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.02652077958409748,
+          "width": 607
+        },
+        {
+          "case_type": "confident_failure",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "duplicate_fallback_used": false,
+          "height": 529,
+          "image_id": "cju1egx9pvz2n0988eoy8jp23",
+          "image_index": 22,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.32160804020100503,
+            "confidence_nhd95_m32": 0.18592964824120603,
+            "confidence_nhd_m32": 0.21105527638190955
+          },
+          "prediction_foreground_fraction": 0.09486138379153776,
+          "provenance": {
+            "artifact_id": "7ce9cddd0f9704fd",
+            "artifact_manifest_path": "outputs/binary_artifacts/kvasir/clipseg-target/7ce9cddd0f9704fd/manifest.json",
+            "artifact_manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8",
+            "assembly_manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+            "assembly_records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+            "sample_payload_path": "samples/00000022.npz",
+            "sample_payload_sha256": "c4868e9dec76f2eb14fc70a304743920741443608b531f8bdbe372091b2d4268"
+          },
+          "risks": {
+            "risk_dice": 1.0,
+            "risk_nhd": 0.32484114093722954,
+            "risk_nhd95": 0.3181741050877312
+          },
+          "sample_id": "cju1egx9pvz2n0988eoy8jp23",
+          "scores": {
+            "confidence_dice_m32": -0.07858737768162978,
+            "confidence_nhd95_m32": -0.017091919398899057,
+            "confidence_nhd_m32": -0.027759579909582124
+          },
+          "selection_objective": 0.9214126223183702,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 1.0,
+            "observed_minus_predicted_risk_gap": 0.9214126223183702,
+            "predicted_working_risk": 0.07858737768162978,
+            "score_field": "confidence_dice_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.015849233219263428,
+          "width": 622
+        }
+      ],
+      "dataset": "kvasir",
+      "target_conditions": [
+        "clipseg-target",
+        "deeplabv3-target"
+      ]
+    },
+    {
+      "cases": [
+        {
+          "case_type": "dice_vs_nhd_rank_disagreement",
+          "condition": "deeplabv3-target",
+          "dataset": "fives",
+          "duplicate_fallback_used": false,
+          "height": 2048,
+          "image_id": "61_D",
+          "image_index": 157,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.005025125628140704,
+            "confidence_nhd95_m32": 0.9045226130653267,
+            "confidence_nhd_m32": 0.914572864321608
+          },
+          "prediction_foreground_fraction": 0.9978365898132324,
+          "provenance": {
+            "artifact_id": "e7e1e90e13ce3dfa",
+            "artifact_manifest_path": "outputs/binary_artifacts/fives/deeplabv3-target/e7e1e90e13ce3dfa/manifest.json",
+            "artifact_manifest_sha256": "fd33483e3e90d1508b3dc39354041f7299618524adc22326c4d1f65d7369bd87",
+            "assembly_manifest_sha256": "3ba69d0db78bd9a26f4a7ae691ec7b9b531cdd84f5286793f0f059cd6265f04c",
+            "assembly_records_sha256": "682d628f273ccb99b77e629d9d6221e235dcc1817676c8373a44d6007386a53d",
+            "sample_payload_path": "samples/00000157.npz",
+            "sample_payload_sha256": "4f28140c67ef23197e27274125a4419744d1e92ad1ee0bb8928b448ae7f2afff"
+          },
+          "risks": {
+            "risk_dice": 0.9165175390555598,
+            "risk_nhd": 0.22313251087358926,
+            "risk_nhd95": 0.13908672286407842
+          },
+          "sample_id": "61_D",
+          "scores": {
+            "confidence_dice_m32": -0.10272864820412175,
+            "confidence_nhd95_m32": -0.07646527675794884,
+            "confidence_nhd_m32": -0.16212333306512025
+          },
+          "selection_objective": 0.9095477386934673,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.9095477386934673,
+            "left_normalized_safety_rank": 0.005025125628140704,
+            "left_score_field": "confidence_dice_m32",
+            "right_normalized_safety_rank": 0.914572864321608,
+            "right_score_field": "confidence_nhd_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.04348611831665039,
+          "width": 2048
+        },
+        {
+          "case_type": "nhd_vs_nhd95_rank_disagreement",
+          "condition": "deeplabv3-target",
+          "dataset": "fives",
+          "duplicate_fallback_used": false,
+          "height": 2048,
+          "image_id": "21_A",
+          "image_index": 113,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.23115577889447236,
+            "confidence_nhd95_m32": 0.1306532663316583,
+            "confidence_nhd_m32": 0.6733668341708543
+          },
+          "prediction_foreground_fraction": 0.0538330078125,
+          "provenance": {
+            "artifact_id": "e7e1e90e13ce3dfa",
+            "artifact_manifest_path": "outputs/binary_artifacts/fives/deeplabv3-target/e7e1e90e13ce3dfa/manifest.json",
+            "artifact_manifest_sha256": "fd33483e3e90d1508b3dc39354041f7299618524adc22326c4d1f65d7369bd87",
+            "assembly_manifest_sha256": "3ba69d0db78bd9a26f4a7ae691ec7b9b531cdd84f5286793f0f059cd6265f04c",
+            "assembly_records_sha256": "682d628f273ccb99b77e629d9d6221e235dcc1817676c8373a44d6007386a53d",
+            "sample_payload_path": "samples/00000113.npz",
+            "sample_payload_sha256": "5e352d57c6896201f93e888e2755a12b5af3c458f6328d724db01257fe1cecfc"
+          },
+          "risks": {
+            "risk_dice": 0.3751634844270233,
+            "risk_nhd": 0.12183815814969888,
+            "risk_nhd95": 0.04640830086194644
+          },
+          "sample_id": "21_A",
+          "scores": {
+            "confidence_dice_m32": -0.39500419324696034,
+            "confidence_nhd95_m32": -0.036636838448650635,
+            "confidence_nhd_m32": -0.12153249423469917
+          },
+          "selection_objective": 0.542713567839196,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.542713567839196,
+            "left_normalized_safety_rank": 0.6733668341708543,
+            "left_score_field": "confidence_nhd_m32",
+            "right_normalized_safety_rank": 0.1306532663316583,
+            "right_score_field": "confidence_nhd95_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.0697627067565918,
+          "width": 2048
+        },
+        {
+          "case_type": "empty_action",
+          "condition": "clipseg-target",
+          "dataset": "fives",
+          "duplicate_fallback_used": false,
+          "height": 2048,
+          "image_id": "108_G",
+          "image_index": 8,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.04773869346733668,
+            "confidence_nhd95_m32": 0.8567839195979899,
+            "confidence_nhd_m32": 0.5603015075376885
+          },
+          "prediction_foreground_fraction": 0.0,
+          "provenance": {
+            "artifact_id": "ef8e1b5176b92b87",
+            "artifact_manifest_path": "outputs/binary_artifacts/fives/clipseg-target/ef8e1b5176b92b87/manifest.json",
+            "artifact_manifest_sha256": "5ea7ca873b8d9d527706e4d2cccb3c12da758c5b31b831b164eb7fc32dfdb16e",
+            "assembly_manifest_sha256": "6c480ccf6c4bda06c1dabc0077068dfa74734f223c5265978b7d9bb3c1cd2582",
+            "assembly_records_sha256": "53b64a4db8d6c65f2011c306da7a2866ac9ccafae50db569ddffb89694bf55da",
+            "sample_payload_path": "samples/00000008.npz",
+            "sample_payload_sha256": "d2ca2f26a5ee41209e936fa93346c63a151138416033f3a814e84c01c5d29231"
+          },
+          "risks": {
+            "risk_dice": 1.0,
+            "risk_nhd": 1.0,
+            "risk_nhd95": 1.0
+          },
+          "sample_id": "108_G",
+          "scores": {
+            "confidence_dice_m32": -0.4375,
+            "confidence_nhd95_m32": -0.4375,
+            "confidence_nhd_m32": -0.4375
+          },
+          "selection_objective": 1.0,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 1.0
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.026390552520751953,
+          "width": 2048
+        },
+        {
+          "case_type": "confident_failure",
+          "condition": "deeplabv3-target",
+          "dataset": "fives",
+          "duplicate_fallback_used": false,
+          "height": 2048,
+          "image_id": "51_D",
+          "image_index": 146,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.0,
+            "confidence_nhd95_m32": 0.0,
+            "confidence_nhd_m32": 0.0
+          },
+          "prediction_foreground_fraction": 1.0,
+          "provenance": {
+            "artifact_id": "e7e1e90e13ce3dfa",
+            "artifact_manifest_path": "outputs/binary_artifacts/fives/deeplabv3-target/e7e1e90e13ce3dfa/manifest.json",
+            "artifact_manifest_sha256": "fd33483e3e90d1508b3dc39354041f7299618524adc22326c4d1f65d7369bd87",
+            "assembly_manifest_sha256": "3ba69d0db78bd9a26f4a7ae691ec7b9b531cdd84f5286793f0f059cd6265f04c",
+            "assembly_records_sha256": "682d628f273ccb99b77e629d9d6221e235dcc1817676c8373a44d6007386a53d",
+            "sample_payload_path": "samples/00000146.npz",
+            "sample_payload_sha256": "d0a3cf7c7c934552c6daa97f4c16350929556782ef3ef53258951af31b5a9c49"
+          },
+          "risks": {
+            "risk_dice": 0.9623677521289024,
+            "risk_nhd": 0.3213617770109457,
+            "risk_nhd95": 0.2319655595565282
+          },
+          "sample_id": "51_D",
+          "scores": {
+            "confidence_dice_m32": -0.0006073482942019516,
+            "confidence_nhd95_m32": -0.003938201524857938,
+            "confidence_nhd_m32": -0.007056393965087922
+          },
+          "selection_objective": 0.9617604038347004,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 0.9623677521289024,
+            "observed_minus_predicted_risk_gap": 0.9617604038347004,
+            "predicted_working_risk": 0.0006073482942019516,
+            "score_field": "confidence_dice_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.019176959991455078,
+          "width": 2048
+        }
+      ],
+      "dataset": "fives",
+      "target_conditions": [
+        "clipseg-target",
+        "deeplabv3-target"
+      ]
+    },
+    {
+      "cases": [
+        {
+          "case_type": "dice_vs_nhd_rank_disagreement",
+          "condition": "clipseg-target",
+          "dataset": "isic",
+          "duplicate_fallback_used": false,
+          "height": 2000,
+          "image_id": "ISIC_0012292",
+          "image_index": 2,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.938938938938939,
+            "confidence_nhd95_m32": 0.055055055055055056,
+            "confidence_nhd_m32": 0.022022022022022022
+          },
+          "prediction_foreground_fraction": 0.00845063164893617,
+          "provenance": {
+            "artifact_id": "a5d30aa0ec8b0742",
+            "artifact_manifest_path": "outputs/binary_artifacts/isic/clipseg-target/a5d30aa0ec8b0742/manifest.json",
+            "artifact_manifest_sha256": "fe756c276aa3da2868b8d41d2ddc2eed1dcf36e553ada12206e6e945b490f980",
+            "assembly_manifest_sha256": "ce9650af9919d408beba56f073cf77499a44cd411e153beb63971645d57535a6",
+            "assembly_records_sha256": "719ba2ce4c86a26d7bf794068176fa0e3060f9c0c0b6928b94129fdb1671a273",
+            "sample_payload_path": "samples/00000002.npz",
+            "sample_payload_sha256": "964bdfc663306706cf741cc9608ab536deac8315a55a6e01c7ff9670df159884"
+          },
+          "risks": {
+            "risk_dice": 0.08645100979609321,
+            "risk_nhd": 0.006970622917982444,
+            "risk_nhd95": 0.005601454367652372
+          },
+          "sample_id": "ISIC_0012292",
+          "scores": {
+            "confidence_dice_m32": -0.20142111827361447,
+            "confidence_nhd95_m32": -0.00913664753305381,
+            "confidence_nhd_m32": -0.01029000304028111
+          },
+          "selection_objective": 0.916916916916917,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.916916916916917,
+            "left_normalized_safety_rank": 0.938938938938939,
+            "left_score_field": "confidence_dice_m32",
+            "right_normalized_safety_rank": 0.022022022022022022,
+            "right_score_field": "confidence_nhd_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.008619514627659574,
+          "width": 3008
+        },
+        {
+          "case_type": "nhd_vs_nhd95_rank_disagreement",
+          "condition": "clipseg-target",
+          "dataset": "isic",
+          "duplicate_fallback_used": false,
+          "height": 4459,
+          "image_id": "ISIC_0015501",
+          "image_index": 99,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.44844844844844844,
+            "confidence_nhd95_m32": 0.40540540540540543,
+            "confidence_nhd_m32": 0.7947947947947948
+          },
+          "prediction_foreground_fraction": 0.1930057473591624,
+          "provenance": {
+            "artifact_id": "a5d30aa0ec8b0742",
+            "artifact_manifest_path": "outputs/binary_artifacts/isic/clipseg-target/a5d30aa0ec8b0742/manifest.json",
+            "artifact_manifest_sha256": "fe756c276aa3da2868b8d41d2ddc2eed1dcf36e553ada12206e6e945b490f980",
+            "assembly_manifest_sha256": "ce9650af9919d408beba56f073cf77499a44cd411e153beb63971645d57535a6",
+            "assembly_records_sha256": "719ba2ce4c86a26d7bf794068176fa0e3060f9c0c0b6928b94129fdb1671a273",
+            "sample_payload_path": "samples/00000099.npz",
+            "sample_payload_sha256": "3916a78962057f7fcb46f68b29a5ee790d1a70a79032232b4566e8551d6a7851"
+          },
+          "risks": {
+            "risk_dice": 0.04035729102547936,
+            "risk_nhd": 0.1507978192403388,
+            "risk_nhd95": 0.011449469038860427
+          },
+          "sample_id": "ISIC_0015501",
+          "scores": {
+            "confidence_dice_m32": -0.0665271481495237,
+            "confidence_nhd95_m32": -0.017604208416341832,
+            "confidence_nhd_m32": -0.08327095844355543
+          },
+          "selection_objective": 0.38938938938938933,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.38938938938938933,
+            "left_normalized_safety_rank": 0.7947947947947948,
+            "left_score_field": "confidence_nhd_m32",
+            "right_normalized_safety_rank": 0.40540540540540543,
+            "right_score_field": "confidence_nhd95_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.17974838537562726,
+          "width": 6668
+        },
+        {
+          "case_type": "empty_action",
+          "condition": "deeplabv3-target",
+          "dataset": "isic",
+          "duplicate_fallback_used": false,
+          "height": 2000,
+          "image_id": "ISIC_0012925",
+          "image_index": 33,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.973973973973974,
+            "confidence_nhd95_m32": 0.995995995995996,
+            "confidence_nhd_m32": 0.990990990990991
+          },
+          "prediction_foreground_fraction": 0.0,
+          "provenance": {
+            "artifact_id": "48cf75646c61ecf4",
+            "artifact_manifest_path": "outputs/binary_artifacts/isic/deeplabv3-target/48cf75646c61ecf4/manifest.json",
+            "artifact_manifest_sha256": "9e9634dd93434de85fc7ea5fc0de7972220960f1db0ce012d7e4a56f1ba3a4ba",
+            "assembly_manifest_sha256": "3404ed6cbcce55b8b519aaa2fd13a51b558d1dd3cc54e3e4600ae4b298610e02",
+            "assembly_records_sha256": "c8717241ed1d2cf370fcd19dd8168680174cebb18b529ad3ca76bce9315845f3",
+            "sample_payload_path": "samples/00000033.npz",
+            "sample_payload_sha256": "8492ef73039345557025905512ae68c5fade7bc908502404c5b04fae5e9ece57"
+          },
+          "risks": {
+            "risk_dice": 1.0,
+            "risk_nhd": 1.0,
+            "risk_nhd95": 1.0
+          },
+          "sample_id": "ISIC_0012925",
+          "scores": {
+            "confidence_dice_m32": -0.375,
+            "confidence_nhd95_m32": -0.375,
+            "confidence_nhd_m32": -0.375
+          },
+          "selection_objective": 1.0,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 1.0
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.0671268284574468,
+          "width": 3008
+        },
+        {
+          "case_type": "confident_failure",
+          "condition": "deeplabv3-target",
+          "dataset": "isic",
+          "duplicate_fallback_used": false,
+          "height": 2304,
+          "image_id": "ISIC_0036067",
+          "image_index": 761,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.8328328328328328,
+            "confidence_nhd95_m32": 0.9409409409409409,
+            "confidence_nhd_m32": 0.9469469469469469
+          },
+          "prediction_foreground_fraction": 0.5527622081615307,
+          "provenance": {
+            "artifact_id": "48cf75646c61ecf4",
+            "artifact_manifest_path": "outputs/binary_artifacts/isic/deeplabv3-target/48cf75646c61ecf4/manifest.json",
+            "artifact_manifest_sha256": "9e9634dd93434de85fc7ea5fc0de7972220960f1db0ce012d7e4a56f1ba3a4ba",
+            "assembly_manifest_sha256": "3404ed6cbcce55b8b519aaa2fd13a51b558d1dd3cc54e3e4600ae4b298610e02",
+            "assembly_records_sha256": "c8717241ed1d2cf370fcd19dd8168680174cebb18b529ad3ca76bce9315845f3",
+            "sample_payload_path": "samples/00000761.npz",
+            "sample_payload_sha256": "77b958eb3d0af60ed1cf0c0c2f79662166a07113077a9004e3c06c33393b85ce"
+          },
+          "risks": {
+            "risk_dice": 0.9042719118444924,
+            "risk_nhd": 0.44740765651820386,
+            "risk_nhd95": 0.40358731090449773
+          },
+          "sample_id": "ISIC_0036067",
+          "scores": {
+            "confidence_dice_m32": -0.1298567665480239,
+            "confidence_nhd95_m32": -0.13631079685074057,
+            "confidence_nhd_m32": -0.20669029325411978
+          },
+          "selection_objective": 0.7744151452964685,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 0.9042719118444924,
+            "observed_minus_predicted_risk_gap": 0.7744151452964685,
+            "predicted_working_risk": 0.1298567665480239,
+            "score_field": "confidence_dice_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.07118041427047164,
+          "width": 3072
+        }
+      ],
+      "dataset": "isic",
+      "target_conditions": [
+        "clipseg-target",
+        "deeplabv3-target"
+      ]
+    },
+    {
+      "cases": [
+        {
+          "case_type": "dice_vs_nhd_rank_disagreement",
+          "condition": "deeplabv3-target",
+          "dataset": "tn3k",
+          "duplicate_fallback_used": false,
+          "height": 374,
+          "image_id": "0097",
+          "image_index": 97,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.14845024469820556,
+            "confidence_nhd95_m32": 0.866231647634584,
+            "confidence_nhd_m32": 0.8972267536704731
+          },
+          "prediction_foreground_fraction": 0.15734399002090527,
+          "provenance": {
+            "artifact_id": "efce266864cd5269",
+            "artifact_manifest_path": "outputs/binary_artifacts/tn3k/deeplabv3-target/efce266864cd5269/manifest.json",
+            "artifact_manifest_sha256": "3650248ad9a3cd84cd85bd6f88555df40e3d716c3f24310f12b7e1af600fe515",
+            "assembly_manifest_sha256": "8e6dc4173fb838f5f28779af3f2a1ff5df3cce4f08e8aa43a7c086b5ccf2cee8",
+            "assembly_records_sha256": "29762b78cdd4713ab460c88beab6b00e4e9315fbac88c6ce6b7f858653ae7dfb",
+            "sample_payload_path": "samples/00000097.npz",
+            "sample_payload_sha256": "6f81270208e54c6612ab4dbd58a4958ac701071886ecad573ea6e431d4e6bcf7"
+          },
+          "risks": {
+            "risk_dice": 0.03425352112676061,
+            "risk_nhd": 0.026244786769711346,
+            "risk_nhd95": 0.013345559730451085
+          },
+          "sample_id": "0097",
+          "scores": {
+            "confidence_dice_m32": -0.05762111924432422,
+            "confidence_nhd95_m32": -0.10851032589078596,
+            "confidence_nhd_m32": -0.1572320943928711
+          },
+          "selection_objective": 0.7487765089722676,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.7487765089722676,
+            "left_normalized_safety_rank": 0.14845024469820556,
+            "left_score_field": "confidence_dice_m32",
+            "right_normalized_safety_rank": 0.8972267536704731,
+            "right_score_field": "confidence_nhd_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.15017151569050946,
+          "width": 463
+        },
+        {
+          "case_type": "nhd_vs_nhd95_rank_disagreement",
+          "condition": "deeplabv3-target",
+          "dataset": "tn3k",
+          "duplicate_fallback_used": false,
+          "height": 343,
+          "image_id": "0305",
+          "image_index": 305,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.6508972267536705,
+            "confidence_nhd95_m32": 0.4910277324632953,
+            "confidence_nhd_m32": 0.8955954323001631
+          },
+          "prediction_foreground_fraction": 0.013455105799225767,
+          "provenance": {
+            "artifact_id": "efce266864cd5269",
+            "artifact_manifest_path": "outputs/binary_artifacts/tn3k/deeplabv3-target/efce266864cd5269/manifest.json",
+            "artifact_manifest_sha256": "3650248ad9a3cd84cd85bd6f88555df40e3d716c3f24310f12b7e1af600fe515",
+            "assembly_manifest_sha256": "8e6dc4173fb838f5f28779af3f2a1ff5df3cce4f08e8aa43a7c086b5ccf2cee8",
+            "assembly_records_sha256": "29762b78cdd4713ab460c88beab6b00e4e9315fbac88c6ce6b7f858653ae7dfb",
+            "sample_payload_path": "samples/00000305.npz",
+            "sample_payload_sha256": "5188d8bd55310c2a58e09c765a88a9cf5197e0f669d2600f6969757064a94109"
+          },
+          "risks": {
+            "risk_dice": 0.06335754640839386,
+            "risk_nhd": 0.2818560083086434,
+            "risk_nhd95": 0.0062855093506472975
+          },
+          "sample_id": "0305",
+          "scores": {
+            "confidence_dice_m32": -0.1635563050686285,
+            "confidence_nhd95_m32": -0.03352822928982334,
+            "confidence_nhd_m32": -0.15717458642769264
+          },
+          "selection_objective": 0.40456769983686786,
+          "selection_objective_details": {
+            "absolute_normalized_rank_difference": 0.40456769983686786,
+            "left_normalized_safety_rank": 0.8955954323001631,
+            "left_score_field": "confidence_nhd_m32",
+            "right_normalized_safety_rank": 0.4910277324632953,
+            "right_score_field": "confidence_nhd95_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.013154433043935806,
+          "width": 543
+        },
+        {
+          "case_type": "empty_action",
+          "condition": "clipseg-target",
+          "dataset": "tn3k",
+          "duplicate_fallback_used": false,
+          "height": 386,
+          "image_id": "0032",
+          "image_index": 32,
+          "model": "clipseg",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.5946166394779772,
+            "confidence_nhd95_m32": 0.8817292006525286,
+            "confidence_nhd_m32": 0.8572593800978793
+          },
+          "prediction_foreground_fraction": 0.0,
+          "provenance": {
+            "artifact_id": "603dc94883b5f395",
+            "artifact_manifest_path": "outputs/binary_artifacts/tn3k/clipseg-target/603dc94883b5f395/manifest.json",
+            "artifact_manifest_sha256": "259fba96dd6f14ee127839c4e4b1b254100a2f67aa163b6c61d62d9b4653eacd",
+            "assembly_manifest_sha256": "48b7ff7699fba82b2b348ea00fe4b8c32d6d23e272d90f2d04735a110bf81269",
+            "assembly_records_sha256": "66eba5b5a80ca8d6daf0866b81ddc96916ed918bbf97bfe67fd5df71f24ac453",
+            "sample_payload_path": "samples/00000032.npz",
+            "sample_payload_sha256": "f962219899f3983d855642394a60509f8e2da927fd8e8a8c9da2829396271728"
+          },
+          "risks": {
+            "risk_dice": 1.0,
+            "risk_nhd": 1.0,
+            "risk_nhd95": 1.0
+          },
+          "sample_id": "0032",
+          "scores": {
+            "confidence_dice_m32": -0.3125,
+            "confidence_nhd95_m32": -0.3125,
+            "confidence_nhd_m32": -0.3125
+          },
+          "selection_objective": 1.0,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 1.0
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.13426366750343155,
+          "width": 419
+        },
+        {
+          "case_type": "confident_failure",
+          "condition": "deeplabv3-target",
+          "dataset": "tn3k",
+          "duplicate_fallback_used": false,
+          "height": 357,
+          "image_id": "0586",
+          "image_index": 586,
+          "model": "deeplabv3",
+          "normalized_safety_ranks": {
+            "confidence_dice_m32": 0.004893964110929853,
+            "confidence_nhd95_m32": 0.4698205546492659,
+            "confidence_nhd_m32": 0.32137030995106036
+          },
+          "prediction_foreground_fraction": 0.0,
+          "provenance": {
+            "artifact_id": "efce266864cd5269",
+            "artifact_manifest_path": "outputs/binary_artifacts/tn3k/deeplabv3-target/efce266864cd5269/manifest.json",
+            "artifact_manifest_sha256": "3650248ad9a3cd84cd85bd6f88555df40e3d716c3f24310f12b7e1af600fe515",
+            "assembly_manifest_sha256": "8e6dc4173fb838f5f28779af3f2a1ff5df3cce4f08e8aa43a7c086b5ccf2cee8",
+            "assembly_records_sha256": "29762b78cdd4713ab460c88beab6b00e4e9315fbac88c6ce6b7f858653ae7dfb",
+            "sample_payload_path": "samples/00000586.npz",
+            "sample_payload_sha256": "383b0534a5e8c92fc95fbc142af25ee323c601c2dbd69d599bd50757fd06e731"
+          },
+          "risks": {
+            "risk_dice": 1.0,
+            "risk_nhd": 1.0,
+            "risk_nhd95": 1.0
+          },
+          "sample_id": "0586",
+          "scores": {
+            "confidence_dice_m32": -0.03125,
+            "confidence_nhd95_m32": -0.03125,
+            "confidence_nhd_m32": -0.03125
+          },
+          "selection_objective": 0.96875,
+          "selection_objective_details": {
+            "matched_loss": "dice",
+            "observed_loss_field": "risk_dice",
+            "observed_matched_loss": 1.0,
+            "observed_minus_predicted_risk_gap": 0.96875,
+            "predicted_working_risk": 0.03125,
+            "score_field": "confidence_dice_m32"
+          },
+          "status": "selected",
+          "truth_foreground_fraction": 0.010145742962411747,
+          "width": 463
+        }
+      ],
+      "dataset": "tn3k",
+      "target_conditions": [
+        "clipseg-target",
+        "deeplabv3-target"
+      ]
+    }
+  ],
+  "provenance": {
+    "analysis_source_sha256": "82f511bfe1cf39dd55039d2f0f2a781c007a8c1ebf97adbed46b63f564dde2d7",
+    "binding": "campaign-lock",
+    "campaign_id": "binary-midpoint-main-v1",
+    "campaign_lock": {
+      "logical_name": "campaign.lock.json",
+      "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323"
+    },
+    "config_sha256": "36229c9e8fd245ec6391d528e9129e09a93d9074d9fa70544eea9d78a524c76a",
+    "inputs": [
+      {
+        "artifact_id": "cb5c08e73819574c",
+        "assembly_run_id": "74db5fc8c0672236",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-general",
+        "dataset": "fives",
+        "logical_id": "fives/clipseg-general/74db5fc8c0672236",
+        "manifest_sha256": "8d4ab2401962a6b0091e81f056d0beb179a580b4b9914953b496f126b9fdf459",
+        "num_samples": 200,
+        "records_sha256": "1ed5642002afcfed3a6a664e1a729301c7c63d7c9d9f8ee8920b229737945113",
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      {
+        "artifact_id": "ef8e1b5176b92b87",
+        "assembly_run_id": "627922c22aa3aa21",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-target",
+        "dataset": "fives",
+        "logical_id": "fives/clipseg-target/627922c22aa3aa21",
+        "manifest_sha256": "6c480ccf6c4bda06c1dabc0077068dfa74734f223c5265978b7d9bb3c1cd2582",
+        "num_samples": 200,
+        "records_sha256": "53b64a4db8d6c65f2011c306da7a2866ac9ccafae50db569ddffb89694bf55da",
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      {
+        "artifact_id": "e7e1e90e13ce3dfa",
+        "assembly_run_id": "a62d754378787146",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "deeplabv3-target",
+        "dataset": "fives",
+        "logical_id": "fives/deeplabv3-target/a62d754378787146",
+        "manifest_sha256": "3ba69d0db78bd9a26f4a7ae691ec7b9b531cdd84f5286793f0f059cd6265f04c",
+        "num_samples": 200,
+        "records_sha256": "682d628f273ccb99b77e629d9d6221e235dcc1817676c8373a44d6007386a53d",
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      {
+        "artifact_id": "3e57aa259264c1be",
+        "assembly_run_id": "500bf2dd2f3564b2",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-general",
+        "dataset": "isic",
+        "logical_id": "isic/clipseg-general/500bf2dd2f3564b2",
+        "manifest_sha256": "8d35cfaf2ad7c764d93de245b1d8b9a0a8c6a454cc116c1626ac23018627c8fb",
+        "num_samples": 1000,
+        "records_sha256": "a879ad5b3002da79cc8e51426644de0f75aecad5f3f978bd0a06447e515fe0bd",
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      {
+        "artifact_id": "a5d30aa0ec8b0742",
+        "assembly_run_id": "69fc681ff737f148",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-target",
+        "dataset": "isic",
+        "logical_id": "isic/clipseg-target/69fc681ff737f148",
+        "manifest_sha256": "ce9650af9919d408beba56f073cf77499a44cd411e153beb63971645d57535a6",
+        "num_samples": 1000,
+        "records_sha256": "719ba2ce4c86a26d7bf794068176fa0e3060f9c0c0b6928b94129fdb1671a273",
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      {
+        "artifact_id": "48cf75646c61ecf4",
+        "assembly_run_id": "a42288ea78a340b1",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "deeplabv3-target",
+        "dataset": "isic",
+        "logical_id": "isic/deeplabv3-target/a42288ea78a340b1",
+        "manifest_sha256": "3404ed6cbcce55b8b519aaa2fd13a51b558d1dd3cc54e3e4600ae4b298610e02",
+        "num_samples": 1000,
+        "records_sha256": "c8717241ed1d2cf370fcd19dd8168680174cebb18b529ad3ca76bce9315845f3",
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      {
+        "artifact_id": "eb7304bdd945035d",
+        "assembly_run_id": "8f5786edfc8d5993",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-general",
+        "dataset": "kvasir",
+        "logical_id": "kvasir/clipseg-general/8f5786edfc8d5993",
+        "manifest_sha256": "91c6ad4fdb6c7052918ff789509d9a555a14b2dbd8f79e97548d19f3b7659901",
+        "num_samples": 200,
+        "records_sha256": "3769b2cf04397136cb994c612b5bf5dcab5d2aa56b0f3bcef16df6f3b60dafca",
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      {
+        "artifact_id": "7ce9cddd0f9704fd",
+        "assembly_run_id": "1a1c02b968ab86a4",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-target",
+        "dataset": "kvasir",
+        "logical_id": "kvasir/clipseg-target/1a1c02b968ab86a4",
+        "manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+        "num_samples": 200,
+        "records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      {
+        "artifact_id": "be7dedef6990d54c",
+        "assembly_run_id": "5cca940975b7f02d",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "deeplabv3-target",
+        "dataset": "kvasir",
+        "logical_id": "kvasir/deeplabv3-target/5cca940975b7f02d",
+        "manifest_sha256": "abb21d5d0c4d9d66c5480d71a71f1e1e33636f50b3e850557a92aa6f6fc212f6",
+        "num_samples": 200,
+        "records_sha256": "c210e787e37f241a9e0d0f306b51dcf3b24d2d15ea634c3e8ee581647eafaab4",
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      {
+        "artifact_id": "e0d454ce916c5ca9",
+        "assembly_run_id": "88d2033138fc971a",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-general",
+        "dataset": "pet",
+        "logical_id": "pet/clipseg-general/88d2033138fc971a",
+        "manifest_sha256": "0850f7003911e783f54eaa48dad02666f9f55f5cbfaa753dc55c9ddfcf461b19",
+        "num_samples": 3669,
+        "records_sha256": "c94aaf290566fc85ec2eb6b56c3b1f13040579892e61c7334666ab68c3523f7f",
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      {
+        "artifact_id": "7261edbb5f763435",
+        "assembly_run_id": "cd4341aaed2bda20",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-target",
+        "dataset": "pet",
+        "logical_id": "pet/clipseg-target/cd4341aaed2bda20",
+        "manifest_sha256": "d510aabf2d35321c77184b4bed66ed15c6f4602e38caff61632116a40b29b4e4",
+        "num_samples": 3669,
+        "records_sha256": "e07c768031e2843355512e9b9f15afef1d4e400852975f5631e17b38bf01ba44",
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      {
+        "artifact_id": "640ef98bcd028dc3",
+        "assembly_run_id": "014bfe3ad787f51e",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "deeplabv3-external",
+        "dataset": "pet",
+        "logical_id": "pet/deeplabv3-external/014bfe3ad787f51e",
+        "manifest_sha256": "97fa1c473d22203243a86a427379467862bc6ccc03c4e8b9a802dc5a5c2b5566",
+        "num_samples": 3669,
+        "records_sha256": "643faf11a0e6ae033943c44a0bd582bd3d9706a5794371c6ba07ad1bba9ad1ec",
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      {
+        "artifact_id": "ced4dc6e67bc178f",
+        "assembly_run_id": "fd2f61c609c18fba",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "deeplabv3-target",
+        "dataset": "pet",
+        "logical_id": "pet/deeplabv3-target/fd2f61c609c18fba",
+        "manifest_sha256": "33135196a6b2609ff4c80ef5b524e17b512b4b899b87b451f8298abdafceb235",
+        "num_samples": 3669,
+        "records_sha256": "cbaf7656084e3350ff3d47453ab1f2997e0bae17dd561a6b8427f9e4d269a1fc",
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      {
+        "artifact_id": "9626e945ef94b1e5",
+        "assembly_run_id": "4faed2465c790f8c",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-general",
+        "dataset": "tn3k",
+        "logical_id": "tn3k/clipseg-general/4faed2465c790f8c",
+        "manifest_sha256": "3fe5b5d44e8687a886b61814b4648d32599f0c66a958d43463a6c611034c14e2",
+        "num_samples": 614,
+        "records_sha256": "6c02ca495f4d52279c26db05b11539cb9e749a63b5d7c71fcdd850a21de2c792",
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      },
+      {
+        "artifact_id": "603dc94883b5f395",
+        "assembly_run_id": "eccb8f4f045a5473",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "clipseg-target",
+        "dataset": "tn3k",
+        "logical_id": "tn3k/clipseg-target/eccb8f4f045a5473",
+        "manifest_sha256": "48b7ff7699fba82b2b348ea00fe4b8c32d6d23e272d90f2d04735a110bf81269",
+        "num_samples": 614,
+        "records_sha256": "66eba5b5a80ca8d6daf0866b81ddc96916ed918bbf97bfe67fd5df71f24ac453",
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      },
+      {
+        "artifact_id": "efce266864cd5269",
+        "assembly_run_id": "01b4c3a58986cf27",
+        "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+        "condition": "deeplabv3-target",
+        "dataset": "tn3k",
+        "logical_id": "tn3k/deeplabv3-target/01b4c3a58986cf27",
+        "manifest_sha256": "8e6dc4173fb838f5f28779af3f2a1ff5df3cce4f08e8aa43a7c086b5ccf2cee8",
+        "num_samples": 614,
+        "records_sha256": "29762b78cdd4713ab460c88beab6b00e4e9315fbac88c6ce6b7f858653ae7dfb",
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      }
+    ],
+    "selection_source_sha256": "46b3587c36c88047428588045a1a36c426f2842f015853bf0668a63b9553c3de",
+    "validated_frozen_artifact_manifests": [
+      {
+        "artifact_id": "e0d454ce916c5ca9",
+        "condition": "clipseg-general",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_artifacts/pet/clipseg-general/e0d454ce916c5ca9/manifest.json",
+        "manifest_sha256": "3a7ee87f84e0c03baed3b77dc6b4f6610b4e189d752a58c8926a968e4be899ca"
+      },
+      {
+        "artifact_id": "7261edbb5f763435",
+        "condition": "clipseg-target",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_artifacts/pet/clipseg-target/7261edbb5f763435/manifest.json",
+        "manifest_sha256": "63209620844cf2caa074c6ee726d58a8579483fd8f8586cdfdf9c1ea48e03d9d"
+      },
+      {
+        "artifact_id": "ced4dc6e67bc178f",
+        "condition": "deeplabv3-target",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_artifacts/pet/deeplabv3-target/ced4dc6e67bc178f/manifest.json",
+        "manifest_sha256": "6902b90780b75b74015c613c4eae78debdd51315a40146a7daabc393c124c403"
+      },
+      {
+        "artifact_id": "640ef98bcd028dc3",
+        "condition": "deeplabv3-external",
+        "dataset": "pet",
+        "manifest_path": "outputs/binary_artifacts/pet/deeplabv3-external/640ef98bcd028dc3/manifest.json",
+        "manifest_sha256": "b6a88350dd7414b56e8506602f6ab464a107f5bca414e06c0aebc013d064a22e"
+      },
+      {
+        "artifact_id": "eb7304bdd945035d",
+        "condition": "clipseg-general",
+        "dataset": "kvasir",
+        "manifest_path": "outputs/binary_artifacts/kvasir/clipseg-general/eb7304bdd945035d/manifest.json",
+        "manifest_sha256": "b2cafd736eda658aff739ce9a78836a116b5b93d167af672f60933360bfab271"
+      },
+      {
+        "artifact_id": "7ce9cddd0f9704fd",
+        "condition": "clipseg-target",
+        "dataset": "kvasir",
+        "manifest_path": "outputs/binary_artifacts/kvasir/clipseg-target/7ce9cddd0f9704fd/manifest.json",
+        "manifest_sha256": "0c802778b3ce6596f7ffca824f23a9830b7fe8c57eb0c1b1a732d33c3affe2b8"
+      },
+      {
+        "artifact_id": "be7dedef6990d54c",
+        "condition": "deeplabv3-target",
+        "dataset": "kvasir",
+        "manifest_path": "outputs/binary_artifacts/kvasir/deeplabv3-target/be7dedef6990d54c/manifest.json",
+        "manifest_sha256": "2050573de3eed869d71a158b51da6c8748c6dc6decf634cc15f9a6a7ccc15fa5"
+      },
+      {
+        "artifact_id": "cb5c08e73819574c",
+        "condition": "clipseg-general",
+        "dataset": "fives",
+        "manifest_path": "outputs/binary_artifacts/fives/clipseg-general/cb5c08e73819574c/manifest.json",
+        "manifest_sha256": "977fd1d5362e68597695e38b2de381f73880df3c537a734a8d3a87427702a690"
+      },
+      {
+        "artifact_id": "ef8e1b5176b92b87",
+        "condition": "clipseg-target",
+        "dataset": "fives",
+        "manifest_path": "outputs/binary_artifacts/fives/clipseg-target/ef8e1b5176b92b87/manifest.json",
+        "manifest_sha256": "5ea7ca873b8d9d527706e4d2cccb3c12da758c5b31b831b164eb7fc32dfdb16e"
+      },
+      {
+        "artifact_id": "e7e1e90e13ce3dfa",
+        "condition": "deeplabv3-target",
+        "dataset": "fives",
+        "manifest_path": "outputs/binary_artifacts/fives/deeplabv3-target/e7e1e90e13ce3dfa/manifest.json",
+        "manifest_sha256": "fd33483e3e90d1508b3dc39354041f7299618524adc22326c4d1f65d7369bd87"
+      },
+      {
+        "artifact_id": "3e57aa259264c1be",
+        "condition": "clipseg-general",
+        "dataset": "isic",
+        "manifest_path": "outputs/binary_artifacts/isic/clipseg-general/3e57aa259264c1be/manifest.json",
+        "manifest_sha256": "e11cf7fe164004bc5174066ef1d1f25a0af82e0ac6482018fe345c30fc0df115"
+      },
+      {
+        "artifact_id": "a5d30aa0ec8b0742",
+        "condition": "clipseg-target",
+        "dataset": "isic",
+        "manifest_path": "outputs/binary_artifacts/isic/clipseg-target/a5d30aa0ec8b0742/manifest.json",
+        "manifest_sha256": "fe756c276aa3da2868b8d41d2ddc2eed1dcf36e553ada12206e6e945b490f980"
+      },
+      {
+        "artifact_id": "48cf75646c61ecf4",
+        "condition": "deeplabv3-target",
+        "dataset": "isic",
+        "manifest_path": "outputs/binary_artifacts/isic/deeplabv3-target/48cf75646c61ecf4/manifest.json",
+        "manifest_sha256": "9e9634dd93434de85fc7ea5fc0de7972220960f1db0ce012d7e4a56f1ba3a4ba"
+      },
+      {
+        "artifact_id": "9626e945ef94b1e5",
+        "condition": "clipseg-general",
+        "dataset": "tn3k",
+        "manifest_path": "outputs/binary_artifacts/tn3k/clipseg-general/9626e945ef94b1e5/manifest.json",
+        "manifest_sha256": "aa7d822e499095496e4111f66bfb472f2971c7164f5bc85895caef5fc5034210"
+      },
+      {
+        "artifact_id": "603dc94883b5f395",
+        "condition": "clipseg-target",
+        "dataset": "tn3k",
+        "manifest_path": "outputs/binary_artifacts/tn3k/clipseg-target/603dc94883b5f395/manifest.json",
+        "manifest_sha256": "259fba96dd6f14ee127839c4e4b1b254100a2f67aa163b6c61d62d9b4653eacd"
+      },
+      {
+        "artifact_id": "efce266864cd5269",
+        "condition": "deeplabv3-target",
+        "dataset": "tn3k",
+        "manifest_path": "outputs/binary_artifacts/tn3k/deeplabv3-target/efce266864cd5269/manifest.json",
+        "manifest_sha256": "3650248ad9a3cd84cd85bd6f88555df40e3d716c3f24310f12b7e1af600fe515"
+      }
+    ]
+  },
+  "schema_version": 1,
+  "scope": {
+    "interpretation": "mechanically selected diagnostic examples; they are not a random sample and must not be described as representative",
+    "selection_completed_without_payload_reads": true,
+    "source_rgb_policy": "source RGB images are not used because the immutable frozen artifacts bind only foreground-probability and truth arrays"
+  },
+  "selection_id": "f618c91bfeaa467e",
+  "selection_rules": {
+    "case_priority": [
+      "dice_vs_nhd_rank_disagreement",
+      "nhd_vs_nhd95_rank_disagreement",
+      "empty_action",
+      "confident_failure"
+    ],
+    "case_rules": {
+      "confident_failure": "maximize observed matched loss minus predicted working risk over the three M32 loss-indexed scores, where predicted risk=-confidence",
+      "dice_vs_nhd_rank_disagreement": "maximize the absolute difference between condition-local normalized safety ranks of confidence_dice_m32 and confidence_nhd_m32",
+      "empty_action": "among rows with prediction_foreground_fraction exactly zero, maximize the realized matched loss over Dice, nHD, and nHD95",
+      "nhd_vs_nhd95_rank_disagreement": "maximize the absolute difference between condition-local normalized safety ranks of confidence_nhd_m32 and confidence_nhd95_m32"
+    },
+    "condition_scope": "validate all 16 declared benchmark conditions; select and headline only clipseg-target and deeplabv3-target on each dataset",
+    "duplicate_policy": "process case types in case_priority order and take the highest-ranked candidate whose underlying sample_id has not yet been used in that dataset; if every eligible candidate is already used, take the original top candidate and mark duplicate_fallback_used=true",
+    "missing_empty_action_policy": "emit an unavailable case entry; never substitute a nonempty prediction",
+    "pixel_access_policy": "selection reads assembled scalar records and frozen-artifact manifests only; it does not open probability/truth NPZ payloads",
+    "rank_definition": "within each target condition, rank confidence from safest to riskiest using average ranks for exact ties, then normalize (rank-1)/(n-1)",
+    "rule_version": "qualitative-target-v1",
+    "tie_breaks": "after the descending selection objective: condition priority clipseg-target then deeplabv3-target, sample_id lexicographic order, then matched-loss priority Dice, nHD, nHD95 when applicable",
+    "visual_selection_policy": "no image is selected by visual appeal, appearance, or manual review"
+  }
+}

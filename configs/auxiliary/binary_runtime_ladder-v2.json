@@ -1,0 +1,43 @@
+{
+  "spec_schema_version": 2,
+  "benchmark_id": "binary-confidence-runtime-ladder-v2",
+  "protocol": {
+    "gamma": 0.5,
+    "m_values": [
+      2,
+      8,
+      32
+    ],
+    "seed": 0,
+    "methods": [
+      "m2_joint",
+      "m8_joint",
+      "m32_joint",
+      "dice_exact"
+    ],
+    "sample_selection": {
+      "strategy": "deterministic_pixel_count_quantiles",
+      "max_samples": 16,
+      "include_size_endpoints": true,
+      "execution_order": "manifest_index"
+    },
+    "warmup_repetitions": 1,
+    "measured_repetitions": 4,
+    "measured_order": "williams_latin_v1",
+    "timer": "time.perf_counter_ns",
+    "cache_policy": "selected arrays are preloaded; no confidence or boundary-distance result is reused across timed methods"
+  },
+  "execution": {
+    "benchmark_workers": 8,
+    "native_threads_per_worker": 1,
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1",
+      "BLIS_NUM_THREADS": "1"
+    }
+  },
+  "output_root": "outputs/binary_runtime_ladder_v2"
+}

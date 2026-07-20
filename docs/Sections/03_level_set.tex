@@ -181,7 +181,8 @@ and posterior discrepancy unchanged.
 \paragraph{From score error to AURC.}
 Let \(\eta_M=\Ex|C_{L,M}-C_L^\star|\),
 \(\bar\eta_M=\Ex[V(H_{L,X})]/(2M)+\Ex[\Delta_{L,\Yhat}(X)]\), and
-\(\Psi_B(z)=\int_0^1\min\{B,z/c\}\,dc\). With randomized ties,
+\(\Psi_B(z)=\lim_{\varepsilon\downarrow0}
+\int_\varepsilon^1\min\{B,z/c\}\,dc\). With randomized ties,
 Appendix~\ref{app:theory} proves
 \begin{align*}
   0\leq R_L(c;C_{L,M})-R_L(c;C_L^\star)

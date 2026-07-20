@@ -1,0 +1,6204 @@
+{
+  "schema_version": 2,
+  "artifact_type": "selectseg.frozen_binary_maps",
+  "artifact_id": "603dc94883b5f395",
+  "created_utc": "2026-07-19T17:33:58+00:00",
+  "dataset": "tn3k",
+  "condition": "clipseg-target",
+  "model": "clipseg",
+  "split": "test",
+  "class_index": 1,
+  "class_name": "thyroid nodule",
+  "num_samples": 614,
+  "checkpoint": {
+    "path": "outputs/binary_train/tn3k/clipseg/seed-0/checkpoint.pt",
+    "sha256": "09c2b17250f0dc810e0b960746b79ed9f63a0ae67951b2b1258e7fffe8d938cf",
+    "size_bytes": 603179867
+  },
+  "base_model": {
+    "name": "clipseg",
+    "source": "CIDAS/clipseg-rd64-refined"
+  },
+  "source_sha256": "42a369ca8b2d6b7eaa54ac2c8e4dc170c57d4705d6f5d1954a7be453d6b2c915",
+  "environment": {
+    "packages": {
+      "numpy": "2.5.1",
+      "python": "3.12.4",
+      "torch": "2.12.1",
+      "torchvision": "0.27.1",
+      "transformers": "5.13.0"
+    },
+    "device": "cuda",
+    "cuda_runtime": "13.0",
+    "cuda_device": "NVIDIA A100-SXM4-40GB",
+    "autocast_dtype": "bfloat16"
+  },
+  "preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "cohort": "all images from a native binary segmentation split",
+  "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9",
+  "samples": [
+    {
+      "index": 0,
+      "sample_id": "0000",
+      "path": "samples/00000000.npz",
+      "sha256": "dc13808047b1aebd5fa278ea44b183766ca11a141ca898bc672f30f1800d2b9f",
+      "height": 332,
+      "width": 365,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 1,
+      "sample_id": "0001",
+      "path": "samples/00000001.npz",
+      "sha256": "00bfefb630f365f809cc961bfbc9a19f056ed01b9cb776fb330aa5e4a406d32f",
+      "height": 689,
+      "width": 989,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 2,
+      "sample_id": "0002",
+      "path": "samples/00000002.npz",
+      "sha256": "d87e059fb170e58b93b7fb13ea87e8f66208613d95a1da5cf11bd0fae0c81ebc",
+      "height": 334,
+      "width": 499,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 3,
+      "sample_id": "0003",
+      "path": "samples/00000003.npz",
+      "sha256": "5e9b8db27b936ef99d14763f509f24b9d58a5f629b579c4589378597eecea6bb",
+      "height": 334,
+      "width": 496,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 4,
+      "sample_id": "0004",
+      "path": "samples/00000004.npz",
+      "sha256": "c7de3a1b1afb3d2167043f7877ab36c3d4a519b479166e676e64fca58e571389",
+      "height": 356,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 5,
+      "sample_id": "0005",
+      "path": "samples/00000005.npz",
+      "sha256": "57f404534bcb7bc12048a7889ea4a6540226e0d7eb7655e7dd14dcf41328e94d",
+      "height": 472,
+      "width": 591,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 6,
+      "sample_id": "0006",
+      "path": "samples/00000006.npz",
+      "sha256": "a6dfafcbd5bae5d4376334c3f9b06a380174a2f9dc22a7b66d29815acbced4d1",
+      "height": 344,
+      "width": 423,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 7,
+      "sample_id": "0007",
+      "path": "samples/00000007.npz",
+      "sha256": "ef7a5ddbbd879a1fae5edd13022d31b675f3cda87d9e0cc7e73f3da2c783c28f",
+      "height": 345,
+      "width": 421,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 8,
+      "sample_id": "0008",
+      "path": "samples/00000008.npz",
+      "sha256": "c8aa2b91e1527f4fc4ade6a0babfc8c6b54c1af0601d6f6cf65d62e69c061fca",
+      "height": 289,
+      "width": 324,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 9,
+      "sample_id": "0009",
+      "path": "samples/00000009.npz",
+      "sha256": "3d776c4be6b1d87632816e616b00e8135d9ffe16a024a54d373cb7dcc9c177bc",
+      "height": 380,
+      "width": 469,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 10,
+      "sample_id": "0010",
+      "path": "samples/00000010.npz",
+      "sha256": "6361bb2d641333828dc6f6e22ae034f8fcfa585f35345a6dde922ed49e58a781",
+      "height": 379,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 11,
+      "sample_id": "0011",
+      "path": "samples/00000011.npz",
+      "sha256": "a6815e222669ef803b3dae6643576e7c1fb5662092ad0e43f7411e770851b165",
+      "height": 381,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 12,
+      "sample_id": "0012",
+      "path": "samples/00000012.npz",
+      "sha256": "9375be35787d2fe135185d01038f287a845247c69aff96004b9aa6abcea763a6",
+      "height": 377,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 13,
+      "sample_id": "0013",
+      "path": "samples/00000013.npz",
+      "sha256": "b024be369b4f220f353986abafa8f5c1b6b74b3f21da2b59381e9f99a559a962",
+      "height": 373,
+      "width": 421,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 14,
+      "sample_id": "0014",
+      "path": "samples/00000014.npz",
+      "sha256": "59e03eed6c46743cae5a4d5d5124fd2f143193e0f73018b01bf7b97805970e6c",
+      "height": 388,
+      "width": 421,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 15,
+      "sample_id": "0015",
+      "path": "samples/00000015.npz",
+      "sha256": "36f8e52af5c8f7f831233f0d006a26744423e57678bf6c0e966464cb84d42349",
+      "height": 344,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 16,
+      "sample_id": "0016",
+      "path": "samples/00000016.npz",
+      "sha256": "71e7f7e39ac84ee3d5973834f66831b7162d5f1d7f26021513cad624e0538dac",
+      "height": 328,
+      "width": 439,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 17,
+      "sample_id": "0017",
+      "path": "samples/00000017.npz",
+      "sha256": "278c7221429e839ccfbfbfd4db3c4f0efba886d00c66a7b356b675d55b5efcd4",
+      "height": 335,
+      "width": 411,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 18,
+      "sample_id": "0018",
+      "path": "samples/00000018.npz",
+      "sha256": "e556c86b32ba78456e671f1ed48c01c6670dd7553bb24cabe3fee482d6be6959",
+      "height": 391,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 19,
+      "sample_id": "0019",
+      "path": "samples/00000019.npz",
+      "sha256": "a7ce7b83e11acbdc03c5b5dea584701b0257b1a058d01a72a2bb9fcc82dcd235",
+      "height": 391,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 20,
+      "sample_id": "0020",
+      "path": "samples/00000020.npz",
+      "sha256": "5a6fc2ab669e17324e9cd2451d47c1e660f7ce7b6ea2cb08b1114879579bb1f8",
+      "height": 280,
+      "width": 314,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 21,
+      "sample_id": "0021",
+      "path": "samples/00000021.npz",
+      "sha256": "05c7f5beccefcf274840e01e56e42095cf6135af3d942ea63002aed9b48de30f",
+      "height": 733,
+      "width": 880,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 22,
+      "sample_id": "0022",
+      "path": "samples/00000022.npz",
+      "sha256": "e988db6bc4701dea32e0db92284051b1816a8b9b713ab974606cb2d4dfa3d152",
+      "height": 366,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 23,
+      "sample_id": "0023",
+      "path": "samples/00000023.npz",
+      "sha256": "229972c9dfe2617b950eae08c996cccf9a64f5c79d5d0276c102979cf0e2a367",
+      "height": 346,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 24,
+      "sample_id": "0024",
+      "path": "samples/00000024.npz",
+      "sha256": "5fbce26af4bd4b20c6e10ea4edf39633fab1cc46d3a9cfbe85a57d1cdb0de29f",
+      "height": 334,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 25,
+      "sample_id": "0025",
+      "path": "samples/00000025.npz",
+      "sha256": "f0397017ae6aee62c88dd50e51faaf4218c22e1fc252ea0d39dde1de03531d05",
+      "height": 353,
+      "width": 451,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 26,
+      "sample_id": "0026",
+      "path": "samples/00000026.npz",
+      "sha256": "c99a252060a1e7ce1e9a620317faf68a3ac6df8bc4e8c05c64a8cbac49da1d9e",
+      "height": 376,
+      "width": 342,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 27,
+      "sample_id": "0027",
+      "path": "samples/00000027.npz",
+      "sha256": "3d5b05eed5fb8543db0aed627758dbcd29289e81ca5bd604ce92926b6155f8be",
+      "height": 357,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 28,
+      "sample_id": "0028",
+      "path": "samples/00000028.npz",
+      "sha256": "3f652339f0bb323fb3c1742426f8688e60838f27adb3507710afddb7dc21f491",
+      "height": 364,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 29,
+      "sample_id": "0029",
+      "path": "samples/00000029.npz",
+      "sha256": "e6113017aa781c35f6279b05e7779d30c97fc1c5ccf1ed1de920018bd257e8d2",
+      "height": 351,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 30,
+      "sample_id": "0030",
+      "path": "samples/00000030.npz",
+      "sha256": "f620382f349933be0aa208311e2422127140b1b84eb716223d1240c661170597",
+      "height": 363,
+      "width": 399,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 31,
+      "sample_id": "0031",
+      "path": "samples/00000031.npz",
+      "sha256": "87f6895b84eb1009c2b031a3dd10e91049ff0d25b2e27cfbe23893173cac22ab",
+      "height": 374,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 32,
+      "sample_id": "0032",
+      "path": "samples/00000032.npz",
+      "sha256": "f962219899f3983d855642394a60509f8e2da927fd8e8a8c9da2829396271728",
+      "height": 386,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 33,
+      "sample_id": "0033",
+      "path": "samples/00000033.npz",
+      "sha256": "4f13bf970867bab7ddf601b0bbea615cc616ff19f7fa48b700dfdf07be36eb30",
+      "height": 384,
+      "width": 420,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 34,
+      "sample_id": "0034",
+      "path": "samples/00000034.npz",
+      "sha256": "32436e2caf1e4f66ffb7a3fb76e9759d6c4655a36033581773731648b4e26e49",
+      "height": 389,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 35,
+      "sample_id": "0035",
+      "path": "samples/00000035.npz",
+      "sha256": "37e64365462a158cc051874b6ee73883d51f10391a6b3f68cfbae6f78f44d50a",
+      "height": 366,
+      "width": 475,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 36,
+      "sample_id": "0036",
+      "path": "samples/00000036.npz",
+      "sha256": "bfd60d2045e0259acbc3021e92b82ffc9c90593402be64ff6342cff993dff2d2",
+      "height": 319,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 37,
+      "sample_id": "0037",
+      "path": "samples/00000037.npz",
+      "sha256": "edc122dc888822da58e382047b7f31b8052b039f23a3e7fc4fbe67b4e718dae4",
+      "height": 396,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 38,
+      "sample_id": "0038",
+      "path": "samples/00000038.npz",
+      "sha256": "3fe1fc43f85dff29f271541348af8847ebe5f42e3bfc8e1f88ebaacbb8d33b84",
+      "height": 752,
+      "width": 1399,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 39,
+      "sample_id": "0039",
+      "path": "samples/00000039.npz",
+      "sha256": "48514de315a207438b194a3ad5a798f29d072965e57a9287a2cfb2bfb8dfbfa1",
+      "height": 379,
+      "width": 474,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 40,
+      "sample_id": "0040",
+      "path": "samples/00000040.npz",
+      "sha256": "d144a97117a0ecc08d1f86f959712aee288f3721729a3c049ab84201fc18c699",
+      "height": 336,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 41,
+      "sample_id": "0041",
+      "path": "samples/00000041.npz",
+      "sha256": "adb59691a8cbb4985d00027cf56163a0c09e79a629ad9ca9571c7ce421b287d9",
+      "height": 381,
+      "width": 462,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 42,
+      "sample_id": "0042",
+      "path": "samples/00000042.npz",
+      "sha256": "40dc910dee0209bf730106a3795080ce3dc73c034229f873d719fe57424bc936",
+      "height": 378,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 43,
+      "sample_id": "0043",
+      "path": "samples/00000043.npz",
+      "sha256": "a10061ea084b28313950f6a30354c501a7c089110ee7e039dd920e1c82d83de9",
+      "height": 379,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 44,
+      "sample_id": "0044",
+      "path": "samples/00000044.npz",
+      "sha256": "2f0afbf93302bddfab8a1968d5f663729f6728ff83b04f69301ff6b6d93587e2",
+      "height": 608,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 45,
+      "sample_id": "0045",
+      "path": "samples/00000045.npz",
+      "sha256": "5c0efa5cdcc7199a21428061214f0f79e801d189be9fad7369a0006859041dfe",
+      "height": 393,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 46,
+      "sample_id": "0046",
+      "path": "samples/00000046.npz",
+      "sha256": "0425530fc03d7d9e427ad9524f888704f82b01b7176923010536ac533b136e0d",
+      "height": 390,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 47,
+      "sample_id": "0047",
+      "path": "samples/00000047.npz",
+      "sha256": "ccb5628ee8dac7876a9a3cda51f180687d9e258d6baecafe7029d7005dc03d19",
+      "height": 351,
+      "width": 426,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 48,
+      "sample_id": "0048",
+      "path": "samples/00000048.npz",
+      "sha256": "bb71f38bd0626718428b78f511fcdf1a01b4572b18c940e5297b651598783344",
+      "height": 325,
+      "width": 360,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 49,
+      "sample_id": "0049",
+      "path": "samples/00000049.npz",
+      "sha256": "7061d1575ad6d0b949e3cd5bfd9d13d42119c5c9e2365df1e73c3c3b59dde3f5",
+      "height": 374,
+      "width": 311,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 50,
+      "sample_id": "0050",
+      "path": "samples/00000050.npz",
+      "sha256": "86bb8465b2333e1519e81bb83832b8a4aaa547cdb84d9e0fe2c74120c444a828",
+      "height": 295,
+      "width": 327,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 51,
+      "sample_id": "0051",
+      "path": "samples/00000051.npz",
+      "sha256": "3753ea0bf9dbb2a389c4ef0ea1239e123ea59b7891014c98d1668357e730e74b",
+      "height": 338,
+      "width": 330,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 52,
+      "sample_id": "0052",
+      "path": "samples/00000052.npz",
+      "sha256": "f9cad124687446a3c621e7c444047f187515dfe40b89488a197d326ea3697788",
+      "height": 357,
+      "width": 342,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 53,
+      "sample_id": "0053",
+      "path": "samples/00000053.npz",
+      "sha256": "8403304dd3362de252c4f5a3bfab0bcdcb854bf0d92ab5f86092aede44b40b29",
+      "height": 342,
+      "width": 342,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 54,
+      "sample_id": "0054",
+      "path": "samples/00000054.npz",
+      "sha256": "423da37bde38f3cee22625ffce834c97235c1df0adc0f4e57bc4d75817289a14",
+      "height": 736,
+      "width": 1120,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 55,
+      "sample_id": "0055",
+      "path": "samples/00000055.npz",
+      "sha256": "75ea49b41039d4edfcf0326b80e34266fdf31ec5461de89970b25157ece2c1b1",
+      "height": 744,
+      "width": 1125,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 56,
+      "sample_id": "0056",
+      "path": "samples/00000056.npz",
+      "sha256": "232324cfe6c71bde52da1bbe193e4d5c3a28d375ec9e6cf246a8a063e5fee0d6",
+      "height": 690,
+      "width": 989,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 57,
+      "sample_id": "0057",
+      "path": "samples/00000057.npz",
+      "sha256": "b412bddf51758059d6205490d0deb739b1b6a324bc2fe94ceeb2af420b5b1c3e",
+      "height": 332,
+      "width": 411,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 58,
+      "sample_id": "0058",
+      "path": "samples/00000058.npz",
+      "sha256": "ed611fda53f01998c76d72b6fba9ad73fcb29280a1ec1c14f272dc94a12521d0",
+      "height": 743,
+      "width": 1003,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 59,
+      "sample_id": "0059",
+      "path": "samples/00000059.npz",
+      "sha256": "611433f433f13061cd2550be69f546aa6ba59d2df50a77dee12bdbf690a0066a",
+      "height": 393,
+      "width": 421,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 60,
+      "sample_id": "0060",
+      "path": "samples/00000060.npz",
+      "sha256": "23ea24aae3ff17bd0471ba6512bd3b85af73c605f2a4939e71b7311adb141a88",
+      "height": 389,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 61,
+      "sample_id": "0061",
+      "path": "samples/00000061.npz",
+      "sha256": "0969491f757b6acedcf91069604f3b60b4f37cb39486c5eb6de5c346f4b69276",
+      "height": 607,
+      "width": 980,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 62,
+      "sample_id": "0062",
+      "path": "samples/00000062.npz",
+      "sha256": "b0606dee2e995860d300fa75a056af0fb7f8de3edc4fd23ae9821ff173244ba2",
+      "height": 769,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 63,
+      "sample_id": "0063",
+      "path": "samples/00000063.npz",
+      "sha256": "e522282d7fd18683ca68c3785a4733120b764e10f8b7fdd8e2c2cc957a608e49",
+      "height": 364,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 64,
+      "sample_id": "0064",
+      "path": "samples/00000064.npz",
+      "sha256": "6e6abfa26b2c5524f5e59de3d86aefdb5fed96901c0dc1b5957cb52761f31632",
+      "height": 378,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 65,
+      "sample_id": "0065",
+      "path": "samples/00000065.npz",
+      "sha256": "b99ece45d672256513faaebed41300be4b0524f4516e5f1fa3e3202af6bcc786",
+      "height": 284,
+      "width": 521,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 66,
+      "sample_id": "0066",
+      "path": "samples/00000066.npz",
+      "sha256": "ad216ddf6fa4f6dfe3356134a9361c2f3e6e0823d1f2ac46e01a934654baad19",
+      "height": 336,
+      "width": 411,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 67,
+      "sample_id": "0067",
+      "path": "samples/00000067.npz",
+      "sha256": "b26eb5d319a533251747e4bf0b8f0493226702525c66868c019d1b392cd395ca",
+      "height": 379,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 68,
+      "sample_id": "0068",
+      "path": "samples/00000068.npz",
+      "sha256": "eca43593af92eac1490c7cb58bc1c9b4e62b59235c75b63dbe0aded64269deae",
+      "height": 379,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 69,
+      "sample_id": "0069",
+      "path": "samples/00000069.npz",
+      "sha256": "77e5da06bb6d71340512d81ccd722916a7535862b492c93f4bacf3f2ca6b3ee1",
+      "height": 398,
+      "width": 357,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 70,
+      "sample_id": "0070",
+      "path": "samples/00000070.npz",
+      "sha256": "7dfb69ea1e70c8d7c40e5e0a8fee68dd1f71b59376bd81af4bf3cbcddfc69741",
+      "height": 398,
+      "width": 355,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 71,
+      "sample_id": "0071",
+      "path": "samples/00000071.npz",
+      "sha256": "b831c157aff24760ed53e48011c64822109d8d6c920a0ede74e54b9f6f094719",
+      "height": 382,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 72,
+      "sample_id": "0072",
+      "path": "samples/00000072.npz",
+      "sha256": "a68d19a1659a87d26374ec1e7b723e7033ca8cf13f503b80265c2f2ebcb23b23",
+      "height": 325,
+      "width": 414,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 73,
+      "sample_id": "0073",
+      "path": "samples/00000073.npz",
+      "sha256": "ffc7f31f4351a6c0becbd4d6b579ffbb0097d01c7f041800ba4032707d86dab9",
+      "height": 335,
+      "width": 555,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 74,
+      "sample_id": "0074",
+      "path": "samples/00000074.npz",
+      "sha256": "3d4bf581f1457c4d4eea1ef4c9a27e0b18b0a44d825853167b7e029429c62862",
+      "height": 367,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 75,
+      "sample_id": "0075",
+      "path": "samples/00000075.npz",
+      "sha256": "e33c2b5ba1a18fafdb826fa0b8d7949740ffaf254d01792cf768cc751c562c28",
+      "height": 665,
+      "width": 659,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 76,
+      "sample_id": "0076",
+      "path": "samples/00000076.npz",
+      "sha256": "c9567066a5f19a9da4c00f5eff66ffa471b50db11af34fc41713c52e0047806c",
+      "height": 638,
+      "width": 653,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 77,
+      "sample_id": "0077",
+      "path": "samples/00000077.npz",
+      "sha256": "6a0cb77f44980d7fed55907fd893f0d0c4c16e80846a6d0280b687887036ae8a",
+      "height": 337,
+      "width": 327,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 78,
+      "sample_id": "0078",
+      "path": "samples/00000078.npz",
+      "sha256": "b03e498ed97b67a27529632f79225d6256f300e55ab7d4ff9b70fdc19bcfb48e",
+      "height": 388,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 79,
+      "sample_id": "0079",
+      "path": "samples/00000079.npz",
+      "sha256": "bb6d24432a61dcdc7cb90348e5c91b8309022d9f2275c6f378e312c415bcfd32",
+      "height": 307,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 80,
+      "sample_id": "0080",
+      "path": "samples/00000080.npz",
+      "sha256": "0c28791171f16c227779db3b854f5194cf8595cfb3395801fcec6d50f608c029",
+      "height": 382,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 81,
+      "sample_id": "0081",
+      "path": "samples/00000081.npz",
+      "sha256": "5be13966e89a03da4af28ceb17ade00b5714bbc0cc9d04549b7e4efdd8d7d76a",
+      "height": 380,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 82,
+      "sample_id": "0082",
+      "path": "samples/00000082.npz",
+      "sha256": "a88874121133fdb1367685da789a1bc3eac7489be44cdc7d7bcf694f7491a63a",
+      "height": 381,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 83,
+      "sample_id": "0083",
+      "path": "samples/00000083.npz",
+      "sha256": "8098713c6c93ec0c30acece574c8f88d3ba5098aac498527586593326ad31bdf",
+      "height": 536,
+      "width": 486,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 84,
+      "sample_id": "0084",
+      "path": "samples/00000084.npz",
+      "sha256": "2fca2a3fe9e323e1d1948f44e3c00bb7c4bd39d085b35f7d3ab0917d530f3755",
+      "height": 333,
+      "width": 365,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 85,
+      "sample_id": "0085",
+      "path": "samples/00000085.npz",
+      "sha256": "430e63adaecd8f25e94a1d761bf51979f2b639b4206b135f4964cebb0907e3ca",
+      "height": 670,
+      "width": 988,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 86,
+      "sample_id": "0086",
+      "path": "samples/00000086.npz",
+      "sha256": "86b92ae2885df991bd7bf8cd730344a8de577b6142cfec46436d34c426887c0c",
+      "height": 720,
+      "width": 986,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 87,
+      "sample_id": "0087",
+      "path": "samples/00000087.npz",
+      "sha256": "5ba05cd513b235099919b88b6916cbec3bfc5921e6aa4d79c00b91cf6e47e754",
+      "height": 312,
+      "width": 264,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 88,
+      "sample_id": "0088",
+      "path": "samples/00000088.npz",
+      "sha256": "45d1e694734a4927b25d774eabb74c271dc6e84677af6288030a344ea5ab0f8d",
+      "height": 339,
+      "width": 483,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 89,
+      "sample_id": "0089",
+      "path": "samples/00000089.npz",
+      "sha256": "086e1324192a623958b9ed6124b0000a7f321275ce9bed0518e00c427265bd95",
+      "height": 356,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 90,
+      "sample_id": "0090",
+      "path": "samples/00000090.npz",
+      "sha256": "7393b9628f0ef9c4b14ab3a9051090c6ef2f71e8ba78d429d4a4d297a0769629",
+      "height": 357,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 91,
+      "sample_id": "0091",
+      "path": "samples/00000091.npz",
+      "sha256": "9179ee6ec1683827c5ed21f938bf378627ce6844910872e5daa228a83239b7fa",
+      "height": 295,
+      "width": 424,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 92,
+      "sample_id": "0092",
+      "path": "samples/00000092.npz",
+      "sha256": "006cac2b7320217eec3529095914430e377307d9dd5dc3337cdd8e05c63de4cf",
+      "height": 360,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 93,
+      "sample_id": "0093",
+      "path": "samples/00000093.npz",
+      "sha256": "464b19c2778874f6163fb34855130c56d4f9f2044dca5285737adb4d0e0f39e0",
+      "height": 353,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 94,
+      "sample_id": "0094",
+      "path": "samples/00000094.npz",
+      "sha256": "6dd1f6dcd8f302ed8e38ccdea0075a452a1bf80e2113f795dd500a3b9641a01f",
+      "height": 360,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 95,
+      "sample_id": "0095",
+      "path": "samples/00000095.npz",
+      "sha256": "1bbacc70289ae2b9cef941fa43b54d7d23eaa1648339082297853794f6127f2e",
+      "height": 334,
+      "width": 468,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 96,
+      "sample_id": "0096",
+      "path": "samples/00000096.npz",
+      "sha256": "8d46b6a03caabb8430c3e5f7579a85c0760163a5c7ebe2aa8afa6093dfc8c715",
+      "height": 329,
+      "width": 290,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 97,
+      "sample_id": "0097",
+      "path": "samples/00000097.npz",
+      "sha256": "83867277b39cb6f4cf017dbcb4ec6f32b7eb5a574128ff4eab9a8f1af02fb22d",
+      "height": 374,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 98,
+      "sample_id": "0098",
+      "path": "samples/00000098.npz",
+      "sha256": "5516de268c940e909e6e1b5a024063e4f46d1a7f04e077a542b0383b2361fc48",
+      "height": 380,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 99,
+      "sample_id": "0099",
+      "path": "samples/00000099.npz",
+      "sha256": "14a615f47fa55bc6f109da65c8fb371aeb89c84b3332e2548aa0f5322e2c0d5b",
+      "height": 288,
+      "width": 502,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 100,
+      "sample_id": "0100",
+      "path": "samples/00000100.npz",
+      "sha256": "9a2caef5bae7639b5132d2bb81f85e4d8bf8ab52164e88da5a8187b3d2a87a4d",
+      "height": 303,
+      "width": 498,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 101,
+      "sample_id": "0101",
+      "path": "samples/00000101.npz",
+      "sha256": "b930cf7a3ad9150f6a90308dff3dcdc9a87f9c350848177df75980b0f890f26f",
+      "height": 339,
+      "width": 510,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 102,
+      "sample_id": "0102",
+      "path": "samples/00000102.npz",
+      "sha256": "01ff83fdbecbafa2bbd3b3a9df53bc4f12bd1abc4d28269d1cd3da071c86a375",
+      "height": 342,
+      "width": 509,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 103,
+      "sample_id": "0103",
+      "path": "samples/00000103.npz",
+      "sha256": "b41e19669e0816ddfc80bb144a04533a64cc7198710e501e41b43ca9a3f1eeaa",
+      "height": 593,
+      "width": 980,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 104,
+      "sample_id": "0104",
+      "path": "samples/00000104.npz",
+      "sha256": "42d56a2b8e822f6d6b143a6690936ee7999da51dfee07d077005bf4efbfe3c48",
+      "height": 708,
+      "width": 986,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 105,
+      "sample_id": "0105",
+      "path": "samples/00000105.npz",
+      "sha256": "cd2b2f181ef649a98539732dea4ae7feb3c145311da7cf9878e81dfd4c02c75b",
+      "height": 320,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 106,
+      "sample_id": "0106",
+      "path": "samples/00000106.npz",
+      "sha256": "232f82af3901859e2f454f6067f591a7a4c425548d0ae963904f93f2d3c80c5c",
+      "height": 320,
+      "width": 435,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 107,
+      "sample_id": "0107",
+      "path": "samples/00000107.npz",
+      "sha256": "59695398263c3fa807910f76981f5723a84d633d7bc3ede3a73f67ca2a7ca1a3",
+      "height": 332,
+      "width": 527,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 108,
+      "sample_id": "0108",
+      "path": "samples/00000108.npz",
+      "sha256": "30bab0badb4a2b4ddb7ae210d8de47fc33a56587cd84fea4ddc2c716007fd0de",
+      "height": 282,
+      "width": 283,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 109,
+      "sample_id": "0109",
+      "path": "samples/00000109.npz",
+      "sha256": "4f71ec1e0fecbba98741a2503c6d9b0b496d09f89d453f522527dafb0a83a406",
+      "height": 291,
+      "width": 284,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 110,
+      "sample_id": "0110",
+      "path": "samples/00000110.npz",
+      "sha256": "1f9b142cc1147d2cde51e4d6cef5121516dba234bbd02a19b076307f559a4972",
+      "height": 323,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 111,
+      "sample_id": "0111",
+      "path": "samples/00000111.npz",
+      "sha256": "2ead275e71116308191da3aee553b4e2567a54131224a4a79acb0ddc0291adb0",
+      "height": 398,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 112,
+      "sample_id": "0112",
+      "path": "samples/00000112.npz",
+      "sha256": "a3406c5a3791cc74dc28f4b2526af30ea7b12f4334cf422e3f1d40c1ac61eddc",
+      "height": 397,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 113,
+      "sample_id": "0113",
+      "path": "samples/00000113.npz",
+      "sha256": "600f74143aca6bd4a57d73f7bb8c8901cbc880c1f0c9910d0a1cf3c8452e5e05",
+      "height": 394,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 114,
+      "sample_id": "0114",
+      "path": "samples/00000114.npz",
+      "sha256": "a211121771ff4e9adb26654823f10023d8383137fcec922bef542ffd395bf96e",
+      "height": 374,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 115,
+      "sample_id": "0115",
+      "path": "samples/00000115.npz",
+      "sha256": "df56f8b5199f0ef8d41fe4f199c94d9465294fc8caf277e96c0cb845fdfe8cc0",
+      "height": 394,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 116,
+      "sample_id": "0116",
+      "path": "samples/00000116.npz",
+      "sha256": "918ae48b59c40de4f532fc701fa44b8de287788410bccf2212262216c8027158",
+      "height": 391,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 117,
+      "sample_id": "0117",
+      "path": "samples/00000117.npz",
+      "sha256": "a8afe58f7cc26545ee57c5f846a774106bb9cb3a04992b2c9cbf8c0bac41c086",
+      "height": 375,
+      "width": 500,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 118,
+      "sample_id": "0118",
+      "path": "samples/00000118.npz",
+      "sha256": "7c299efcb0785e6bb39ecd6fdd3cda76d7d160a3311ef792203f0cc2e32519cc",
+      "height": 381,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 119,
+      "sample_id": "0119",
+      "path": "samples/00000119.npz",
+      "sha256": "a4f359fb643d9ee2b8af0e6ba3db5929038c807b3136bff1fd4bbd137f78ed24",
+      "height": 332,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 120,
+      "sample_id": "0120",
+      "path": "samples/00000120.npz",
+      "sha256": "5514c4a17fe602581cda1deaf60b43e76e393775197a6a38c101a4c900b848d3",
+      "height": 319,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 121,
+      "sample_id": "0121",
+      "path": "samples/00000121.npz",
+      "sha256": "121da6cd8c9cc00e6604accab1801cb21c149e6203714153db74a915338027b4",
+      "height": 619,
+      "width": 784,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 122,
+      "sample_id": "0122",
+      "path": "samples/00000122.npz",
+      "sha256": "42ceff1693a7da0c9bbf3c8d5131a3eb1f8e56fdde5a85cfa50cf443aae65779",
+      "height": 307,
+      "width": 291,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 123,
+      "sample_id": "0123",
+      "path": "samples/00000123.npz",
+      "sha256": "ad19b4a5fe6c3c58471032bac369538e00ff3dbf467dbea173de929aff616cb3",
+      "height": 316,
+      "width": 288,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 124,
+      "sample_id": "0124",
+      "path": "samples/00000124.npz",
+      "sha256": "2c966e190534018eb868437b3e491a25818cceec428005fb747f709660a623f1",
+      "height": 326,
+      "width": 502,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 125,
+      "sample_id": "0125",
+      "path": "samples/00000125.npz",
+      "sha256": "22525a3758afe6ac475c4463c5657c0ec717cd36e9245e1e48f1c1a1c55eba47",
+      "height": 398,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 126,
+      "sample_id": "0126",
+      "path": "samples/00000126.npz",
+      "sha256": "b34781645058a29d71a07ed65d8ddcc6a14c8665a3e5ca8229591a7e12bedba0",
+      "height": 354,
+      "width": 376,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 127,
+      "sample_id": "0127",
+      "path": "samples/00000127.npz",
+      "sha256": "9e11e8e0efc03d440ee2bd62e23229b9e014d81f2c9ee07c9dccec279f12f83a",
+      "height": 322,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 128,
+      "sample_id": "0128",
+      "path": "samples/00000128.npz",
+      "sha256": "dd68601d379fab60dffca5e682a32ee62112ebf7aebd0a3a0f9ff9204a25bbb7",
+      "height": 333,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 129,
+      "sample_id": "0129",
+      "path": "samples/00000129.npz",
+      "sha256": "715df27d7c8e9d15e599b73499ff8b02a9b28e290faea6dd74bd0679f173ca6c",
+      "height": 390,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 130,
+      "sample_id": "0130",
+      "path": "samples/00000130.npz",
+      "sha256": "0b633f57700f872c6a10ceb577b4fa685deb770cc5741ee795c35eedf067a36b",
+      "height": 371,
+      "width": 475,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 131,
+      "sample_id": "0131",
+      "path": "samples/00000131.npz",
+      "sha256": "9588c9f220e47279343056680102deace77ef5e0de410fd0dc412facca4b3eac",
+      "height": 771,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 132,
+      "sample_id": "0132",
+      "path": "samples/00000132.npz",
+      "sha256": "174ab25446d773110521748e7a82eb774d87ee7a76e1d12a9a468b4b3fed5bd5",
+      "height": 363,
+      "width": 354,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 133,
+      "sample_id": "0133",
+      "path": "samples/00000133.npz",
+      "sha256": "83ecc37a740ba6ad6a2b9bbb3dc59569ca5bbaedcb2a57cf8718fdfdb22a4386",
+      "height": 352,
+      "width": 502,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 134,
+      "sample_id": "0134",
+      "path": "samples/00000134.npz",
+      "sha256": "c63378476cbe6965cd42e194ac77bf780322284ec5327afae344ccc828934ec4",
+      "height": 270,
+      "width": 529,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 135,
+      "sample_id": "0135",
+      "path": "samples/00000135.npz",
+      "sha256": "f3419c0ee8aeef6cffee51af931805414b431a4b185dc9c233165781ae808fcd",
+      "height": 605,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 136,
+      "sample_id": "0136",
+      "path": "samples/00000136.npz",
+      "sha256": "aa71be4fb59f077a85c972735ebd087674c3fd744ca1f57926ff4f318c4746f7",
+      "height": 378,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 137,
+      "sample_id": "0137",
+      "path": "samples/00000137.npz",
+      "sha256": "bcfdbe87bfcc899fa5e28b98a64fbda437f005b42c6e271cebe36aa8ff2ef5b0",
+      "height": 359,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 138,
+      "sample_id": "0138",
+      "path": "samples/00000138.npz",
+      "sha256": "ebac9c272a975c4e6343dd7aab9e4d1460d2393dfbdf6601d93eb313fc88d266",
+      "height": 495,
+      "width": 627,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 139,
+      "sample_id": "0139",
+      "path": "samples/00000139.npz",
+      "sha256": "bb298235fab7238f718ac08bfb91f9ea3e2df64fd2ce47239090b92534b76aa5",
+      "height": 387,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 140,
+      "sample_id": "0140",
+      "path": "samples/00000140.npz",
+      "sha256": "43197c7f7ec26e80776843573b0fbc58fbf723a04f9f6bb488c096cb6c2cf4ef",
+      "height": 366,
+      "width": 406,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 141,
+      "sample_id": "0141",
+      "path": "samples/00000141.npz",
+      "sha256": "960171e784f9def8bff6b4b0a32e87b9c0b7fcb019304f18e20c8f4c890a744c",
+      "height": 398,
+      "width": 321,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 142,
+      "sample_id": "0142",
+      "path": "samples/00000142.npz",
+      "sha256": "a8ef029d9646be466f2b7f1a2aacb9f28249ce5e301d6412704be5d769fb8a61",
+      "height": 399,
+      "width": 322,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 143,
+      "sample_id": "0143",
+      "path": "samples/00000143.npz",
+      "sha256": "7db96cb515277e0f431edada4ab3c8332976e6c3526802aeea8f1b0fc78d49d5",
+      "height": 690,
+      "width": 1290,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 144,
+      "sample_id": "0144",
+      "path": "samples/00000144.npz",
+      "sha256": "a3cafec99798552c6a8d2d1d7123429519a7761ec4df76347ca306ebefe96893",
+      "height": 393,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 145,
+      "sample_id": "0145",
+      "path": "samples/00000145.npz",
+      "sha256": "917a6406b48f1e7c668773638f0d25da1f40730c5ebe4732443f014543640e55",
+      "height": 662,
+      "width": 795,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 146,
+      "sample_id": "0146",
+      "path": "samples/00000146.npz",
+      "sha256": "2e8735e4ffd627249c9368db76ac660a43ee9dba332d12b0aadbfda18e3524e5",
+      "height": 750,
+      "width": 1122,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 147,
+      "sample_id": "0147",
+      "path": "samples/00000147.npz",
+      "sha256": "0acd02890148076864d3081c41d8e99fd6b3341f30e1e76868cf039900331c3e",
+      "height": 377,
+      "width": 531,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 148,
+      "sample_id": "0148",
+      "path": "samples/00000148.npz",
+      "sha256": "ce933d7a9097aad6b7a4a541e8be780b0cebb79ce3f6d7c3b0b603e7f8fc8553",
+      "height": 750,
+      "width": 989,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 149,
+      "sample_id": "0149",
+      "path": "samples/00000149.npz",
+      "sha256": "abf67c11fd7f310967eb3bd73d5e11a5a1605eefe1c11dabe190a8cbd4b3c088",
+      "height": 355,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 150,
+      "sample_id": "0150",
+      "path": "samples/00000150.npz",
+      "sha256": "b5152921690eb9eb9a5c5d4ea3b32b1c2ddddac125ae2fa34f545c1d41e971ef",
+      "height": 393,
+      "width": 356,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 151,
+      "sample_id": "0151",
+      "path": "samples/00000151.npz",
+      "sha256": "dec09fdbc121f4956d63c913bd73bf33f832a9c5dc5948a93b8b80d2fe925445",
+      "height": 394,
+      "width": 353,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 152,
+      "sample_id": "0152",
+      "path": "samples/00000152.npz",
+      "sha256": "24a15d29a63cb20420c03294bf018d5bc42d8ef88a7906a4b9f2aa6e09e4a152",
+      "height": 619,
+      "width": 828,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 153,
+      "sample_id": "0153",
+      "path": "samples/00000153.npz",
+      "sha256": "623ea9233a615bc7a776efcf3c7a07be8ef2d02886f31c0c384fcc46718b1188",
+      "height": 741,
+      "width": 977,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 154,
+      "sample_id": "0154",
+      "path": "samples/00000154.npz",
+      "sha256": "c7ae5729cd12eeb7856f090f6bf7d1e89b509c18c799153018f482b30e03f6f3",
+      "height": 383,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 155,
+      "sample_id": "0155",
+      "path": "samples/00000155.npz",
+      "sha256": "e7e6b2ebf73675880263c25ac3de8fb21dfff40228925d0080d832c5ee49f5ec",
+      "height": 708,
+      "width": 1291,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 156,
+      "sample_id": "0156",
+      "path": "samples/00000156.npz",
+      "sha256": "83e7436c9701688aeaf0763cc21b55095590ca82536ee7c0667af5a01c3dce18",
+      "height": 711,
+      "width": 1345,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 157,
+      "sample_id": "0157",
+      "path": "samples/00000157.npz",
+      "sha256": "9a2c3ed8d8b719ccfc6d3098f0af522a8d92c03ce5d80923e63b4392f9958a55",
+      "height": 351,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 158,
+      "sample_id": "0158",
+      "path": "samples/00000158.npz",
+      "sha256": "3c3deb1c94689b63e99001ccac7221eb51e6fe12f6d26c4d71ceff1e375f98f8",
+      "height": 750,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 159,
+      "sample_id": "0159",
+      "path": "samples/00000159.npz",
+      "sha256": "494566cc63f9d2b5e17376a0d629aae2264b142c213a2d49e3de5b38f5f06907",
+      "height": 700,
+      "width": 869,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 160,
+      "sample_id": "0160",
+      "path": "samples/00000160.npz",
+      "sha256": "465f56bea0eff974eeaba4fc779539fa2c7f9fc2f35ad681ea7f366e97c07209",
+      "height": 365,
+      "width": 483,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 161,
+      "sample_id": "0161",
+      "path": "samples/00000161.npz",
+      "sha256": "31c69f3306f9aff1cf755632c51e3d396db80cf61a49ef944252c167a80b9aa3",
+      "height": 772,
+      "width": 977,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 162,
+      "sample_id": "0162",
+      "path": "samples/00000162.npz",
+      "sha256": "511238bcecbee7b33a000df7da1bffff772dc28ae7df53cbc7b45ea59b30dd08",
+      "height": 772,
+      "width": 866,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 163,
+      "sample_id": "0163",
+      "path": "samples/00000163.npz",
+      "sha256": "21ddc97cd995f2afe2850993145fc19fd2191cf2dc77a704a07232d3e99c70bb",
+      "height": 772,
+      "width": 871,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 164,
+      "sample_id": "0164",
+      "path": "samples/00000164.npz",
+      "sha256": "73a1fda2fee816386898ef522e8deebe9d6704f0db1de61ff4d5e10918d14899",
+      "height": 305,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 165,
+      "sample_id": "0165",
+      "path": "samples/00000165.npz",
+      "sha256": "3ceaa7c226e8ecce202b6feb4af936a16ddd4a38c0f230befff9716928a29651",
+      "height": 377,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 166,
+      "sample_id": "0166",
+      "path": "samples/00000166.npz",
+      "sha256": "28b8748640722abf9e12a7b956084b13589c77ccb7f811275db2dd5137310bc3",
+      "height": 387,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 167,
+      "sample_id": "0167",
+      "path": "samples/00000167.npz",
+      "sha256": "bc47ce2eb91225ef7325ee5af00bf0f58c0afacd3716147a9cc6ff0e821040a6",
+      "height": 388,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 168,
+      "sample_id": "0168",
+      "path": "samples/00000168.npz",
+      "sha256": "36956fc2ce81797dca354992c5874a146b7b59d861a6875e5ea6a46cea393a03",
+      "height": 630,
+      "width": 1125,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 169,
+      "sample_id": "0169",
+      "path": "samples/00000169.npz",
+      "sha256": "300feb3c7babd6ce2e6b03d4be7d99511606a0d08276c1342c054bab91193e2d",
+      "height": 388,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 170,
+      "sample_id": "0170",
+      "path": "samples/00000170.npz",
+      "sha256": "df921cb115ef9d6a252d91623392a7b35387f36abb046a9a62acf31776f27cda",
+      "height": 390,
+      "width": 420,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 171,
+      "sample_id": "0171",
+      "path": "samples/00000171.npz",
+      "sha256": "405cad120507f96096244f9ac35685c2802fe25ac72aaa0466bf78fa94dca4e1",
+      "height": 342,
+      "width": 379,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 172,
+      "sample_id": "0172",
+      "path": "samples/00000172.npz",
+      "sha256": "e2f07175168417db10213ccc1fc5601ac7cd8772dca82b428d26bc67a0a10776",
+      "height": 338,
+      "width": 377,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 173,
+      "sample_id": "0173",
+      "path": "samples/00000173.npz",
+      "sha256": "5d75a1758888247be644797c5575dbb24c8e0b4eccb2ff5a082781e4e7c797ab",
+      "height": 341,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 174,
+      "sample_id": "0174",
+      "path": "samples/00000174.npz",
+      "sha256": "d22feb94e4e172314597db707661851d42f7be0cc289af139662a3c8667d75db",
+      "height": 334,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 175,
+      "sample_id": "0175",
+      "path": "samples/00000175.npz",
+      "sha256": "9d5234bce034bb4fe19629f8c561a3c566417e7630dc83c8552624f4cce237dc",
+      "height": 389,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 176,
+      "sample_id": "0176",
+      "path": "samples/00000176.npz",
+      "sha256": "7e2205abc5e84f69d31505320b9be7644aa132d6d14ec7c9606e44fc6fcde192",
+      "height": 519,
+      "width": 625,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 177,
+      "sample_id": "0177",
+      "path": "samples/00000177.npz",
+      "sha256": "b78b4bc8436151f58aa701b9e9a3c33dca1fc98ae5e0f1d6413aaab7bf1bf5c6",
+      "height": 536,
+      "width": 627,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 178,
+      "sample_id": "0178",
+      "path": "samples/00000178.npz",
+      "sha256": "3d376753f3e5182138dcd647716141c4c7d7b95c71cd44ef3130e67be2537c4e",
+      "height": 359,
+      "width": 360,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 179,
+      "sample_id": "0179",
+      "path": "samples/00000179.npz",
+      "sha256": "c937239b00c4672a087a4fc5444d3d4276d362ea77c02433609aacffec37ff00",
+      "height": 379,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 180,
+      "sample_id": "0180",
+      "path": "samples/00000180.npz",
+      "sha256": "352aaa5a56eaf9890a13c908562f0675dba353881674a6646eb4be18b106d551",
+      "height": 376,
+      "width": 319,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 181,
+      "sample_id": "0181",
+      "path": "samples/00000181.npz",
+      "sha256": "2a68a57130b82ce659abdf8c1d87eec90df8c58c1db213910b74ffa48f883668",
+      "height": 355,
+      "width": 552,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 182,
+      "sample_id": "0182",
+      "path": "samples/00000182.npz",
+      "sha256": "9eb487ddd6674a5c7b2c9ad86db0f1eedaf63d52918cab47fe8579c5548053af",
+      "height": 392,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 183,
+      "sample_id": "0183",
+      "path": "samples/00000183.npz",
+      "sha256": "9bbea95895fbf971df692ad25e00b7cf059a2fa278375198b020654f819a7e19",
+      "height": 378,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 184,
+      "sample_id": "0184",
+      "path": "samples/00000184.npz",
+      "sha256": "36fc091a5ed0bd106a62fbcce04c6407cff2cb05362268678cb325d05ca9dd05",
+      "height": 378,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 185,
+      "sample_id": "0185",
+      "path": "samples/00000185.npz",
+      "sha256": "b7edd34255a80e57cd4709b730de6889fb151cb6474598f81edee60633f09f76",
+      "height": 367,
+      "width": 435,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 186,
+      "sample_id": "0186",
+      "path": "samples/00000186.npz",
+      "sha256": "817620c0dc2dc3cf48fc0d81e886aee7321a916cc7dc5dd52da67761a762a23d",
+      "height": 360,
+      "width": 401,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 187,
+      "sample_id": "0187",
+      "path": "samples/00000187.npz",
+      "sha256": "d4ad86ec8fd18d709e33b422102af8939292b5c9e6204d0cd8c33da9fed31105",
+      "height": 673,
+      "width": 977,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 188,
+      "sample_id": "0188",
+      "path": "samples/00000188.npz",
+      "sha256": "31599e2bf1451755711a8eaba63227f6713a16f4c65006b3222c8ba357c49cb6",
+      "height": 622,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 189,
+      "sample_id": "0189",
+      "path": "samples/00000189.npz",
+      "sha256": "3feb5c6768961622a34228296593cb31cb624c712a6956c54e362d2ede82ea7f",
+      "height": 377,
+      "width": 319,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 190,
+      "sample_id": "0190",
+      "path": "samples/00000190.npz",
+      "sha256": "6c2018012a9153cc999174379f49f4497a318dd6573510e5eddd8c973404ddd9",
+      "height": 389,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 191,
+      "sample_id": "0191",
+      "path": "samples/00000191.npz",
+      "sha256": "eaaf56ed748304565ac4f427636f8e36ed9b9ac9e9afd1d0d4417fb23e2a0c8b",
+      "height": 387,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 192,
+      "sample_id": "0192",
+      "path": "samples/00000192.npz",
+      "sha256": "61f1116e4c82ef4e7b77773b9feb6db7ce94ea8a0b31305798d11da7f846a61d",
+      "height": 336,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 193,
+      "sample_id": "0193",
+      "path": "samples/00000193.npz",
+      "sha256": "6be4f746f571708294816e9f98abbe80643e81eb223ad3e8e7538fe3e7b75119",
+      "height": 371,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 194,
+      "sample_id": "0194",
+      "path": "samples/00000194.npz",
+      "sha256": "151c1ca0b6ca5c54b2b6001274fc94fb94b726bfcb47d535265f3316e5e31fee",
+      "height": 370,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 195,
+      "sample_id": "0195",
+      "path": "samples/00000195.npz",
+      "sha256": "ddd53d0df55f7d0f813b3724c2b2de5d4ea376d6d9ce273b8bf42f1a17892da3",
+      "height": 398,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 196,
+      "sample_id": "0196",
+      "path": "samples/00000196.npz",
+      "sha256": "e2301b09c16755b14ed83a5ea386e0e4b413f0f35be57619aa338974de8fc030",
+      "height": 396,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 197,
+      "sample_id": "0197",
+      "path": "samples/00000197.npz",
+      "sha256": "3802588403b852922bf41ef115d8d1da1c0b6edc21ad3819daf9026b0e0b733c",
+      "height": 351,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 198,
+      "sample_id": "0198",
+      "path": "samples/00000198.npz",
+      "sha256": "2067f59aa75407e46b6d6bf07ecceae295efd722a57b7cb2c419c1860a7aa589",
+      "height": 353,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 199,
+      "sample_id": "0199",
+      "path": "samples/00000199.npz",
+      "sha256": "81d443f17b4a6e5fc8b2af927ac43d3004a82a35599b0166f1982c11e05f406c",
+      "height": 377,
+      "width": 556,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 200,
+      "sample_id": "0200",
+      "path": "samples/00000200.npz",
+      "sha256": "40edaa09299e0051d5d459ffe65014d1e366c77a076d0e162859e16d85f56e77",
+      "height": 385,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 201,
+      "sample_id": "0201",
+      "path": "samples/00000201.npz",
+      "sha256": "b9aa4f2a9d5db56b1f35ab7a9f2bead1cc49959ef7a4497638ed0df8fa2e1132",
+      "height": 687,
+      "width": 1119,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 202,
+      "sample_id": "0202",
+      "path": "samples/00000202.npz",
+      "sha256": "8ce5b7ea78c3b5268efba5c6a1500833b05aaacedd1b984e6a7ff7865e1676b1",
+      "height": 690,
+      "width": 1122,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 203,
+      "sample_id": "0203",
+      "path": "samples/00000203.npz",
+      "sha256": "ef695df2367527cb5b9fdb3b6ed997a62c7f95c168da7eedb2ecae268b1b5c1a",
+      "height": 391,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 204,
+      "sample_id": "0204",
+      "path": "samples/00000204.npz",
+      "sha256": "769cbc61479e99e5316dd43665c74740c8a31dc4a6e0e348ba401d364e4b8592",
+      "height": 371,
+      "width": 425,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 205,
+      "sample_id": "0205",
+      "path": "samples/00000205.npz",
+      "sha256": "8c107e26a1328227bb11d0d6998f500ebd01e416f1237e0c380f521a64ea99eb",
+      "height": 381,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 206,
+      "sample_id": "0206",
+      "path": "samples/00000206.npz",
+      "sha256": "9696295c34a8438cf3227dd46ebaac74ea6a16633bffb162d1d9648aea7018b4",
+      "height": 296,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 207,
+      "sample_id": "0207",
+      "path": "samples/00000207.npz",
+      "sha256": "7d3edd11ad530c91d2e481535d8581995dcf83dca9449bd4ed5644eb6591a914",
+      "height": 302,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 208,
+      "sample_id": "0208",
+      "path": "samples/00000208.npz",
+      "sha256": "95aeb8e2f752300d66b118b205e711927cfaa78f0012daf39228d77cb2217a69",
+      "height": 772,
+      "width": 1119,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 209,
+      "sample_id": "0209",
+      "path": "samples/00000209.npz",
+      "sha256": "b7d195fb71e0afad52205ebc1296d47382dbf9b170afdcb6390a3f2b68c8a575",
+      "height": 772,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 210,
+      "sample_id": "0210",
+      "path": "samples/00000210.npz",
+      "sha256": "7da875f1672ab563609d4b91860be5c8aa8bdb2f5a88e211d85c000a8daed365",
+      "height": 771,
+      "width": 991,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 211,
+      "sample_id": "0211",
+      "path": "samples/00000211.npz",
+      "sha256": "3f7e677c0f64d811a498ed8621351b960fd517e1bdd42bc06d4ce94433c6f72c",
+      "height": 381,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 212,
+      "sample_id": "0212",
+      "path": "samples/00000212.npz",
+      "sha256": "1f52ab804bc5e035bc2348d8567aee1e10ac4ea96192766a57079203601c92e7",
+      "height": 390,
+      "width": 437,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 213,
+      "sample_id": "0213",
+      "path": "samples/00000213.npz",
+      "sha256": "c6399f9b6f57b1a8dc2174fa29121bade6f59069b860417be8d7e5182736c900",
+      "height": 399,
+      "width": 435,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 214,
+      "sample_id": "0214",
+      "path": "samples/00000214.npz",
+      "sha256": "4f41c421da9a7e24f0668e99f9bca9da96635ca28de8bd188194bb53756c3016",
+      "height": 398,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 215,
+      "sample_id": "0215",
+      "path": "samples/00000215.npz",
+      "sha256": "644efd0d3f012b4e1d1232757fbe8a18b708e0f620adf135f4cd4cf58a2d1232",
+      "height": 363,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 216,
+      "sample_id": "0216",
+      "path": "samples/00000216.npz",
+      "sha256": "02eba7920bc4f0beacff8d1e57b3675785107487ae3d49e906822ad4d87b9c0d",
+      "height": 711,
+      "width": 1214,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 217,
+      "sample_id": "0217",
+      "path": "samples/00000217.npz",
+      "sha256": "64b25b2f7184dddb133a39df2fe2ce78131545b1dd8e502ab84d3117210fcf39",
+      "height": 392,
+      "width": 345,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 218,
+      "sample_id": "0218",
+      "path": "samples/00000218.npz",
+      "sha256": "11692743b9c4de6e2d301739e6ff7cb4343bcadb0e698403be8613d51308f069",
+      "height": 371,
+      "width": 375,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 219,
+      "sample_id": "0219",
+      "path": "samples/00000219.npz",
+      "sha256": "043d89c73678fd9744aba22f3af37ea8f6d976e2e372afe6911bdb18e3be9f44",
+      "height": 369,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 220,
+      "sample_id": "0220",
+      "path": "samples/00000220.npz",
+      "sha256": "131b7baa4f1f448284ced9dee880f4a56716f899d7f8ebf703e7d0abc8e139e8",
+      "height": 389,
+      "width": 420,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 221,
+      "sample_id": "0221",
+      "path": "samples/00000221.npz",
+      "sha256": "a33996a1f6b5a7c707ecc6aa6493062ceeb9fad27a73e8d847975cb4be897ba8",
+      "height": 381,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 222,
+      "sample_id": "0222",
+      "path": "samples/00000222.npz",
+      "sha256": "ba6635ee78472d02a840a4d6d59130e02cbe6a9536bb081a1c0efd6c1fdc23af",
+      "height": 378,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 223,
+      "sample_id": "0223",
+      "path": "samples/00000223.npz",
+      "sha256": "bdb2a188a2c96424ffb0ae34f2ecf7a223d2c9b1ca2498057a7a939fd72da749",
+      "height": 378,
+      "width": 468,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 224,
+      "sample_id": "0224",
+      "path": "samples/00000224.npz",
+      "sha256": "c52a11fbb240ee863128cc24432f799060e1762da369e10e888940879fb7acd8",
+      "height": 366,
+      "width": 298,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 225,
+      "sample_id": "0225",
+      "path": "samples/00000225.npz",
+      "sha256": "e419fafe9cd760505d148eb264db337ca9704db5942ac5ee8af6ff6b35bbfc77",
+      "height": 380,
+      "width": 502,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 226,
+      "sample_id": "0226",
+      "path": "samples/00000226.npz",
+      "sha256": "5b0585a34bb7502dc9da782c4a7885563bebc409345ca0a44e3e1e63685ee99b",
+      "height": 334,
+      "width": 405,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 227,
+      "sample_id": "0227",
+      "path": "samples/00000227.npz",
+      "sha256": "37d8b300067158a7e4f9d32fd48b74debc288a5b1f5e29dea1775d32e65edde9",
+      "height": 741,
+      "width": 1127,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 228,
+      "sample_id": "0228",
+      "path": "samples/00000228.npz",
+      "sha256": "c743873dfaa578f047a2a2aaa4af205c5baff233d44168ab100c0a1fb6c4a065",
+      "height": 705,
+      "width": 871,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 229,
+      "sample_id": "0229",
+      "path": "samples/00000229.npz",
+      "sha256": "4f5cf7018fa30d00bea41bb92fae01a5d0f960888cb043a2c54f242833e668dc",
+      "height": 334,
+      "width": 411,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 230,
+      "sample_id": "0230",
+      "path": "samples/00000230.npz",
+      "sha256": "b6ed017875de5352baac183bf752b5c64bf91a245053b358c99eba06b3215dca",
+      "height": 349,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 231,
+      "sample_id": "0231",
+      "path": "samples/00000231.npz",
+      "sha256": "568a5770d156fa25fe96fa608befa2c3044c8e4f2cd6391b74a1901e9d03a61f",
+      "height": 771,
+      "width": 1128,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 232,
+      "sample_id": "0232",
+      "path": "samples/00000232.npz",
+      "sha256": "cf2011540c18f04fc67960602092804c2395e09a66d1c83f49fab819e2631b54",
+      "height": 348,
+      "width": 586,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 233,
+      "sample_id": "0233",
+      "path": "samples/00000233.npz",
+      "sha256": "ed0e71f55bf6306940083820b9d79bfd677b0e74be9b08be1d2a86d02fc48d2e",
+      "height": 329,
+      "width": 291,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 234,
+      "sample_id": "0234",
+      "path": "samples/00000234.npz",
+      "sha256": "8363123a482bdcd507b1cba79f97e082835c33cf12fff539e5779ad8e7bcaede",
+      "height": 624,
+      "width": 1035,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 235,
+      "sample_id": "0235",
+      "path": "samples/00000235.npz",
+      "sha256": "1745ad2faf9dd658e39e0380a2156d39ff3e16dd9a2ac774f8f3b2f33ac868d5",
+      "height": 376,
+      "width": 500,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 236,
+      "sample_id": "0236",
+      "path": "samples/00000236.npz",
+      "sha256": "cafe7579de1f8d4119ccac68dc9a85484fd4580fb8a96c01e7ef76cd6e633358",
+      "height": 673,
+      "width": 996,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 237,
+      "sample_id": "0237",
+      "path": "samples/00000237.npz",
+      "sha256": "e2aee9c74f68e5a43ec25dd2bf8d20bc88a9f777fbe56322a758fd9e829a4930",
+      "height": 673,
+      "width": 989,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 238,
+      "sample_id": "0238",
+      "path": "samples/00000238.npz",
+      "sha256": "4c6057fd3d6013d6ec8b231037fbf77777db1107609c9933ea9a538fa384b595",
+      "height": 772,
+      "width": 994,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 239,
+      "sample_id": "0239",
+      "path": "samples/00000239.npz",
+      "sha256": "2f80f4775e1745f2a83f9538c340c2fd0d266a6217c4da743cfb17e68ce43a49",
+      "height": 772,
+      "width": 986,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 240,
+      "sample_id": "0240",
+      "path": "samples/00000240.npz",
+      "sha256": "169af2fd89d8d5300be7da5169d868ec5068bf8c4c56a72d1323bbe380ea3190",
+      "height": 566,
+      "width": 627,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 241,
+      "sample_id": "0241",
+      "path": "samples/00000241.npz",
+      "sha256": "e07d916900cef235f79368b8da84a391d82863e0977e428ca1d0c2178175e286",
+      "height": 371,
+      "width": 377,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 242,
+      "sample_id": "0242",
+      "path": "samples/00000242.npz",
+      "sha256": "e34f52041ae13bae713003f7f1c7b710a3e33230409390d67ec10b962f15d41b",
+      "height": 329,
+      "width": 289,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 243,
+      "sample_id": "0243",
+      "path": "samples/00000243.npz",
+      "sha256": "3843b589ad72707dedca50ebbf72aa344e5cd0c95c8dbb046abc49bac47ac016",
+      "height": 327,
+      "width": 291,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 244,
+      "sample_id": "0244",
+      "path": "samples/00000244.npz",
+      "sha256": "356210fdb51e57f50797e643e0c66b44c77dfccc4f539a9b5f089f6261d13488",
+      "height": 400,
+      "width": 356,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 245,
+      "sample_id": "0245",
+      "path": "samples/00000245.npz",
+      "sha256": "2fb169e4b8c474320143bdb80451d5bc66bbfedb172c041224dbd5581a7958e8",
+      "height": 352,
+      "width": 438,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 246,
+      "sample_id": "0246",
+      "path": "samples/00000246.npz",
+      "sha256": "4df6ec58f5d27d89d58651a5279641a397b958d205c6c73ec435a2e4e9c2942c",
+      "height": 356,
+      "width": 435,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 247,
+      "sample_id": "0247",
+      "path": "samples/00000247.npz",
+      "sha256": "fe9a93a4676ebc2343dca41fa02137ac90f7e80961b68600f50c1c299cc5e967",
+      "height": 338,
+      "width": 414,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 248,
+      "sample_id": "0248",
+      "path": "samples/00000248.npz",
+      "sha256": "4b99fcfed8e66dfaf82c438c6d95642a45c02344703668c3a7ca3440bd9624e0",
+      "height": 336,
+      "width": 414,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 249,
+      "sample_id": "0249",
+      "path": "samples/00000249.npz",
+      "sha256": "d3daf8a4357282f2fc5f7c7ec9a69a3529225227fac1a312f91b403cde003e14",
+      "height": 706,
+      "width": 994,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 250,
+      "sample_id": "0250",
+      "path": "samples/00000250.npz",
+      "sha256": "1907b43313d4539892dcd220679addb684535f3181d22669795630f6bc9b1ae0",
+      "height": 329,
+      "width": 414,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 251,
+      "sample_id": "0251",
+      "path": "samples/00000251.npz",
+      "sha256": "9751b20d784d6a99f3beb8eb7a82eaaec0e0f498d6926e8294d9007ba0cb5385",
+      "height": 387,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 252,
+      "sample_id": "0252",
+      "path": "samples/00000252.npz",
+      "sha256": "c2e4c225e7a608ef1b0085373ae8a8fe58a1404a4af88818af27028b4fef3215",
+      "height": 340,
+      "width": 554,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 253,
+      "sample_id": "0253",
+      "path": "samples/00000253.npz",
+      "sha256": "8fe93b4f89a866603637d5b39ff601d85f44f9b5d9852a75e62c433060147739",
+      "height": 382,
+      "width": 470,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 254,
+      "sample_id": "0254",
+      "path": "samples/00000254.npz",
+      "sha256": "953432670147ffcf44a8cf91c13f2ae87d03e30c8b3a983990eec2f1931f0bc4",
+      "height": 381,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 255,
+      "sample_id": "0255",
+      "path": "samples/00000255.npz",
+      "sha256": "1cb70157e8db18d6d182b07cd1446d22f35b9de20759407e40d505dd4d198f44",
+      "height": 382,
+      "width": 420,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 256,
+      "sample_id": "0256",
+      "path": "samples/00000256.npz",
+      "sha256": "095d19e7f6ff8e1a83041e345e8db5ccc1cf08fab612b6087ace55d495395c1d",
+      "height": 383,
+      "width": 472,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 257,
+      "sample_id": "0257",
+      "path": "samples/00000257.npz",
+      "sha256": "54ade0c07c1648a181f982f7507133395cd6be745d38db6d941d726ef92f0d32",
+      "height": 381,
+      "width": 468,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 258,
+      "sample_id": "0258",
+      "path": "samples/00000258.npz",
+      "sha256": "a5be2ca4fca75bfaa6ef56b5150357e3e0f2dedf2e387fe4105b837a49a3ec04",
+      "height": 368,
+      "width": 469,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 259,
+      "sample_id": "0259",
+      "path": "samples/00000259.npz",
+      "sha256": "ab2158e372e226acd2faa8a30dc242e6f35a1cdbcc29525b5a56e482a492071a",
+      "height": 371,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 260,
+      "sample_id": "0260",
+      "path": "samples/00000260.npz",
+      "sha256": "15e4903be806839a9977bf8222364cf1a150949ce29a3bee7f8e504b9172eb5f",
+      "height": 372,
+      "width": 435,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 261,
+      "sample_id": "0261",
+      "path": "samples/00000261.npz",
+      "sha256": "9ca40b7d7829f03ea5b1dda482ecf14376b806f43d4bd6051a526598a8a00258",
+      "height": 524,
+      "width": 509,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 262,
+      "sample_id": "0262",
+      "path": "samples/00000262.npz",
+      "sha256": "8f95e4e2231ff2f3ae2473ef9d52a5685f42482165871e18091876b61599d2a2",
+      "height": 720,
+      "width": 994,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 263,
+      "sample_id": "0263",
+      "path": "samples/00000263.npz",
+      "sha256": "3a2ee3bf7af36d68b69914c0eec1d34d523db6e3e50652bf2fb00f1f696234e7",
+      "height": 345,
+      "width": 445,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 264,
+      "sample_id": "0264",
+      "path": "samples/00000264.npz",
+      "sha256": "b9e236ab48395d88ae614711b8ea7d99c2b755164fd09ca3561c1c4df93f14af",
+      "height": 338,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 265,
+      "sample_id": "0265",
+      "path": "samples/00000265.npz",
+      "sha256": "679959dff5e6fcee7f943a67157187e1690647981891bba0bceae42cc55af4db",
+      "height": 335,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 266,
+      "sample_id": "0266",
+      "path": "samples/00000266.npz",
+      "sha256": "0b6161939a913c90b0c20a569e7b2f5156d0b5712ce012a5cbf1c82f68293d44",
+      "height": 771,
+      "width": 885,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 267,
+      "sample_id": "0267",
+      "path": "samples/00000267.npz",
+      "sha256": "3526b64e27c6062d6eb75b8b963f488bf5030312800099de5acebb5614be7e48",
+      "height": 370,
+      "width": 532,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 268,
+      "sample_id": "0268",
+      "path": "samples/00000268.npz",
+      "sha256": "49bf440e5000b1891cf80d89e795c7acb8cc5523417c3042a22932b28cee7584",
+      "height": 400,
+      "width": 438,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 269,
+      "sample_id": "0269",
+      "path": "samples/00000269.npz",
+      "sha256": "e4d650e297545c02f66e3801fad7562cbcc7751a259dd9b743358a888ced00d6",
+      "height": 402,
+      "width": 439,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 270,
+      "sample_id": "0270",
+      "path": "samples/00000270.npz",
+      "sha256": "70b034291bf95df4b9b509ca5ccbc7ab2eaec1f573b00dba8e1b2b6db33edfd3",
+      "height": 391,
+      "width": 414,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 271,
+      "sample_id": "0271",
+      "path": "samples/00000271.npz",
+      "sha256": "837520c546c975bab72e9277ebf04c03afc1b7c80fb6ee1c00b4ba9a602ebdbf",
+      "height": 392,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 272,
+      "sample_id": "0272",
+      "path": "samples/00000272.npz",
+      "sha256": "af2e3f55c27a4e3b7521e1c77c8e6abcc73542f8fc1951f64dfa73cdf45e2859",
+      "height": 701,
+      "width": 871,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 273,
+      "sample_id": "0273",
+      "path": "samples/00000273.npz",
+      "sha256": "5e97bdcdf67b98c1fd51a1967b8a2a009b5aae72c5afc9592d41509d5139626c",
+      "height": 760,
+      "width": 986,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 274,
+      "sample_id": "0274",
+      "path": "samples/00000274.npz",
+      "sha256": "a867e05f1b8abc64281121c95fe633b7a346761d58a4fcf4a9fe461df20cf04e",
+      "height": 394,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 275,
+      "sample_id": "0275",
+      "path": "samples/00000275.npz",
+      "sha256": "c4a24be86a7428a0380967ac5ae58d10e1c72193f4725aba9fa8bc976c4519ac",
+      "height": 316,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 276,
+      "sample_id": "0276",
+      "path": "samples/00000276.npz",
+      "sha256": "f6ea330b5872ad8aaa0142cd68b556c9b7b56f3f0839a9741bff9de51bcc8f44",
+      "height": 364,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 277,
+      "sample_id": "0277",
+      "path": "samples/00000277.npz",
+      "sha256": "8a60f055a8a3f907ef693a443e8bc450e3edd908c8a20d34bab78b726108b662",
+      "height": 367,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 278,
+      "sample_id": "0278",
+      "path": "samples/00000278.npz",
+      "sha256": "c0a9e86688fc8ec255d7fa1b0068ab46e355e06bc871ceb0586b780e4aaec49e",
+      "height": 353,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 279,
+      "sample_id": "0279",
+      "path": "samples/00000279.npz",
+      "sha256": "eee150902ff8528ea9a8bf1367dfbc18d31da7493b367a114bdcef07d30415bb",
+      "height": 368,
+      "width": 340,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 280,
+      "sample_id": "0280",
+      "path": "samples/00000280.npz",
+      "sha256": "7164ed78f0b45bdaf258063d91e2442ee562c386bbb12d46305ebb16fc144164",
+      "height": 369,
+      "width": 341,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 281,
+      "sample_id": "0281",
+      "path": "samples/00000281.npz",
+      "sha256": "158d682c0cc3fddcf8a158382a515dadf2841baa673e9e6f05be8eebc6c67930",
+      "height": 357,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 282,
+      "sample_id": "0282",
+      "path": "samples/00000282.npz",
+      "sha256": "1353ffc17bb07ed371095c51d43b266e363401f6ec062dc365033f03c823aae6",
+      "height": 344,
+      "width": 431,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 283,
+      "sample_id": "0283",
+      "path": "samples/00000283.npz",
+      "sha256": "bf1a3d71491841b732e3b5a1f1d411341f9d44415020f96858372a6c05972550",
+      "height": 355,
+      "width": 480,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 284,
+      "sample_id": "0284",
+      "path": "samples/00000284.npz",
+      "sha256": "20a874129b26c901d78d4eadda8f219b65f93060da1f2d1bc2d82dee7b1e01bb",
+      "height": 361,
+      "width": 411,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 285,
+      "sample_id": "0285",
+      "path": "samples/00000285.npz",
+      "sha256": "2b5911807fd18aa748f73fb7fe61d0ceee8ed02d2fcd0cf4483f4eac9a5afa4b",
+      "height": 374,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 286,
+      "sample_id": "0286",
+      "path": "samples/00000286.npz",
+      "sha256": "bee19924dfae568a21c5b4507cbf1738ad07b589401caabaae2ea5624d9e48a1",
+      "height": 377,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 287,
+      "sample_id": "0287",
+      "path": "samples/00000287.npz",
+      "sha256": "866aa221f6eb32a13f3f1a317427739082e3fc6f89a7cf674a415b728fd0d643",
+      "height": 382,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 288,
+      "sample_id": "0288",
+      "path": "samples/00000288.npz",
+      "sha256": "8147deb7024c36c14f72ffeb2b1d3eada688714911c06066b255d35c222de948",
+      "height": 389,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 289,
+      "sample_id": "0289",
+      "path": "samples/00000289.npz",
+      "sha256": "0304281d32013e36cdc0b8a5ec4b3fbc21157c49e966a1b05756b278325ff418",
+      "height": 392,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 290,
+      "sample_id": "0290",
+      "path": "samples/00000290.npz",
+      "sha256": "d51c0399950c18c3223f48a48a18f0569aa83c8b7ea3489e7451da515334e28f",
+      "height": 371,
+      "width": 478,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 291,
+      "sample_id": "0291",
+      "path": "samples/00000291.npz",
+      "sha256": "58b22e1944b3009b4b5e73c7587dad456335184bd89b89b571dae2754e3d2cc4",
+      "height": 370,
+      "width": 478,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 292,
+      "sample_id": "0292",
+      "path": "samples/00000292.npz",
+      "sha256": "c6dd261a3c02343a1c8b5efb00f61c4b0848b2e9411dc0fcf1e0fdf7e9f4aaf3",
+      "height": 531,
+      "width": 624,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 293,
+      "sample_id": "0293",
+      "path": "samples/00000293.npz",
+      "sha256": "2ec3186cc238b92af6815ce04a98ede660ae30316b7e20affb8560c272a15b1f",
+      "height": 388,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 294,
+      "sample_id": "0294",
+      "path": "samples/00000294.npz",
+      "sha256": "c7488eef950b323c566c7e4427303c5e73b0c5385f05202ffea1bdf1baae66bc",
+      "height": 624,
+      "width": 874,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 295,
+      "sample_id": "0295",
+      "path": "samples/00000295.npz",
+      "sha256": "2837253f4eb050448029f7391b01ff8eb1675300b856bbba1a2a7198ed4b6c70",
+      "height": 736,
+      "width": 1114,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 296,
+      "sample_id": "0296",
+      "path": "samples/00000296.npz",
+      "sha256": "c9e9946a83644dfad3ae2dec53320f801d5e64ceb1f06f07cde140fa0e3a0671",
+      "height": 372,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 297,
+      "sample_id": "0297",
+      "path": "samples/00000297.npz",
+      "sha256": "e259f965caa69b70e9b239b7198cbf50018612102f15c6dc3c0767663ab8f238",
+      "height": 354,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 298,
+      "sample_id": "0298",
+      "path": "samples/00000298.npz",
+      "sha256": "30f2a0eb1b428e8dd0d01e1bb80c455b87c659f4f370c74967f603de39d12ecc",
+      "height": 384,
+      "width": 407,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 299,
+      "sample_id": "0299",
+      "path": "samples/00000299.npz",
+      "sha256": "f15ff6d8724d405226453620625977b8786dd96cfa0a8fe55676e7b60f4b06f1",
+      "height": 624,
+      "width": 860,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 300,
+      "sample_id": "0300",
+      "path": "samples/00000300.npz",
+      "sha256": "0f916fe4338d5a5c9c203a36bf5e8116caa4caec2e6135716f5d0a78a22ea2be",
+      "height": 377,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 301,
+      "sample_id": "0301",
+      "path": "samples/00000301.npz",
+      "sha256": "9dba5f960e1169f82d67d1381befac491b0e16781b0b5abd923607050a94b25e",
+      "height": 725,
+      "width": 980,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 302,
+      "sample_id": "0302",
+      "path": "samples/00000302.npz",
+      "sha256": "20169eb58b8868f15f2b4f0d78305c786ad043fe3d8b2e3dab98256c3b0b2e00",
+      "height": 399,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 303,
+      "sample_id": "0303",
+      "path": "samples/00000303.npz",
+      "sha256": "29aa42091f8a14caef5a7c5c343ab97bb58b472a3235ff77fb7948080a0e8104",
+      "height": 373,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 304,
+      "sample_id": "0304",
+      "path": "samples/00000304.npz",
+      "sha256": "251cdef3528bf76479e3a1176362c8c646cdf93f297883bfaa6bdda368e353c0",
+      "height": 705,
+      "width": 710,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 305,
+      "sample_id": "0305",
+      "path": "samples/00000305.npz",
+      "sha256": "d3caa4b71d15cd65245344d78224dcafca2aaf4589c1c7eacd8e9b575b340a3b",
+      "height": 343,
+      "width": 543,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 306,
+      "sample_id": "0306",
+      "path": "samples/00000306.npz",
+      "sha256": "770069b062471a66836c6c53e4adf9f33ef477bd22959f661fc4bd067eb2e09a",
+      "height": 722,
+      "width": 1312,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 307,
+      "sample_id": "0307",
+      "path": "samples/00000307.npz",
+      "sha256": "145d36722cddfb4d24ed6878d0988788c09f2e2b6db1d41521605f9503f73dec",
+      "height": 772,
+      "width": 885,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 308,
+      "sample_id": "0308",
+      "path": "samples/00000308.npz",
+      "sha256": "9760df1cbd2872abb93b5a99ba4159e55b88153ae69d4e391449f2ee474aa98d",
+      "height": 380,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 309,
+      "sample_id": "0309",
+      "path": "samples/00000309.npz",
+      "sha256": "8caaac0a61eabb9c3e13afa1613fde718b0caf15f712bbea1d2d610345f8bb70",
+      "height": 378,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 310,
+      "sample_id": "0310",
+      "path": "samples/00000310.npz",
+      "sha256": "3cfe85abcc46b3c8f2199eb9d7dbd789d95b7adddbcb09b70acb92122606b474",
+      "height": 374,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 311,
+      "sample_id": "0311",
+      "path": "samples/00000311.npz",
+      "sha256": "1f0e1a41c91980e66bfea1c7fe8078f1b1f6833e0657062d024f917526db1f60",
+      "height": 380,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 312,
+      "sample_id": "0312",
+      "path": "samples/00000312.npz",
+      "sha256": "94f2e4f874410a1e381eb2f46160e02f0dc1c424e35bb229dc8ab5926d97e38d",
+      "height": 736,
+      "width": 1272,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 313,
+      "sample_id": "0313",
+      "path": "samples/00000313.npz",
+      "sha256": "f398d378e6860041b5dfce2f7281710de66fdbe2db46bca3062271a1fb6e28f4",
+      "height": 359,
+      "width": 403,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 314,
+      "sample_id": "0314",
+      "path": "samples/00000314.npz",
+      "sha256": "55e0acb31f70df555bbac8124a9a17945227dd0ce7ae08ab98885153a9c1b6eb",
+      "height": 381,
+      "width": 320,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 315,
+      "sample_id": "0315",
+      "path": "samples/00000315.npz",
+      "sha256": "28019a595102a52bbfb65b124165851a6ef74d5bd897ff27a4411c3a82164061",
+      "height": 347,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 316,
+      "sample_id": "0316",
+      "path": "samples/00000316.npz",
+      "sha256": "df6daf81b644e0edeaaa6f19703ac3e53cc56edd513d18d4028f2a38280a7e42",
+      "height": 387,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 317,
+      "sample_id": "0317",
+      "path": "samples/00000317.npz",
+      "sha256": "81fd45ad4c19b9ee747d819ba0ed3f8fdadbb7ea7f75bb43997d8d48e72f8a3d",
+      "height": 594,
+      "width": 983,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 318,
+      "sample_id": "0318",
+      "path": "samples/00000318.npz",
+      "sha256": "14e6e0ad5bf5a9a7c9794e59cd4cf676f458e08a485c0ada10a8ebd8262e7944",
+      "height": 709,
+      "width": 986,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 319,
+      "sample_id": "0319",
+      "path": "samples/00000319.npz",
+      "sha256": "600f1e7720c2b80b52a0b77b360e7e797c23cae349f85b54fd87da14107eb4a6",
+      "height": 326,
+      "width": 471,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 320,
+      "sample_id": "0320",
+      "path": "samples/00000320.npz",
+      "sha256": "e24fbbb46728fc24e9f5eaa7d24ea6c66226be7d9cf7887fd7484504c117ef46",
+      "height": 378,
+      "width": 530,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 321,
+      "sample_id": "0321",
+      "path": "samples/00000321.npz",
+      "sha256": "c76d24baad8c67d2c1a4dceeaf61996f192de02b6fab05e6655e7d18aa303a89",
+      "height": 730,
+      "width": 980,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 322,
+      "sample_id": "0322",
+      "path": "samples/00000322.npz",
+      "sha256": "d49d134f60a2d0cc06019d6aeae54060a7555b599e99274820d96d75a4a12213",
+      "height": 744,
+      "width": 974,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 323,
+      "sample_id": "0323",
+      "path": "samples/00000323.npz",
+      "sha256": "1d851a5be4ce960e399f28e82aa1f81bc4e11b6890aed0cf8fa117008a9d0762",
+      "height": 711,
+      "width": 989,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 324,
+      "sample_id": "0324",
+      "path": "samples/00000324.npz",
+      "sha256": "f19547806a6c21a74b399fef7523387667cebb7f47024eb6f5fd25f31e1e5979",
+      "height": 719,
+      "width": 980,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 325,
+      "sample_id": "0325",
+      "path": "samples/00000325.npz",
+      "sha256": "ae8d8e3cb5a01f13d1a50496fb066909c7838a8b0243a754c8ae4364ddc21da8",
+      "height": 373,
+      "width": 371,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 326,
+      "sample_id": "0326",
+      "path": "samples/00000326.npz",
+      "sha256": "c28e912244edeb0d6b404bc0fe45abf3f70a725ef2456f2f451f3a9dba5ea0af",
+      "height": 378,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 327,
+      "sample_id": "0327",
+      "path": "samples/00000327.npz",
+      "sha256": "eb8cde885629b10a976a16dcbffc4dc847efe21f0a84248cdcd3bda8688380c3",
+      "height": 298,
+      "width": 380,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 328,
+      "sample_id": "0328",
+      "path": "samples/00000328.npz",
+      "sha256": "826d9ef1b5f65b462b55bc982fd4b7e4aab326713795f61f10f556d3eebb1f3a",
+      "height": 358,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 329,
+      "sample_id": "0329",
+      "path": "samples/00000329.npz",
+      "sha256": "3fc329ee8ef3a19b5ea256bfd94e4e4af4ca2f0dc823a56a2a50566447db884e",
+      "height": 744,
+      "width": 1127,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 330,
+      "sample_id": "0330",
+      "path": "samples/00000330.npz",
+      "sha256": "a85e7520c29b757f8939893186e54e8209f75d0d64766a88ef5d663db2733b1d",
+      "height": 744,
+      "width": 879,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 331,
+      "sample_id": "0331",
+      "path": "samples/00000331.npz",
+      "sha256": "01194a87a6eb9ac601025602e3caf0be07fcb0c0bc12409fea03db3cd3fa9e26",
+      "height": 375,
+      "width": 386,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 332,
+      "sample_id": "0332",
+      "path": "samples/00000332.npz",
+      "sha256": "a92ac230c33dd4cf2a0edb8b09a27c74875a1514f65cf7ec3e7d3797cd3ed429",
+      "height": 360,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 333,
+      "sample_id": "0333",
+      "path": "samples/00000333.npz",
+      "sha256": "41421f991dcfbbe0586161b1327d3d6eeaecca24e18da1fddb29494e4ecb1e14",
+      "height": 376,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 334,
+      "sample_id": "0334",
+      "path": "samples/00000334.npz",
+      "sha256": "851ab356b046541bef599086cf0ac95600e7c87baaa5bd96d079d1269daddc70",
+      "height": 372,
+      "width": 371,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 335,
+      "sample_id": "0335",
+      "path": "samples/00000335.npz",
+      "sha256": "04c9b62494df32c92f01507ca871d098c354419dee647b6a0aee570a9b9cfed1",
+      "height": 397,
+      "width": 481,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 336,
+      "sample_id": "0336",
+      "path": "samples/00000336.npz",
+      "sha256": "9f08be47a822f2796b7db94da0345a85f9348da5363e3af2e2e240420f5ae266",
+      "height": 382,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 337,
+      "sample_id": "0337",
+      "path": "samples/00000337.npz",
+      "sha256": "1bc7089af5e1d95270699e200f6d612faed7bff0ad4ffaaa0c4af3b7a1e5dd99",
+      "height": 388,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 338,
+      "sample_id": "0338",
+      "path": "samples/00000338.npz",
+      "sha256": "e237ebb3dda57d4ed9aaa5ddd9bbafc74d4c271fc151abf84d18a6017dc2fa0d",
+      "height": 336,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 339,
+      "sample_id": "0339",
+      "path": "samples/00000339.npz",
+      "sha256": "08e4892602f9b31b17122c2331d1338822274b689cf85c26211eb0c3110cb1a4",
+      "height": 386,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 340,
+      "sample_id": "0340",
+      "path": "samples/00000340.npz",
+      "sha256": "1250e1aee74248932a3ea304764d7161fa44d53c98975717061f4c5c9ff5d040",
+      "height": 716,
+      "width": 1152,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 341,
+      "sample_id": "0341",
+      "path": "samples/00000341.npz",
+      "sha256": "b6f6ff80374e4116b3188f3a61790dddc53a6722c4273d0a29d1667ebb14bc5e",
+      "height": 695,
+      "width": 1168,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 342,
+      "sample_id": "0342",
+      "path": "samples/00000342.npz",
+      "sha256": "79a44096cf6670b221cea9dd4372ce5e831e0c2981af083392a71dae54b635a4",
+      "height": 376,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 343,
+      "sample_id": "0343",
+      "path": "samples/00000343.npz",
+      "sha256": "d53d0e169d8efab57da66afe115aa2fc82e9c8bc03f99d46c438628cc66e9fe2",
+      "height": 336,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 344,
+      "sample_id": "0344",
+      "path": "samples/00000344.npz",
+      "sha256": "5e6e1465f341cb3f2d7c9c181b84d5601da6d9e39a031551eeb0c0d161027658",
+      "height": 368,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 345,
+      "sample_id": "0345",
+      "path": "samples/00000345.npz",
+      "sha256": "0da764bf953435626d9074b6e04ca0feb756b21c54e9f8fc47781d84741971f1",
+      "height": 534,
+      "width": 659,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 346,
+      "sample_id": "0346",
+      "path": "samples/00000346.npz",
+      "sha256": "419d08cae726f1b4302ff3cbe859abbbcdb7c5704c6a15360614e2d690f7872f",
+      "height": 747,
+      "width": 1100,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 347,
+      "sample_id": "0347",
+      "path": "samples/00000347.npz",
+      "sha256": "2b6f69ea8ba4a1420ef4e8eef9b533a0dd892b2afbff97f9defdc180b5ed5814",
+      "height": 346,
+      "width": 418,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 348,
+      "sample_id": "0348",
+      "path": "samples/00000348.npz",
+      "sha256": "041479ca7c07d15778992d129c0477ef37bf54bf2335452659e43d3e200d2e2c",
+      "height": 618,
+      "width": 989,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 349,
+      "sample_id": "0349",
+      "path": "samples/00000349.npz",
+      "sha256": "089a5ca0dd18105dad497ae818769a152774796d5ecf60a061913ca1a8fb48f0",
+      "height": 661,
+      "width": 980,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 350,
+      "sample_id": "0350",
+      "path": "samples/00000350.npz",
+      "sha256": "6b0127ab6905e4db732cbbf0d01ff49560e3c1ba9697c08233018f245dec425a",
+      "height": 385,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 351,
+      "sample_id": "0351",
+      "path": "samples/00000351.npz",
+      "sha256": "d3420d5445eb710901e76f93a02e2294116e11e7a19712d2a02cba4bc238b710",
+      "height": 366,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 352,
+      "sample_id": "0352",
+      "path": "samples/00000352.npz",
+      "sha256": "1ec73e1217377e14f43eeb502d188d39b4e88c4bcb7e9b48598e1e0ff4ac09e6",
+      "height": 313,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 353,
+      "sample_id": "0353",
+      "path": "samples/00000353.npz",
+      "sha256": "3d119f40457848f520618b180921c140108a93296824bd5a22b2a8babc369dca",
+      "height": 335,
+      "width": 479,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 354,
+      "sample_id": "0354",
+      "path": "samples/00000354.npz",
+      "sha256": "1b81f74e914d292c434657684e36fbf7710540209df6d715c2b4623fb6e50b1a",
+      "height": 318,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 355,
+      "sample_id": "0355",
+      "path": "samples/00000355.npz",
+      "sha256": "cbeaa4442b84a17189bf6cbd009bb47ef13d1dffe80cffb8ed0d9ab39b0bd8ea",
+      "height": 318,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 356,
+      "sample_id": "0356",
+      "path": "samples/00000356.npz",
+      "sha256": "916c290a4b665141c6c0afb2e9c54e7d9a42f11864886bf000dce6dbf90838ef",
+      "height": 389,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 357,
+      "sample_id": "0357",
+      "path": "samples/00000357.npz",
+      "sha256": "4672cd53d8db597b2c0dc9919df8fb9d1d64989db96afa9cf3da94569fe8a5df",
+      "height": 315,
+      "width": 287,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 358,
+      "sample_id": "0358",
+      "path": "samples/00000358.npz",
+      "sha256": "3c897963822327e0ecbe1856a81a3fb1504974e9cd542f2d8609646dbe02ee81",
+      "height": 295,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 359,
+      "sample_id": "0359",
+      "path": "samples/00000359.npz",
+      "sha256": "98c879094980b5b91365b63a6368d63559324ce9017bf3623a1ba256d0995a0e",
+      "height": 357,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 360,
+      "sample_id": "0360",
+      "path": "samples/00000360.npz",
+      "sha256": "6bb413b60f5f14909b9b744c074fcbd783d9a71566c5c007d60641a76e0d1c6e",
+      "height": 512,
+      "width": 715,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 361,
+      "sample_id": "0361",
+      "path": "samples/00000361.npz",
+      "sha256": "9a42dfa3e1dc0efc031b970dbea428892f99464758a3cef885c7ea83e3eca789",
+      "height": 355,
+      "width": 401,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 362,
+      "sample_id": "0362",
+      "path": "samples/00000362.npz",
+      "sha256": "486834663f54cb1d08a63de626b85bd1258335aed924d46fa27aead3e2450f70",
+      "height": 362,
+      "width": 406,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 363,
+      "sample_id": "0363",
+      "path": "samples/00000363.npz",
+      "sha256": "c4154cc530a9d32bca3a9aa49400072ee35243cfee4311c8c0699e4cbd4694c6",
+      "height": 722,
+      "width": 1244,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 364,
+      "sample_id": "0364",
+      "path": "samples/00000364.npz",
+      "sha256": "e89e1c74bea8f563b58437a860c72afd7938245125b74d1f7ded1af9490fc0fd",
+      "height": 391,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 365,
+      "sample_id": "0365",
+      "path": "samples/00000365.npz",
+      "sha256": "9cc4a3841d63461f6cc627f59f375c9771046ee0da15fd364985eabb506eef2d",
+      "height": 289,
+      "width": 255,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 366,
+      "sample_id": "0366",
+      "path": "samples/00000366.npz",
+      "sha256": "ff7edbf1ddd0ef319734b08a869825c5791ca85b0ba1972ec2f43638850dd3c6",
+      "height": 360,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 367,
+      "sample_id": "0367",
+      "path": "samples/00000367.npz",
+      "sha256": "7dd142fcfa14deb7f8a488e0a851f3b9bc9a73b1acec3b569c99797d0b9aed54",
+      "height": 382,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 368,
+      "sample_id": "0368",
+      "path": "samples/00000368.npz",
+      "sha256": "7e14e06eb5c562600cf85b5e2966ca78ca97a6c0faf240b7b848a71c8ee3db74",
+      "height": 385,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 369,
+      "sample_id": "0369",
+      "path": "samples/00000369.npz",
+      "sha256": "d6761ae77e59b3aa12fe0846d08f71d2a00c22e488511af7d8a7ed867ea452c3",
+      "height": 374,
+      "width": 555,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 370,
+      "sample_id": "0370",
+      "path": "samples/00000370.npz",
+      "sha256": "8ae35bb74678b9866fe7b8bd2b50a36c9200b46d72c062e70c476b884ccdce41",
+      "height": 381,
+      "width": 555,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 371,
+      "sample_id": "0371",
+      "path": "samples/00000371.npz",
+      "sha256": "12ff0b5f9d0827112898a224e3bcd1cabda596d262da60aa4f3fd2503d56a1dd",
+      "height": 377,
+      "width": 468,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 372,
+      "sample_id": "0372",
+      "path": "samples/00000372.npz",
+      "sha256": "e1b70b20fc4caf8a16940457e2b8b85ad23c1ac4dcd4f65a7b4551f8858788bc",
+      "height": 321,
+      "width": 291,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 373,
+      "sample_id": "0373",
+      "path": "samples/00000373.npz",
+      "sha256": "55c3f553f8b07994da610c70f2f8be50317d243af79224c0bc8805cb78547adb",
+      "height": 365,
+      "width": 451,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 374,
+      "sample_id": "0374",
+      "path": "samples/00000374.npz",
+      "sha256": "e0b103cb7834e422c2300d15ba01fcdae9de9e4ac6f98cacd57ffe6e62e09b43",
+      "height": 366,
+      "width": 450,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 375,
+      "sample_id": "0375",
+      "path": "samples/00000375.npz",
+      "sha256": "19a06ba0b13895812545f0da3bb3f8629f4f259f3218bcfa9b6c585d3b3f9ddc",
+      "height": 678,
+      "width": 656,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 376,
+      "sample_id": "0376",
+      "path": "samples/00000376.npz",
+      "sha256": "ab05a8a76216dab7ec7482b5a50cf9e1a6f2fc89a4f494dc2e365a374af27391",
+      "height": 337,
+      "width": 486,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 377,
+      "sample_id": "0377",
+      "path": "samples/00000377.npz",
+      "sha256": "841acfcb91fe74a22d1dc36e0a3215969123d07bb61c74a1d8b5c4cf0cfeef83",
+      "height": 398,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 378,
+      "sample_id": "0378",
+      "path": "samples/00000378.npz",
+      "sha256": "5e0c87f256edb8e51755ec9edd2bb2019dc29b4f71df879c8ac66e44d6cd5951",
+      "height": 309,
+      "width": 513,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 379,
+      "sample_id": "0379",
+      "path": "samples/00000379.npz",
+      "sha256": "fbd4a87d7c90c4859789b07e7ed4a5722f9cdfd71daf3d513409d43d04e8b399",
+      "height": 372,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 380,
+      "sample_id": "0380",
+      "path": "samples/00000380.npz",
+      "sha256": "5d3b1f53f9f34206aaa02301e648870154ff50b831342d55bf71a963db9bcc0e",
+      "height": 378,
+      "width": 428,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 381,
+      "sample_id": "0381",
+      "path": "samples/00000381.npz",
+      "sha256": "805f0de2d8da3b6e466add5aafb72b8fe234236c600f81be4e5f2b327745b7ed",
+      "height": 378,
+      "width": 425,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 382,
+      "sample_id": "0382",
+      "path": "samples/00000382.npz",
+      "sha256": "95a563411f61464c2a8e30c1ccbb2a4f5b4cdf45dcec8ee2d830dc1b529d41a3",
+      "height": 585,
+      "width": 788,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 383,
+      "sample_id": "0383",
+      "path": "samples/00000383.npz",
+      "sha256": "0780aef0c08ac7708b0c71cbfb43d03bf6c487a5db3414c8a7be1e246b9ff73f",
+      "height": 643,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 384,
+      "sample_id": "0384",
+      "path": "samples/00000384.npz",
+      "sha256": "43c334f0c70c6c39318357a2196b011b3f2b29ca462d7f910c4117f38da03992",
+      "height": 371,
+      "width": 500,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 385,
+      "sample_id": "0385",
+      "path": "samples/00000385.npz",
+      "sha256": "547e38b43785bbbf3c06090f6cb06ed5e1868a295086233a929b1f43d60ca782",
+      "height": 746,
+      "width": 1283,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 386,
+      "sample_id": "0386",
+      "path": "samples/00000386.npz",
+      "sha256": "d08ed5e32c5a48acd61abbe2d6ab1d2eb50d8648a83b5c3799a4edd201719c86",
+      "height": 730,
+      "width": 1237,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 387,
+      "sample_id": "0387",
+      "path": "samples/00000387.npz",
+      "sha256": "266eadea3dae29b5f382030b70728ceb9ca3c8cb3236976f62ed1407d4a7e5ad",
+      "height": 704,
+      "width": 878,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 388,
+      "sample_id": "0388",
+      "path": "samples/00000388.npz",
+      "sha256": "95a7f959a26b66075b363c408625d370fe68161ebbafdd7f9f63ce97b0b0c259",
+      "height": 382,
+      "width": 479,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 389,
+      "sample_id": "0389",
+      "path": "samples/00000389.npz",
+      "sha256": "1a0e67e332b7911d3b6108b9d3345caeaf0e1877df7b4852971682acd6a847e9",
+      "height": 387,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 390,
+      "sample_id": "0390",
+      "path": "samples/00000390.npz",
+      "sha256": "4db723e7c353ca04c9ce245edaf84bd211e0de346555791e5f63cbf337b84b97",
+      "height": 340,
+      "width": 411,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 391,
+      "sample_id": "0391",
+      "path": "samples/00000391.npz",
+      "sha256": "3f015837b298b675124fafded665b9a9e295b07f75a981da8861055627aad0ee",
+      "height": 721,
+      "width": 1098,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 392,
+      "sample_id": "0392",
+      "path": "samples/00000392.npz",
+      "sha256": "138b9d878013594bfa639bc63f848712332c37590918997ebaba8b30a1f43a2b",
+      "height": 726,
+      "width": 1095,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 393,
+      "sample_id": "0393",
+      "path": "samples/00000393.npz",
+      "sha256": "aa7bde1a0a766eadbdade2d2e43000b278be7eac20103ca593a1ed299d01f4dd",
+      "height": 319,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 394,
+      "sample_id": "0394",
+      "path": "samples/00000394.npz",
+      "sha256": "5d7e2b78bce20146e4fa22049fc0b295254bfdd8267bc068bede504412af262e",
+      "height": 313,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 395,
+      "sample_id": "0395",
+      "path": "samples/00000395.npz",
+      "sha256": "8646e1ecd67fe1eac01c632793ce945ee80f9585937faf6498badac7c0227d84",
+      "height": 352,
+      "width": 480,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 396,
+      "sample_id": "0396",
+      "path": "samples/00000396.npz",
+      "sha256": "86d4a3a7481168f20ba47c9b0734963a163f9d365e116b228d908aef5fda3a74",
+      "height": 357,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 397,
+      "sample_id": "0397",
+      "path": "samples/00000397.npz",
+      "sha256": "bbed37b4d962e05b650fad0912d335484adf2abb6d26e142fba5014617a063b2",
+      "height": 741,
+      "width": 984,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 398,
+      "sample_id": "0398",
+      "path": "samples/00000398.npz",
+      "sha256": "0e9cd52d6c571b4866059202922300d8eb88512b6d67068de16e4dd2479b9fb2",
+      "height": 731,
+      "width": 979,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 399,
+      "sample_id": "0399",
+      "path": "samples/00000399.npz",
+      "sha256": "c3ae1f3d0058dbc61da17d413355a0513633173f6a0a534d5557f3b8a548c2ee",
+      "height": 326,
+      "width": 410,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 400,
+      "sample_id": "0400",
+      "path": "samples/00000400.npz",
+      "sha256": "cfe19599571d0e85befda9121cfa431153366d3d293c383563312ab8d68969cf",
+      "height": 762,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 401,
+      "sample_id": "0401",
+      "path": "samples/00000401.npz",
+      "sha256": "9478433cff18aa55f565cdbfea45485ed71ed0c018035e71a3bccc541c3d7fcc",
+      "height": 373,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 402,
+      "sample_id": "0402",
+      "path": "samples/00000402.npz",
+      "sha256": "d371c3b5d279a4fea2089a4c0bac22f28ab4750b1d1b4ef5cdda4641ce6df4b8",
+      "height": 314,
+      "width": 477,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 403,
+      "sample_id": "0403",
+      "path": "samples/00000403.npz",
+      "sha256": "3007e4a469023b03df2ef088a13f01867d7cd4bb1d666fbe203cbe8c7330e029",
+      "height": 353,
+      "width": 480,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 404,
+      "sample_id": "0404",
+      "path": "samples/00000404.npz",
+      "sha256": "1169bf793f0b90784c58db8abb4359796950dd40290514f97f0a8136f3a8795f",
+      "height": 346,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 405,
+      "sample_id": "0405",
+      "path": "samples/00000405.npz",
+      "sha256": "11b3ddfbfc41680628c4ae1acb9d88849d5234c6807babab0be94ef9d26c113a",
+      "height": 376,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 406,
+      "sample_id": "0406",
+      "path": "samples/00000406.npz",
+      "sha256": "200fb1e65fe0c734e8a2d11c73970e30368e99cbbdc151cb236f580a8c5910b8",
+      "height": 376,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 407,
+      "sample_id": "0407",
+      "path": "samples/00000407.npz",
+      "sha256": "f40a76f17d09f8a9c5bbbbff7e901244d5fddc3d54c5a2023642f826cc6c3794",
+      "height": 389,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 408,
+      "sample_id": "0408",
+      "path": "samples/00000408.npz",
+      "sha256": "a9fb20f71dd894a4c1deb4c19b9b425b9ace43e6b9e6039304dad4ac2f8b1d6a",
+      "height": 730,
+      "width": 1247,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 409,
+      "sample_id": "0409",
+      "path": "samples/00000409.npz",
+      "sha256": "e64d3f4c7c545f83e2cd5b74229aaae725a3b9af6cf4a1b220f79eff6a33d728",
+      "height": 374,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 410,
+      "sample_id": "0410",
+      "path": "samples/00000410.npz",
+      "sha256": "8c0f788db48bf14759d77382b6a7bb6dfa080f3dab95f22cbb7bb4e8c34d4f10",
+      "height": 352,
+      "width": 517,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 411,
+      "sample_id": "0411",
+      "path": "samples/00000411.npz",
+      "sha256": "39d8631daf10e72aa1298a2f0194cc59be65e4999396fa6c89d0b48207668cae",
+      "height": 704,
+      "width": 991,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 412,
+      "sample_id": "0412",
+      "path": "samples/00000412.npz",
+      "sha256": "975f5575500ba646c865dc726f255424f39fcd75f369d9ca1254152999ea6344",
+      "height": 727,
+      "width": 988,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 413,
+      "sample_id": "0413",
+      "path": "samples/00000413.npz",
+      "sha256": "098381521811e652fe1985ef229fbde2f8d7ecd8dd4ea23113c0a13249f88fe6",
+      "height": 534,
+      "width": 629,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 414,
+      "sample_id": "0414",
+      "path": "samples/00000414.npz",
+      "sha256": "5c3d1fcaf649c16e01197c13ece9aac7fe4f1c82e89cae345e580373ea6d14e4",
+      "height": 740,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 415,
+      "sample_id": "0415",
+      "path": "samples/00000415.npz",
+      "sha256": "a66ce11a5e0d56cdec08c26056f026ef8cb818fe3ae6d701567508dd31549eab",
+      "height": 691,
+      "width": 995,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 416,
+      "sample_id": "0416",
+      "path": "samples/00000416.npz",
+      "sha256": "e923027c2f3b966add5801651a3076f487289523f804461deeb813a6a019298d",
+      "height": 332,
+      "width": 508,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 417,
+      "sample_id": "0417",
+      "path": "samples/00000417.npz",
+      "sha256": "44b71f12b7edb34d61710597b321410bc7e9d7b874810d645d1fb4eda4cba33c",
+      "height": 772,
+      "width": 1098,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 418,
+      "sample_id": "0418",
+      "path": "samples/00000418.npz",
+      "sha256": "f5041d843513af5b5cd59327829a20a748d182bf8ad5762790c5f239e28b2965",
+      "height": 337,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 419,
+      "sample_id": "0419",
+      "path": "samples/00000419.npz",
+      "sha256": "af2fd114276eef1a43125f2f30d952eba06b6640286e4effcad25d0429ded7b8",
+      "height": 366,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 420,
+      "sample_id": "0420",
+      "path": "samples/00000420.npz",
+      "sha256": "5a90bc48646f7195f54cfafaa67eb5767da66b8444f7f444c5c3bab52a667a5d",
+      "height": 367,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 421,
+      "sample_id": "0421",
+      "path": "samples/00000421.npz",
+      "sha256": "3fd250592e12dd3d0a47228962763ecfd4ccdf320990f8fbd1fb0c970c9c8844",
+      "height": 389,
+      "width": 420,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 422,
+      "sample_id": "0422",
+      "path": "samples/00000422.npz",
+      "sha256": "64454079b160e86bf9687af29b57702c02f75057106e8657784229f6a49d9a77",
+      "height": 370,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 423,
+      "sample_id": "0423",
+      "path": "samples/00000423.npz",
+      "sha256": "ec16ba8ed484e5a1e738ea63d202a224775b8ac0b116947f99d032539be91ad8",
+      "height": 381,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 424,
+      "sample_id": "0424",
+      "path": "samples/00000424.npz",
+      "sha256": "f3653154e6ea73486ee4b089390f58268c883a1b9f219189c3c680c2dc7fbe94",
+      "height": 772,
+      "width": 1087,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 425,
+      "sample_id": "0425",
+      "path": "samples/00000425.npz",
+      "sha256": "f42512813ed335af8d50ba638836daebae7ed5772c5356100a7b33837899e1aa",
+      "height": 740,
+      "width": 1192,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 426,
+      "sample_id": "0426",
+      "path": "samples/00000426.npz",
+      "sha256": "067db0f709ea7baaaca6af3870fb737ecab28684719c915f22265f90f7d8463e",
+      "height": 288,
+      "width": 356,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 427,
+      "sample_id": "0427",
+      "path": "samples/00000427.npz",
+      "sha256": "9baee0f9aebeaf63b2fd8ceeccc3cc5e9450a2a3a300a4672145fdab054e6efe",
+      "height": 630,
+      "width": 788,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 428,
+      "sample_id": "0428",
+      "path": "samples/00000428.npz",
+      "sha256": "3834fe48b1bd200d35d7f39a9eb6eee6fbdd6b1b106571ecf90a1f5f1dc856ef",
+      "height": 350,
+      "width": 426,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 429,
+      "sample_id": "0429",
+      "path": "samples/00000429.npz",
+      "sha256": "39c698bb4ade558cf552f7de08790516cab463159aee2792fd94eb0785ed85d5",
+      "height": 340,
+      "width": 426,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 430,
+      "sample_id": "0430",
+      "path": "samples/00000430.npz",
+      "sha256": "63be39e98120c7108788f710bfe0cecf36d189754b79fdeb702280167f4adb78",
+      "height": 308,
+      "width": 515,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 431,
+      "sample_id": "0431",
+      "path": "samples/00000431.npz",
+      "sha256": "f822515083d560f5591ec714e48c0af6022a2d83dbcf8cdf3ee575b0082285ec",
+      "height": 302,
+      "width": 509,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 432,
+      "sample_id": "0432",
+      "path": "samples/00000432.npz",
+      "sha256": "5c7820585d4bff45fb680238101e827975b6c240a6732a4f4282cbc9e6f8094d",
+      "height": 401,
+      "width": 347,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 433,
+      "sample_id": "0433",
+      "path": "samples/00000433.npz",
+      "sha256": "be0db5c610ef4de1f6b412105681d291d8bdd8616b73fdcc28a40fa67e741573",
+      "height": 313,
+      "width": 509,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 434,
+      "sample_id": "0434",
+      "path": "samples/00000434.npz",
+      "sha256": "bcfdd006220b764354dfd8551bff8b7287b38177d125af5e8f7b87d2f37fd964",
+      "height": 319,
+      "width": 519,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 435,
+      "sample_id": "0435",
+      "path": "samples/00000435.npz",
+      "sha256": "b7af9031266f8886c16586e3fd9e4d4f42c29294bfb8994e9c99dd321efbadaa",
+      "height": 378,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 436,
+      "sample_id": "0436",
+      "path": "samples/00000436.npz",
+      "sha256": "ea1a1963123d7c67c2549e64dc2ddbdf636aff490d6973ccccc59d5e20f8cd7c",
+      "height": 376,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 437,
+      "sample_id": "0437",
+      "path": "samples/00000437.npz",
+      "sha256": "4f3f5c48d257ba5b81f909a025901e51262157b5076a8c92584e1b8a9f4cf660",
+      "height": 379,
+      "width": 467,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 438,
+      "sample_id": "0438",
+      "path": "samples/00000438.npz",
+      "sha256": "991b2427e5fee7738be3d90a01e9396184980f36ed473721be363505516bc226",
+      "height": 369,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 439,
+      "sample_id": "0439",
+      "path": "samples/00000439.npz",
+      "sha256": "b93bbfd15b8bd9307fa81bc151643a1e4b49992ef2aadca5bfbee4a53765fda2",
+      "height": 369,
+      "width": 502,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 440,
+      "sample_id": "0440",
+      "path": "samples/00000440.npz",
+      "sha256": "bf64515304de337d98ca7dc345726693fab17546fcbc1afe55d109dbc61e5859",
+      "height": 353,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 441,
+      "sample_id": "0441",
+      "path": "samples/00000441.npz",
+      "sha256": "07f77dfb70a59fecbae403bb488b599a4a8df481416853a0103b65b811f86719",
+      "height": 353,
+      "width": 435,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 442,
+      "sample_id": "0442",
+      "path": "samples/00000442.npz",
+      "sha256": "0ef04941016a35c0809df01c1fb3198d800319234ed658dba97498add6c4a0e9",
+      "height": 377,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 443,
+      "sample_id": "0443",
+      "path": "samples/00000443.npz",
+      "sha256": "2972d37d2821390be4de903f95b9014035f94ed0b31fe66450a7b5fd605938f4",
+      "height": 620,
+      "width": 979,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 444,
+      "sample_id": "0444",
+      "path": "samples/00000444.npz",
+      "sha256": "bff9047674d841f0db840760cbd6e31ba16e47411b0391796e48ee2bb9855f7e",
+      "height": 546,
+      "width": 649,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 445,
+      "sample_id": "0445",
+      "path": "samples/00000445.npz",
+      "sha256": "a196ada424ddf2989cc8b9162caa2775ba362893b33c0cff8bb1b3cf813d6c7e",
+      "height": 378,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 446,
+      "sample_id": "0446",
+      "path": "samples/00000446.npz",
+      "sha256": "559c4afbaccdcf5842effff0d6b9e4b8423cebe79e1df11164a99ce7883e4dad",
+      "height": 357,
+      "width": 429,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 447,
+      "sample_id": "0447",
+      "path": "samples/00000447.npz",
+      "sha256": "846a941965aab393dcc3e5f8fd552058bda086a32cf3e6e114b62fc6f0125ae5",
+      "height": 342,
+      "width": 414,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 448,
+      "sample_id": "0448",
+      "path": "samples/00000448.npz",
+      "sha256": "b28c96db568e8fc4b9a5d926c7e25bbd350f7100ad7266bf1a7e7ebabf8299ca",
+      "height": 379,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 449,
+      "sample_id": "0449",
+      "path": "samples/00000449.npz",
+      "sha256": "5df447d30ff525bc062c1e6766e1309e0e451c56a9d16422bf507f3f4d6bc765",
+      "height": 382,
+      "width": 498,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 450,
+      "sample_id": "0450",
+      "path": "samples/00000450.npz",
+      "sha256": "43d2043b2909ff93c432a9700ee3e356c9fe3c5bba2b6aa02deebd7331fcb986",
+      "height": 711,
+      "width": 979,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 451,
+      "sample_id": "0451",
+      "path": "samples/00000451.npz",
+      "sha256": "ba1c6a37c8db76c395d4db57c0cf6ae5f865df56cae0b01621b26b7aa430dc95",
+      "height": 355,
+      "width": 449,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 452,
+      "sample_id": "0452",
+      "path": "samples/00000452.npz",
+      "sha256": "59b2b2a36aff3546edeed94591ea534435ed602d059bb83973780338d2dc79e4",
+      "height": 381,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 453,
+      "sample_id": "0453",
+      "path": "samples/00000453.npz",
+      "sha256": "48be928327830d9a59372d4fd240dbb79781cbb2a5b5369085ace030bb77e111",
+      "height": 360,
+      "width": 460,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 454,
+      "sample_id": "0454",
+      "path": "samples/00000454.npz",
+      "sha256": "8a0880c790e8ce58fe4493088514c483e8fe2a9c113ca5df1221c79326ddff3d",
+      "height": 333,
+      "width": 410,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 455,
+      "sample_id": "0455",
+      "path": "samples/00000455.npz",
+      "sha256": "b58b2ed2c93ed3219dd8103c54aba5c735bd4515cf7bcacdc1f4859b2ec00721",
+      "height": 678,
+      "width": 979,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 456,
+      "sample_id": "0456",
+      "path": "samples/00000456.npz",
+      "sha256": "4dbec3282707f705dfc3891f5c6af074b87c210709902d64e4c53419506d0c17",
+      "height": 359,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 457,
+      "sample_id": "0457",
+      "path": "samples/00000457.npz",
+      "sha256": "0d2088c36fd17bea30663bb67009198bdbfd082f871cf1b8b184e835dd31c744",
+      "height": 335,
+      "width": 515,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 458,
+      "sample_id": "0458",
+      "path": "samples/00000458.npz",
+      "sha256": "65e0f3fd77271ca5909cbdbb1e483bbc5530670bfce47db4624d30fc1c8551bf",
+      "height": 319,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 459,
+      "sample_id": "0459",
+      "path": "samples/00000459.npz",
+      "sha256": "74aea9c77b0884932a3f6bd5bff211f1bbdf2cdd7fe5dad1655c43f55f2ef8ba",
+      "height": 289,
+      "width": 505,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 460,
+      "sample_id": "0460",
+      "path": "samples/00000460.npz",
+      "sha256": "291b09b6ff808ffeba5e6e72cf63b64ec8a4163d605ed79efa1815b18677f55e",
+      "height": 285,
+      "width": 510,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 461,
+      "sample_id": "0461",
+      "path": "samples/00000461.npz",
+      "sha256": "36f8cd833bb79c4b3a2ad9aa1293ca802bb7f137017648fcea5859daeef65b4e",
+      "height": 281,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 462,
+      "sample_id": "0462",
+      "path": "samples/00000462.npz",
+      "sha256": "9adc8222fc178f2a615cd4cccf5635621dc461fd44c02005e64383dda2e22879",
+      "height": 285,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 463,
+      "sample_id": "0463",
+      "path": "samples/00000463.npz",
+      "sha256": "3bcf3f8d964cd3ebfbead98b1816e016325e64611fa21aeca6dcba2185184bfd",
+      "height": 366,
+      "width": 430,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 464,
+      "sample_id": "0464",
+      "path": "samples/00000464.npz",
+      "sha256": "6b8522f7f090a7d34c7404877fb88886db14cd9d4a3835d254b82d57aa7203b2",
+      "height": 335,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 465,
+      "sample_id": "0465",
+      "path": "samples/00000465.npz",
+      "sha256": "5ec45d57548265a1d2b438ea00cb3fb975e42f72ee3ce278a9b6cc7ed8ced279",
+      "height": 351,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 466,
+      "sample_id": "0466",
+      "path": "samples/00000466.npz",
+      "sha256": "8c865fe74efac89000a11d7257f731cfdfe65b34a4f948703fb87184d91e2aa6",
+      "height": 332,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 467,
+      "sample_id": "0467",
+      "path": "samples/00000467.npz",
+      "sha256": "3990f7f33af4cc3af89cce72b04fa7d9a2458dff75ad522b7250ac0ea478bb96",
+      "height": 342,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 468,
+      "sample_id": "0468",
+      "path": "samples/00000468.npz",
+      "sha256": "74b327b4d62ab23b7e9fc4f0560d594e0ccc8cd2af86c9f2a6686186a8b12257",
+      "height": 333,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 469,
+      "sample_id": "0469",
+      "path": "samples/00000469.npz",
+      "sha256": "b5abd41de4bdd8cede35f717bc76a62729a2234221b8ce47f4282036eacaaf43",
+      "height": 350,
+      "width": 379,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 470,
+      "sample_id": "0470",
+      "path": "samples/00000470.npz",
+      "sha256": "a086485c8ad7774719f69c5d090bb7f2d987714d4dc25528792af6d24741e7c1",
+      "height": 317,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 471,
+      "sample_id": "0471",
+      "path": "samples/00000471.npz",
+      "sha256": "4144b87bb6d99e96a045370a25cb52fd32c2839419dfa9a59af6c7b976806426",
+      "height": 383,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 472,
+      "sample_id": "0472",
+      "path": "samples/00000472.npz",
+      "sha256": "0d19ed45050f66d4624a9a9d1350a187419f1f1dd516a5cc4fee86050a61c433",
+      "height": 398,
+      "width": 429,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 473,
+      "sample_id": "0473",
+      "path": "samples/00000473.npz",
+      "sha256": "ccba09b646cf67e803d5f76f4e6a5e70cdffb34a2ab7f7c437cfb7c262ebabf0",
+      "height": 346,
+      "width": 425,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 474,
+      "sample_id": "0474",
+      "path": "samples/00000474.npz",
+      "sha256": "2545f45b14c133ce4d2dfad72949e551cb04e372de3b0b0a0a4e7857904f6b27",
+      "height": 344,
+      "width": 421,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 475,
+      "sample_id": "0475",
+      "path": "samples/00000475.npz",
+      "sha256": "e2271723002ee93fda29feb78cf27e57cfad76514dc95592c1b59b8081fdb026",
+      "height": 345,
+      "width": 478,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 476,
+      "sample_id": "0476",
+      "path": "samples/00000476.npz",
+      "sha256": "e52a76032e58cb4ebfb46b8ce1b118166d69fbe826e50a53cfe11c422e004acc",
+      "height": 351,
+      "width": 478,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 477,
+      "sample_id": "0477",
+      "path": "samples/00000477.npz",
+      "sha256": "42dde0565f66401d12a5d0c65962f9de165f1e0127f8c18349a5a4cd31ec4344",
+      "height": 371,
+      "width": 503,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 478,
+      "sample_id": "0478",
+      "path": "samples/00000478.npz",
+      "sha256": "4cfe7ae70e84fee9f22906daa6821104d631acc0268860290da4c35ff5035273",
+      "height": 369,
+      "width": 583,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 479,
+      "sample_id": "0479",
+      "path": "samples/00000479.npz",
+      "sha256": "6f30d75dc3945a83657a7d67ab2f3f90e3cc0d46e414a8b46f2c0d3a1d25b778",
+      "height": 352,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 480,
+      "sample_id": "0480",
+      "path": "samples/00000480.npz",
+      "sha256": "4635eedc9ac53616586cd2640e158a57ba31fb844cb868549dfaee60094491d8",
+      "height": 400,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 481,
+      "sample_id": "0481",
+      "path": "samples/00000481.npz",
+      "sha256": "3f323b643ff3f6c21e040708fbb0394a48f632c9076075a8af995a4d630e496f",
+      "height": 366,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 482,
+      "sample_id": "0482",
+      "path": "samples/00000482.npz",
+      "sha256": "cfdc327ee8c699fa3b6a64e798c2ca0ee517c19fdf7bbd8176a21b93bbe11df7",
+      "height": 361,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 483,
+      "sample_id": "0483",
+      "path": "samples/00000483.npz",
+      "sha256": "d26c37e75e36335e962514176e0d02e0707c3fac6f0a28b146dc186212f0c344",
+      "height": 383,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 484,
+      "sample_id": "0484",
+      "path": "samples/00000484.npz",
+      "sha256": "a955cb3f81de5b091a23ce14538f109af6c060c91571ca0d2038f372574f525d",
+      "height": 388,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 485,
+      "sample_id": "0485",
+      "path": "samples/00000485.npz",
+      "sha256": "4999af9924e742a8ef4ccfb114c904411ca004489efe326d799fb39ba0fe7984",
+      "height": 382,
+      "width": 523,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 486,
+      "sample_id": "0486",
+      "path": "samples/00000486.npz",
+      "sha256": "509d1946f49c591bd8ab1089d4614cae1194fe908f15758ec9768b4e85b70603",
+      "height": 373,
+      "width": 522,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 487,
+      "sample_id": "0487",
+      "path": "samples/00000487.npz",
+      "sha256": "6be29f1fa5943fc1483b4483af7387feea7a6f38e261c6bae4fe8c7a6817c8e4",
+      "height": 379,
+      "width": 501,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 488,
+      "sample_id": "0488",
+      "path": "samples/00000488.npz",
+      "sha256": "1df55ef5ccda68d3019ad125bdd1f9d63ceb32f97814351b3748e93ddb607b00",
+      "height": 344,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 489,
+      "sample_id": "0489",
+      "path": "samples/00000489.npz",
+      "sha256": "79951169e4298a16a196e8af130af255f34616b08f996427b1ca843bf9baeeec",
+      "height": 343,
+      "width": 419,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 490,
+      "sample_id": "0490",
+      "path": "samples/00000490.npz",
+      "sha256": "0b95124abca84cc00a3895205dc0187f4f11e7ad5e760fa25c366965d978567e",
+      "height": 339,
+      "width": 410,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 491,
+      "sample_id": "0491",
+      "path": "samples/00000491.npz",
+      "sha256": "248e8874aaba5bd28c5397a70c4ae892770735e9573e19b1bc874bbc43aa4ad8",
+      "height": 343,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 492,
+      "sample_id": "0492",
+      "path": "samples/00000492.npz",
+      "sha256": "d91c98e4f8c41cc242b0b80a8d0a21736d64f0af5e743e7eb9d5c1801a7e2f43",
+      "height": 378,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 493,
+      "sample_id": "0493",
+      "path": "samples/00000493.npz",
+      "sha256": "26c98d004e3d69b2409214087f0efca0e79184b5c61b4dfdd83790c1e136b96b",
+      "height": 379,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 494,
+      "sample_id": "0494",
+      "path": "samples/00000494.npz",
+      "sha256": "dd86e0ecab744a7c39a49d28e38c86cd5ce2bec822ac7f3202d314d48b319c22",
+      "height": 698,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 495,
+      "sample_id": "0495",
+      "path": "samples/00000495.npz",
+      "sha256": "de545e1a4c0fe53125d38306c13976a323e1cfe93c4d621bf16858155ce77ff4",
+      "height": 698,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 496,
+      "sample_id": "0496",
+      "path": "samples/00000496.npz",
+      "sha256": "51efdbd1ed04e2e4e345f554e49f7ccf40d654bd7a675ee44d48d52f3c1ddb20",
+      "height": 374,
+      "width": 451,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 497,
+      "sample_id": "0497",
+      "path": "samples/00000497.npz",
+      "sha256": "dea066b713ed120f7ef72f9e16bb9f17674355acca8b0c050ce0b491726275ca",
+      "height": 720,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 498,
+      "sample_id": "0498",
+      "path": "samples/00000498.npz",
+      "sha256": "95fd625e646b7d2bcece6bef7328a63115a7209789dd7e081b3889194b4130ca",
+      "height": 320,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 499,
+      "sample_id": "0499",
+      "path": "samples/00000499.npz",
+      "sha256": "0cc6c483b174fd17080cfda183167c4b9b02102adbb335c8d0d1a6c1a98ca9b0",
+      "height": 376,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 500,
+      "sample_id": "0500",
+      "path": "samples/00000500.npz",
+      "sha256": "5c1514290be908de6612951d5d9db75a2f42695669a9d3fc3f2ebdf019c3c6c1",
+      "height": 364,
+      "width": 499,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 501,
+      "sample_id": "0501",
+      "path": "samples/00000501.npz",
+      "sha256": "17079e62ab8f23cdfc163a90d5e010220511d1c415b68b94238b299d9e15d7bf",
+      "height": 321,
+      "width": 293,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 502,
+      "sample_id": "0502",
+      "path": "samples/00000502.npz",
+      "sha256": "928be57d5a6780f00ff43677dc39be4032e7d30ad20af961596f8cd404df59a7",
+      "height": 374,
+      "width": 501,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 503,
+      "sample_id": "0503",
+      "path": "samples/00000503.npz",
+      "sha256": "4f09acbdf53d002574701cf096823fa80c72d5970dd7f73d48880bd6e7a5fb45",
+      "height": 607,
+      "width": 975,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 504,
+      "sample_id": "0504",
+      "path": "samples/00000504.npz",
+      "sha256": "1276e948be55e3b510454711a194d2d925fded340dda99e6822749b3b0643dce",
+      "height": 375,
+      "width": 425,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 505,
+      "sample_id": "0505",
+      "path": "samples/00000505.npz",
+      "sha256": "307449bdba7dd8f2b22af46e195eb0dbd16c4d0ecf448603e7dc4cfcbbd1513d",
+      "height": 374,
+      "width": 520,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 506,
+      "sample_id": "0506",
+      "path": "samples/00000506.npz",
+      "sha256": "09b75d2f9c47d20864670d841fadcec128ddb0411b59e04ad3760856508b6fe2",
+      "height": 388,
+      "width": 583,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 507,
+      "sample_id": "0507",
+      "path": "samples/00000507.npz",
+      "sha256": "9ae092b9ae7efab75b18993640c460a9315c393d94b5df21b00b6ab34e82e2e5",
+      "height": 366,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 508,
+      "sample_id": "0508",
+      "path": "samples/00000508.npz",
+      "sha256": "b0993d1b50f89eb1824ad844f2d01271f45c4fbd5763deee5b3fc590f0dc0c7b",
+      "height": 389,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 509,
+      "sample_id": "0509",
+      "path": "samples/00000509.npz",
+      "sha256": "abe12f9d9de590355be0a2dbb8f47bc185876c5809a0f4e2013479413607553d",
+      "height": 387,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 510,
+      "sample_id": "0510",
+      "path": "samples/00000510.npz",
+      "sha256": "bcd1562f9d3b1a09e195caa124e94ce3636688df0848c1351bfae6d39dd516aa",
+      "height": 339,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 511,
+      "sample_id": "0511",
+      "path": "samples/00000511.npz",
+      "sha256": "352e31527c998497e2edb0d8494ab14a3500b734413292a32850bc11c1f4fa0f",
+      "height": 386,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 512,
+      "sample_id": "0512",
+      "path": "samples/00000512.npz",
+      "sha256": "998b5c66e23d648b19a8f5027b15031a019be813b5c057c9bb767188e25032fa",
+      "height": 354,
+      "width": 494,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 513,
+      "sample_id": "0513",
+      "path": "samples/00000513.npz",
+      "sha256": "3ffb6625f5b390427173abf0a16d5b0b0474ac0ace6f1d7068a04671b89ddb0d",
+      "height": 378,
+      "width": 342,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 514,
+      "sample_id": "0514",
+      "path": "samples/00000514.npz",
+      "sha256": "fabebaf9bb0af35832530c480cad441a4f03be902d56409a9a6cee70c9e25efa",
+      "height": 376,
+      "width": 340,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 515,
+      "sample_id": "0515",
+      "path": "samples/00000515.npz",
+      "sha256": "d02da44c88402fcb8262a4f0eb92ebbce21dd48bb8fae211115326cfb2308837",
+      "height": 377,
+      "width": 340,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 516,
+      "sample_id": "0516",
+      "path": "samples/00000516.npz",
+      "sha256": "ded2510c9faa996699e164c423071767b386b500cd43f7eb9438368d5eed2f56",
+      "height": 283,
+      "width": 290,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 517,
+      "sample_id": "0517",
+      "path": "samples/00000517.npz",
+      "sha256": "413ed5d848827ce2055f2b507d728cbbfbf66ad2e0aede317dee9c47c3be897f",
+      "height": 284,
+      "width": 289,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 518,
+      "sample_id": "0518",
+      "path": "samples/00000518.npz",
+      "sha256": "32b8188956513f311a210db3faffd2d39293de843addd8317494c44f9e22b735",
+      "height": 369,
+      "width": 312,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 519,
+      "sample_id": "0519",
+      "path": "samples/00000519.npz",
+      "sha256": "f481bbb822082ea5515a324d90d90e5b665d39575c9946a0a37d0c4ac39c785d",
+      "height": 358,
+      "width": 400,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 520,
+      "sample_id": "0520",
+      "path": "samples/00000520.npz",
+      "sha256": "7a3887b75fd4f97a68205458ac8d28484e4440b557a3e560e3f791a881a84733",
+      "height": 382,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 521,
+      "sample_id": "0521",
+      "path": "samples/00000521.npz",
+      "sha256": "af3437170536101fa29452eb129a788a5e3080c0ab46b4a8894a096d7e7eeeec",
+      "height": 379,
+      "width": 523,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 522,
+      "sample_id": "0522",
+      "path": "samples/00000522.npz",
+      "sha256": "aa0c1cb78594f4a49c3d4f68907850504d857df2868828b966142843362d8da2",
+      "height": 339,
+      "width": 390,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 523,
+      "sample_id": "0523",
+      "path": "samples/00000523.npz",
+      "sha256": "6ac4952c7ebf81f487e0278a6248d573c6221f1a07c4f6d5c9a4582d5ff003cf",
+      "height": 348,
+      "width": 585,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 524,
+      "sample_id": "0524",
+      "path": "samples/00000524.npz",
+      "sha256": "9518075480bf880d34b7e5b8f84c689e5eae712ed5fa05cbf9691e11080fe2fb",
+      "height": 350,
+      "width": 287,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 525,
+      "sample_id": "0525",
+      "path": "samples/00000525.npz",
+      "sha256": "32216ff937deb22b7fbdeff23f6a6c5ea8e201d05b879489541fa5cbebca9e1c",
+      "height": 308,
+      "width": 425,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 526,
+      "sample_id": "0526",
+      "path": "samples/00000526.npz",
+      "sha256": "8712a98e9088f1ceae3aca16fbfe2beecfad0c3b9214cfc14bddecf71ec20a24",
+      "height": 329,
+      "width": 427,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 527,
+      "sample_id": "0527",
+      "path": "samples/00000527.npz",
+      "sha256": "322a1351e95aa21398079defa3fb0e4f4ebe679e7b5633ba46ed934d15e1a7a4",
+      "height": 350,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 528,
+      "sample_id": "0528",
+      "path": "samples/00000528.npz",
+      "sha256": "fe76f2abdebe89d018bbd409d53b7f9a1bd29cef28454b64a6776d48b486dd2f",
+      "height": 319,
+      "width": 435,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 529,
+      "sample_id": "0529",
+      "path": "samples/00000529.npz",
+      "sha256": "9344d40fcba8dc1ffbbd8c0752f7e675a63fdeef5330637245d678290f6cf920",
+      "height": 698,
+      "width": 1143,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 530,
+      "sample_id": "0530",
+      "path": "samples/00000530.npz",
+      "sha256": "865974d788b9e825ef824d75be170e440e6d2be8e2552cd3414d80970725b410",
+      "height": 337,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 531,
+      "sample_id": "0531",
+      "path": "samples/00000531.npz",
+      "sha256": "77a1fc68c467be35827a7a9b880c01421631aa167702ae2189b6cb6f233e4b69",
+      "height": 337,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 532,
+      "sample_id": "0532",
+      "path": "samples/00000532.npz",
+      "sha256": "857a41160d762e690dc86a53bf0820eb9038139b1ce1d81e9e6f9f059b9234a3",
+      "height": 373,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 533,
+      "sample_id": "0533",
+      "path": "samples/00000533.npz",
+      "sha256": "d5d235aefb3d8b8742ae72879bacf72cf38bba37c84879a6199e7a57a193f872",
+      "height": 363,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 534,
+      "sample_id": "0534",
+      "path": "samples/00000534.npz",
+      "sha256": "67369b9fac5bd05e1361f84703c5125d3df007f1b58b42a39fcfc320cf88fd5f",
+      "height": 691,
+      "width": 985,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 535,
+      "sample_id": "0535",
+      "path": "samples/00000535.npz",
+      "sha256": "4aa4b6ef1b8ead7c99d38f824221743da8be5abbc879509e70280210045eba7c",
+      "height": 352,
+      "width": 515,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 536,
+      "sample_id": "0536",
+      "path": "samples/00000536.npz",
+      "sha256": "b79bc90f89a230d004a5cb3091e96c6b8ea94379151e84de238c3c9ef616d3e2",
+      "height": 349,
+      "width": 516,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 537,
+      "sample_id": "0537",
+      "path": "samples/00000537.npz",
+      "sha256": "4fb4ff066d7780c2cfbf9028749c7a0d360180dc721304992aa67589b9f00dd7",
+      "height": 370,
+      "width": 502,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 538,
+      "sample_id": "0538",
+      "path": "samples/00000538.npz",
+      "sha256": "52861c68973f363d24bb2996961ca33923d887381f61bf043e845927549986ea",
+      "height": 339,
+      "width": 521,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 539,
+      "sample_id": "0539",
+      "path": "samples/00000539.npz",
+      "sha256": "f9a427bd8bee7e8d36fbae9a57a70ed92d0d207cc2d885502bb8e02f012f6aae",
+      "height": 665,
+      "width": 782,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 540,
+      "sample_id": "0540",
+      "path": "samples/00000540.npz",
+      "sha256": "e4e6b52583fa901f0bf23ed12ca1b38df6b8144f6ff3f35d7a050008e85b6472",
+      "height": 675,
+      "width": 976,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 541,
+      "sample_id": "0541",
+      "path": "samples/00000541.npz",
+      "sha256": "e54641218ce81f92c8c1680ff41a7c4ad9304d30c11b7401dcb68014ef71c840",
+      "height": 307,
+      "width": 496,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 542,
+      "sample_id": "0542",
+      "path": "samples/00000542.npz",
+      "sha256": "6832a33144011f83b28316b8954f8f6d559a7d1ea7c5323f01c959f0b3b4c1ff",
+      "height": 352,
+      "width": 502,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 543,
+      "sample_id": "0543",
+      "path": "samples/00000543.npz",
+      "sha256": "10140e947b9d9cdfce8ecc5229f62dc78bee651e24c20355878dfc4e1bb5f189",
+      "height": 331,
+      "width": 283,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 544,
+      "sample_id": "0544",
+      "path": "samples/00000544.npz",
+      "sha256": "b015378ac5db8998258f64a96d0bf0b8ffe97b08ac2cd9ef7e504d8fec320b14",
+      "height": 334,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 545,
+      "sample_id": "0545",
+      "path": "samples/00000545.npz",
+      "sha256": "b69c5752f4b1699ac8992b9c61dd8ce08e9177fe684372349cea9ce789183645",
+      "height": 303,
+      "width": 369,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 546,
+      "sample_id": "0546",
+      "path": "samples/00000546.npz",
+      "sha256": "4ad3579240722e1e2cf5f71f0cc1ab5ff49f9da30182b5853dbf1f7bdb3202ec",
+      "height": 575,
+      "width": 782,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 547,
+      "sample_id": "0547",
+      "path": "samples/00000547.npz",
+      "sha256": "31f349a1f92689c2598deb610426dc97fd6ea603e2a6660810cb0d0ad567b11b",
+      "height": 704,
+      "width": 975,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 548,
+      "sample_id": "0548",
+      "path": "samples/00000548.npz",
+      "sha256": "360e3d4f263ccd4912b26124385f45730fd4b4362b9fcaa77f70806d9337ef34",
+      "height": 347,
+      "width": 409,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 549,
+      "sample_id": "0549",
+      "path": "samples/00000549.npz",
+      "sha256": "efcaff54ae41cee204af5b4319b966ae56d3c5edd0eb0ef26f1b27b2358e4f1c",
+      "height": 333,
+      "width": 409,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 550,
+      "sample_id": "0550",
+      "path": "samples/00000550.npz",
+      "sha256": "f4de648b6259e56baeaa5beefa433c10cdc01d5437a564ae48cf6ccfcb4ab596",
+      "height": 388,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 551,
+      "sample_id": "0551",
+      "path": "samples/00000551.npz",
+      "sha256": "f6cca723c3d83e0251791429536f3006151a33df634011c8c7d1e4ad72c7ce63",
+      "height": 385,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 552,
+      "sample_id": "0552",
+      "path": "samples/00000552.npz",
+      "sha256": "d1551f014cfed19919d72e6780c519e59bd1b69d19881ac014f519e38df0c445",
+      "height": 378,
+      "width": 499,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 553,
+      "sample_id": "0553",
+      "path": "samples/00000553.npz",
+      "sha256": "fee28d8ea20c073585ddfc1a75173c1ad284a5d120ed9808030e010db09ea02d",
+      "height": 364,
+      "width": 426,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 554,
+      "sample_id": "0554",
+      "path": "samples/00000554.npz",
+      "sha256": "68651d6d8383c2f06614a4e9750169096918db5083fb9d2bf944e6bad30e940a",
+      "height": 356,
+      "width": 426,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 555,
+      "sample_id": "0555",
+      "path": "samples/00000555.npz",
+      "sha256": "110e15cb8c79f14556a934be97e9a00cc052a4b3b7cfa7e545676d562656fad3",
+      "height": 772,
+      "width": 978,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 556,
+      "sample_id": "0556",
+      "path": "samples/00000556.npz",
+      "sha256": "f511215cda59fb672579a95b6faf6d7f9240a795038645cfaf5c0dc100c5e05a",
+      "height": 344,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 557,
+      "sample_id": "0557",
+      "path": "samples/00000557.npz",
+      "sha256": "eb15d81ea08f3551aeec03f406d796abeb55bbf049af4cf0b344d5a95d68cea5",
+      "height": 340,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 558,
+      "sample_id": "0558",
+      "path": "samples/00000558.npz",
+      "sha256": "0b722477a006291330f7775463ab6d14fc039ade24033af9ae50a3355ff55f98",
+      "height": 360,
+      "width": 402,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 559,
+      "sample_id": "0559",
+      "path": "samples/00000559.npz",
+      "sha256": "df3590c53985482e2e0b8b5479cabd81b50045ba6bb688fd018606ca0a925c2c",
+      "height": 261,
+      "width": 517,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 560,
+      "sample_id": "0560",
+      "path": "samples/00000560.npz",
+      "sha256": "03d56a1a0caea240f9284787c98392640c1ad41b637b6ca9f1b304f061d773d9",
+      "height": 374,
+      "width": 361,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 561,
+      "sample_id": "0561",
+      "path": "samples/00000561.npz",
+      "sha256": "f485954b2d0cc769102ad59fd6aaf3840ec4d49007f137dff1c562d30fdcf888",
+      "height": 772,
+      "width": 1098,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 562,
+      "sample_id": "0562",
+      "path": "samples/00000562.npz",
+      "sha256": "d106b3705371e9cedf1a596a6c7af8f279032191ae18d543987c501d2be47401",
+      "height": 757,
+      "width": 1098,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 563,
+      "sample_id": "0563",
+      "path": "samples/00000563.npz",
+      "sha256": "5640344a6bc3548a883c2020322dabe501f13ebb7e5c16cb85a7cc96560b1a07",
+      "height": 379,
+      "width": 370,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 564,
+      "sample_id": "0564",
+      "path": "samples/00000564.npz",
+      "sha256": "9b901fc552c4831330217a35cb2b672df20230a0cfcf26a8c3c765bf0dad514b",
+      "height": 743,
+      "width": 1114,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 565,
+      "sample_id": "0565",
+      "path": "samples/00000565.npz",
+      "sha256": "84ff25f1a4bfca9f882bb607ad20ed81acccb0a97e0b3e0161da09f7b32a67e8",
+      "height": 335,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 566,
+      "sample_id": "0566",
+      "path": "samples/00000566.npz",
+      "sha256": "5a76497976fb72d8ff340387994245b5622e2cd0cc482102eee65f9ddb22205d",
+      "height": 352,
+      "width": 478,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 567,
+      "sample_id": "0567",
+      "path": "samples/00000567.npz",
+      "sha256": "c267b3c9b0eedc47c56b84a627fd244611ef98bc799fe9346d12fe7cac36e331",
+      "height": 358,
+      "width": 476,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 568,
+      "sample_id": "0568",
+      "path": "samples/00000568.npz",
+      "sha256": "a3759b97824dc3b7f68329bdf8e09053d1b1054909255ab21bf6d615f45c9ffd",
+      "height": 384,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 569,
+      "sample_id": "0569",
+      "path": "samples/00000569.npz",
+      "sha256": "6bdc87f5b214d4acd39df76f1e97bdb6cf1dd19035e18edef5543cf77d7fb83b",
+      "height": 374,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 570,
+      "sample_id": "0570",
+      "path": "samples/00000570.npz",
+      "sha256": "01bec7fb660d9a3c5c80be9ecdd0e7d9ef4d117e41ccb73f9034a81055c0b23c",
+      "height": 337,
+      "width": 330,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 571,
+      "sample_id": "0571",
+      "path": "samples/00000571.npz",
+      "sha256": "983b695be53403f78cc8fc707ca3ea787f40dc98c2f485589c7ec484adfe208c",
+      "height": 357,
+      "width": 440,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 572,
+      "sample_id": "0572",
+      "path": "samples/00000572.npz",
+      "sha256": "31c0975bba52f043d2d629878afe7df3a3f051340e6fa951512776b676ea3fda",
+      "height": 317,
+      "width": 436,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 573,
+      "sample_id": "0573",
+      "path": "samples/00000573.npz",
+      "sha256": "3982111a9bf22b559da097322a16153d2358d525a406f4a135f9dbb1c865c88f",
+      "height": 380,
+      "width": 468,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 574,
+      "sample_id": "0574",
+      "path": "samples/00000574.npz",
+      "sha256": "46171f7fe3b4cd0a41298412b95fff87caf1689f6887466c947f613c47726a39",
+      "height": 743,
+      "width": 989,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 575,
+      "sample_id": "0575",
+      "path": "samples/00000575.npz",
+      "sha256": "3d448cdf0fdcad6fa191e6bee56c3de63f188610087fc15d641a1db8a342c4b6",
+      "height": 698,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 576,
+      "sample_id": "0576",
+      "path": "samples/00000576.npz",
+      "sha256": "b89308897fb11ae397efdb758bd4d6e14fa1ad2cdcdefc75f518d5cedfdc9470",
+      "height": 358,
+      "width": 481,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 577,
+      "sample_id": "0577",
+      "path": "samples/00000577.npz",
+      "sha256": "156c76dd15a874515c8fadfe2f516eba5d8c02102a0a0dfb52b80fabc20ed42b",
+      "height": 711,
+      "width": 982,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 578,
+      "sample_id": "0578",
+      "path": "samples/00000578.npz",
+      "sha256": "37e3ed771cdc4b46c2dddba013a2e7a1c913bb32606553b20022702063e11327",
+      "height": 691,
+      "width": 979,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 579,
+      "sample_id": "0579",
+      "path": "samples/00000579.npz",
+      "sha256": "2e89a4a3c031a289b7813d122f5ea099a4815d600edd1ce040816f006c27043b",
+      "height": 370,
+      "width": 544,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 580,
+      "sample_id": "0580",
+      "path": "samples/00000580.npz",
+      "sha256": "16d35626bfe10140e83592e490eced327b4e2783a731c705bfeddb4ded04fcf8",
+      "height": 348,
+      "width": 432,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 581,
+      "sample_id": "0581",
+      "path": "samples/00000581.npz",
+      "sha256": "1d0e75986cb472472d6a86840a3d37af5bfcce0710cf127eba655c0af42fa0a4",
+      "height": 339,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 582,
+      "sample_id": "0582",
+      "path": "samples/00000582.npz",
+      "sha256": "ae76c8ed0c7996e5abf517c6a77099d1ca9598d9f952e7f110a99c2d2d73dc76",
+      "height": 707,
+      "width": 1117,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 583,
+      "sample_id": "0583",
+      "path": "samples/00000583.npz",
+      "sha256": "90c4fe71d1e30f824838b3f955075a0c5a0d6b3cb93402763c455be628059734",
+      "height": 720,
+      "width": 985,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 584,
+      "sample_id": "0584",
+      "path": "samples/00000584.npz",
+      "sha256": "5a247c33e0eebf854a09af937b143db88dc8e29d99cd9b4b76d35e318f9a18b6",
+      "height": 343,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 585,
+      "sample_id": "0585",
+      "path": "samples/00000585.npz",
+      "sha256": "76924d8b8959df4c054561392b9771598e49d5fe9a3ea6eb85b81d6207295400",
+      "height": 341,
+      "width": 415,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 586,
+      "sample_id": "0586",
+      "path": "samples/00000586.npz",
+      "sha256": "7c8a99d3e129c0dad55c2ce58b611bb6880f12971197a2ea6f1c3133096cb8cc",
+      "height": 357,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 587,
+      "sample_id": "0587",
+      "path": "samples/00000587.npz",
+      "sha256": "b92bb4bae5b224263a2f45b3179e94daf3a95c8521834bb060b33b8171d54d2b",
+      "height": 361,
+      "width": 442,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 588,
+      "sample_id": "0588",
+      "path": "samples/00000588.npz",
+      "sha256": "30725d6cea427e9baaa49a81ee741c9771c98758080273f702839c32c7398e0a",
+      "height": 343,
+      "width": 416,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 589,
+      "sample_id": "0589",
+      "path": "samples/00000589.npz",
+      "sha256": "fec3e0842f25c9ae9becdb2df867d69faa40806b6e082b1ea721fc66e582d183",
+      "height": 373,
+      "width": 521,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 590,
+      "sample_id": "0590",
+      "path": "samples/00000590.npz",
+      "sha256": "94ce3f72ce67ceb0c8eed410ed9a69cf8ff8038a9256a8424a5f9cae4f1f9cbc",
+      "height": 371,
+      "width": 518,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 591,
+      "sample_id": "0591",
+      "path": "samples/00000591.npz",
+      "sha256": "5229f2c97a5a509c9a29aef42e6496b2ae1ee9e5b7ff35c07321b5d1447cfe87",
+      "height": 344,
+      "width": 407,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 592,
+      "sample_id": "0592",
+      "path": "samples/00000592.npz",
+      "sha256": "0ef1079cd7e8030a9c7e5417e4f537a34571737f5b083b39016b974fa8f66bed",
+      "height": 707,
+      "width": 1117,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 593,
+      "sample_id": "0593",
+      "path": "samples/00000593.npz",
+      "sha256": "ac81a976b5cc7614f3b8c312590b1544a658ee422450c7ae21c74e1709a94edc",
+      "height": 727,
+      "width": 1124,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 594,
+      "sample_id": "0594",
+      "path": "samples/00000594.npz",
+      "sha256": "24d0ebd33ce0575c894ab506c7f1035ef3dbd1f8305fe2b6cab5512c161a9b50",
+      "height": 343,
+      "width": 417,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 595,
+      "sample_id": "0595",
+      "path": "samples/00000595.npz",
+      "sha256": "d19aa692ec1aa03f939132895b6fc181a3746fa0501d2cbabf38343f01a35407",
+      "height": 377,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 596,
+      "sample_id": "0596",
+      "path": "samples/00000596.npz",
+      "sha256": "98ad3a47d99f6acce3ed3ff90904f4061ba236a3c4999c91fdd323694a5b06a7",
+      "height": 379,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 597,
+      "sample_id": "0597",
+      "path": "samples/00000597.npz",
+      "sha256": "1a444dc5c8869c09b35dc35994145c43d74991d439372c6c91d5b6f19d3d24b3",
+      "height": 373,
+      "width": 463,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 598,
+      "sample_id": "0598",
+      "path": "samples/00000598.npz",
+      "sha256": "4f42ffe4ff43406ec351ce364c902bc92ac478928492532dab92d9276fe19142",
+      "height": 336,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 599,
+      "sample_id": "0599",
+      "path": "samples/00000599.npz",
+      "sha256": "3adc243b157f4514336922d0f972594c80e485d401ae8ff5a3b9c720b1ac87f8",
+      "height": 337,
+      "width": 329,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 600,
+      "sample_id": "0600",
+      "path": "samples/00000600.npz",
+      "sha256": "4c710314e8cea82adcb2aa473f44afeb62c8b276baf442f8cc4d61fd076a3aae",
+      "height": 375,
+      "width": 465,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 601,
+      "sample_id": "0601",
+      "path": "samples/00000601.npz",
+      "sha256": "8af6d102f365a7d87c633da64baff95951fef157f2c33f648d42151c30aa869c",
+      "height": 365,
+      "width": 464,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 602,
+      "sample_id": "0602",
+      "path": "samples/00000602.npz",
+      "sha256": "c58c3b3c980b9f40eae4be35181a1aa05060dfe77fc64d16841506399dd7aec1",
+      "height": 672,
+      "width": 988,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 603,
+      "sample_id": "0603",
+      "path": "samples/00000603.npz",
+      "sha256": "917ce3efa02cebf49a65d5a7b6fcfc67404ec902610e02a4abd94201140ae2c9",
+      "height": 327,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 604,
+      "sample_id": "0604",
+      "path": "samples/00000604.npz",
+      "sha256": "65f2c4784e1431ef312d7c730ad0acc9712aba29761cbcdf0f94608636cdb59b",
+      "height": 383,
+      "width": 466,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 605,
+      "sample_id": "0605",
+      "path": "samples/00000605.npz",
+      "sha256": "30c5a372e0359b08ec9e50fc266e2f48bcd3de8476147b87c143bcbcc4eb3f20",
+      "height": 497,
+      "width": 554,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 606,
+      "sample_id": "0606",
+      "path": "samples/00000606.npz",
+      "sha256": "d90d35f33b2043ff448a0eaa3112567de4ed0d75d07727a1a3b32aa99a3223f2",
+      "height": 287,
+      "width": 431,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 607,
+      "sample_id": "0607",
+      "path": "samples/00000607.npz",
+      "sha256": "61a27bd29f4be561c1204f2a004c9bec52ed24f1c182e3ad9a2b864dc55b0eea",
+      "height": 333,
+      "width": 412,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 608,
+      "sample_id": "0608",
+      "path": "samples/00000608.npz",
+      "sha256": "6632441208e2b73e92a5752b4a32acf2ad1a18efd1bc19f663b487f8c4182d70",
+      "height": 337,
+      "width": 413,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 609,
+      "sample_id": "0609",
+      "path": "samples/00000609.npz",
+      "sha256": "41e2474da17f785faa432abee18732d675214a31d94a546ff3da558d4d7f0d98",
+      "height": 394,
+      "width": 433,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 610,
+      "sample_id": "0610",
+      "path": "samples/00000610.npz",
+      "sha256": "480aeccf2f713e1b8679b8d545fe1cbd376b9f304d32e724dc992f2acec401cf",
+      "height": 401,
+      "width": 395,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 611,
+      "sample_id": "0611",
+      "path": "samples/00000611.npz",
+      "sha256": "207d73fb0d429bef8523762a45a7ea914822c31e5540e28b8f5b95051d647150",
+      "height": 373,
+      "width": 519,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 612,
+      "sample_id": "0612",
+      "path": "samples/00000612.npz",
+      "sha256": "65c5d8663e1e2c15b40b9748aba9ba8bda194a89a41f865b913027089bd01a6d",
+      "height": 737,
+      "width": 788,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    },
+    {
+      "index": 613,
+      "sample_id": "0613",
+      "path": "samples/00000613.npz",
+      "sha256": "06dec98edd6c1cf195da0d76de32228810f7e81a20af59c522d100fb468cc36a",
+      "height": 391,
+      "width": 434,
+      "probability_dtype": "float32",
+      "truth_dtype": "uint8"
+    }
+  ],
+  "command": [
+    "python",
+    "-m",
+    "selectseg.freeze_binary_maps",
+    "--model",
+    "clipseg",
+    "--dataset",
+    "tn3k",
+    "--require-cuda",
+    "--checkpoint",
+    "outputs/binary_train/tn3k/clipseg/seed-0/checkpoint.pt",
+    "--output-dir",
+    "outputs/binary_artifacts",
+    "--num-workers",
+    "4",
+    "--batch-size",
+    "4",
+    "--expected-num-samples",
+    "614"
+  ]
+}

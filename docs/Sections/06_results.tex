@@ -1,62 +1,62 @@
 \section{Results}
 \label{sec:results}
 
-The theory predicts that geometry can change the safest ordering, not that a
-matched score must always win. We therefore read the results as two predeclared
-adjacent steps. Throughout,
-\(\Delta=\AURC(\text{left})-\AURC(\text{right})\), so negative values favor the
-left score. Raw AURC is primary; normalized AURC supplies condition-relative
-context.
+The theory allows geometry to change the safest ordering; it does not promise
+that a matched score always wins. We follow the two fixed adjacent steps below.
+Displayed AURC-derived scalars are multiplied by \(100\), whereas nAURC is not;
+for \(\Delta=\AURC(\text{left})-\AURC(\text{right})\), negative favors the left.
 
 \IfFileExists{Tables/results_complete.tex}{%
   \IfFileExists{Tables/main_results.tex}{%
     \input{Tables/main_results.tex}
   }{%
-    \paragraph{Rendering guard.}
-    The final three-loss analysis is incomplete, so no numerical table is shown.
+    \paragraph{Rendering guard.} The final analysis is incomplete.
   }
 }{%
-  \paragraph{Rendering guard.}
-  The final three-loss analysis is incomplete, so no numerical table is shown.
+  \paragraph{Rendering guard.} The final analysis is incomplete.
 }
 
 \paragraph{Region overlap to worst-case boundary.}
-Among the ten target-adapted conditions, nHD-M32 has lower nHD-risk AURC than
-Dice-M32 in all ten. Every paired interval excludes zero, and every
-Holm-transformed tail probability is below .05. Under Dice risk, the direction
-reverses in eight of ten conditions, but only three matched-direction target
-comparisons retain a transformed value below .05. Across all sixteen fixed
-conditions, nHD wins its matched nHD comparison in 15, while Dice wins its
-matched Dice comparison in 10; the remaining counts are respectively one
-degenerate tie, and five nHD wins plus that tie. Thus the clearest empirical
-separation is worst-boundary risk, not a symmetric same-name advantage.
+nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten target conditions,
+with every pointwise paired-bootstrap interval excluding zero. Under Dice risk,
+Dice-M32 is lower in eight, but only three corresponding intervals exclude
+zero. The strongest separation is therefore worst-boundary risk, not a
+symmetric same-name advantage.
 
 \paragraph{Worst-case to robust boundary.}
-Comparing only the two boundary scores, nHD-M32 is lower under nHD risk in nine
-of ten target-adapted conditions, and nHD95-M32 is lower under nHD95 risk in
-eight. Over all sixteen conditions the corresponding counts are 11 and 12,
-with one degenerate tie in each comparison. Yet only two and one target-adapted
-matched-direction contrasts, respectively, retain a Holm-transformed value
-below .05. The percentile extension therefore changes rankings, but its gains
-are smaller and condition dependent; this experiment is not evidence that the
-nHD Wasserstein corollary transfers to nHD95.
+nHD-M32 is lower than nHD95-M32 in nine target conditions under nHD risk;
+nHD95-M32 is lower in eight under nHD95 risk. Only four and two matched-direction
+intervals, respectively, exclude zero. Replacing a maximum by a percentile does
+change rankings, but the gains are smaller, condition dependent, and do not
+transfer the nHD Wasserstein corollary to nHD95.
 
-\paragraph{Baselines, quadrature, and complete panels.}
-Among all seventeen fixed scores, a boundary-indexed score attains the lowest
-raw AURC in nine of ten target-adapted conditions under each boundary risk; SDC
-on FIVES/CLIPSeg-Target is the exception in both cases. SDC and foreground
-entropy remain highly competitive under Dice risk, reinforcing that the
+\paragraph{Baselines and numerical fidelity.}
+A boundary-indexed score has the lowest raw AURC in nine of ten target
+conditions under each boundary risk; SDC on FIVES/CLIPSeg-Target is the
+exception. SDC and foreground entropy remain competitive for Dice, so the
 framework supplies loss-specific candidates rather than a universal winner.
-For Dice-M32 versus Dice-Exact on the ten target-adapted conditions, Spearman
-\(\rho\geq.9992\), Kendall \(\tau_b\geq.9791\), mean per-image score error is at
-most .0031, and the absolute Dice-risk AURC difference is at most .0037.
+Dice-M32 and Dice-Exact have \(\rho\geq.9992\), \(\tau_b\geq.9791\), and at most
+.370 displayed Dice-risk AURC difference, without changing either
+region--boundary directional count. For nHD/nHD95, M32--M128 Spearman \(\rho\) is
+.973--.998/.951--.996 and the largest displayed matched-risk gaps are .456/.324;
+M32 is adequate for the common-budget comparison but not numerically exact.
 
-Tables~\ref{tab:statistical-tests} and~\ref{tab:statistical-tests-extension}
-report all 64 predeclared contrasts, their pointwise paired-bootstrap intervals,
-and the two separately transformed families; these tail probabilities are not
-asserted to be exact null-calibrated \(p\)-values.
-Tables~\ref{tab:full-target-results}--\ref{tab:cross-loss-results}
-give every unpooled method--risk panel, and
-Tables~\ref{tab:quadrature-ablation}--\ref{tab:dice-quadrature-fidelity} give the
-numerical-resolution audit. Appendix~\ref{app:additional-results} also provides
-all risk--coverage curves.
+\paragraph{Stress tests.}
+In the 360-cell known-posterior study, the correctly specified coupling has zero
+posterior discrepancy and M32 mean absolute error .0084--.0087; under
+misspecification, mask-law TV is near one while Dice error remains
+.0135--.0393. This shows why TV can be too blunt and motivates loss-matched
+geometry, without validating \(Q_p\) on real data. Exact cardinality checks find
+zero support for up to 11.5\% of FIVES and 15.4\% of ISIC target references.
+The action-sensitivity warning also fires: both boundary macro contrasts reverse
+at \(\gamma=.3\), while the Dice--nHD directions persist. Thus the
+region-to-worst-boundary result is more stable than the worst-to-robust step.
+Finally, the balanced runtime ladder gives 11.9--468.6, 32.3--1261.4, and
+102.3--4628.8 ms/image for joint three-loss M2, M8, and M32, versus
+13.2--353.5 for Dice-Exact alone; these hardware measurements compare unequal
+outputs.
+
+Appendix~\ref{app:additional-results} reports complete AURCs, all 64 intervals,
+cross-loss panels, rank and accepted-set agreement, risk--coverage curves,
+M128, cardinality, gamma, runtime, and known-posterior results. The intervals
+are pointwise, condition on one fitted checkpoint, and are not simultaneous.

@@ -1,0 +1,13 @@
+{
+  "model": "deeplabv3",
+  "dataset": "kvasir",
+  "data_root": "data",
+  "output_dir": "outputs/binary_train/kvasir/deeplabv3/seed-0",
+  "epochs": "40",
+  "batch_size": "16",
+  "lr": "0.005",
+  "weight_decay": "0.0001",
+  "num_workers": "8",
+  "seed": "0",
+  "limit_batches": "None"
+}

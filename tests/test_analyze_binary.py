@@ -637,6 +637,8 @@ def test_cli_explicit_inputs_write_deterministic_json_csv_and_latex(
     assert "Dice-M32" in latex
     assert "nHD-M32" in latex
     assert "nHD95-M32" in latex
+    assert r"AURC $\times100$" in latex
+    assert "multiplied by 100 for display only" in latex
 
 
 def test_campaign_binding_requires_locked_final_assemblies(tmp_path):

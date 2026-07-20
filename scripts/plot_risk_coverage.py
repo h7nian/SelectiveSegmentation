@@ -436,17 +436,23 @@ def _draw_panel(axis, condition, spec, *, all_indexed=False):
             "confidence_nhd_m32": "H",
             "confidence_nhd95_m32": "H95",
         }
-        values = [
-            f"{short_labels[item.score_field]} "
-            f"{curves['indexed_aurcs'][item.score_field]:.3f}"
+        values = {
+            short_labels[item.score_field]: (
+                100 * curves["indexed_aurcs"][item.score_field]
+            )
             for item in RISK_SPECS
-        ]
-        annotation = "AURC  " + " | ".join(values)
-        annotation += f"\nSDC {curves['sdc_aurc']:.3f}"
+        }
+        annotation = (
+            "AURC ×100\n"
+            f"D {values['D']:.2f} | H {values['H']:.2f}\n"
+            f"H95 {values['H95']:.2f} | SDC {100 * curves['sdc_aurc']:.2f}"
+        )
     else:
         annotation = (
-            f"AURC  {spec.score_label.split()[0]} {curves['matched_aurc']:.3f}"
-            f"  |  SDC {curves['sdc_aurc']:.3f}"
+            "AURC ×100\n"
+            f"{spec.score_label.split()[0]} "
+            f"{100 * curves['matched_aurc']:.3f}"
+            f"  |  SDC {100 * curves['sdc_aurc']:.3f}"
         )
     axis.text(
         0.98,
@@ -557,7 +563,7 @@ def render_dataset(
             fontsize=12,
             fontweight="bold",
         )
-        legend_columns = min(6, max(2, 2 * column_count))
+        legend_columns = 6 if column_count >= 4 else 3
         figure.legend(
             legend_handles,
             legend_labels,
@@ -573,7 +579,7 @@ def render_dataset(
             left=0.09 if column_count > 1 else 0.18,
             right=0.985,
             bottom=0.075,
-            top=0.81 if column_count == 1 else 0.875,
+            top=(0.81 if column_count == 1 else (0.875 if column_count >= 4 else 0.82)),
             wspace=0.12,
             hspace=0.17,
         )

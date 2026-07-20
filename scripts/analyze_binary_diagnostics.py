@@ -667,7 +667,7 @@ def render_latex(result, *, analysis_sha256):
         r"\centering",
         r"\small",
         (
-            r"\caption{Predeclared held-out diagnostics, reported separately for "
+            r"\caption{Fixed held-out diagnostics, reported separately for "
             r"each dataset--condition with no cross-condition pooling. Brier score "
             r"and ECE diagnose marginal pixel probabilities; M32 ladder statistics "
             r"describe candidate-mask diversity. Neither identifies a joint mask "

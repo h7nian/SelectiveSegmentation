@@ -1,0 +1,3637 @@
+{
+  "analysis_id": "3669d6d595d8b3c9",
+  "artifact_type": "selectseg.matched_risk_reliability",
+  "condition_sets": {
+    "canonical_complete": true,
+    "canonical_conditions": [
+      "pet/clipseg-general",
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "pet/deeplabv3-external",
+      "kvasir/clipseg-general",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-general",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-general",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-general",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ],
+    "num_canonical_conditions": 16,
+    "num_target_conditions": 10,
+    "target_conditions": [
+      "pet/clipseg-target",
+      "pet/deeplabv3-target",
+      "kvasir/clipseg-target",
+      "kvasir/deeplabv3-target",
+      "fives/clipseg-target",
+      "fives/deeplabv3-target",
+      "isic/clipseg-target",
+      "isic/deeplabv3-target",
+      "tn3k/clipseg-target",
+      "tn3k/deeplabv3-target"
+    ]
+  },
+  "conditions": [
+    {
+      "condition": "clipseg-target",
+      "dataset": "pet",
+      "model": "clipseg",
+      "num_images": 3669,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.021545243900987932,
+              "mean_observed_loss": 0.026898529818361265,
+              "mean_predicted_risk": 0.017433357282769856,
+              "minimum_predicted_risk": 0.001150239288919379,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.01842279363866966,
+              "pointwise_ci_upper": 0.03873520752066949
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.026365192574974525,
+              "mean_observed_loss": 0.025659395832588496,
+              "mean_predicted_risk": 0.024097251009091467,
+              "minimum_predicted_risk": 0.021552365424323705,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.022308578149097362,
+              "pointwise_ci_upper": 0.03144526559028231
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.02998095942336257,
+              "mean_observed_loss": 0.02672414096532996,
+              "mean_predicted_risk": 0.028268624475886125,
+              "minimum_predicted_risk": 0.02637516813560484,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.02577599956012077,
+              "pointwise_ci_upper": 0.02772774553189126
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.03360756024094259,
+              "mean_observed_loss": 0.03339412946788229,
+              "mean_predicted_risk": 0.03190186699588523,
+              "minimum_predicted_risk": 0.0299852359920495,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03050687974896385,
+              "pointwise_ci_upper": 0.038368493475051994
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.03697106433571138,
+              "mean_observed_loss": 0.03273942379915739,
+              "mean_predicted_risk": 0.0353439290583977,
+              "minimum_predicted_risk": 0.033609245858767144,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.0317560358654591,
+              "pointwise_ci_upper": 0.03382200797849857
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.04066272120184525,
+              "mean_observed_loss": 0.03959314920576938,
+              "mean_predicted_risk": 0.03879672496719956,
+              "minimum_predicted_risk": 0.03697571531707801,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.036367367488562466,
+              "pointwise_ci_upper": 0.044187190408698056
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.04490207213132315,
+              "mean_observed_loss": 0.03994880629709275,
+              "mean_predicted_risk": 0.042681970427631485,
+              "minimum_predicted_risk": 0.04066716028253351,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03865062815867887,
+              "pointwise_ci_upper": 0.04123315801355507
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.050650356032821156,
+              "mean_observed_loss": 0.04604266919609234,
+              "mean_predicted_risk": 0.047618261611274255,
+              "minimum_predicted_risk": 0.04494808853459855,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.044370506571021304,
+              "pointwise_ci_upper": 0.047730981994208894
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.06080325811396491,
+              "mean_observed_loss": 0.054513234665326385,
+              "mean_predicted_risk": 0.0551890205792745,
+              "minimum_predicted_risk": 0.05065400876404277,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.05258810155586694,
+              "pointwise_ci_upper": 0.05651520877546799
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.6856580873982063,
+              "mean_observed_loss": 0.08480340490999203,
+              "mean_predicted_risk": 0.08526124264147372,
+              "minimum_predicted_risk": 0.06102192021898763,
+              "num_images": 366,
+              "pointwise_ci_lower": 0.07602913150040988,
+              "pointwise_ci_upper": 0.09617546136011661
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.03147095568512011,
+              "mean_observed_loss": 0.03761494003018847,
+              "mean_predicted_risk": 0.02752143760969432,
+              "minimum_predicted_risk": 0.00892614738230461,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.030882577750645897,
+              "pointwise_ci_upper": 0.046574764543444204
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.03619853600508364,
+              "mean_observed_loss": 0.04091322274588674,
+              "mean_predicted_risk": 0.03390082979512881,
+              "minimum_predicted_risk": 0.03148235222577491,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.034965872539448814,
+              "pointwise_ci_upper": 0.04855970012376743
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.03974842021133288,
+              "mean_observed_loss": 0.040233364307096224,
+              "mean_predicted_risk": 0.0379183603850846,
+              "minimum_predicted_risk": 0.03620585891055132,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03647623685853616,
+              "pointwise_ci_upper": 0.04457025026178702
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.043643145545455585,
+              "mean_observed_loss": 0.04416158337603566,
+              "mean_predicted_risk": 0.041696610612386796,
+              "minimum_predicted_risk": 0.03975843988507993,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.0385146328858671,
+              "pointwise_ci_upper": 0.050682980436998516
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.047259942864246465,
+              "mean_observed_loss": 0.047925116783057206,
+              "mean_predicted_risk": 0.0453559345751959,
+              "minimum_predicted_risk": 0.043651348482824946,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.04297131536338939,
+              "pointwise_ci_upper": 0.05310491824684156
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.051258351471327034,
+              "mean_observed_loss": 0.04877179833641522,
+              "mean_predicted_risk": 0.04926348207032075,
+              "minimum_predicted_risk": 0.04729033287670782,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.04381517645440926,
+              "pointwise_ci_upper": 0.0545818698689397
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.05632876061820736,
+              "mean_observed_loss": 0.05784751041804538,
+              "mean_predicted_risk": 0.05376242100920037,
+              "minimum_predicted_risk": 0.05125958962177581,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.05069743437250179,
+              "pointwise_ci_upper": 0.0661938022883781
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.06380439662900782,
+              "mean_observed_loss": 0.06681667885943107,
+              "mean_predicted_risk": 0.0597482994730411,
+              "minimum_predicted_risk": 0.056357262372508245,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.05921829696691543,
+              "pointwise_ci_upper": 0.07621751551291338
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.07720099367112844,
+              "mean_observed_loss": 0.06857590368788177,
+              "mean_predicted_risk": 0.06948595788705496,
+              "minimum_predicted_risk": 0.06381384927186538,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.06287870027821578,
+              "pointwise_ci_upper": 0.07480199236529059
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.32482396543991465,
+              "mean_observed_loss": 0.10995603997177798,
+              "mean_predicted_risk": 0.10193105558619568,
+              "minimum_predicted_risk": 0.07727273463956447,
+              "num_images": 366,
+              "pointwise_ci_lower": 0.10008513343574613,
+              "pointwise_ci_upper": 0.12077696181160268
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.012808936142279532,
+              "mean_observed_loss": 0.02386131272991097,
+              "mean_predicted_risk": 0.011529430601738378,
+              "minimum_predicted_risk": 0.0030966625122395763,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.016022057045136987,
+              "pointwise_ci_upper": 0.03457652853780738
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.014302283906985151,
+              "mean_observed_loss": 0.018597764472065004,
+              "mean_predicted_risk": 0.013641044362237065,
+              "minimum_predicted_risk": 0.012848374079718002,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.016441265092059332,
+              "pointwise_ci_upper": 0.021378690268234864
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.015499930615651362,
+              "mean_observed_loss": 0.01814197840016578,
+              "mean_predicted_risk": 0.014913468737051063,
+              "minimum_predicted_risk": 0.014305222569259963,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.01606502878529472,
+              "pointwise_ci_upper": 0.02059243331896671
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.01672274630989578,
+              "mean_observed_loss": 0.022233393833186673,
+              "mean_predicted_risk": 0.016146216109776436,
+              "minimum_predicted_risk": 0.01550428197503392,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.01886117177175863,
+              "pointwise_ci_upper": 0.026359130276977366
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.01797541795986122,
+              "mean_observed_loss": 0.020521149487546693,
+              "mean_predicted_risk": 0.017338051923141966,
+              "minimum_predicted_risk": 0.016725856707482153,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.018007691095266135,
+              "pointwise_ci_upper": 0.023448752126966343
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.01966251469968945,
+              "mean_observed_loss": 0.02948171365726029,
+              "mean_predicted_risk": 0.018823360630150276,
+              "minimum_predicted_risk": 0.01797593761372787,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.024187900058124108,
+              "pointwise_ci_upper": 0.03556698844553081
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.021827020663221963,
+              "mean_observed_loss": 0.02925134856374257,
+              "mean_predicted_risk": 0.020658998400139808,
+              "minimum_predicted_risk": 0.019666455906469982,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.02500701463942066,
+              "pointwise_ci_upper": 0.034074682144914284
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.0254829600004483,
+              "mean_observed_loss": 0.035066724230094624,
+              "mean_predicted_risk": 0.023500445869836503,
+              "minimum_predicted_risk": 0.021830462376778083,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.029321939648936715,
+              "pointwise_ci_upper": 0.042264518047978115
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.03214428336874499,
+              "mean_observed_loss": 0.03890995742070743,
+              "mean_predicted_risk": 0.028147075073390277,
+              "minimum_predicted_risk": 0.02548622224673043,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03289268592748818,
+              "pointwise_ci_upper": 0.04690285855945127
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.2706047236736687,
+              "mean_observed_loss": 0.0631347761749451,
+              "mean_predicted_risk": 0.050950743531864046,
+              "minimum_predicted_risk": 0.032160312009881065,
+              "num_images": 366,
+              "pointwise_ci_lower": 0.05488371478649896,
+              "pointwise_ci_upper": 0.07278473721699233
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "pet",
+      "model": "deeplabv3",
+      "num_images": 3669,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.019159787416396994,
+              "mean_observed_loss": 0.02505356931654717,
+              "mean_predicted_risk": 0.015555143065297058,
+              "minimum_predicted_risk": 0.0012687076832333772,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.017216496683016367,
+              "pointwise_ci_upper": 0.03565698977502972
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.023103477172530945,
+              "mean_observed_loss": 0.02282800378844444,
+              "mean_predicted_risk": 0.021295356768429755,
+              "minimum_predicted_risk": 0.01917817325866826,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.021768437567233644,
+              "pointwise_ci_upper": 0.024049894485094897
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.0265871166826022,
+              "mean_observed_loss": 0.032318598978808434,
+              "mean_predicted_risk": 0.024946419597666015,
+              "minimum_predicted_risk": 0.023103706203271276,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.027158899306584217,
+              "pointwise_ci_upper": 0.04024681188079152
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.02970450180089032,
+              "mean_observed_loss": 0.03001642855177969,
+              "mean_predicted_risk": 0.02830016010683199,
+              "minimum_predicted_risk": 0.026593410376924895,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.02897590974615293,
+              "pointwise_ci_upper": 0.03108198898443053
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.03285144882639679,
+              "mean_observed_loss": 0.032899181366754966,
+              "mean_predicted_risk": 0.031298959012070714,
+              "minimum_predicted_risk": 0.02970658136607221,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.031067417961432423,
+              "pointwise_ci_upper": 0.035095987631339906
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.03629811816982246,
+              "mean_observed_loss": 0.03877239950894451,
+              "mean_predicted_risk": 0.03453495523262735,
+              "minimum_predicted_risk": 0.032852629511167415,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03559532869176593,
+              "pointwise_ci_upper": 0.04341128270295123
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.04058268952072395,
+              "mean_observed_loss": 0.041652713969998964,
+              "mean_predicted_risk": 0.03837429852914307,
+              "minimum_predicted_risk": 0.036320068528891046,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03955612305260077,
+              "pointwise_ci_upper": 0.04390867043000991
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.04643593086019025,
+              "mean_observed_loss": 0.049564621758971014,
+              "mean_predicted_risk": 0.04325436255076316,
+              "minimum_predicted_risk": 0.04059146000321387,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.04491211239676809,
+              "pointwise_ci_upper": 0.056508531106879825
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.055698371565966055,
+              "mean_observed_loss": 0.06215237069064652,
+              "mean_predicted_risk": 0.05062548994332678,
+              "minimum_predicted_risk": 0.046469297253858545,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.05701758936208437,
+              "pointwise_ci_upper": 0.06893977880191333
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.47065519860051686,
+              "mean_observed_loss": 0.09753143975057872,
+              "mean_predicted_risk": 0.07796493210574348,
+              "minimum_predicted_risk": 0.055753544298492386,
+              "num_images": 366,
+              "pointwise_ci_lower": 0.08755494618875664,
+              "pointwise_ci_upper": 0.10947239177498397
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.013812008165333772,
+              "mean_observed_loss": 0.029752760836173404,
+              "mean_predicted_risk": 0.011252653100137663,
+              "minimum_predicted_risk": 0.001754422866998676,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.024154105803433412,
+              "pointwise_ci_upper": 0.0372090739319988
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.017387628382675498,
+              "mean_observed_loss": 0.03748089100766634,
+              "mean_predicted_risk": 0.015572550996334467,
+              "minimum_predicted_risk": 0.013816943295747418,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03246411498767764,
+              "pointwise_ci_upper": 0.04319318068886831
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.020501268555397884,
+              "mean_observed_loss": 0.03590395978392246,
+              "mean_predicted_risk": 0.018879327569764747,
+              "minimum_predicted_risk": 0.017410119622024357,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03195059335580416,
+              "pointwise_ci_upper": 0.04078222658333097
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.0240746707830664,
+              "mean_observed_loss": 0.040523515441726325,
+              "mean_predicted_risk": 0.0222898486115302,
+              "minimum_predicted_risk": 0.02050151294912688,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03595601453473449,
+              "pointwise_ci_upper": 0.045702037954506614
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.028532772264973173,
+              "mean_observed_loss": 0.05210773785841875,
+              "mean_predicted_risk": 0.02627222053834615,
+              "minimum_predicted_risk": 0.024089661040093257,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.045662756956788904,
+              "pointwise_ci_upper": 0.05879810253567887
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.033814635820128475,
+              "mean_observed_loss": 0.056449276329696776,
+              "mean_predicted_risk": 0.030899802063895972,
+              "minimum_predicted_risk": 0.028534341034331223,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.050536390271615945,
+              "pointwise_ci_upper": 0.062444779620237874
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.041229438688387104,
+              "mean_observed_loss": 0.07385483402165152,
+              "mean_predicted_risk": 0.03728594391400467,
+              "minimum_predicted_risk": 0.0338236770006361,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.06476976080085901,
+              "pointwise_ci_upper": 0.08395394979734237
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.05169160134493442,
+              "mean_observed_loss": 0.07389686970299514,
+              "mean_predicted_risk": 0.046134197638450114,
+              "minimum_predicted_risk": 0.041235717929120945,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.06532181108265604,
+              "pointwise_ci_upper": 0.0839647965271771
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.06903630763992585,
+              "mean_observed_loss": 0.09201092894287571,
+              "mean_predicted_risk": 0.05972822858598028,
+              "minimum_predicted_risk": 0.05169327316708584,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.084410715221968,
+              "pointwise_ci_upper": 0.10093596513724978
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.20852990430471416,
+              "mean_observed_loss": 0.14097648461380663,
+              "mean_predicted_risk": 0.09818620934576908,
+              "minimum_predicted_risk": 0.06922721437108924,
+              "num_images": 366,
+              "pointwise_ci_lower": 0.13083290503626935,
+              "pointwise_ci_upper": 0.15163150786764465
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.007480346194006322,
+              "mean_observed_loss": 0.01862019819345612,
+              "mean_predicted_risk": 0.006525114707942822,
+              "minimum_predicted_risk": 0.000584807622332892,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.01338030295267457,
+              "pointwise_ci_upper": 0.026140254765537916
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.008578749405745467,
+              "mean_observed_loss": 0.016405444491018346,
+              "mean_predicted_risk": 0.008053885502592157,
+              "minimum_predicted_risk": 0.007494913557791291,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.01385580104438323,
+              "pointwise_ci_upper": 0.019539202773057384
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.009779850418937901,
+              "mean_observed_loss": 0.021455097004770017,
+              "mean_predicted_risk": 0.009162233153914756,
+              "minimum_predicted_risk": 0.00858061916644055,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.01774468007649206,
+              "pointwise_ci_upper": 0.025667418288686634
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.011112259921881269,
+              "mean_observed_loss": 0.028425740071122522,
+              "mean_predicted_risk": 0.010432182375223597,
+              "minimum_predicted_risk": 0.009781085454926971,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.02088372713265292,
+              "pointwise_ci_upper": 0.037687231829427216
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.012697329674996623,
+              "mean_observed_loss": 0.022193590298746173,
+              "mean_predicted_risk": 0.0118890764422841,
+              "minimum_predicted_risk": 0.011114734461193963,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.019208070988799886,
+              "pointwise_ci_upper": 0.025851736895774264
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.014550404412645296,
+              "mean_observed_loss": 0.029475509050452185,
+              "mean_predicted_risk": 0.013626930885338872,
+              "minimum_predicted_risk": 0.01270039146739999,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.02523203231766297,
+              "pointwise_ci_upper": 0.034348240868684383
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.017230088658025618,
+              "mean_observed_loss": 0.039560424847156404,
+              "mean_predicted_risk": 0.015825502091166975,
+              "minimum_predicted_risk": 0.01456270551759509,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.031972820917537476,
+              "pointwise_ci_upper": 0.0486647859598251
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.021613136394507966,
+              "mean_observed_loss": 0.0441091878332031,
+              "mean_predicted_risk": 0.019277473333979073,
+              "minimum_predicted_risk": 0.01723082435882905,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.03659899877568406,
+              "pointwise_ci_upper": 0.05321764033353296
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.030301347715861824,
+              "mean_observed_loss": 0.04785716994433162,
+              "mean_predicted_risk": 0.025392312255502293,
+              "minimum_predicted_risk": 0.02164433499879819,
+              "num_images": 367,
+              "pointwise_ci_lower": 0.04262738901723873,
+              "pointwise_ci_upper": 0.0534179723714112
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.1714842148459022,
+              "mean_observed_loss": 0.08429923429856973,
+              "mean_predicted_risk": 0.04736170303301522,
+              "minimum_predicted_risk": 0.03042550786734909,
+              "num_images": 366,
+              "pointwise_ci_lower": 0.0763360440674507,
+              "pointwise_ci_upper": 0.09278192688017885
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "kvasir",
+      "model": "clipseg",
+      "num_images": 200,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.05070623535891177,
+              "mean_observed_loss": 0.03943622178871195,
+              "mean_predicted_risk": 0.041900197827442524,
+              "minimum_predicted_risk": 0.026402407238791434,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.029784145307006148,
+              "pointwise_ci_upper": 0.05416698966665355
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.06915666841192979,
+              "mean_observed_loss": 0.050873720876048,
+              "mean_predicted_risk": 0.058760390869026055,
+              "minimum_predicted_risk": 0.05130821090342195,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.03922850876722133,
+              "pointwise_ci_upper": 0.06262253673753738
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.07925048484231925,
+              "mean_observed_loss": 0.0672459216272285,
+              "mean_predicted_risk": 0.07409375740996078,
+              "minimum_predicted_risk": 0.06970361850609931,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.05341547919426451,
+              "pointwise_ci_upper": 0.08534264253246264
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.08928833814973373,
+              "mean_observed_loss": 0.15573393234675695,
+              "mean_predicted_risk": 0.08496921020511836,
+              "minimum_predicted_risk": 0.07980128742215169,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0866310847039479,
+              "pointwise_ci_upper": 0.26107362882105617
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.1071305274516107,
+              "mean_observed_loss": 0.09135517882583873,
+              "mean_predicted_risk": 0.09941817918590863,
+              "minimum_predicted_risk": 0.08993699381717653,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.07354213896332061,
+              "pointwise_ci_upper": 0.11053519260802212
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.13778717187292636,
+              "mean_observed_loss": 0.13666593743052796,
+              "mean_predicted_risk": 0.12113281256894748,
+              "minimum_predicted_risk": 0.10740956345553668,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.1006557834018074,
+              "pointwise_ci_upper": 0.18153268262714076
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.17849324875482903,
+              "mean_observed_loss": 0.13087486128806305,
+              "mean_predicted_risk": 0.16056973638304084,
+              "minimum_predicted_risk": 0.13915536198041284,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.10603343709230638,
+              "pointwise_ci_upper": 0.1580417283843917
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.2351878230434153,
+              "mean_observed_loss": 0.3457579588915892,
+              "mean_predicted_risk": 0.20068534909854488,
+              "minimum_predicted_risk": 0.18024803892552044,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.2285820791051958,
+              "pointwise_ci_upper": 0.46930260224011483
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.35782200394954883,
+              "mean_observed_loss": 0.49466271792990363,
+              "mean_predicted_risk": 0.2866430209843568,
+              "minimum_predicted_risk": 0.2386033833026886,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.36045290759827636,
+              "pointwise_ci_upper": 0.6365464280382491
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.9843747767864729,
+              "mean_observed_loss": 0.6858756263429704,
+              "mean_predicted_risk": 0.6125609148644563,
+              "minimum_predicted_risk": 0.384537033082492,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.5586254959769867,
+              "pointwise_ci_upper": 0.8045389747482219
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.019527278217864784,
+              "mean_observed_loss": 0.042981213692612666,
+              "mean_predicted_risk": 0.015488238313365313,
+              "minimum_predicted_risk": 0.009090997526690316,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.020007437186818456,
+              "pointwise_ci_upper": 0.08509403523504609
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.025596164420436045,
+              "mean_observed_loss": 0.08540358425368617,
+              "mean_predicted_risk": 0.022435685461233763,
+              "minimum_predicted_risk": 0.01980686393554946,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.025285307812415225,
+              "pointwise_ci_upper": 0.1598855198803764
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.038587812285527406,
+              "mean_observed_loss": 0.09944472738141127,
+              "mean_predicted_risk": 0.03262921397192171,
+              "minimum_predicted_risk": 0.026545631240648696,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.04035724463187662,
+              "pointwise_ci_upper": 0.18225528754981624
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.05493926337294052,
+              "mean_observed_loss": 0.19325082551739287,
+              "mean_predicted_risk": 0.048240433466762975,
+              "minimum_predicted_risk": 0.0404345127916,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.10028092860700237,
+              "pointwise_ci_upper": 0.29358613003528417
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.06788279287276178,
+              "mean_observed_loss": 0.10927805554101196,
+              "mean_predicted_risk": 0.06174327740064593,
+              "minimum_predicted_risk": 0.05539497167863691,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0680016985115802,
+              "pointwise_ci_upper": 0.16126408711085205
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.08711121600550775,
+              "mean_observed_loss": 0.1213747100907745,
+              "mean_predicted_risk": 0.07893713593350064,
+              "minimum_predicted_risk": 0.0692566951080957,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.07524747241342178,
+              "pointwise_ci_upper": 0.18469948915090267
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.10558480019605111,
+              "mean_observed_loss": 0.25820394370775523,
+              "mean_predicted_risk": 0.09756667291037101,
+              "minimum_predicted_risk": 0.08768738764992517,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.1859218079105448,
+              "pointwise_ci_upper": 0.3366540362152727
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.1417861524777193,
+              "mean_observed_loss": 0.22221850120839814,
+              "mean_predicted_risk": 0.12665792897054443,
+              "minimum_predicted_risk": 0.10591891843610693,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.17157731133616877,
+              "pointwise_ci_upper": 0.27406858288864017
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.2350724171051524,
+              "mean_observed_loss": 0.23646649934794106,
+              "mean_predicted_risk": 0.17718503622350318,
+              "minimum_predicted_risk": 0.14379215438041393,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.150199342419711,
+              "pointwise_ci_upper": 0.3455741133141303
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.5797772045018255,
+              "mean_observed_loss": 0.35645658890373194,
+              "mean_predicted_risk": 0.3521151546940621,
+              "minimum_predicted_risk": 0.24228076567530665,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.2031342617250037,
+              "pointwise_ci_upper": 0.5353170265240491
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.012663573597035658,
+              "mean_observed_loss": 0.015393543265221155,
+              "mean_predicted_risk": 0.010506938156456713,
+              "minimum_predicted_risk": 0.007111856768838699,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.012472157812332695,
+              "pointwise_ci_upper": 0.018815321952612478
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.01712169379750198,
+              "mean_observed_loss": 0.054383547645872735,
+              "mean_predicted_risk": 0.015248987013458823,
+              "minimum_predicted_risk": 0.0133546774163944,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.02144981193342937,
+              "pointwise_ci_upper": 0.09328243730544147
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.02576277150814104,
+              "mean_observed_loss": 0.021835319032796032,
+              "mean_predicted_risk": 0.021015683031861094,
+              "minimum_predicted_risk": 0.01716387939760935,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.017030951748427055,
+              "pointwise_ci_upper": 0.02753371207091859
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.03358052437778327,
+              "mean_observed_loss": 0.042739567761214514,
+              "mean_predicted_risk": 0.030343913866837196,
+              "minimum_predicted_risk": 0.0262254718078375,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.030313367635754002,
+              "pointwise_ci_upper": 0.05856205729256214
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.042799039201828454,
+              "mean_observed_loss": 0.05227208044192766,
+              "mean_predicted_risk": 0.03859134149800678,
+              "minimum_predicted_risk": 0.03372187190030976,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.027617514899857053,
+              "pointwise_ci_upper": 0.09514657346035021
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.05630163168030614,
+              "mean_observed_loss": 0.06223905779159763,
+              "mean_predicted_risk": 0.04963879071779092,
+              "minimum_predicted_risk": 0.04356414144584486,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.046598507527519206,
+              "pointwise_ci_upper": 0.07796248837440667
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.07701587337688288,
+              "mean_observed_loss": 0.09558546308562123,
+              "mean_predicted_risk": 0.06485998580129124,
+              "minimum_predicted_risk": 0.05707824051494591,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.06685215993377361,
+              "pointwise_ci_upper": 0.1260330943517558
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.10376194184234742,
+              "mean_observed_loss": 0.12198811329767394,
+              "mean_predicted_risk": 0.08971609590235095,
+              "minimum_predicted_risk": 0.07868475937801661,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.07975283189198973,
+              "pointwise_ci_upper": 0.169203894614219
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.19367638760585904,
+              "mean_observed_loss": 0.2162281226694775,
+              "mean_predicted_risk": 0.1403880556189673,
+              "minimum_predicted_risk": 0.10576532397065802,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.13680232640858536,
+              "pointwise_ci_upper": 0.3225352621644113
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.5743893785081511,
+              "mean_observed_loss": 0.3419529680649678,
+              "mean_predicted_risk": 0.33491919784023116,
+              "minimum_predicted_risk": 0.20455807609874488,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.18400208580372449,
+              "pointwise_ci_upper": 0.5226277777868757
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "kvasir",
+      "model": "deeplabv3",
+      "num_images": 200,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.027774411423686314,
+              "mean_observed_loss": 0.03277517730443951,
+              "mean_predicted_risk": 0.02342257012071193,
+              "minimum_predicted_risk": 0.01589110792023722,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.01959677143363475,
+              "pointwise_ci_upper": 0.055841076197104475
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.03367999746177277,
+              "mean_observed_loss": 0.034462368212523284,
+              "mean_predicted_risk": 0.031065168251730536,
+              "minimum_predicted_risk": 0.02787849865643032,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.02583314660953611,
+              "pointwise_ci_upper": 0.045356882761174264
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.04019505837035143,
+              "mean_observed_loss": 0.04111072777937376,
+              "mean_predicted_risk": 0.03755461020067803,
+              "minimum_predicted_risk": 0.03455349910169642,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.031208373502020444,
+              "pointwise_ci_upper": 0.05618158299818908
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.047579167600948484,
+              "mean_observed_loss": 0.04474069468093671,
+              "mean_predicted_risk": 0.04345870549675707,
+              "minimum_predicted_risk": 0.040878888104745784,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0342174598916134,
+              "pointwise_ci_upper": 0.056875239800641894
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.05898819900652837,
+              "mean_observed_loss": 0.05129554375122072,
+              "mean_predicted_risk": 0.05279428230653643,
+              "minimum_predicted_risk": 0.047789516245622624,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0413855462708231,
+              "pointwise_ci_upper": 0.06528381427048545
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.06941066775343815,
+              "mean_observed_loss": 0.07960559263387534,
+              "mean_predicted_risk": 0.06441007531892652,
+              "minimum_predicted_risk": 0.059013698235531986,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.05004109567638925,
+              "pointwise_ci_upper": 0.13039665987340882
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.10526666651767386,
+              "mean_observed_loss": 0.1386511258813046,
+              "mean_predicted_risk": 0.08613582338746133,
+              "minimum_predicted_risk": 0.07022324546901411,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0828903465809044,
+              "pointwise_ci_upper": 0.21202933082554165
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.14251674928276126,
+              "mean_observed_loss": 0.12649679792163762,
+              "mean_predicted_risk": 0.12701659475698435,
+              "minimum_predicted_risk": 0.11230279687775017,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.09086612919511373,
+              "pointwise_ci_upper": 0.1657370426781431
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.250847284655016,
+              "mean_observed_loss": 0.23805364287158798,
+              "mean_predicted_risk": 0.18554297755228732,
+              "minimum_predicted_risk": 0.1442974673236243,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.14758811229326532,
+              "pointwise_ci_upper": 0.3584636974747713
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.7047720673000173,
+              "mean_observed_loss": 0.5479521428810739,
+              "mean_predicted_risk": 0.44540261550219284,
+              "minimum_predicted_risk": 0.25145153265573217,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.4264911655410122,
+              "pointwise_ci_upper": 0.6673531321201199
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.006701187667557274,
+              "mean_observed_loss": 0.010753387423534289,
+              "mean_predicted_risk": 0.005013154875294717,
+              "minimum_predicted_risk": 0.0032921047835722506,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.009626454966272801,
+              "pointwise_ci_upper": 0.012057819568685008
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.009118466472280278,
+              "mean_observed_loss": 0.09169094896458904,
+              "mean_predicted_risk": 0.007984956693873075,
+              "minimum_predicted_risk": 0.006917738332151592,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.020092666794433375,
+              "pointwise_ci_upper": 0.1807223993358291
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.014337391068768805,
+              "mean_observed_loss": 0.0674167353451576,
+              "mean_predicted_risk": 0.011499780229100679,
+              "minimum_predicted_risk": 0.009181151726628591,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.013276839739851153,
+              "pointwise_ci_upper": 0.14817081860175815
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.022547502144948252,
+              "mean_observed_loss": 0.052996874694756814,
+              "mean_predicted_risk": 0.01787026376621007,
+              "minimum_predicted_risk": 0.014491747413756449,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.01932581744052032,
+              "pointwise_ci_upper": 0.10636681265744043
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.03645992602858599,
+              "mean_observed_loss": 0.10529055619365332,
+              "mean_predicted_risk": 0.027178843247881418,
+              "minimum_predicted_risk": 0.02295863200272314,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.03836846508716597,
+              "pointwise_ci_upper": 0.1996309403048537
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.05096919858296216,
+              "mean_observed_loss": 0.14067195096620566,
+              "mean_predicted_risk": 0.04230193153165073,
+              "minimum_predicted_risk": 0.036561940131793355,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0830687394945585,
+              "pointwise_ci_upper": 0.20671563068223706
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.06939669726546494,
+              "mean_observed_loss": 0.13444717509461473,
+              "mean_predicted_risk": 0.05987524876690571,
+              "minimum_predicted_risk": 0.051374449295384705,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.08095841814497018,
+              "pointwise_ci_upper": 0.20168788224039622
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.10086875947861741,
+              "mean_observed_loss": 0.21757986006718016,
+              "mean_predicted_risk": 0.08446776819949453,
+              "minimum_predicted_risk": 0.0700987616855551,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.1500046207668166,
+              "pointwise_ci_upper": 0.28865985398291755
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.13743481820369285,
+              "mean_observed_loss": 0.2082393847039532,
+              "mean_predicted_risk": 0.11924518301599929,
+              "minimum_predicted_risk": 0.1025657821882981,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.15445427729138522,
+              "pointwise_ci_upper": 0.26506492366026174
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.46875,
+              "mean_observed_loss": 0.3093025196443943,
+              "mean_predicted_risk": 0.23760914342623013,
+              "minimum_predicted_risk": 0.14184505817096663,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.19729706456400464,
+              "pointwise_ci_upper": 0.43365898465848385
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.004739532816655991,
+              "mean_observed_loss": 0.008096988759311833,
+              "mean_predicted_risk": 0.003957046753848899,
+              "minimum_predicted_risk": 0.0030161204024893233,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.006855164291751231,
+              "pointwise_ci_upper": 0.009489809910139358
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.00641031259113533,
+              "mean_observed_loss": 0.020490589746635965,
+              "mean_predicted_risk": 0.005672208112813269,
+              "minimum_predicted_risk": 0.00476153975846766,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.009512188877365149,
+              "pointwise_ci_upper": 0.03752526041547978
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.00960601031786942,
+              "mean_observed_loss": 0.01120539757636077,
+              "mean_predicted_risk": 0.007845787707599392,
+              "minimum_predicted_risk": 0.00643321380801061,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.008665288219733898,
+              "pointwise_ci_upper": 0.01422180669255193
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.013467130496716176,
+              "mean_observed_loss": 0.015776707862502043,
+              "mean_predicted_risk": 0.011230982267865671,
+              "minimum_predicted_risk": 0.009639797311616374,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.01176209268956995,
+              "pointwise_ci_upper": 0.02023097534450514
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.021269685410017586,
+              "mean_observed_loss": 0.022225699187901883,
+              "mean_predicted_risk": 0.016921428883285065,
+              "minimum_predicted_risk": 0.013547717089711139,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.013530880459665589,
+              "pointwise_ci_upper": 0.033589775759926326
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.029345118760840012,
+              "mean_observed_loss": 0.059704352201705634,
+              "mean_predicted_risk": 0.02516660075695437,
+              "minimum_predicted_risk": 0.021586826080214613,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.02546905432427012,
+              "pointwise_ci_upper": 0.1113580116471636
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.04466153376919754,
+              "mean_observed_loss": 0.05851824787011388,
+              "mean_predicted_risk": 0.03680054180399408,
+              "minimum_predicted_risk": 0.029434626756431874,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.03710428592476318,
+              "pointwise_ci_upper": 0.08542546980001352
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.06570018581412593,
+              "mean_observed_loss": 0.10149840090477757,
+              "mean_predicted_risk": 0.05774410096904851,
+              "minimum_predicted_risk": 0.04658048630663747,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.071338273237591,
+              "pointwise_ci_upper": 0.1354216787462762
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.10606262826528615,
+              "mean_observed_loss": 0.13328470639816573,
+              "mean_predicted_risk": 0.08507349470465034,
+              "minimum_predicted_risk": 0.06774504413545265,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.09052037044575716,
+              "pointwise_ci_upper": 0.18832959557990964
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.46875,
+              "mean_observed_loss": 0.2499903919721551,
+              "mean_predicted_risk": 0.210446972622365,
+              "minimum_predicted_risk": 0.11256862435711554,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.14232137642494405,
+              "pointwise_ci_upper": 0.38543884166031783
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "fives",
+      "model": "clipseg",
+      "num_images": 200,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.6640245782543761,
+              "mean_observed_loss": 0.9190159991766294,
+              "mean_predicted_risk": 0.470005200194134,
+              "minimum_predicted_risk": 0.3053436279296875,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.86538859170907,
+              "pointwise_ci_upper": 0.9663666731856807
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.6891611275123601,
+              "mean_observed_loss": 0.8077863377798659,
+              "mean_predicted_risk": 0.6772684454799236,
+              "minimum_predicted_risk": 0.664345217372307,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.7890340932936323,
+              "pointwise_ci_upper": 0.8273347747542108
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.7110110698282783,
+              "mean_observed_loss": 0.8311974525584647,
+              "mean_predicted_risk": 0.6989433849305534,
+              "minimum_predicted_risk": 0.6892421168898732,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.8143871517050896,
+              "pointwise_ci_upper": 0.8490362139993614
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.7236368170215149,
+              "mean_observed_loss": 0.8595889372394009,
+              "mean_predicted_risk": 0.7186321436930154,
+              "minimum_predicted_risk": 0.7121535694115696,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.8455754768250356,
+              "pointwise_ci_upper": 0.8731287379917114
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.7365569329352796,
+              "mean_observed_loss": 0.846548007434323,
+              "mean_predicted_risk": 0.730116741711835,
+              "minimum_predicted_risk": 0.7243037666103267,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.8309773827391836,
+              "pointwise_ci_upper": 0.8609831753821604
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.7457179505266387,
+              "mean_observed_loss": 0.8720905417099963,
+              "mean_predicted_risk": 0.7410069401823061,
+              "minimum_predicted_risk": 0.7377031810419229,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.8540098517517585,
+              "pointwise_ci_upper": 0.8906295896726738
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.7614809791712386,
+              "mean_observed_loss": 0.8735743721064679,
+              "mean_predicted_risk": 0.7532551883137035,
+              "minimum_predicted_risk": 0.7462757681825584,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.862715106394775,
+              "pointwise_ci_upper": 0.8844586283909908
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.7794271252717604,
+              "mean_observed_loss": 0.8878126966283849,
+              "mean_predicted_risk": 0.7704335324797399,
+              "minimum_predicted_risk": 0.7616710369838355,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.8732171115438764,
+              "pointwise_ci_upper": 0.9038345677095632
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.8046258858879798,
+              "mean_observed_loss": 0.897914693827403,
+              "mean_predicted_risk": 0.7891591122360724,
+              "minimum_predicted_risk": 0.7794292934030751,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.8836999670873303,
+              "pointwise_ci_upper": 0.9108059968937596
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.9752557408779603,
+              "mean_observed_loss": 0.9578755806445928,
+              "mean_predicted_risk": 0.8640805676813468,
+              "minimum_predicted_risk": 0.8148671790535604,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.9471624543154246,
+              "pointwise_ci_upper": 0.9682953641324235
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.3612370003219597,
+              "mean_observed_loss": 0.4907689082458061,
+              "mean_predicted_risk": 0.336770275862053,
+              "minimum_predicted_risk": 0.30972093605400886,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.3439454727490467,
+              "pointwise_ci_upper": 0.6409515401143929
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.38753653109365027,
+              "mean_observed_loss": 0.36714991420853543,
+              "mean_predicted_risk": 0.3771300171163567,
+              "minimum_predicted_risk": 0.3645524771149786,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.2554038183855805,
+              "pointwise_ci_upper": 0.49652446581151694
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.4069958705558252,
+              "mean_observed_loss": 0.3118259660419479,
+              "mean_predicted_risk": 0.39823472762388845,
+              "minimum_predicted_risk": 0.3902242624280037,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.278792951018912,
+              "pointwise_ci_upper": 0.3475803678059323
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.4187365454915972,
+              "mean_observed_loss": 0.3092418259435828,
+              "mean_predicted_risk": 0.4126652244645901,
+              "minimum_predicted_risk": 0.4071970144626551,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.27287192723837667,
+              "pointwise_ci_upper": 0.3430749247091832
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.42637613698691407,
+              "mean_observed_loss": 0.3113792167895226,
+              "mean_predicted_risk": 0.4220673504267577,
+              "minimum_predicted_risk": 0.41887586751125255,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.2815163217634662,
+              "pointwise_ci_upper": 0.3430543770795615
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.4441407907697362,
+              "mean_observed_loss": 0.4204401322571402,
+              "mean_predicted_risk": 0.43508088080145857,
+              "minimum_predicted_risk": 0.4264126153751909,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.34690192956482185,
+              "pointwise_ci_upper": 0.5229529235633587
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.4637891207061785,
+              "mean_observed_loss": 0.3578885258035514,
+              "mean_predicted_risk": 0.4547793891253272,
+              "minimum_predicted_risk": 0.4442446982489997,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.31504677944804843,
+              "pointwise_ci_upper": 0.3962890588911553
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.48485265833563196,
+              "mean_observed_loss": 0.41226869786488224,
+              "mean_predicted_risk": 0.4732249335940124,
+              "minimum_predicted_risk": 0.46412905761368156,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.33259527515620485,
+              "pointwise_ci_upper": 0.5169218960148503
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.5192466018535451,
+              "mean_observed_loss": 0.3864382031141904,
+              "mean_predicted_risk": 0.5023469928723309,
+              "minimum_predicted_risk": 0.48719841746583586,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.3515236630392966,
+              "pointwise_ci_upper": 0.42200293792190197
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.7196237682179232,
+              "mean_observed_loss": 0.4235972182184268,
+              "mean_predicted_risk": 0.5675289158878547,
+              "minimum_predicted_risk": 0.5195241180569747,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.3872657744707434,
+              "pointwise_ci_upper": 0.45772394794913684
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.29942862254275043,
+              "mean_observed_loss": 0.1925750349619958,
+              "mean_predicted_risk": 0.2838811707874499,
+              "minimum_predicted_risk": 0.2525454621874008,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.1689696609031749,
+              "pointwise_ci_upper": 0.21875960581127485
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.3189387542165292,
+              "mean_observed_loss": 0.378250011030587,
+              "mean_predicted_risk": 0.311431410257459,
+              "minimum_predicted_risk": 0.3019088802721649,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.25461707151521196,
+              "pointwise_ci_upper": 0.5277171968563816
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.33388969455653605,
+              "mean_observed_loss": 0.21885962048514113,
+              "mean_predicted_risk": 0.32739112312682966,
+              "minimum_predicted_risk": 0.3191787564603662,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.19237893166906306,
+              "pointwise_ci_upper": 0.24457666191207209
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.34921042058276636,
+              "mean_observed_loss": 0.29181862723135965,
+              "mean_predicted_risk": 0.34252209291731317,
+              "minimum_predicted_risk": 0.33398124216174646,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.20164323788811453,
+              "pointwise_ci_upper": 0.41005421074894294
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.36059034848005733,
+              "mean_observed_loss": 0.2564776432840545,
+              "mean_predicted_risk": 0.354953898976546,
+              "minimum_predicted_risk": 0.3492108709736057,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.22852166467782345,
+              "pointwise_ci_upper": 0.2850233000035088
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.37154227147557983,
+              "mean_observed_loss": 0.2258985148554439,
+              "mean_predicted_risk": 0.3664050053634763,
+              "minimum_predicted_risk": 0.3611272226314587,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.19363764017272633,
+              "pointwise_ci_upper": 0.26137050171084714
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.3992477080602393,
+              "mean_observed_loss": 0.39349417322499713,
+              "mean_predicted_risk": 0.38483356709076133,
+              "minimum_predicted_risk": 0.3748601680818013,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.28819565259281804,
+              "pointwise_ci_upper": 0.523652928752291
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.42633202363407663,
+              "mean_observed_loss": 0.26559228949396546,
+              "mean_predicted_risk": 0.41307093901920017,
+              "minimum_predicted_risk": 0.3999231419075882,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.2269929195010346,
+              "pointwise_ci_upper": 0.3029535296592886
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.46009536333759415,
+              "mean_observed_loss": 0.37190032644460314,
+              "mean_predicted_risk": 0.43982070242602667,
+              "minimum_predicted_risk": 0.4274455790063823,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.28937268175290026,
+              "pointwise_ci_upper": 0.48214535650945156
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.6976109888892803,
+              "mean_observed_loss": 0.41325641929784734,
+              "mean_predicted_risk": 0.524189289132369,
+              "minimum_predicted_risk": 0.4604803004046617,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.33001299852324817,
+              "pointwise_ci_upper": 0.5157934337286553
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "fives",
+      "model": "deeplabv3",
+      "num_images": 200,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.37278539875968547,
+              "mean_observed_loss": 0.38141293350060057,
+              "mean_predicted_risk": 0.3209293930692455,
+              "minimum_predicted_risk": 0.004410482117918973,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.31527920452528846,
+              "pointwise_ci_upper": 0.4717467105816102
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.39123060089744166,
+              "mean_observed_loss": 0.3824086160730132,
+              "mean_predicted_risk": 0.3837352780982355,
+              "minimum_predicted_risk": 0.3733819208176499,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.34951664565046653,
+              "pointwise_ci_upper": 0.43884117981557424
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.40088092881175597,
+              "mean_observed_loss": 0.42581012792841805,
+              "mean_predicted_risk": 0.39738369553537456,
+              "minimum_predicted_risk": 0.3915234365263035,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.37895960173372945,
+              "pointwise_ci_upper": 0.490886673685216
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.41427700561762626,
+              "mean_observed_loss": 0.3830034513213647,
+              "mean_predicted_risk": 0.4075532753856891,
+              "minimum_predicted_risk": 0.4010665892937951,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.37338785653625434,
+              "pointwise_ci_upper": 0.39383928194017764
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.42458133677572435,
+              "mean_observed_loss": 0.417898720882928,
+              "mean_predicted_risk": 0.4195130360617684,
+              "minimum_predicted_risk": 0.4148631409660092,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.40437846320284876,
+              "pointwise_ci_upper": 0.43220133092115237
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.43603097172517685,
+              "mean_observed_loss": 0.4105632713406484,
+              "mean_predicted_risk": 0.4298191749803971,
+              "minimum_predicted_risk": 0.42459711075106804,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.40239339836122023,
+              "pointwise_ci_upper": 0.41854724517343556
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.4467073296255129,
+              "mean_observed_loss": 0.4316341426512393,
+              "mean_predicted_risk": 0.44194326708642545,
+              "minimum_predicted_risk": 0.43781724083919193,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.4202674575308257,
+              "pointwise_ci_upper": 0.44342026280129554
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.4576675733560627,
+              "mean_observed_loss": 0.45052635910424355,
+              "mean_predicted_risk": 0.4518119758456514,
+              "minimum_predicted_risk": 0.4470692349996181,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.438726804128391,
+              "pointwise_ci_upper": 0.46401077797485696
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.47910680555421553,
+              "mean_observed_loss": 0.4487203032305394,
+              "mean_predicted_risk": 0.46816026527645294,
+              "minimum_predicted_risk": 0.4583000661908126,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.42714792497414317,
+              "pointwise_ci_upper": 0.46719915510015736
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.8369983117861202,
+              "mean_observed_loss": 0.5679209861876074,
+              "mean_predicted_risk": 0.5314324906200989,
+              "minimum_predicted_risk": 0.485250115624673,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.5148841586381361,
+              "pointwise_ci_upper": 0.6361786659943305
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.08895409785235198,
+              "mean_observed_loss": 0.08461712474807907,
+              "mean_predicted_risk": 0.07869855602829733,
+              "minimum_predicted_risk": 0.007056393965087922,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.06578165063027282,
+              "pointwise_ci_upper": 0.11384994511346348
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.09717037183483856,
+              "mean_observed_loss": 0.09065370326656223,
+              "mean_predicted_risk": 0.09368881507442481,
+              "minimum_predicted_risk": 0.09023869242767942,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0695940754229236,
+              "pointwise_ci_upper": 0.11983814192351026
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.10136967665916885,
+              "mean_observed_loss": 0.0786872051751569,
+              "mean_predicted_risk": 0.09957168452339342,
+              "minimum_predicted_risk": 0.0973519888012437,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0710733526672423,
+              "pointwise_ci_upper": 0.08671584648547781
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.1054911323509346,
+              "mean_observed_loss": 0.08186824092206132,
+              "mean_predicted_risk": 0.10353155996544787,
+              "minimum_predicted_risk": 0.10138215700518868,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.07203048995690886,
+              "pointwise_ci_upper": 0.09405214623089585
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.11002512750870744,
+              "mean_observed_loss": 0.10627621006180317,
+              "mean_predicted_risk": 0.10803208199999567,
+              "minimum_predicted_risk": 0.10556672210486974,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.08662556657456115,
+              "pointwise_ci_upper": 0.13345890776311356
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.11586730828747975,
+              "mean_observed_loss": 0.08471752491749143,
+              "mean_predicted_risk": 0.11300956081980702,
+              "minimum_predicted_risk": 0.11004799382947869,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.07276024028584581,
+              "pointwise_ci_upper": 0.09953956629398797
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.1253429700371831,
+              "mean_observed_loss": 0.0959888096788513,
+              "mean_predicted_risk": 0.11989455301136065,
+              "minimum_predicted_risk": 0.11605086616718921,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.08342736791562459,
+              "pointwise_ci_upper": 0.11066047024470117
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.13730250264164906,
+              "mean_observed_loss": 0.12329653318730174,
+              "mean_predicted_risk": 0.13121230589962246,
+              "minimum_predicted_risk": 0.12549202980913415,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.10277273032201778,
+              "pointwise_ci_upper": 0.1480291852483126
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.15901396534594542,
+              "mean_observed_loss": 0.11659419778818987,
+              "mean_predicted_risk": 0.14715032773353048,
+              "minimum_predicted_risk": 0.13740474447689294,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.10448518324314117,
+              "pointwise_ci_upper": 0.13009874023944942
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.5633256134201743,
+              "mean_observed_loss": 0.18023206199241232,
+              "mean_predicted_risk": 0.21694958523915803,
+              "minimum_predicted_risk": 0.15985660611446326,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.14252480102707524,
+              "pointwise_ci_upper": 0.22313657043330665
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.035406968202895704,
+              "mean_observed_loss": 0.04705748871329362,
+              "mean_predicted_risk": 0.02947381068030666,
+              "minimum_predicted_risk": 0.003938201524857938,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.022252959797071193,
+              "pointwise_ci_upper": 0.0801856251223871
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.03828228787460559,
+              "mean_observed_loss": 0.04103446619304314,
+              "mean_predicted_risk": 0.03704071255492304,
+              "minimum_predicted_risk": 0.0358024084544345,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.026547903982713998,
+              "pointwise_ci_upper": 0.06565685958690635
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.04124644468363542,
+              "mean_observed_loss": 0.033573994260109444,
+              "mean_predicted_risk": 0.03991011493854026,
+              "minimum_predicted_risk": 0.03836949668019658,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.02802932010980493,
+              "pointwise_ci_upper": 0.04075270298275227
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.04547851787393609,
+              "mean_observed_loss": 0.03041353274309856,
+              "mean_predicted_risk": 0.04361245233010456,
+              "minimum_predicted_risk": 0.04128039164306505,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.027328289589011047,
+              "pointwise_ci_upper": 0.033317991086689924
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.047572977883860904,
+              "mean_observed_loss": 0.036334427612357334,
+              "mean_predicted_risk": 0.04663308958415939,
+              "minimum_predicted_risk": 0.045605023977397616,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.03152547079232564,
+              "pointwise_ci_upper": 0.0415397168644308
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.051832953553361885,
+              "mean_observed_loss": 0.04067258667281272,
+              "mean_predicted_risk": 0.049757961471067404,
+              "minimum_predicted_risk": 0.048054767165960466,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.03223306677690787,
+              "pointwise_ci_upper": 0.05139489782378415
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.060152873349528874,
+              "mean_observed_loss": 0.03508191648046588,
+              "mean_predicted_risk": 0.05521898145935776,
+              "minimum_predicted_risk": 0.05207607219560934,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.031216798457052147,
+              "pointwise_ci_upper": 0.03931124100936227
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.06647098175635599,
+              "mean_observed_loss": 0.04005909454951864,
+              "mean_predicted_risk": 0.06379348491496636,
+              "minimum_predicted_risk": 0.06068062396200566,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.034966967278181244,
+              "pointwise_ci_upper": 0.04610276565655796
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.07610027695240616,
+              "mean_observed_loss": 0.050371435942348365,
+              "mean_predicted_risk": 0.07112008317661123,
+              "minimum_predicted_risk": 0.06666295966558508,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.042471004416303124,
+              "pointwise_ci_upper": 0.058964165396229916
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.5472732313862971,
+              "mean_observed_loss": 0.10253845620367105,
+              "mean_predicted_risk": 0.13428799751094922,
+              "minimum_predicted_risk": 0.07646527675794884,
+              "num_images": 20,
+              "pointwise_ci_lower": 0.0670514697607742,
+              "pointwise_ci_upper": 0.14911813802457843
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "isic",
+      "model": "clipseg",
+      "num_images": 1000,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.04423536888240811,
+              "mean_observed_loss": 0.05010743825297541,
+              "mean_predicted_risk": 0.03507941607808178,
+              "minimum_predicted_risk": 0.007666970669083016,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.04056035490119164,
+              "pointwise_ci_upper": 0.06091220585452217
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.05176385757091737,
+              "mean_observed_loss": 0.05923287908320941,
+              "mean_predicted_risk": 0.0481855304665502,
+              "minimum_predicted_risk": 0.044315016113193564,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.052846992060939874,
+              "pointwise_ci_upper": 0.0656477993026901
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.05823749803491056,
+              "mean_observed_loss": 0.06775377270380417,
+              "mean_predicted_risk": 0.054752142863261515,
+              "minimum_predicted_risk": 0.05177296063737887,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.062190364936708833,
+              "pointwise_ci_upper": 0.0734692495426298
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.06396793056652476,
+              "mean_observed_loss": 0.08103092903121571,
+              "mean_predicted_risk": 0.06099578238913674,
+              "minimum_predicted_risk": 0.058256380124857406,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.07411494845289944,
+              "pointwise_ci_upper": 0.08826461357062
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.07213418735886301,
+              "mean_observed_loss": 0.09151917326311143,
+              "mean_predicted_risk": 0.06823543937190396,
+              "minimum_predicted_risk": 0.06397197198951911,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.0823448353959169,
+              "pointwise_ci_upper": 0.10098571542396798
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.08295920010154907,
+              "mean_observed_loss": 0.111650813327074,
+              "mean_predicted_risk": 0.07735695313886623,
+              "minimum_predicted_risk": 0.07216652504330498,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.09838912534231445,
+              "pointwise_ci_upper": 0.12667065932634697
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.09761807410969608,
+              "mean_observed_loss": 0.1258531445201313,
+              "mean_predicted_risk": 0.08981087399187558,
+              "minimum_predicted_risk": 0.08300626650946367,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.10941761492808574,
+              "pointwise_ci_upper": 0.14467557085057303
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.12197545058617171,
+              "mean_observed_loss": 0.14479199869516773,
+              "mean_predicted_risk": 0.10897830237399438,
+              "minimum_predicted_risk": 0.09770532622523147,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.12819278832274028,
+              "pointwise_ci_upper": 0.16374343792444576
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.16393744380619998,
+              "mean_observed_loss": 0.17031363275096367,
+              "mean_predicted_risk": 0.13878207760839623,
+              "minimum_predicted_risk": 0.12226938302528541,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.1527811025849079,
+              "pointwise_ci_upper": 0.19016305767316555
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.6748819721536259,
+              "mean_observed_loss": 0.3042471501527832,
+              "mean_predicted_risk": 0.2599779009183284,
+              "minimum_predicted_risk": 0.16512391150438302,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.2656937561344842,
+              "pointwise_ci_upper": 0.3459704049610626
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.013330199723005268,
+              "mean_observed_loss": 0.018370665425571333,
+              "mean_predicted_risk": 0.01130048262648362,
+              "minimum_predicted_risk": 0.007737976622466745,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.01643371986978968,
+              "pointwise_ci_upper": 0.02092065300015864
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.016511004472146856,
+              "mean_observed_loss": 0.022205298480720916,
+              "mean_predicted_risk": 0.014982309603472195,
+              "minimum_predicted_risk": 0.013372573754838812,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.02054640987953082,
+              "pointwise_ci_upper": 0.024010195112196542
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.021303490354575478,
+              "mean_observed_loss": 0.027606020020909904,
+              "mean_predicted_risk": 0.018661551988422332,
+              "minimum_predicted_risk": 0.01657634635178034,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.025475293076773205,
+              "pointwise_ci_upper": 0.029762416718219175
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.026507266627286925,
+              "mean_observed_loss": 0.03382237102861851,
+              "mean_predicted_risk": 0.0235579967429395,
+              "minimum_predicted_risk": 0.021310784480927658,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.029905812578201976,
+              "pointwise_ci_upper": 0.039204594234340466
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.03434697865392364,
+              "mean_observed_loss": 0.04108679891413912,
+              "mean_predicted_risk": 0.02995627752157435,
+              "minimum_predicted_risk": 0.02662321066981317,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.03763360744759002,
+              "pointwise_ci_upper": 0.04471307471017859
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.04668334840415997,
+              "mean_observed_loss": 0.06594330275997724,
+              "mean_predicted_risk": 0.04022214929230805,
+              "minimum_predicted_risk": 0.03451084969406414,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.05625147655846115,
+              "pointwise_ci_upper": 0.07701012114082482
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.06372930066680565,
+              "mean_observed_loss": 0.08251367087590152,
+              "mean_predicted_risk": 0.05490180864383421,
+              "minimum_predicted_risk": 0.04669761266023173,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.07178279224161466,
+              "pointwise_ci_upper": 0.09408205726122615
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.08503283324864847,
+              "mean_observed_loss": 0.09352028095701488,
+              "mean_predicted_risk": 0.0736628880385573,
+              "minimum_predicted_risk": 0.06414959401377462,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.08364170628732581,
+              "pointwise_ci_upper": 0.10310428797659653
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.115563751164268,
+              "mean_observed_loss": 0.1270236020458134,
+              "mean_predicted_risk": 0.10053972129089658,
+              "minimum_predicted_risk": 0.08620463580300748,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.11493810384680095,
+              "pointwise_ci_upper": 0.1397681230513394
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.39051171104769755,
+              "mean_observed_loss": 0.19424909732850046,
+              "mean_predicted_risk": 0.16366953367293602,
+              "minimum_predicted_risk": 0.11600789149886921,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.1754192381889907,
+              "pointwise_ci_upper": 0.21301374045796861
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.009912344879156898,
+              "mean_observed_loss": 0.013268005591080328,
+              "mean_predicted_risk": 0.008826770109751286,
+              "minimum_predicted_risk": 0.005912534198356745,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.012046578820007503,
+              "pointwise_ci_upper": 0.014877422780553708
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.011865832529258557,
+              "mean_observed_loss": 0.016575588928528756,
+              "mean_predicted_risk": 0.010982903687157992,
+              "minimum_predicted_risk": 0.009915066374618753,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.015262999071815704,
+              "pointwise_ci_upper": 0.01791140295450615
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.014281238823593874,
+              "mean_observed_loss": 0.019989040519904692,
+              "mean_predicted_risk": 0.01298394342154907,
+              "minimum_predicted_risk": 0.011895692010913554,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.018519787909462744,
+              "pointwise_ci_upper": 0.021539819628275832
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.017438465974556394,
+              "mean_observed_loss": 0.024678890510510865,
+              "mean_predicted_risk": 0.015728923832934963,
+              "minimum_predicted_risk": 0.01431092477591114,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.021635262193880372,
+              "pointwise_ci_upper": 0.02874747967747513
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.02190076490686032,
+              "mean_observed_loss": 0.029331834399855632,
+              "mean_predicted_risk": 0.019355774124363366,
+              "minimum_predicted_risk": 0.017446851673969012,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.026750266258757066,
+              "pointwise_ci_upper": 0.03194576295299037
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.029434824861825238,
+              "mean_observed_loss": 0.050497066122696645,
+              "mean_predicted_risk": 0.025310143968854764,
+              "minimum_predicted_risk": 0.021933387832544254,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.0406928196781469,
+              "pointwise_ci_upper": 0.06119304137819886
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.040601815009328426,
+              "mean_observed_loss": 0.058824264066119014,
+              "mean_predicted_risk": 0.03456829471416412,
+              "minimum_predicted_risk": 0.02944239745980337,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.05045098050022109,
+              "pointwise_ci_upper": 0.06779789091318751
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.054931506520953445,
+              "mean_observed_loss": 0.07035624697271933,
+              "mean_predicted_risk": 0.046912013679064335,
+              "minimum_predicted_risk": 0.04060314458791425,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.06279226611429538,
+              "pointwise_ci_upper": 0.07831050521023505
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.07679864546850519,
+              "mean_observed_loss": 0.09300929279290032,
+              "mean_predicted_risk": 0.0653466315782452,
+              "minimum_predicted_risk": 0.05497994429780183,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.08282464390646335,
+              "pointwise_ci_upper": 0.1043358191050176
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.37086127413853454,
+              "mean_observed_loss": 0.15101237594949887,
+              "mean_predicted_risk": 0.11983882499829461,
+              "minimum_predicted_risk": 0.07707029890826814,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.13370807943263177,
+              "pointwise_ci_upper": 0.16940361889853717
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "isic",
+      "model": "deeplabv3",
+      "num_images": 1000,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.037083704418980415,
+              "mean_observed_loss": 0.033627448015899425,
+              "mean_predicted_risk": 0.028254703987391352,
+              "minimum_predicted_risk": 0.004521740936918404,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.027957664680354082,
+              "pointwise_ci_upper": 0.04120683006304327
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.045156426032583165,
+              "mean_observed_loss": 0.056010606494401566,
+              "mean_predicted_risk": 0.04147669590404192,
+              "minimum_predicted_risk": 0.03717839318763799,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.046390362513519474,
+              "pointwise_ci_upper": 0.068694195084006
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.052254848195089514,
+              "mean_observed_loss": 0.06747760583190289,
+              "mean_predicted_risk": 0.048811096096795986,
+              "minimum_predicted_risk": 0.045233877366690274,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.056498235115159536,
+              "pointwise_ci_upper": 0.08188908270054178
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.059165238926053805,
+              "mean_observed_loss": 0.07438038113718899,
+              "mean_predicted_risk": 0.05567221762753154,
+              "minimum_predicted_risk": 0.05238150828754508,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.0655491974330698,
+              "pointwise_ci_upper": 0.08450540368976249
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.06860065266251453,
+              "mean_observed_loss": 0.08575396109334368,
+              "mean_predicted_risk": 0.0641154172432922,
+              "minimum_predicted_risk": 0.05935427298886969,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.07565813954776503,
+              "pointwise_ci_upper": 0.09664627623764771
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.07930238781898684,
+              "mean_observed_loss": 0.08876181162736944,
+              "mean_predicted_risk": 0.07396525502625911,
+              "minimum_predicted_risk": 0.06864759452795072,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.07948327365487749,
+              "pointwise_ci_upper": 0.09859333478997154
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.0952286603826154,
+              "mean_observed_loss": 0.11398138646841682,
+              "mean_predicted_risk": 0.08642476697314404,
+              "minimum_predicted_risk": 0.07954435765998563,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.09885914899336436,
+              "pointwise_ci_upper": 0.13194591121391758
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.12130721332542885,
+              "mean_observed_loss": 0.14068900092599698,
+              "mean_predicted_risk": 0.10620191464245325,
+              "minimum_predicted_risk": 0.095288347408127,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.12334047193271397,
+              "pointwise_ci_upper": 0.16117838927389141
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.17424939829106814,
+              "mean_observed_loss": 0.20551415895946432,
+              "mean_predicted_risk": 0.14204180309965872,
+              "minimum_predicted_risk": 0.12230077012036415,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.17979293467553462,
+              "pointwise_ci_upper": 0.23377570704192002
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.8855517959827552,
+              "mean_observed_loss": 0.4088055879309244,
+              "mean_predicted_risk": 0.3275517675157561,
+              "minimum_predicted_risk": 0.17993755909566328,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.3579653264675506,
+              "pointwise_ci_upper": 0.4600007451763165
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.010352586589116097,
+              "mean_observed_loss": 0.01534589318630245,
+              "mean_predicted_risk": 0.008088357791766832,
+              "minimum_predicted_risk": 0.0046363043173785114,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.013775319636753044,
+              "pointwise_ci_upper": 0.01720301504110683
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.016041035993787527,
+              "mean_observed_loss": 0.02225743671094873,
+              "mean_predicted_risk": 0.013247277419417263,
+              "minimum_predicted_risk": 0.010364718995474753,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.020471255052286308,
+              "pointwise_ci_upper": 0.0241155887354161
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.0204102819823412,
+              "mean_observed_loss": 0.029141260868487735,
+              "mean_predicted_risk": 0.01817101541410264,
+              "minimum_predicted_risk": 0.01604547653301513,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.026281667937540058,
+              "pointwise_ci_upper": 0.03228667540012029
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.027387626517672736,
+              "mean_observed_loss": 0.03671707535099959,
+              "mean_predicted_risk": 0.02362947788656344,
+              "minimum_predicted_risk": 0.020465123577940406,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.030518586842486747,
+              "pointwise_ci_upper": 0.04511646924383653
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.03417707890365353,
+              "mean_observed_loss": 0.042111272331155664,
+              "mean_predicted_risk": 0.030482952160688703,
+              "minimum_predicted_risk": 0.027411565006585974,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.038005719318148105,
+              "pointwise_ci_upper": 0.046519635092373765
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.047601437322293286,
+              "mean_observed_loss": 0.06149760615139713,
+              "mean_predicted_risk": 0.03990059456509701,
+              "minimum_predicted_risk": 0.0342199436556755,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.05234129202976318,
+              "pointwise_ci_upper": 0.07221091552290157
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.06619154811033426,
+              "mean_observed_loss": 0.08155378990780368,
+              "mean_predicted_risk": 0.055844659039487585,
+              "minimum_predicted_risk": 0.047709878692018946,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.06943029440421032,
+              "pointwise_ci_upper": 0.09448068292296415
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.09432822694487306,
+              "mean_observed_loss": 0.11230304148099071,
+              "mean_predicted_risk": 0.08055647939156954,
+              "minimum_predicted_risk": 0.06642226101926779,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.09785428198492016,
+              "pointwise_ci_upper": 0.12686235090311274
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.1558708281916326,
+              "mean_observed_loss": 0.1440734939703786,
+              "mean_predicted_risk": 0.12171738091388569,
+              "minimum_predicted_risk": 0.09514708560243715,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.1240113247551533,
+              "pointwise_ci_upper": 0.1642111997682613
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.8191061193553633,
+              "mean_observed_loss": 0.28688332650913745,
+              "mean_predicted_risk": 0.2425170284740426,
+              "minimum_predicted_risk": 0.15615335715795164,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.2540356921053852,
+              "pointwise_ci_upper": 0.32322555626447946
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.00837518739012863,
+              "mean_observed_loss": 0.010806349764697269,
+              "mean_predicted_risk": 0.006835495418010759,
+              "minimum_predicted_risk": 0.004152415739740877,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.009748083652283577,
+              "pointwise_ci_upper": 0.011962457660825116
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.011817045542705348,
+              "mean_observed_loss": 0.015510106292059794,
+              "mean_predicted_risk": 0.010170351490660092,
+              "minimum_predicted_risk": 0.008394361753455174,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.014072276136828557,
+              "pointwise_ci_upper": 0.017071464137852623
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.01496702217837859,
+              "mean_observed_loss": 0.020670883465128263,
+              "mean_predicted_risk": 0.013184919365535326,
+              "minimum_predicted_risk": 0.0118445950997998,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.01886660095471787,
+              "pointwise_ci_upper": 0.022619049604082536
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.018960854330680992,
+              "mean_observed_loss": 0.023483926370872366,
+              "mean_predicted_risk": 0.017126247082021283,
+              "minimum_predicted_risk": 0.01499782324169815,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.020847115386692847,
+              "pointwise_ci_upper": 0.02636057655090649
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.024463409802913623,
+              "mean_observed_loss": 0.03424107372818678,
+              "mean_predicted_risk": 0.021667263065344375,
+              "minimum_predicted_risk": 0.018962446845941974,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.027479757953377894,
+              "pointwise_ci_upper": 0.043223302883371395
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.03220565698960125,
+              "mean_observed_loss": 0.0495906416610047,
+              "mean_predicted_risk": 0.027808135034571205,
+              "minimum_predicted_risk": 0.024477257519595917,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.04147333371848651,
+              "pointwise_ci_upper": 0.05889739962896817
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.045601182112391,
+              "mean_observed_loss": 0.05774426654088726,
+              "mean_predicted_risk": 0.03899143690236957,
+              "minimum_predicted_risk": 0.03239320352056919,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.0491930077960655,
+              "pointwise_ci_upper": 0.06734332831644635
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.06321431677853304,
+              "mean_observed_loss": 0.08227446359232539,
+              "mean_predicted_risk": 0.053624522021425126,
+              "minimum_predicted_risk": 0.04563009476415197,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.06989013646638684,
+              "pointwise_ci_upper": 0.09616490766037519
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.10763051688548535,
+              "mean_observed_loss": 0.11488152958190798,
+              "mean_predicted_risk": 0.08183943437855183,
+              "minimum_predicted_risk": 0.06346580444512716,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.09603628271630144,
+              "pointwise_ci_upper": 0.13595195458788992
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.7639021490211356,
+              "mean_observed_loss": 0.2326436989365966,
+              "mean_predicted_risk": 0.18585769593214635,
+              "minimum_predicted_risk": 0.10799496499603753,
+              "num_images": 100,
+              "pointwise_ci_lower": 0.19783335418744377,
+              "pointwise_ci_upper": 0.27088505914409944
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "clipseg-target",
+      "dataset": "tn3k",
+      "model": "clipseg",
+      "num_images": 614,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.09427801305472146,
+              "mean_observed_loss": 0.0648494318426828,
+              "mean_predicted_risk": 0.07623069448073051,
+              "minimum_predicted_risk": 0.048960911035719576,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.056567532107829485,
+              "pointwise_ci_upper": 0.07427155892142792
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.12899618312237926,
+              "mean_observed_loss": 0.10514488739221486,
+              "mean_predicted_risk": 0.11046137247179018,
+              "minimum_predicted_risk": 0.09443131816557762,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.0837133080163305,
+              "pointwise_ci_upper": 0.14113116275410065
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.17328528926624806,
+              "mean_observed_loss": 0.15243533644650026,
+              "mean_predicted_risk": 0.15097290501340288,
+              "minimum_predicted_risk": 0.12959262199188232,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.1239115695622802,
+              "pointwise_ci_upper": 0.18687944050128408
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.217426614576469,
+              "mean_observed_loss": 0.1902653237684817,
+              "mean_predicted_risk": 0.19624858848642132,
+              "minimum_predicted_risk": 0.17383152958662246,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.15143625514186107,
+              "pointwise_ci_upper": 0.23752195559795658
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.25786609730175236,
+              "mean_observed_loss": 0.25619535404155797,
+              "mean_predicted_risk": 0.23925065200733478,
+              "minimum_predicted_risk": 0.218226144880878,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.214665458460563,
+              "pointwise_ci_upper": 0.3041786572451128
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.32287980336536226,
+              "mean_observed_loss": 0.3039030809823476,
+              "mean_predicted_risk": 0.2879193843365357,
+              "minimum_predicted_risk": 0.2583993802004708,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.25101851769474737,
+              "pointwise_ci_upper": 0.36573999824151004
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.3788981263241352,
+              "mean_observed_loss": 0.46767306066648695,
+              "mean_predicted_risk": 0.3526589236404296,
+              "minimum_predicted_risk": 0.32343252795037336,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.39235345714716885,
+              "pointwise_ci_upper": 0.5450678529128155
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.46997818985417333,
+              "mean_observed_loss": 0.4199226954720949,
+              "mean_predicted_risk": 0.4239686433740552,
+              "minimum_predicted_risk": 0.3792636706911156,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.3442732912363809,
+              "pointwise_ci_upper": 0.501766648641132
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.577337781314197,
+              "mean_observed_loss": 0.4492555689991381,
+              "mean_predicted_risk": 0.5144042100100343,
+              "minimum_predicted_risk": 0.47022875915499884,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.38456433422002034,
+              "pointwise_ci_upper": 0.5222764955606364
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.9734811383691573,
+              "mean_observed_loss": 0.6978247075353939,
+              "mean_predicted_risk": 0.7138480925527415,
+              "minimum_predicted_risk": 0.5782603560880054,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.6318609809634831,
+              "pointwise_ci_upper": 0.7572523672936704
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.03957824646222162,
+              "mean_observed_loss": 0.026935108600083905,
+              "mean_predicted_risk": 0.030266696147398606,
+              "minimum_predicted_risk": 0.01643587655737091,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.024080410807819117,
+              "pointwise_ci_upper": 0.029926070384679353
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.05639235423005047,
+              "mean_observed_loss": 0.0628927407698329,
+              "mean_predicted_risk": 0.04876734340886719,
+              "minimum_predicted_risk": 0.039633086724922925,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.051292963264215216,
+              "pointwise_ci_upper": 0.07666772788359913
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.07126273735851689,
+              "mean_observed_loss": 0.07334519354936996,
+              "mean_predicted_risk": 0.06405403473383137,
+              "minimum_predicted_risk": 0.05661094403220956,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.05733820515562318,
+              "pointwise_ci_upper": 0.09116364812863978
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.08545361019113012,
+              "mean_observed_loss": 0.08802340918952808,
+              "mean_predicted_risk": 0.0780900830713968,
+              "minimum_predicted_risk": 0.07134728967530363,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.07493966253964152,
+              "pointwise_ci_upper": 0.10260959655708324
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.10941039285707158,
+              "mean_observed_loss": 0.1213310213605582,
+              "mean_predicted_risk": 0.09579719372548083,
+              "minimum_predicted_risk": 0.08624885769477644,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.09313135989810248,
+              "pointwise_ci_upper": 0.1628221304538848
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.13450251480880615,
+              "mean_observed_loss": 0.11454861774422925,
+              "mean_predicted_risk": 0.12184163393408871,
+              "minimum_predicted_risk": 0.10954887025234544,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.09544151422108646,
+              "pointwise_ci_upper": 0.13436940540795803
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.1795748454137371,
+              "mean_observed_loss": 0.1558654713649196,
+              "mean_predicted_risk": 0.15661913781224224,
+              "minimum_predicted_risk": 0.13476956473770774,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.12654160032898584,
+              "pointwise_ci_upper": 0.18910823699782325
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.24978095532361907,
+              "mean_observed_loss": 0.15148086245415315,
+              "mean_predicted_risk": 0.21640293336751687,
+              "minimum_predicted_risk": 0.18247215481696683,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.11632508331899365,
+              "pointwise_ci_upper": 0.193615888281579
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.35829902511036904,
+              "mean_observed_loss": 0.21607379153764744,
+              "mean_predicted_risk": 0.30383742495422644,
+              "minimum_predicted_risk": 0.25008382884807445,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.15228711455752536,
+              "pointwise_ci_upper": 0.2909866785377744
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.6546137714404703,
+              "mean_observed_loss": 0.4416294588315626,
+              "mean_predicted_risk": 0.4468567117059785,
+              "minimum_predicted_risk": 0.3585101345348127,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.34629209780844217,
+              "pointwise_ci_upper": 0.5420673832495245
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.028020788595876513,
+              "mean_observed_loss": 0.022090002889606282,
+              "mean_predicted_risk": 0.022142420348433185,
+              "minimum_predicted_risk": 0.013233161204939704,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.019344651144051327,
+              "pointwise_ci_upper": 0.02537324325361939
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.03914106538775628,
+              "mean_observed_loss": 0.044000318740810465,
+              "mean_predicted_risk": 0.03375085058136337,
+              "minimum_predicted_risk": 0.028341056344448202,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.03476324272084304,
+              "pointwise_ci_upper": 0.05554003650765684
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.0515529563821266,
+              "mean_observed_loss": 0.059282752515112294,
+              "mean_predicted_risk": 0.04569850179047053,
+              "minimum_predicted_risk": 0.039403712689167716,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.04858415184498271,
+              "pointwise_ci_upper": 0.07115164830306553
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.061865085546366924,
+              "mean_observed_loss": 0.07517513432903658,
+              "mean_predicted_risk": 0.05698171808759932,
+              "minimum_predicted_risk": 0.051695707150590006,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.05993871258254085,
+              "pointwise_ci_upper": 0.09129760092136593
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.08445905620044902,
+              "mean_observed_loss": 0.09126225092268161,
+              "mean_predicted_risk": 0.07249482890368836,
+              "minimum_predicted_risk": 0.06225773948155806,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.07348926448216711,
+              "pointwise_ci_upper": 0.11190702901295893
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.10875876429443128,
+              "mean_observed_loss": 0.11257669054178408,
+              "mean_predicted_risk": 0.0963938234532638,
+              "minimum_predicted_risk": 0.08499971428950374,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.08159841238240925,
+              "pointwise_ci_upper": 0.15344850648323335
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.15740885764042964,
+              "mean_observed_loss": 0.13314032673284779,
+              "mean_predicted_risk": 0.1321560808615406,
+              "minimum_predicted_risk": 0.10934320476355154,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.10493921698403434,
+              "pointwise_ci_upper": 0.16699962269131582
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.2293318862381322,
+              "mean_observed_loss": 0.12326866822079535,
+              "mean_predicted_risk": 0.19565442557947285,
+              "minimum_predicted_risk": 0.15851422227319248,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.09082967661005248,
+              "pointwise_ci_upper": 0.16460501895020496
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.34375,
+              "mean_observed_loss": 0.1429483957669364,
+              "mean_predicted_risk": 0.2818522832527775,
+              "minimum_predicted_risk": 0.22956102802780726,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.0949358911987121,
+              "pointwise_ci_upper": 0.20286713592654032
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.6332879139425875,
+              "mean_observed_loss": 0.4796147568212663,
+              "mean_predicted_risk": 0.43507339177492693,
+              "minimum_predicted_risk": 0.34375,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.3723879464282179,
+              "pointwise_ci_upper": 0.5885821539926032
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    },
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "tn3k",
+      "model": "deeplabv3",
+      "num_images": 614,
+      "panels": [
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.052256319383691976,
+              "mean_observed_loss": 0.052754402485040056,
+              "mean_predicted_risk": 0.04336900990442236,
+              "minimum_predicted_risk": 0.02784172088715076,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.03415810723381606,
+              "pointwise_ci_upper": 0.08594129991145968
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.06778974142137964,
+              "mean_observed_loss": 0.052053864193111254,
+              "mean_predicted_risk": 0.060378413409598576,
+              "minimum_predicted_risk": 0.0528335747080941,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.04714445937936717,
+              "pointwise_ci_upper": 0.05752955838783866
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.08233102803816943,
+              "mean_observed_loss": 0.06799540229425992,
+              "mean_predicted_risk": 0.07434646925507342,
+              "minimum_predicted_risk": 0.06819307665294053,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.05962845909211422,
+              "pointwise_ci_upper": 0.07746001964010724
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.10018725559465012,
+              "mean_observed_loss": 0.10174686845496926,
+              "mean_predicted_risk": 0.0914833766480845,
+              "minimum_predicted_risk": 0.08235301439666899,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.07962850491507299,
+              "pointwise_ci_upper": 0.1431722911613318
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.12047981913480729,
+              "mean_observed_loss": 0.11506972020054378,
+              "mean_predicted_risk": 0.10974473132876868,
+              "minimum_predicted_risk": 0.10026963939285274,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.09701202327613684,
+              "pointwise_ci_upper": 0.13593634192507292
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.1532951060419949,
+              "mean_observed_loss": 0.13133707339709777,
+              "mean_predicted_risk": 0.1337832128509916,
+              "minimum_predicted_risk": 0.12048365531772773,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.10608639864939977,
+              "pointwise_ci_upper": 0.1700691853205599
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.18688074319265605,
+              "mean_observed_loss": 0.1753278860483652,
+              "mean_predicted_risk": 0.16824403094258872,
+              "minimum_predicted_risk": 0.15344309707701795,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.14143863358807002,
+              "pointwise_ci_upper": 0.21633230714500148
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.23263480183029037,
+              "mean_observed_loss": 0.22937429818973,
+              "mean_predicted_risk": 0.2079307222027675,
+              "minimum_predicted_risk": 0.18725291685066084,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.1901809261823482,
+              "pointwise_ci_upper": 0.2744639386732076
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.345511794090271,
+              "mean_observed_loss": 0.3038321252830394,
+              "mean_predicted_risk": 0.2775145522747284,
+              "minimum_predicted_risk": 0.23360022031470817,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.2515908103016814,
+              "pointwise_ci_upper": 0.3616537593670876
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.9797698768851805,
+              "mean_observed_loss": 0.6142730709733153,
+              "mean_predicted_risk": 0.5488542596241432,
+              "minimum_predicted_risk": 0.3458727503463079,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.5365184975362166,
+              "pointwise_ci_upper": 0.6899986847827445
+            }
+          ],
+          "loss_label": "Dice",
+          "observed_loss_field": "risk_dice",
+          "predicted_risk_definition": "-confidence_dice_exact",
+          "score_field": "confidence_dice_exact",
+          "score_label": "Dice-Exact"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.014149213924030174,
+              "mean_observed_loss": 0.01732351579619481,
+              "mean_predicted_risk": 0.01036909234673334,
+              "minimum_predicted_risk": 0.0060431935563176505,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.012477478840542634,
+              "pointwise_ci_upper": 0.02400777812068806
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.02215791474073578,
+              "mean_observed_loss": 0.022058966205840295,
+              "mean_predicted_risk": 0.018395314394823593,
+              "minimum_predicted_risk": 0.014232655249996728,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.018241328166347735,
+              "pointwise_ci_upper": 0.02702940643203699
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.030274317709289327,
+              "mean_observed_loss": 0.027698938208520135,
+              "mean_predicted_risk": 0.02613886069647647,
+              "minimum_predicted_risk": 0.022267655619293274,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.023949028501734766,
+              "pointwise_ci_upper": 0.031606889993138154
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.037446107932304115,
+              "mean_observed_loss": 0.05417727374390818,
+              "mean_predicted_risk": 0.03383423926905524,
+              "minimum_predicted_risk": 0.030420661754486246,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.03188256328693677,
+              "pointwise_ci_upper": 0.09185587462846438
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.047969285845169185,
+              "mean_observed_loss": 0.0666275884618953,
+              "mean_predicted_risk": 0.0423199456887168,
+              "minimum_predicted_risk": 0.03745886895095055,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.05053410592345641,
+              "pointwise_ci_upper": 0.08573182151011147
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.06187804952677379,
+              "mean_observed_loss": 0.06575768729506706,
+              "mean_predicted_risk": 0.054552019945567215,
+              "minimum_predicted_risk": 0.047990573276408086,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.05413265337036954,
+              "pointwise_ci_upper": 0.08040228041500938
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.07770559359396592,
+              "mean_observed_loss": 0.07365587480655593,
+              "mean_predicted_risk": 0.06940454810268495,
+              "minimum_predicted_risk": 0.06214603039994816,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.05921472342111277,
+              "pointwise_ci_upper": 0.08832036454943784
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.09940680116213796,
+              "mean_observed_loss": 0.11229973208646886,
+              "mean_predicted_risk": 0.08804080122258887,
+              "minimum_predicted_risk": 0.07771502379152162,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.082465366175591,
+              "pointwise_ci_upper": 0.1532251843120945
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.16404288519376298,
+              "mean_observed_loss": 0.17202610137639077,
+              "mean_predicted_risk": 0.12625159407946301,
+              "minimum_predicted_risk": 0.10013380415071749,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.12912258725764794,
+              "pointwise_ci_upper": 0.22338231820078688
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.8262529156075333,
+              "mean_observed_loss": 0.27374802905219375,
+              "mean_predicted_risk": 0.31435280088589657,
+              "minimum_predicted_risk": 0.16753997073261115,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.20337965534061006,
+              "pointwise_ci_upper": 0.35052728874411254
+            }
+          ],
+          "loss_label": "nHD",
+          "observed_loss_field": "risk_nhd",
+          "predicted_risk_definition": "-confidence_nhd_m32",
+          "score_field": "confidence_nhd_m32",
+          "score_label": "nHD-M32"
+        },
+        {
+          "bins": [
+            {
+              "bin_index": 1,
+              "maximum_predicted_risk": 0.011442275728426555,
+              "mean_observed_loss": 0.013843159808680361,
+              "mean_predicted_risk": 0.008359952210065778,
+              "minimum_predicted_risk": 0.005313993392570772,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.009780362433861134,
+              "pointwise_ci_upper": 0.019311379133132488
+            },
+            {
+              "bin_index": 2,
+              "maximum_predicted_risk": 0.016113378545432256,
+              "mean_observed_loss": 0.01759581393067152,
+              "mean_predicted_risk": 0.013689696096743026,
+              "minimum_predicted_risk": 0.011455525960342904,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.014599392358878714,
+              "pointwise_ci_upper": 0.021337802164456725
+            },
+            {
+              "bin_index": 3,
+              "maximum_predicted_risk": 0.021747782000451167,
+              "mean_observed_loss": 0.020612323041835048,
+              "mean_predicted_risk": 0.018669803817072443,
+              "minimum_predicted_risk": 0.01639041761530628,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.01762689089330309,
+              "pointwise_ci_upper": 0.02414554260535445
+            },
+            {
+              "bin_index": 4,
+              "maximum_predicted_risk": 0.02675980723110888,
+              "mean_observed_loss": 0.031862862263429007,
+              "mean_predicted_risk": 0.024242941955971094,
+              "minimum_predicted_risk": 0.022050143744291033,
+              "num_images": 62,
+              "pointwise_ci_lower": 0.026915076432698,
+              "pointwise_ci_upper": 0.03753730700873227
+            },
+            {
+              "bin_index": 5,
+              "maximum_predicted_risk": 0.03443544332667014,
+              "mean_observed_loss": 0.06077467299807143,
+              "mean_predicted_risk": 0.030291971595528204,
+              "minimum_predicted_risk": 0.02679414214319221,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.033609270352861036,
+              "pointwise_ci_upper": 0.09892502234769747
+            },
+            {
+              "bin_index": 6,
+              "maximum_predicted_risk": 0.04589422704219945,
+              "mean_observed_loss": 0.06458178711681616,
+              "mean_predicted_risk": 0.03939248326500683,
+              "minimum_predicted_risk": 0.03458073443093087,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.05066026190189556,
+              "pointwise_ci_upper": 0.08078171180015521
+            },
+            {
+              "bin_index": 7,
+              "maximum_predicted_risk": 0.05825152431970182,
+              "mean_observed_loss": 0.0689776411305654,
+              "mean_predicted_risk": 0.05200849118252773,
+              "minimum_predicted_risk": 0.04589970538629322,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.053825613394647184,
+              "pointwise_ci_upper": 0.08509629795578218
+            },
+            {
+              "bin_index": 8,
+              "maximum_predicted_risk": 0.07558651938124046,
+              "mean_observed_loss": 0.07175307481155037,
+              "mean_predicted_risk": 0.06527398757462588,
+              "minimum_predicted_risk": 0.05873234164443534,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.053373786341996826,
+              "pointwise_ci_upper": 0.09446575311580678
+            },
+            {
+              "bin_index": 9,
+              "maximum_predicted_risk": 0.14416342981741778,
+              "mean_observed_loss": 0.1354407842859972,
+              "mean_predicted_risk": 0.10236330131868522,
+              "minimum_predicted_risk": 0.07698796295399477,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.10071313570768134,
+              "pointwise_ci_upper": 0.17862582054515858
+            },
+            {
+              "bin_index": 10,
+              "maximum_predicted_risk": 0.8188989035724512,
+              "mean_observed_loss": 0.28633326121199226,
+              "mean_predicted_risk": 0.2978138279062144,
+              "minimum_predicted_risk": 0.14566960870050197,
+              "num_images": 61,
+              "pointwise_ci_lower": 0.2092521989484399,
+              "pointwise_ci_upper": 0.3710322715277945
+            }
+          ],
+          "loss_label": "nHD95",
+          "observed_loss_field": "risk_nhd95",
+          "predicted_risk_definition": "-confidence_nhd95_m32",
+          "score_field": "confidence_nhd95_m32",
+          "score_label": "nHD95-M32"
+        }
+      ]
+    }
+  ],
+  "protocol": {
+    "bootstrap_resamples": 2000,
+    "bootstrap_seed": 20260720,
+    "bootstrap_unit": "image resampled with replacement within each fixed bin",
+    "confidence_level": 0.95,
+    "grouping": "ten equal-count bins ordered by ascending predicted working risk and then sample_id; exact risk ties may span adjacent bins",
+    "interval": "pointwise equal-tail percentile interval for mean observed loss",
+    "matched_pairs": [
+      {
+        "loss_label": "Dice",
+        "observed_loss_field": "risk_dice",
+        "predicted_risk_definition": "-confidence_dice_exact",
+        "score_field": "confidence_dice_exact",
+        "score_label": "Dice-Exact"
+      },
+      {
+        "loss_label": "nHD",
+        "observed_loss_field": "risk_nhd",
+        "predicted_risk_definition": "-confidence_nhd_m32",
+        "score_field": "confidence_nhd_m32",
+        "score_label": "nHD-M32"
+      },
+      {
+        "loss_label": "nHD95",
+        "observed_loss_field": "risk_nhd95",
+        "predicted_risk_definition": "-confidence_nhd95_m32",
+        "score_field": "confidence_nhd95_m32",
+        "score_label": "nHD95-M32"
+      }
+    ],
+    "num_bins": 10
+  },
+  "provenance": {
+    "canonical_validation": {
+      "analysis_source_sha256": "6d1c22d0291935f0f542a2dab345ba8b452a206b600b480948225a783e7d75fb",
+      "binding": "campaign-lock",
+      "campaign_id": "binary-midpoint-main-v1",
+      "campaign_lock": {
+        "logical_name": "campaign.lock.json",
+        "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323"
+      },
+      "config_sha256": "36229c9e8fd245ec6391d528e9129e09a93d9074d9fa70544eea9d78a524c76a",
+      "inputs": [
+        {
+          "artifact_id": "cb5c08e73819574c",
+          "assembly_run_id": "74db5fc8c0672236",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-general/74db5fc8c0672236",
+          "manifest_sha256": "8d4ab2401962a6b0091e81f056d0beb179a580b4b9914953b496f126b9fdf459",
+          "num_samples": 200,
+          "records_sha256": "1ed5642002afcfed3a6a664e1a729301c7c63d7c9d9f8ee8920b229737945113",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "ef8e1b5176b92b87",
+          "assembly_run_id": "627922c22aa3aa21",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-target/627922c22aa3aa21",
+          "manifest_sha256": "6c480ccf6c4bda06c1dabc0077068dfa74734f223c5265978b7d9bb3c1cd2582",
+          "num_samples": 200,
+          "records_sha256": "53b64a4db8d6c65f2011c306da7a2866ac9ccafae50db569ddffb89694bf55da",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "e7e1e90e13ce3dfa",
+          "assembly_run_id": "a62d754378787146",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "fives",
+          "logical_id": "fives/deeplabv3-target/a62d754378787146",
+          "manifest_sha256": "3ba69d0db78bd9a26f4a7ae691ec7b9b531cdd84f5286793f0f059cd6265f04c",
+          "num_samples": 200,
+          "records_sha256": "682d628f273ccb99b77e629d9d6221e235dcc1817676c8373a44d6007386a53d",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "3e57aa259264c1be",
+          "assembly_run_id": "500bf2dd2f3564b2",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-general/500bf2dd2f3564b2",
+          "manifest_sha256": "8d35cfaf2ad7c764d93de245b1d8b9a0a8c6a454cc116c1626ac23018627c8fb",
+          "num_samples": 1000,
+          "records_sha256": "a879ad5b3002da79cc8e51426644de0f75aecad5f3f978bd0a06447e515fe0bd",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "a5d30aa0ec8b0742",
+          "assembly_run_id": "69fc681ff737f148",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-target/69fc681ff737f148",
+          "manifest_sha256": "ce9650af9919d408beba56f073cf77499a44cd411e153beb63971645d57535a6",
+          "num_samples": 1000,
+          "records_sha256": "719ba2ce4c86a26d7bf794068176fa0e3060f9c0c0b6928b94129fdb1671a273",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "48cf75646c61ecf4",
+          "assembly_run_id": "a42288ea78a340b1",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "isic",
+          "logical_id": "isic/deeplabv3-target/a42288ea78a340b1",
+          "manifest_sha256": "3404ed6cbcce55b8b519aaa2fd13a51b558d1dd3cc54e3e4600ae4b298610e02",
+          "num_samples": 1000,
+          "records_sha256": "c8717241ed1d2cf370fcd19dd8168680174cebb18b529ad3ca76bce9315845f3",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "eb7304bdd945035d",
+          "assembly_run_id": "8f5786edfc8d5993",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-general/8f5786edfc8d5993",
+          "manifest_sha256": "91c6ad4fdb6c7052918ff789509d9a555a14b2dbd8f79e97548d19f3b7659901",
+          "num_samples": 200,
+          "records_sha256": "3769b2cf04397136cb994c612b5bf5dcab5d2aa56b0f3bcef16df6f3b60dafca",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "7ce9cddd0f9704fd",
+          "assembly_run_id": "1a1c02b968ab86a4",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-target/1a1c02b968ab86a4",
+          "manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+          "num_samples": 200,
+          "records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "be7dedef6990d54c",
+          "assembly_run_id": "5cca940975b7f02d",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/deeplabv3-target/5cca940975b7f02d",
+          "manifest_sha256": "abb21d5d0c4d9d66c5480d71a71f1e1e33636f50b3e850557a92aa6f6fc212f6",
+          "num_samples": 200,
+          "records_sha256": "c210e787e37f241a9e0d0f306b51dcf3b24d2d15ea634c3e8ee581647eafaab4",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "e0d454ce916c5ca9",
+          "assembly_run_id": "88d2033138fc971a",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-general/88d2033138fc971a",
+          "manifest_sha256": "0850f7003911e783f54eaa48dad02666f9f55f5cbfaa753dc55c9ddfcf461b19",
+          "num_samples": 3669,
+          "records_sha256": "c94aaf290566fc85ec2eb6b56c3b1f13040579892e61c7334666ab68c3523f7f",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "7261edbb5f763435",
+          "assembly_run_id": "cd4341aaed2bda20",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-target/cd4341aaed2bda20",
+          "manifest_sha256": "d510aabf2d35321c77184b4bed66ed15c6f4602e38caff61632116a40b29b4e4",
+          "num_samples": 3669,
+          "records_sha256": "e07c768031e2843355512e9b9f15afef1d4e400852975f5631e17b38bf01ba44",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "640ef98bcd028dc3",
+          "assembly_run_id": "014bfe3ad787f51e",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-external",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-external/014bfe3ad787f51e",
+          "manifest_sha256": "97fa1c473d22203243a86a427379467862bc6ccc03c4e8b9a802dc5a5c2b5566",
+          "num_samples": 3669,
+          "records_sha256": "643faf11a0e6ae033943c44a0bd582bd3d9706a5794371c6ba07ad1bba9ad1ec",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "ced4dc6e67bc178f",
+          "assembly_run_id": "fd2f61c609c18fba",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-target/fd2f61c609c18fba",
+          "manifest_sha256": "33135196a6b2609ff4c80ef5b524e17b512b4b899b87b451f8298abdafceb235",
+          "num_samples": 3669,
+          "records_sha256": "cbaf7656084e3350ff3d47453ab1f2997e0bae17dd561a6b8427f9e4d269a1fc",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "9626e945ef94b1e5",
+          "assembly_run_id": "4faed2465c790f8c",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-general/4faed2465c790f8c",
+          "manifest_sha256": "3fe5b5d44e8687a886b61814b4648d32599f0c66a958d43463a6c611034c14e2",
+          "num_samples": 614,
+          "records_sha256": "6c02ca495f4d52279c26db05b11539cb9e749a63b5d7c71fcdd850a21de2c792",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "603dc94883b5f395",
+          "assembly_run_id": "eccb8f4f045a5473",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-target/eccb8f4f045a5473",
+          "manifest_sha256": "48b7ff7699fba82b2b348ea00fe4b8c32d6d23e272d90f2d04735a110bf81269",
+          "num_samples": 614,
+          "records_sha256": "66eba5b5a80ca8d6daf0866b81ddc96916ed918bbf97bfe67fd5df71f24ac453",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "efce266864cd5269",
+          "assembly_run_id": "01b4c3a58986cf27",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/deeplabv3-target/01b4c3a58986cf27",
+          "manifest_sha256": "8e6dc4173fb838f5f28779af3f2a1ff5df3cce4f08e8aa43a7c086b5ccf2cee8",
+          "num_samples": 614,
+          "records_sha256": "29762b78cdd4713ab460c88beab6b00e4e9315fbac88c6ce6b7f858653ae7dfb",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        }
+      ]
+    },
+    "workflow_source_sha256": "ef51b041e51c6dc79ba9dc447e863e58f46400d77bff1af386533fedd6accbd1"
+  },
+  "schema_version": 1,
+  "scope": {
+    "interval_limitation": "intervals are pointwise within-bin image-bootstrap intervals, not simultaneous confidence bands",
+    "label_use": "held-out labels form fixed-bin means and intervals only; they do not fit, tune, or select a score, action threshold, bin count, or image",
+    "posterior_limitation": "one reference mask per image cannot establish pointwise conditional-risk calibration or validate the shared-threshold posterior",
+    "status": "single-label descriptive reliability diagnostic"
+  }
+}

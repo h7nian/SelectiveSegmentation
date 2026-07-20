@@ -1,0 +1,13 @@
+{
+  "export_schema_version": 1,
+  "portable": {
+    "path": "outputs/public_auxiliary/runtime_ladder_v2_analysis.json",
+    "sha256": "db4aef5f7e869484ba729da61fe360e9e39c6d7d5ea889fc80dfd98be1e9d6d9"
+  },
+  "rewritten_absolute_path_count": 33,
+  "source": {
+    "path": "outputs/binary_runtime_ladder_v2_analysis/analysis.json",
+    "sha256": "3a96cd3636bdd3de0855cca27e5e59be9a3710b13e1b9836677ff390f9f11f4f"
+  },
+  "transformation": "repository_absolute_paths_to_relative_posix_v1"
+}
