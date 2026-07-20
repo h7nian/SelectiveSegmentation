@@ -310,7 +310,7 @@ Slurm arrays or multi-experiment jobs are used.
    The qualitative renderer keeps the immutable content-addressed package and
    can also publish verified stable filenames for the manuscript. It checks
    the selection, render manifest, and every panel digest before replacing the
-   six generated paper files:
+   seven generated paper files (five panels, one TeX guard, and one manifest):
 
    ```bash
    python -m scripts.render_binary_qualitative_cases \

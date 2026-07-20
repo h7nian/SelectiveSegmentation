@@ -8,12 +8,14 @@ import json
 import numpy as np
 import pytest
 
+from scripts import render_binary_qualitative_cases as qualitative_renderer
 from scripts.render_binary_qualitative_cases import (
     ARTIFACT_TYPE as RENDER_ARTIFACT_TYPE,
     CELL_SIZE,
     HEADER_HEIGHT,
     LEFT_MARGIN,
     ROW_HEIGHT,
+    _safe_payload_path,
     compose_dataset_panel,
     load_selected_arrays,
     publish_manuscript_package,
@@ -175,11 +177,12 @@ def _write_minimal_selection(path):
     return report, hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def test_manuscript_publisher_verifies_render_and_records_full_source_digests(tmp_path):
-    selection_path = tmp_path / "selection.json"
-    selection, selection_sha = _write_minimal_selection(selection_path)
-    render_id = "0123456789abcdef"
-    render_dir = tmp_path / render_id
+def _write_minimal_render_package(root, selection, selection_sha):
+    renderer_sha = "d" * 64
+    render_id = hashlib.sha256(
+        (selection_sha + "\0" + renderer_sha).encode("ascii")
+    ).hexdigest()[:16]
+    render_dir = root / render_id
     render_dir.mkdir()
     images = []
     for dataset in DATASET_ORDER:
@@ -200,11 +203,21 @@ def test_manuscript_publisher_verifies_render_and_records_full_source_digests(tm
         "render_id": render_id,
         "selection_id": selection["selection_id"],
         "selection_sha256": selection_sha,
-        "renderer_source_sha256": "d" * 64,
+        "renderer_source_sha256": renderer_sha,
         "images": images,
     }
     manifest_path = render_dir / "render_manifest.json"
     manifest_path.write_text(json.dumps(manifest, sort_keys=True) + "\n")
+    return render_id, manifest_path
+
+
+def test_manuscript_publisher_verifies_render_and_records_full_source_digests(tmp_path):
+    selection_path = tmp_path / "selection.json"
+    selection, selection_sha = _write_minimal_selection(selection_path)
+    render_id, manifest_path = _write_minimal_render_package(
+        tmp_path, selection, selection_sha
+    )
+    render_dir = manifest_path.parent
 
     outputs = publish_manuscript_package(
         manifest_path, selection_path, tmp_path / "paper"
@@ -233,6 +246,86 @@ def test_manuscript_publisher_verifies_render_and_records_full_source_digests(tm
         publish_manuscript_package(manifest_path, selection_path, tmp_path / "paper")
 
 
+def test_manuscript_publisher_is_fail_closed_if_replacement_is_interrupted(
+    tmp_path, monkeypatch
+):
+    selection_path = tmp_path / "selection.json"
+    selection, selection_sha = _write_minimal_selection(selection_path)
+    _, manifest_path = _write_minimal_render_package(tmp_path, selection, selection_sha)
+    paper_dir = tmp_path / "paper"
+    publish_manuscript_package(manifest_path, selection_path, paper_dir)
+    assert (paper_dir / "qualitative_cases.tex").is_file()
+    assert (paper_dir / "qualitative_manifest.json").is_file()
+
+    real_replace = qualitative_renderer.os.replace
+
+    def interrupted_replace(source, target):
+        if target.name == "qualitative_kvasir.png":
+            raise OSError("injected publication interruption")
+        return real_replace(source, target)
+
+    monkeypatch.setattr(qualitative_renderer.os, "replace", interrupted_replace)
+    with pytest.raises(OSError, match="injected publication interruption"):
+        publish_manuscript_package(manifest_path, selection_path, paper_dir)
+
+    assert not (paper_dir / "qualitative_cases.tex").exists()
+    assert not (paper_dir / "qualitative_manifest.json").exists()
+
+
+def test_manuscript_publisher_rejects_render_id_not_bound_to_source(tmp_path):
+    selection_path = tmp_path / "selection.json"
+    selection, selection_sha = _write_minimal_selection(selection_path)
+    renderer_sha = "d" * 64
+    mismatched_id = "0123456789abcdef"
+    assert (
+        mismatched_id
+        != hashlib.sha256(
+            (selection_sha + "\0" + renderer_sha).encode("ascii")
+        ).hexdigest()[:16]
+    )
+    render_dir = tmp_path / mismatched_id
+    render_dir.mkdir()
+    manifest_path = render_dir / "render_manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "artifact_type": RENDER_ARTIFACT_TYPE,
+                "render_id": mismatched_id,
+                "selection_id": selection["selection_id"],
+                "selection_sha256": selection_sha,
+                "renderer_source_sha256": renderer_sha,
+                "images": [],
+            },
+            sort_keys=True,
+        )
+        + "\n"
+    )
+
+    with pytest.raises(ValueError, match="selection/source content address"):
+        publish_manuscript_package(manifest_path, selection_path, tmp_path / "paper")
+
+
+def test_safe_payload_path_rejects_symlinked_ancestor_and_escape(tmp_path):
+    root = tmp_path / "artifact"
+    root.mkdir()
+    inside = root / "inside"
+    inside.mkdir()
+    payload = inside / "sample.npz"
+    payload.write_bytes(b"payload")
+    (root / "linked-inside").symlink_to(inside, target_is_directory=True)
+
+    with pytest.raises(ValueError, match="traverses a symlink"):
+        _safe_payload_path(root, "linked-inside/sample.npz")
+
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "sample.npz").write_bytes(b"payload")
+    (root / "linked-outside").symlink_to(outside, target_is_directory=True)
+    with pytest.raises(ValueError, match="escapes the artifact directory"):
+        _safe_payload_path(root, "linked-outside/sample.npz")
+
+
 def _write_artifact(root):
     probability = np.array([[0.1, 0.9], [0.7, 0.2]], dtype=np.float32)
     truth = np.array([[0, 1], [1, 0]], dtype=np.uint8)
@@ -244,7 +337,11 @@ def _write_artifact(root):
         split="test",
         class_index=1,
         class_name="lesion",
-        checkpoint={"path": "outputs/checkpoint.pt", "sha256": "a" * 64, "size_bytes": 1},
+        checkpoint={
+            "path": "outputs/checkpoint.pt",
+            "sha256": "a" * 64,
+            "size_bytes": 1,
+        },
         base_model={"name": "clipseg", "source": "vendor/model"},
         source_sha256="b" * 64,
         environment={

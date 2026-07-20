@@ -117,20 +117,23 @@ def _load_selection(path: str | os.PathLike[str]) -> tuple[Path, dict[str, Any]]
     }:
         raise ValueError("selection does not bind the canonical 16/10/5 scope")
     datasets = report.get("datasets")
-    if not isinstance(datasets, list) or [item.get("dataset") for item in datasets] != list(
-        DATASET_ORDER
-    ):
+    if not isinstance(datasets, list) or [
+        item.get("dataset") for item in datasets
+    ] != list(DATASET_ORDER):
         raise ValueError("selection datasets are absent or out of canonical order")
     for dataset in datasets:
         cases = dataset.get("cases")
-        if not isinstance(cases, list) or [case.get("case_type") for case in cases] != list(
-            CASE_ORDER
-        ):
+        if not isinstance(cases, list) or [
+            case.get("case_type") for case in cases
+        ] != list(CASE_ORDER):
             raise ValueError("selection cases are absent or out of declared order")
         for case in cases:
             if case.get("status") not in {"selected", "unavailable"}:
                 raise ValueError("case status must be selected or unavailable")
-            if case["status"] == "selected" and case.get("dataset") != dataset["dataset"]:
+            if (
+                case["status"] == "selected"
+                and case.get("dataset") != dataset["dataset"]
+            ):
                 raise ValueError("selected case dataset differs from its group")
     return source.resolve(), report
 
@@ -159,13 +162,33 @@ def _safe_payload_path(artifact_dir: Path, relative: str) -> Path:
     pure = PurePosixPath(relative)
     if pure.is_absolute() or ".." in pure.parts or pure.suffix != ".npz":
         raise ValueError(f"unsafe selected payload path {relative!r}")
-    path = artifact_dir.joinpath(*pure.parts)
+    artifact_dir = Path(artifact_dir)
+    if artifact_dir.is_symlink():
+        raise ValueError(
+            f"selected artifact root must not be a symlink: {artifact_dir}"
+        )
+    root = artifact_dir.resolve()
+    path = root.joinpath(*pure.parts)
+    resolved = path.resolve(strict=False)
+    try:
+        resolved.relative_to(root)
+    except ValueError as error:
+        raise ValueError(
+            f"selected payload path escapes the artifact directory: {relative!r}"
+        ) from error
+    cursor = root
+    for part in pure.parts[:-1]:
+        cursor = cursor / part
+        if cursor.is_symlink():
+            raise ValueError(f"selected payload path traverses a symlink: {cursor}")
     if not path.is_file() or path.is_symlink():
         raise FileNotFoundError(f"selected payload is not a regular file: {path}")
     return path
 
 
-def load_selected_arrays(case: Mapping[str, Any]) -> tuple[np.ndarray, np.ndarray, dict]:
+def load_selected_arrays(
+    case: Mapping[str, Any],
+) -> tuple[np.ndarray, np.ndarray, dict]:
     """Load one selected payload after validating every bound identity and hash."""
 
     provenance = case.get("provenance")
@@ -207,19 +230,25 @@ def load_selected_arrays(case: Mapping[str, Any]) -> tuple[np.ndarray, np.ndarra
         raise ValueError("selected arrays differ from recorded native shape")
     if probability.dtype != np.float32 or truth.dtype != np.uint8:
         raise ValueError("selected arrays differ from frozen artifact dtypes")
-    if not np.isfinite(probability).all() or np.any((probability < 0) | (probability > 1)):
+    if not np.isfinite(probability).all() or np.any(
+        (probability < 0) | (probability > 1)
+    ):
         raise ValueError("selected probability values must be finite and in [0, 1]")
     if not np.isin(truth, (0, 1)).all():
         raise ValueError("selected truth must be binary")
-    return probability, truth.astype(bool), {
-        "dataset": case["dataset"],
-        "condition": case["condition"],
-        "sample_id": case["sample_id"],
-        "artifact_id": provenance["artifact_id"],
-        "artifact_manifest_sha256": artifact.manifest_sha256,
-        "payload_path": provenance["sample_payload_path"],
-        "payload_sha256": actual_hash,
-    }
+    return (
+        probability,
+        truth.astype(bool),
+        {
+            "dataset": case["dataset"],
+            "condition": case["condition"],
+            "sample_id": case["sample_id"],
+            "artifact_id": provenance["artifact_id"],
+            "artifact_manifest_sha256": artifact.manifest_sha256,
+            "payload_path": provenance["sample_payload_path"],
+            "payload_sha256": actual_hash,
+        },
+    )
 
 
 def _font(size: int) -> ImageFont.ImageFont:
@@ -259,7 +288,9 @@ def _boundary(mask: Image.Image) -> np.ndarray:
     foreground = np.asarray(mask.convert("L"), dtype=np.uint8) > 127
     eroded = np.asarray(mask.convert("L").filter(ImageFilter.MinFilter(3))) > 127
     edge = foreground & ~eroded
-    thick = Image.fromarray(edge.astype(np.uint8) * 255).filter(ImageFilter.MaxFilter(3))
+    thick = Image.fromarray(edge.astype(np.uint8) * 255).filter(
+        ImageFilter.MaxFilter(3)
+    )
     return np.asarray(thick) > 127
 
 
@@ -394,16 +425,23 @@ def compose_dataset_panel(
             )
         legend_x = LEFT_MARGIN + GAP + 3 * (CELL_SIZE + GAP) + 6
         legend_y = y + CELL_SIZE + 20
-        draw.line((legend_x, legend_y, legend_x + 25, legend_y), fill=(0, 220, 80), width=4)
+        draw.line(
+            (legend_x, legend_y, legend_x + 25, legend_y), fill=(0, 220, 80), width=4
+        )
         draw.text((legend_x + 32, legend_y - 8), "truth", fill="black", font=small_font)
         draw.line(
             (legend_x + 95, legend_y, legend_x + 120, legend_y),
             fill=(235, 30, 190),
             width=4,
         )
-        draw.text((legend_x + 127, legend_y - 8), "action", fill="black", font=small_font)
+        draw.text(
+            (legend_x + 127, legend_y - 8), "action", fill="black", font=small_font
+        )
         if row_index < len(cases) - 1:
-            draw.line((8, y + ROW_HEIGHT - 2, width - 8, y + ROW_HEIGHT - 2), fill=(210, 210, 210))
+            draw.line(
+                (8, y + ROW_HEIGHT - 2, width - 8, y + ROW_HEIGHT - 2),
+                fill=(210, 210, 210),
+            )
     return canvas
 
 
@@ -455,6 +493,18 @@ def _selection_campaign_sha(selection: Mapping[str, Any]) -> str:
     )
 
 
+def _render_id(selection_sha256: str, renderer_source_sha256: str) -> str:
+    """Derive the content address shared by renderer and publisher."""
+
+    selection_sha256 = _sha256_hex(selection_sha256, location="selection_sha256")
+    renderer_source_sha256 = _sha256_hex(
+        renderer_source_sha256, location="renderer_source_sha256"
+    )
+    return hashlib.sha256(
+        (selection_sha256 + "\0" + renderer_source_sha256).encode("ascii")
+    ).hexdigest()[:16]
+
+
 def _render_tex(
     destination: Path,
     selection_id: str,
@@ -471,7 +521,13 @@ def _render_tex(
         rf"\providecommand{{\QualitativeArtifactRoot}}{{{root}}}",
     ]
     for dataset in DATASET_ORDER:
-        display = {"pet": "Oxford Pet", "kvasir": "Kvasir-SEG", "fives": "FIVES", "isic": "ISIC 2018", "tn3k": "TN3K"}[dataset]
+        display = {
+            "pet": "Oxford Pet",
+            "kvasir": "Kvasir-SEG",
+            "fives": "FIVES",
+            "isic": "ISIC 2018",
+            "tn3k": "TN3K",
+        }[dataset]
         pieces.extend(
             [
                 r"\begin{figure*}[t]",
@@ -506,8 +562,7 @@ def _render_manuscript_tex(
     campaign_lock_sha256 = _selection_campaign_sha(selection)
     empty_action_datasets = sum(
         any(
-            case.get("case_type") == "empty_action"
-            and case.get("status") == "selected"
+            case.get("case_type") == "empty_action" and case.get("status") == "selected"
             for case in dataset["cases"]
         )
         for dataset in selection["datasets"]
@@ -552,8 +607,7 @@ def _render_manuscript_tex(
                 "stated post-analysis numerical rules rather than visual appeal and are not "
                 "representative examples. Panels show the probability map, reference truth, "
                 "deployed \\(\\gamma=0.5\\) action, and boundaries over the probability map "
-                "(truth: green; action: magenta; overlap: yellow)."
-                + empty_sentence
+                "(truth: green; action: magenta; overlap: yellow)." + empty_sentence
             )
         else:
             caption = (
@@ -579,9 +633,7 @@ def render_package(
     selection_sha = sha256_file(selection_file)
     campaign_lock_sha = _selection_campaign_sha(selection)
     renderer_sha = _source_sha256()
-    render_id = hashlib.sha256(
-        (selection_sha + "\0" + renderer_sha).encode("ascii")
-    ).hexdigest()[:16]
+    render_id = _render_id(selection_sha, renderer_sha)
     root = (
         Path(output_root)
         if output_root is not None
@@ -660,7 +712,9 @@ def render_package(
             "selected_payloads": sorted(
                 payload_provenance.values(),
                 key=lambda item: (
-                    item["dataset"], item["condition"], item["sample_id"]
+                    item["dataset"],
+                    item["condition"],
+                    item["sample_id"],
                 ),
             ),
             "images": image_records,
@@ -684,7 +738,11 @@ def render_package(
 
 def _load_render_manifest(path: str | os.PathLike[str]) -> tuple[Path, dict[str, Any]]:
     source = Path(path)
-    if source.name != "render_manifest.json" or not source.is_file() or source.is_symlink():
+    if (
+        source.name != "render_manifest.json"
+        or not source.is_file()
+        or source.is_symlink()
+    ):
         raise FileNotFoundError(f"expected a regular render_manifest.json: {source}")
     manifest = json.loads(
         source.read_text(encoding="utf-8"),
@@ -697,17 +755,20 @@ def _load_render_manifest(path: str | os.PathLike[str]) -> tuple[Path, dict[str,
         raise ValueError("render manifest schema version is unsupported")
     if manifest.get("artifact_type") != ARTIFACT_TYPE:
         raise ValueError("render manifest artifact_type is unsupported")
-    render_id = manifest.get("render_id")
-    if not isinstance(render_id, str) or render_id != source.parent.name:
-        raise ValueError("render manifest ID differs from its package directory")
-    _sha256_hex(
+    selection_sha = _sha256_hex(
         manifest.get("selection_sha256"),
         location="render_manifest.selection_sha256",
     )
-    _sha256_hex(
+    renderer_source_sha = _sha256_hex(
         manifest.get("renderer_source_sha256"),
         location="render_manifest.renderer_source_sha256",
     )
+    render_id = manifest.get("render_id")
+    expected_render_id = _render_id(selection_sha, renderer_source_sha)
+    if render_id != expected_render_id or render_id != source.parent.name:
+        raise ValueError(
+            "render manifest ID differs from its selection/source content address"
+        )
     return source.resolve(), manifest
 
 
@@ -729,7 +790,14 @@ def publish_manuscript_package(
     if manifest.get("selection_id") != selection["selection_id"]:
         raise ValueError("render manifest selection_id differs from selection.json")
     if manifest.get("selection_sha256") != selection_sha:
-        raise ValueError("render manifest selection SHA-256 differs from selection.json")
+        raise ValueError(
+            "render manifest selection SHA-256 differs from selection.json"
+        )
+    expected_render_id = _render_id(selection_sha, renderer_source_sha)
+    if manifest.get("render_id") != expected_render_id:
+        raise ValueError(
+            "render manifest ID differs from its selection/source content address"
+        )
 
     images = manifest.get("images")
     if not isinstance(images, list) or [item.get("dataset") for item in images] != list(
@@ -741,7 +809,9 @@ def publish_manuscript_package(
     if destination.is_symlink():
         raise ValueError(f"paper output directory must not be a symlink: {destination}")
     destination.mkdir(parents=True, exist_ok=True)
-    temporary = Path(tempfile.mkdtemp(prefix=".qualitative-paper.tmp-", dir=destination))
+    temporary = Path(
+        tempfile.mkdtemp(prefix=".qualitative-paper.tmp-", dir=destination)
+    )
     staged: list[tuple[Path, Path]] = []
     try:
         for image_record in images:
@@ -807,8 +877,36 @@ def publish_manuscript_package(
         )
         for _, target in staged:
             if target.is_symlink():
-                raise ValueError(f"refusing to replace symlinked manuscript output: {target}")
-        for source, target in staged:
+                raise ValueError(
+                    f"refusing to replace symlinked manuscript output: {target}"
+                )
+            if target.exists() and not target.is_file():
+                raise ValueError(
+                    f"refusing to replace non-file manuscript output: {target}"
+                )
+
+        # ``qualitative_cases.tex`` is the manuscript's visibility guard, and
+        # the public manifest is the mirror validator's guard.  All source
+        # validation and staging above happens while the old bundle is intact;
+        # immediately before publishing any replacement, remove both guards so
+        # an interruption can only leave a fail-closed manuscript package.
+        tex_target = destination / "qualitative_cases.tex"
+        manifest_target = destination / "qualitative_manifest.json"
+        for guard in (tex_target, manifest_target):
+            if guard.exists():
+                guard.unlink()
+
+        # Publish every payload and its hash manifest first, then expose the
+        # TeX guard in one final atomic rename.  The stable-name bundle cannot
+        # be swapped as one directory, but it is never manuscript-visible in a
+        # partially replaced state.
+        publication_order = [
+            item for item in staged if item[1].name != "qualitative_cases.tex"
+        ]
+        publication_order.append(
+            next(item for item in staged if item[1].name == "qualitative_cases.tex")
+        )
+        for source, target in publication_order:
             os.replace(source, target)
     finally:
         if temporary.exists():
