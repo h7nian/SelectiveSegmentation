@@ -23,6 +23,8 @@ points is exactly the AURC reported by ``analyze_binary.py``.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import math
 import os
 import re
@@ -87,6 +89,7 @@ DATASET_ORDER = {
     )
 }
 COMPLETION_MARKER = "risk_coverage_complete.tex"
+RENDER_MANIFEST = "risk_coverage_manifest.json"
 
 
 @dataclass(frozen=True)
@@ -485,6 +488,7 @@ def render_dataset(
     png=False,
     dpi=300,
     all_indexed=False,
+    render_spec_sha256=None,
 ):
     """Render one dataset's three-risk by condition grid."""
 
@@ -589,7 +593,12 @@ def render_dataset(
         mode = "all_indexed_" if all_indexed else ""
         stem = f"risk_coverage_{mode}{_dataset_slug(dataset)}"
         pdf_path = output_dir / f"{stem}.pdf"
-        figure.savefig(pdf_path, format="pdf", metadata=PDF_METADATA)
+        pdf_metadata = dict(PDF_METADATA)
+        if render_spec_sha256 is not None:
+            pdf_metadata["Subject"] = (
+                f"Source render-spec SHA-256 {render_spec_sha256}"
+            )
+        figure.savefig(pdf_path, format="pdf", metadata=pdf_metadata)
         paths = [pdf_path]
         if png:
             png_path = output_dir / f"{stem}.png"
@@ -611,6 +620,7 @@ def render_conditions(
     png=False,
     dpi=300,
     all_indexed=False,
+    render_spec_sha256=None,
 ):
     """Render deterministic dataset figures from validated conditions."""
 
@@ -636,6 +646,7 @@ def render_conditions(
                 png=png,
                 dpi=dpi,
                 all_indexed=all_indexed,
+                render_spec_sha256=render_spec_sha256,
             )
         )
     return tuple(outputs)
@@ -658,6 +669,52 @@ def _atomic_write_text(path, text):
         temporary.unlink(missing_ok=True)
 
 
+def canonical_sha256(value):
+    """Hash one JSON-compatible value deterministically."""
+
+    payload = json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def provenance_sha256(provenance):
+    """Hash the validated, portable source-artifact bundle deterministically."""
+
+    return canonical_sha256(provenance)
+
+
+def _sha256_file(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def publication_render_spec(provenance):
+    source_bundle_sha = provenance_sha256(provenance)
+    outputs = [
+        f"risk_coverage_all_indexed_{dataset}.pdf" for dataset in DATASET_ORDER
+    ]
+    return {
+        "schema_version": 1,
+        "artifact_type": "selectseg.risk_coverage_render_spec",
+        "campaign_lock_sha256": provenance["campaign_lock"]["sha256"],
+        "source_artifact_bundle_sha256": source_bundle_sha,
+        "source_artifact_bundle": provenance,
+        "plot_source_sha256": _sha256_file(__file__),
+        "parameters": {
+            "all_indexed": True,
+            "png": False,
+            "risk_fields": [spec.risk_field for spec in RISK_SPECS],
+            "score_fields": [spec.score_field for spec in RISK_SPECS],
+            "dataset_order": list(DATASET_ORDER),
+        },
+        "outputs": outputs,
+    }
+
+
 def main(argv: Sequence[str] | None = None):
     args = parse_args(argv)
     conditions = load_assembled_conditions(args.inputs)
@@ -670,35 +727,70 @@ def main(argv: Sequence[str] | None = None):
     provenance = None
     if args.campaign_lock is not None:
         provenance = validate_campaign_bound_conditions(conditions, args.campaign_lock)
-    marker = Path(args.output_dir) / COMPLETION_MARKER
-    if not args.allow_incomplete:
-        marker.unlink(missing_ok=True)
-    outputs = render_conditions(
-        conditions,
-        args.output_dir,
-        png=args.png,
-        dpi=args.dpi,
-        all_indexed=args.all_indexed,
-    )
-    for path in outputs:
-        print(f"saved {path}")
+    output_dir = Path(args.output_dir)
+    marker = output_dir / COMPLETION_MARKER
+    manifest_path = output_dir / RENDER_MANIFEST
+    render_spec = None
+    render_spec_sha = None
     if not args.allow_incomplete:
         if not args.all_indexed or args.png:
             raise ValueError(
                 "complete manuscript figures require --all-indexed without --png"
             )
-        expected = {
-            f"risk_coverage_all_indexed_{dataset}.pdf" for dataset in DATASET_ORDER
-        }
-        if {path.name for path in outputs} != expected:
+        render_spec = publication_render_spec(provenance)
+        render_spec_sha = canonical_sha256(render_spec)
+        marker.unlink(missing_ok=True)
+        manifest_path.unlink(missing_ok=True)
+    outputs = render_conditions(
+        conditions,
+        output_dir,
+        png=args.png,
+        dpi=args.dpi,
+        all_indexed=args.all_indexed,
+        render_spec_sha256=render_spec_sha,
+    )
+    for path in outputs:
+        print(f"saved {path}")
+    if not args.allow_incomplete:
+        expected = render_spec["outputs"]
+        if [path.name for path in outputs] != expected:
             raise RuntimeError("publication figure set is incomplete")
         lock_sha = provenance["campaign_lock"]["sha256"]
+        source_bundle_sha = provenance_sha256(provenance)
+        render_manifest = {
+            "schema_version": 1,
+            "artifact_type": "selectseg.risk_coverage_render_manifest",
+            "render_spec_sha256": render_spec_sha,
+            "render_spec": render_spec,
+            "outputs": [
+                {"path": path.name, "sha256": _sha256_file(path)} for path in outputs
+            ],
+        }
+        _atomic_write_text(
+            manifest_path,
+            json.dumps(
+                render_manifest,
+                indent=2,
+                sort_keys=True,
+                ensure_ascii=True,
+                allow_nan=False,
+            )
+            + "\n",
+        )
+        render_manifest_sha = _sha256_file(manifest_path)
         _atomic_write_text(
             marker,
             "% AUTO-GENERATED completion sentinel; DO NOT EDIT.\n"
             f"% Campaign lock SHA-256: {lock_sha}\n"
+            f"% Source artifact bundle SHA-256: {source_bundle_sha}\n"
+            f"% Render spec SHA-256: {render_spec_sha}\n"
+            f"% Render manifest SHA-256: {render_manifest_sha}\n"
+            rf"\def\RiskCoverageSourceBundleSHA{{{source_bundle_sha}}}" + "\n"
+            rf"\def\RiskCoverageRenderSpecSHA{{{render_spec_sha}}}" + "\n"
+            rf"\def\RiskCoverageRenderManifestSHA{{{render_manifest_sha}}}" + "\n"
             rf"\def\RiskCoverageCampaignSHA{{{lock_sha}}}" + "\n",
         )
+        print(f"saved {manifest_path}")
         print(f"saved {marker}")
     return outputs
 

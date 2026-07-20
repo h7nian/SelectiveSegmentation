@@ -15,6 +15,8 @@ from scripts.plot_risk_coverage import (
     condition_curves,
     load_assembled_conditions,
     main,
+    publication_render_spec,
+    provenance_sha256,
     render_conditions,
     tie_aware_risk_coverage_curve,
 )
@@ -23,6 +25,18 @@ from selectseg.binary_framework import tie_aware_expected_aurc
 
 def _sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def test_source_artifact_bundle_digest_is_canonical_and_content_sensitive():
+    first = {"campaign_lock": {"sha256": "a" * 64}, "inputs": [2, 1]}
+    reordered = {"inputs": [2, 1], "campaign_lock": {"sha256": "a" * 64}}
+    changed = {"campaign_lock": {"sha256": "a" * 64}, "inputs": [1, 2]}
+    assert provenance_sha256(first) == provenance_sha256(reordered)
+    assert provenance_sha256(first) != provenance_sha256(changed)
+    spec = publication_render_spec(first)
+    assert spec["source_artifact_bundle"] == first
+    assert spec["source_artifact_bundle_sha256"] == provenance_sha256(first)
+    assert spec["parameters"]["all_indexed"] is True
 
 
 def _rows(run_id="plot-run"):
@@ -201,14 +215,17 @@ def test_all_indexed_mode_contains_the_complete_cross_loss_overlay(tmp_path):
         [condition],
         tmp_path / "all-indexed",
         all_indexed=True,
+        render_spec_sha256="a" * 64,
     )
     repeated = render_conditions(
         [condition],
         tmp_path / "all-indexed-repeat",
         all_indexed=True,
+        render_spec_sha256="a" * 64,
     )
     assert [path.name for path in outputs] == ["risk_coverage_all_indexed_pet.pdf"]
     assert outputs[0].read_bytes().startswith(b"%PDF")
+    assert b"a" * 64 in outputs[0].read_bytes()
     assert outputs[0].read_bytes() == repeated[0].read_bytes()
 
 

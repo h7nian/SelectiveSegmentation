@@ -1,5 +1,6 @@
 """Offline checks for immutable binary-asset acquisition."""
 
+import os
 import sys
 from types import ModuleType
 
@@ -8,6 +9,14 @@ from scripts import download_binary_assets as assets
 
 def test_model_download_pins_both_clipseg_components(monkeypatch, tmp_path):
     calls = []
+
+    # ``download_models`` intentionally redirects the process-wide caches to
+    # DATA_ROOT. Register their current values with monkeypatch first so the
+    # fixture restores them even though the production function assigns via
+    # ``os.environ`` directly. Otherwise this test leaks its temporary cache
+    # into every later model/pipeline test in the same pytest process.
+    monkeypatch.setenv("HF_HOME", os.environ["HF_HOME"])
+    monkeypatch.setenv("TORCH_HOME", os.environ["TORCH_HOME"])
 
     class FakeCLIPSegModel:
         @classmethod

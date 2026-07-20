@@ -307,6 +307,22 @@ Slurm arrays or multi-experiment jobs are used.
      --output-dir docs/Figures --all-indexed
    ```
 
+   The qualitative renderer keeps the immutable content-addressed package and
+   can also publish verified stable filenames for the manuscript. It checks
+   the selection, render manifest, and every panel digest before replacing the
+   six generated paper files:
+
+   ```bash
+   python -m scripts.render_binary_qualitative_cases \
+     --selection outputs/binary_qualitative_cases/<selection-id>/selection.json \
+     --paper-output-dir docs/Figures
+   ```
+
+   To republish an existing immutable render without creating a new one, pass
+   its manifest explicitly with `--render-manifest`. The generated risk-curve
+   sentinel records the complete source-artifact-bundle digest, while the
+   qualitative TeX records the full selection and campaign-lock digests.
+
 The analyzer consumes schema-v2 assembly rows and emits JSON, long-form CSV,
 and a LaTeX table. Its JSON binds the campaign/config SHA-256, analyzer source
 SHA-256, and every assembly manifest, records, sample-order, and cohort digest

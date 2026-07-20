@@ -1,0 +1,36 @@
+{
+  "artifact_type": "selectseg.binary_qualitative_manuscript",
+  "campaign_lock_sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+  "outputs": [
+    {
+      "path": "qualitative_pet.png",
+      "sha256": "b51c41372155409217003c06d4bff2415ab65a85dd54b116f5ef99c3db5eb787"
+    },
+    {
+      "path": "qualitative_kvasir.png",
+      "sha256": "b65d1a665180ce6fff22a4ca488ccee97dc88e5b35d7a8b4f7f94efa09f64243"
+    },
+    {
+      "path": "qualitative_fives.png",
+      "sha256": "9fa9842b566d89aedf7c7e5cfa8ffbd8be2619183d3e9baf8fee271a7b33dd49"
+    },
+    {
+      "path": "qualitative_isic.png",
+      "sha256": "c6a3af3e9c1847e58bc1576821e694d1796688fb5540ab846c4ab8121d644a3a"
+    },
+    {
+      "path": "qualitative_tn3k.png",
+      "sha256": "6a2b0ee71bf9e09786a5687c994a66d11572b738993a0827be4b93187291579a"
+    },
+    {
+      "path": "qualitative_cases.tex",
+      "sha256": "1cc0350b4e777c3402b84f93fd6edd64c64d5787136e3949ed962b44f19bbb6f"
+    }
+  ],
+  "render_id": "b5b43d41dac61b10",
+  "renderer_source_sha256": "a4ace2c442459a803962ad05173bb87ec84ac2b07d01faafbd597540961d0078",
+  "schema_version": 1,
+  "selection_id": "f618c91bfeaa467e",
+  "selection_sha256": "d362eaa45175198cc177d2101d39971ca9d7f16c20e7cfe21b16918fc2619c4c",
+  "source_render_manifest_sha256": "b02485ee7ccd56b0c731585104bea819d5eaee7d437ba7f27c7b76fd01ef0a5b"
+}

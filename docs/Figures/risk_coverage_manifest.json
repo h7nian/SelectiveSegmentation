@@ -1,0 +1,266 @@
+{
+  "artifact_type": "selectseg.risk_coverage_render_manifest",
+  "outputs": [
+    {
+      "path": "risk_coverage_all_indexed_pet.pdf",
+      "sha256": "f0a9a2b036d7bedfc0c6714c6311f4b49692f08251a8c3d10df51d1a9c4da984"
+    },
+    {
+      "path": "risk_coverage_all_indexed_kvasir.pdf",
+      "sha256": "adc6bb32a815a3b2a1453135b45c7d1531c8ae919316c861dd149610c5728e06"
+    },
+    {
+      "path": "risk_coverage_all_indexed_fives.pdf",
+      "sha256": "cc2ecb89699d3e34acee6f7cb10cd7f6357a5ce35c5b6e0e2adf97bcf58c3a75"
+    },
+    {
+      "path": "risk_coverage_all_indexed_isic.pdf",
+      "sha256": "b67227888dba133d5947fa44472a4d9cef51a02220e4494b4e9ea7d8fd02b4e2"
+    },
+    {
+      "path": "risk_coverage_all_indexed_tn3k.pdf",
+      "sha256": "cf08bcfd4700eb869ab9dd5d9f303820c5ccf292b56b8b59bbef3af6c7aadf55"
+    }
+  ],
+  "render_spec": {
+    "artifact_type": "selectseg.risk_coverage_render_spec",
+    "campaign_lock_sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "outputs": [
+      "risk_coverage_all_indexed_pet.pdf",
+      "risk_coverage_all_indexed_kvasir.pdf",
+      "risk_coverage_all_indexed_fives.pdf",
+      "risk_coverage_all_indexed_isic.pdf",
+      "risk_coverage_all_indexed_tn3k.pdf"
+    ],
+    "parameters": {
+      "all_indexed": true,
+      "dataset_order": [
+        "pet",
+        "kvasir",
+        "fives",
+        "isic",
+        "tn3k"
+      ],
+      "png": false,
+      "risk_fields": [
+        "risk_dice",
+        "risk_nhd",
+        "risk_nhd95"
+      ],
+      "score_fields": [
+        "confidence_dice_m32",
+        "confidence_nhd_m32",
+        "confidence_nhd95_m32"
+      ]
+    },
+    "plot_source_sha256": "b4bc5741c2bee883184947879b36ee81a5736b0ba2671a39f3936ff74b5b1d82",
+    "schema_version": 1,
+    "source_artifact_bundle": {
+      "analysis_source_sha256": "6d1c22d0291935f0f542a2dab345ba8b452a206b600b480948225a783e7d75fb",
+      "binding": "campaign-lock",
+      "campaign_id": "binary-midpoint-main-v1",
+      "campaign_lock": {
+        "logical_name": "campaign.lock.json",
+        "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323"
+      },
+      "config_sha256": "36229c9e8fd245ec6391d528e9129e09a93d9074d9fa70544eea9d78a524c76a",
+      "inputs": [
+        {
+          "artifact_id": "cb5c08e73819574c",
+          "assembly_run_id": "74db5fc8c0672236",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-general/74db5fc8c0672236",
+          "manifest_sha256": "8d4ab2401962a6b0091e81f056d0beb179a580b4b9914953b496f126b9fdf459",
+          "num_samples": 200,
+          "records_sha256": "1ed5642002afcfed3a6a664e1a729301c7c63d7c9d9f8ee8920b229737945113",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "ef8e1b5176b92b87",
+          "assembly_run_id": "627922c22aa3aa21",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "fives",
+          "logical_id": "fives/clipseg-target/627922c22aa3aa21",
+          "manifest_sha256": "6c480ccf6c4bda06c1dabc0077068dfa74734f223c5265978b7d9bb3c1cd2582",
+          "num_samples": 200,
+          "records_sha256": "53b64a4db8d6c65f2011c306da7a2866ac9ccafae50db569ddffb89694bf55da",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "e7e1e90e13ce3dfa",
+          "assembly_run_id": "a62d754378787146",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "fives",
+          "logical_id": "fives/deeplabv3-target/a62d754378787146",
+          "manifest_sha256": "3ba69d0db78bd9a26f4a7ae691ec7b9b531cdd84f5286793f0f059cd6265f04c",
+          "num_samples": 200,
+          "records_sha256": "682d628f273ccb99b77e629d9d6221e235dcc1817676c8373a44d6007386a53d",
+          "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+        },
+        {
+          "artifact_id": "3e57aa259264c1be",
+          "assembly_run_id": "500bf2dd2f3564b2",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-general/500bf2dd2f3564b2",
+          "manifest_sha256": "8d35cfaf2ad7c764d93de245b1d8b9a0a8c6a454cc116c1626ac23018627c8fb",
+          "num_samples": 1000,
+          "records_sha256": "a879ad5b3002da79cc8e51426644de0f75aecad5f3f978bd0a06447e515fe0bd",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "a5d30aa0ec8b0742",
+          "assembly_run_id": "69fc681ff737f148",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "isic",
+          "logical_id": "isic/clipseg-target/69fc681ff737f148",
+          "manifest_sha256": "ce9650af9919d408beba56f073cf77499a44cd411e153beb63971645d57535a6",
+          "num_samples": 1000,
+          "records_sha256": "719ba2ce4c86a26d7bf794068176fa0e3060f9c0c0b6928b94129fdb1671a273",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "48cf75646c61ecf4",
+          "assembly_run_id": "a42288ea78a340b1",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "isic",
+          "logical_id": "isic/deeplabv3-target/a42288ea78a340b1",
+          "manifest_sha256": "3404ed6cbcce55b8b519aaa2fd13a51b558d1dd3cc54e3e4600ae4b298610e02",
+          "num_samples": 1000,
+          "records_sha256": "c8717241ed1d2cf370fcd19dd8168680174cebb18b529ad3ca76bce9315845f3",
+          "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+        },
+        {
+          "artifact_id": "eb7304bdd945035d",
+          "assembly_run_id": "8f5786edfc8d5993",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-general/8f5786edfc8d5993",
+          "manifest_sha256": "91c6ad4fdb6c7052918ff789509d9a555a14b2dbd8f79e97548d19f3b7659901",
+          "num_samples": 200,
+          "records_sha256": "3769b2cf04397136cb994c612b5bf5dcab5d2aa56b0f3bcef16df6f3b60dafca",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "7ce9cddd0f9704fd",
+          "assembly_run_id": "1a1c02b968ab86a4",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/clipseg-target/1a1c02b968ab86a4",
+          "manifest_sha256": "040608afcbc8df1c7ae0c6b2e80796dde97f13e3b1f051a0cbef28ab579f67a5",
+          "num_samples": 200,
+          "records_sha256": "a5344059f2f88a588cdbcd879817a866b475d245b4f3e4d4f6b314ee7cc930e5",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "be7dedef6990d54c",
+          "assembly_run_id": "5cca940975b7f02d",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "kvasir",
+          "logical_id": "kvasir/deeplabv3-target/5cca940975b7f02d",
+          "manifest_sha256": "abb21d5d0c4d9d66c5480d71a71f1e1e33636f50b3e850557a92aa6f6fc212f6",
+          "num_samples": 200,
+          "records_sha256": "c210e787e37f241a9e0d0f306b51dcf3b24d2d15ea634c3e8ee581647eafaab4",
+          "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+        },
+        {
+          "artifact_id": "e0d454ce916c5ca9",
+          "assembly_run_id": "88d2033138fc971a",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-general/88d2033138fc971a",
+          "manifest_sha256": "0850f7003911e783f54eaa48dad02666f9f55f5cbfaa753dc55c9ddfcf461b19",
+          "num_samples": 3669,
+          "records_sha256": "c94aaf290566fc85ec2eb6b56c3b1f13040579892e61c7334666ab68c3523f7f",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "7261edbb5f763435",
+          "assembly_run_id": "cd4341aaed2bda20",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "pet",
+          "logical_id": "pet/clipseg-target/cd4341aaed2bda20",
+          "manifest_sha256": "d510aabf2d35321c77184b4bed66ed15c6f4602e38caff61632116a40b29b4e4",
+          "num_samples": 3669,
+          "records_sha256": "e07c768031e2843355512e9b9f15afef1d4e400852975f5631e17b38bf01ba44",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "640ef98bcd028dc3",
+          "assembly_run_id": "014bfe3ad787f51e",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-external",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-external/014bfe3ad787f51e",
+          "manifest_sha256": "97fa1c473d22203243a86a427379467862bc6ccc03c4e8b9a802dc5a5c2b5566",
+          "num_samples": 3669,
+          "records_sha256": "643faf11a0e6ae033943c44a0bd582bd3d9706a5794371c6ba07ad1bba9ad1ec",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "ced4dc6e67bc178f",
+          "assembly_run_id": "fd2f61c609c18fba",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "pet",
+          "logical_id": "pet/deeplabv3-target/fd2f61c609c18fba",
+          "manifest_sha256": "33135196a6b2609ff4c80ef5b524e17b512b4b899b87b451f8298abdafceb235",
+          "num_samples": 3669,
+          "records_sha256": "cbaf7656084e3350ff3d47453ab1f2997e0bae17dd561a6b8427f9e4d269a1fc",
+          "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+        },
+        {
+          "artifact_id": "9626e945ef94b1e5",
+          "assembly_run_id": "4faed2465c790f8c",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-general",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-general/4faed2465c790f8c",
+          "manifest_sha256": "3fe5b5d44e8687a886b61814b4648d32599f0c66a958d43463a6c611034c14e2",
+          "num_samples": 614,
+          "records_sha256": "6c02ca495f4d52279c26db05b11539cb9e749a63b5d7c71fcdd850a21de2c792",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "603dc94883b5f395",
+          "assembly_run_id": "eccb8f4f045a5473",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "clipseg-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/clipseg-target/eccb8f4f045a5473",
+          "manifest_sha256": "48b7ff7699fba82b2b348ea00fe4b8c32d6d23e272d90f2d04735a110bf81269",
+          "num_samples": 614,
+          "records_sha256": "66eba5b5a80ca8d6daf0866b81ddc96916ed918bbf97bfe67fd5df71f24ac453",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        },
+        {
+          "artifact_id": "efce266864cd5269",
+          "assembly_run_id": "01b4c3a58986cf27",
+          "assembly_source_sha256": "dfc525f01c06c9a0a96fc33d63821ad41f68ce2c8788a75a5f1f76d0b39d730c",
+          "condition": "deeplabv3-target",
+          "dataset": "tn3k",
+          "logical_id": "tn3k/deeplabv3-target/01b4c3a58986cf27",
+          "manifest_sha256": "8e6dc4173fb838f5f28779af3f2a1ff5df3cce4f08e8aa43a7c086b5ccf2cee8",
+          "num_samples": 614,
+          "records_sha256": "29762b78cdd4713ab460c88beab6b00e4e9315fbac88c6ce6b7f858653ae7dfb",
+          "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+        }
+      ]
+    },
+    "source_artifact_bundle_sha256": "0bf1651ecc6b04d1d3fcda212f9fd186682be23bc470628965051cf93d71c901"
+  },
+  "render_spec_sha256": "2d28b22fffda0bbd56364233415458a929d8058377cb3c49e90806e0ca16af37",
+  "schema_version": 1
+}

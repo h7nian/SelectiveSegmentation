@@ -69,6 +69,14 @@ def parse_args(argv: Sequence[str] | None = None):
         "--output-root",
         help="default: a rendered/ directory beside selection.json",
     )
+    parser.add_argument(
+        "--render-manifest",
+        help="publish an existing verified render package instead of rendering again",
+    )
+    parser.add_argument(
+        "--paper-output-dir",
+        help="optionally publish stable manuscript TeX/PNG names into this directory",
+    )
     return parser.parse_args(argv)
 
 
@@ -423,10 +431,43 @@ def _tex_root(destination: Path) -> str:
     return f"../{relative}"
 
 
-def _render_tex(destination: Path, selection_id: str) -> str:
+def _sha256_hex(value: Any, *, location: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{location} must be a SHA-256 hex digest")
+    normalized = value.lower()
+    if len(normalized) != 64 or any(
+        character not in "0123456789abcdef" for character in normalized
+    ):
+        raise ValueError(f"{location} must be a SHA-256 hex digest")
+    return normalized
+
+
+def _selection_campaign_sha(selection: Mapping[str, Any]) -> str:
+    provenance = selection.get("provenance")
+    if not isinstance(provenance, Mapping):
+        raise ValueError("selection.provenance must be an object")
+    campaign_lock = provenance.get("campaign_lock")
+    if not isinstance(campaign_lock, Mapping):
+        raise ValueError("selection.provenance.campaign_lock must be an object")
+    return _sha256_hex(
+        campaign_lock.get("sha256"),
+        location="selection.provenance.campaign_lock.sha256",
+    )
+
+
+def _render_tex(
+    destination: Path,
+    selection_id: str,
+    *,
+    selection_sha256: str,
+    campaign_lock_sha256: str,
+) -> str:
     root = _tex_root(destination)
     pieces = [
         "% Auto-generated qualitative artifact; do not edit by hand.",
+        f"% Selection JSON SHA-256: {selection_sha256}",
+        f"% Campaign lock SHA-256: {campaign_lock_sha256}",
+        f"% selection_id={selection_id}; render_id={destination.name}",
         rf"\providecommand{{\QualitativeArtifactRoot}}{{{root}}}",
     ]
     for dataset in DATASET_ORDER:
@@ -450,7 +491,82 @@ def _render_tex(destination: Path, selection_id: str) -> str:
                 r"\end{figure*}",
             ]
         )
-    pieces.append(f"% selection_id={selection_id}")
+    return "\n".join(pieces) + "\n"
+
+
+def _render_manuscript_tex(
+    selection: Mapping[str, Any],
+    *,
+    selection_sha256: str,
+    render_id: str,
+    renderer_source_sha256: str,
+    source_render_manifest_sha256: str,
+) -> str:
+    selection_id = selection["selection_id"]
+    campaign_lock_sha256 = _selection_campaign_sha(selection)
+    empty_action_datasets = sum(
+        any(
+            case.get("case_type") == "empty_action"
+            and case.get("status") == "selected"
+            for case in dataset["cases"]
+        )
+        for dataset in selection["datasets"]
+    )
+    if empty_action_datasets:
+        empty_sentence = (
+            f" The fixed rule finds an empty deployed action in {empty_action_datasets} "
+            f"of {len(DATASET_ORDER)} dataset panels."
+        )
+    else:
+        empty_sentence = (
+            " No target condition has an empty deployed action, which remains "
+            "explicitly unavailable."
+        )
+    display_names = {
+        "pet": "Oxford-IIIT Pet",
+        "kvasir": "Kvasir-SEG",
+        "fives": "FIVES",
+        "isic": "ISIC 2018",
+        "tn3k": "TN3K",
+    }
+    pieces = [
+        "% AUTO-GENERATED manuscript qualitative figures; DO NOT EDIT.",
+        f"% Selection JSON SHA-256: {selection_sha256}",
+        f"% Campaign lock SHA-256: {campaign_lock_sha256}",
+        f"% Renderer source SHA-256: {renderer_source_sha256}",
+        f"% Source render manifest SHA-256: {source_render_manifest_sha256}",
+        f"% selection_id={selection_id}; render_id={render_id}",
+        "% Cases are selected mechanically; do not replace them by visual inspection.",
+    ]
+    for index, dataset in enumerate(DATASET_ORDER):
+        pieces.extend(
+            [
+                r"\begin{figure*}[p]",
+                r"  \centering",
+                rf"  \includegraphics[width=\textwidth]{{Figures/qualitative_{dataset}.png}}",
+            ]
+        )
+        if index == 0:
+            caption = (
+                f"Mechanically selected {display_names[dataset]} diagnostics. Rows follow "
+                "stated post-analysis numerical rules rather than visual appeal and are not "
+                "representative examples. Panels show the probability map, reference truth, "
+                "deployed \\(\\gamma=0.5\\) action, and boundaries over the probability map "
+                "(truth: green; action: magenta; overlap: yellow)."
+                + empty_sentence
+            )
+        else:
+            caption = (
+                f"Mechanically selected {display_names[dataset]} diagnostics under the same "
+                "fixed rules and display convention as Figure~\\ref{fig:qualitative-pet}."
+            )
+        pieces.extend(
+            [
+                rf"  \caption{{{caption}}}",
+                rf"  \label{{fig:qualitative-{dataset}}}",
+                r"\end{figure*}",
+            ]
+        )
     return "\n".join(pieces) + "\n"
 
 
@@ -461,6 +577,7 @@ def render_package(
 ) -> Path:
     selection_file, selection = _load_selection(selection_path)
     selection_sha = sha256_file(selection_file)
+    campaign_lock_sha = _selection_campaign_sha(selection)
     renderer_sha = _source_sha256()
     render_id = hashlib.sha256(
         (selection_sha + "\0" + renderer_sha).encode("ascii")
@@ -516,7 +633,13 @@ def render_package(
 
         tex_path = temporary / "qualitative_cases.tex"
         tex_path.write_text(
-            _render_tex(destination, selection["selection_id"]), encoding="utf-8"
+            _render_tex(
+                destination,
+                selection["selection_id"],
+                selection_sha256=selection_sha,
+                campaign_lock_sha256=campaign_lock_sha,
+            ),
+            encoding="utf-8",
         )
         manifest = {
             "schema_version": SCHEMA_VERSION,
@@ -559,9 +682,159 @@ def render_package(
     return destination / "render_manifest.json"
 
 
+def _load_render_manifest(path: str | os.PathLike[str]) -> tuple[Path, dict[str, Any]]:
+    source = Path(path)
+    if source.name != "render_manifest.json" or not source.is_file() or source.is_symlink():
+        raise FileNotFoundError(f"expected a regular render_manifest.json: {source}")
+    manifest = json.loads(
+        source.read_text(encoding="utf-8"),
+        object_pairs_hook=_strict_object,
+        parse_constant=_reject_constant,
+    )
+    if not isinstance(manifest, dict):
+        raise ValueError("render_manifest.json must contain one JSON object")
+    if manifest.get("schema_version") != SCHEMA_VERSION:
+        raise ValueError("render manifest schema version is unsupported")
+    if manifest.get("artifact_type") != ARTIFACT_TYPE:
+        raise ValueError("render manifest artifact_type is unsupported")
+    render_id = manifest.get("render_id")
+    if not isinstance(render_id, str) or render_id != source.parent.name:
+        raise ValueError("render manifest ID differs from its package directory")
+    _sha256_hex(
+        manifest.get("selection_sha256"),
+        location="render_manifest.selection_sha256",
+    )
+    _sha256_hex(
+        manifest.get("renderer_source_sha256"),
+        location="render_manifest.renderer_source_sha256",
+    )
+    return source.resolve(), manifest
+
+
+def publish_manuscript_package(
+    render_manifest_path: str | os.PathLike[str],
+    selection_path: str | os.PathLike[str],
+    output_dir: str | os.PathLike[str],
+) -> tuple[Path, ...]:
+    """Publish verified content-addressed panels under stable manuscript names."""
+
+    manifest_path, manifest = _load_render_manifest(render_manifest_path)
+    selection_file, selection = _load_selection(selection_path)
+    selection_sha = sha256_file(selection_file)
+    source_render_manifest_sha = sha256_file(manifest_path)
+    renderer_source_sha = _sha256_hex(
+        manifest.get("renderer_source_sha256"),
+        location="render_manifest.renderer_source_sha256",
+    )
+    if manifest.get("selection_id") != selection["selection_id"]:
+        raise ValueError("render manifest selection_id differs from selection.json")
+    if manifest.get("selection_sha256") != selection_sha:
+        raise ValueError("render manifest selection SHA-256 differs from selection.json")
+
+    images = manifest.get("images")
+    if not isinstance(images, list) or [item.get("dataset") for item in images] != list(
+        DATASET_ORDER
+    ):
+        raise ValueError("render manifest images are absent or out of canonical order")
+
+    destination = Path(output_dir)
+    if destination.is_symlink():
+        raise ValueError(f"paper output directory must not be a symlink: {destination}")
+    destination.mkdir(parents=True, exist_ok=True)
+    temporary = Path(tempfile.mkdtemp(prefix=".qualitative-paper.tmp-", dir=destination))
+    staged: list[tuple[Path, Path]] = []
+    try:
+        for image_record in images:
+            dataset = image_record["dataset"]
+            expected_name = f"{dataset}.png"
+            if image_record.get("path") != expected_name:
+                raise ValueError(f"render image path for {dataset} is not canonical")
+            expected_sha = _sha256_hex(
+                image_record.get("sha256"),
+                location=f"render_manifest.images[{dataset}].sha256",
+            )
+            source = manifest_path.parent / expected_name
+            if not source.is_file() or source.is_symlink():
+                raise FileNotFoundError(f"render image is not a regular file: {source}")
+            if sha256_file(source) != expected_sha:
+                raise ValueError(f"render image SHA-256 mismatch: {source}")
+            staged_path = temporary / f"qualitative_{dataset}.png"
+            shutil.copyfile(source, staged_path)
+            staged.append((staged_path, destination / staged_path.name))
+
+        tex_path = temporary / "qualitative_cases.tex"
+        tex_path.write_text(
+            _render_manuscript_tex(
+                selection,
+                selection_sha256=selection_sha,
+                render_id=manifest["render_id"],
+                renderer_source_sha256=renderer_source_sha,
+                source_render_manifest_sha256=source_render_manifest_sha,
+            ),
+            encoding="utf-8",
+        )
+        staged.append((tex_path, destination / tex_path.name))
+        public_outputs = [
+            {"path": target.name, "sha256": sha256_file(source)}
+            for source, target in staged
+        ]
+        public_manifest_path = temporary / "qualitative_manifest.json"
+        public_manifest_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "artifact_type": "selectseg.binary_qualitative_manuscript",
+                    "selection_id": selection["selection_id"],
+                    "selection_sha256": selection_sha,
+                    "campaign_lock_sha256": _selection_campaign_sha(selection),
+                    "render_id": manifest["render_id"],
+                    "renderer_source_sha256": renderer_source_sha,
+                    "source_render_manifest_sha256": source_render_manifest_sha,
+                    "outputs": public_outputs,
+                },
+                indent=2,
+                sort_keys=True,
+                allow_nan=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        staged.append(
+            (
+                public_manifest_path,
+                destination / "qualitative_manifest.json",
+            )
+        )
+        for _, target in staged:
+            if target.is_symlink():
+                raise ValueError(f"refusing to replace symlinked manuscript output: {target}")
+        for source, target in staged:
+            os.replace(source, target)
+    finally:
+        if temporary.exists():
+            shutil.rmtree(temporary)
+    return tuple(target for _, target in staged)
+
+
 def main(argv: Sequence[str] | None = None) -> None:
     args = parse_args(argv)
+    if args.render_manifest is not None:
+        if args.output_root is not None:
+            raise ValueError("--output-root cannot be used with --render-manifest")
+        if args.paper_output_dir is None:
+            raise ValueError("--render-manifest requires --paper-output-dir")
+        outputs = publish_manuscript_package(
+            args.render_manifest,
+            args.selection,
+            args.paper_output_dir,
+        )
+        for output in outputs:
+            print(output)
+        return
+
     output = render_package(args.selection, output_root=args.output_root)
+    if args.paper_output_dir is not None:
+        publish_manuscript_package(output, args.selection, args.paper_output_dir)
     try:
         display = output.resolve().relative_to(Path.cwd().resolve()).as_posix()
     except ValueError:

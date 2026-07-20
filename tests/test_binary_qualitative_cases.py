@@ -9,15 +9,19 @@ import numpy as np
 import pytest
 
 from scripts.render_binary_qualitative_cases import (
+    ARTIFACT_TYPE as RENDER_ARTIFACT_TYPE,
     CELL_SIZE,
     HEADER_HEIGHT,
     LEFT_MARGIN,
     ROW_HEIGHT,
     compose_dataset_panel,
     load_selected_arrays,
+    publish_manuscript_package,
 )
 from scripts.select_binary_qualitative_cases import (
+    ARTIFACT_TYPE as SELECTION_ARTIFACT_TYPE,
     CASE_ORDER,
+    DATASET_ORDER,
     _canonical_json,
     choose_dataset_cases,
     normalized_safety_ranks,
@@ -134,6 +138,99 @@ def test_selection_content_id_and_publication_are_no_overwrite(tmp_path):
     changed["value"] = [9]
     with pytest.raises(ValueError, match="does not match"):
         validate_selection_id(changed)
+
+
+def _write_minimal_selection(path):
+    base = {
+        "schema_version": 1,
+        "artifact_type": SELECTION_ARTIFACT_TYPE,
+        "condition_counts": {
+            "validated_conditions": 16,
+            "eligible_target_conditions": 10,
+            "datasets": 5,
+        },
+        "datasets": [
+            {
+                "dataset": dataset,
+                "cases": [
+                    {
+                        "case_type": case_type,
+                        "status": "unavailable",
+                        "reason": "test fixture",
+                    }
+                    for case_type in CASE_ORDER
+                ],
+            }
+            for dataset in DATASET_ORDER
+        ],
+        "provenance": {"campaign_lock": {"sha256": "c" * 64}},
+        "scope": "test fixture",
+        "selection_rules": {},
+    }
+    report = {
+        **base,
+        "selection_id": hashlib.sha256(_canonical_json(base)).hexdigest()[:16],
+    }
+    path.write_text(json.dumps(report, sort_keys=True) + "\n")
+    return report, hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_manuscript_publisher_verifies_render_and_records_full_source_digests(tmp_path):
+    selection_path = tmp_path / "selection.json"
+    selection, selection_sha = _write_minimal_selection(selection_path)
+    render_id = "0123456789abcdef"
+    render_dir = tmp_path / render_id
+    render_dir.mkdir()
+    images = []
+    for dataset in DATASET_ORDER:
+        image_path = render_dir / f"{dataset}.png"
+        image_path.write_bytes(f"image-{dataset}".encode())
+        images.append(
+            {
+                "dataset": dataset,
+                "path": image_path.name,
+                "sha256": hashlib.sha256(image_path.read_bytes()).hexdigest(),
+                "width": 1,
+                "height": 1,
+            }
+        )
+    manifest = {
+        "schema_version": 1,
+        "artifact_type": RENDER_ARTIFACT_TYPE,
+        "render_id": render_id,
+        "selection_id": selection["selection_id"],
+        "selection_sha256": selection_sha,
+        "renderer_source_sha256": "d" * 64,
+        "images": images,
+    }
+    manifest_path = render_dir / "render_manifest.json"
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True) + "\n")
+
+    outputs = publish_manuscript_package(
+        manifest_path, selection_path, tmp_path / "paper"
+    )
+    assert [path.name for path in outputs] == [
+        *(f"qualitative_{dataset}.png" for dataset in DATASET_ORDER),
+        "qualitative_cases.tex",
+        "qualitative_manifest.json",
+    ]
+    tex = (tmp_path / "paper" / "qualitative_cases.tex").read_text()
+    assert f"% Selection JSON SHA-256: {selection_sha}" in tex
+    assert f"% Campaign lock SHA-256: {'c' * 64}" in tex
+    assert f"% Renderer source SHA-256: {'d' * 64}" in tex
+    assert f"selection_id={selection['selection_id']}; render_id={render_id}" in tex
+    public_manifest = json.loads(
+        (tmp_path / "paper" / "qualitative_manifest.json").read_text()
+    )
+    assert public_manifest["selection_sha256"] == selection_sha
+    assert [item["path"] for item in public_manifest["outputs"]] == [
+        *(f"qualitative_{dataset}.png" for dataset in DATASET_ORDER),
+        "qualitative_cases.tex",
+    ]
+
+    (render_dir / "pet.png").write_bytes(b"tampered")
+    with pytest.raises(ValueError, match="render image SHA-256 mismatch"):
+        publish_manuscript_package(manifest_path, selection_path, tmp_path / "paper")
 
 
 def _write_artifact(root):
