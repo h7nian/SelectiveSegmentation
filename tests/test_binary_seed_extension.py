@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
+from scripts import finalize_seed_scheduler_ledger as scheduler_ledger
 from scripts import submit_binary_seed_extension as submit
 from scripts.analyze_binary import CONTRASTS
 from scripts.analyze_binary_seed_extension import _gate_c, _strict_cohort_join
@@ -20,6 +21,133 @@ from selectseg.binary_artifacts import sample_id_sha256, write_binary_artifact
 
 def _binding():
     return seedext.load_spec_lock()
+
+
+def _valid_train_record(binding, experiment):
+    return {
+        "train_record_schema_version": seedext.TRAIN_RECORD_SCHEMA_VERSION,
+        "auxiliary_id": seedext.EXPECTED_AUXILIARY_ID,
+        "created_utc": "2026-07-19T00:00:00+00:00",
+        "spec_lock": {
+            "path": binding["path"].as_posix(),
+            "sha256": binding["sha256"],
+        },
+        "dataset": experiment["dataset"]["name"],
+        "model": experiment["model"]["name"],
+        "condition": experiment["model"]["condition"],
+        "training_seed": experiment["training_seed"],
+        "gpu_profile": copy.deepcopy(experiment["gpu_profile"]),
+        "runtime": {
+            "slurm_job_id": "123456",
+            "partition": experiment["gpu_profile"]["partition"],
+            "node": "unit-test-node",
+            "cuda_device": "NVIDIA A100-SXM4-40GB",
+            "environment": copy.deepcopy(binding["spec"]["environment"]),
+        },
+        "outputs": {},
+    }
+
+
+def _install_train_record_stubs(monkeypatch, record):
+    monkeypatch.setattr(seedext, "_train_output_dir", lambda *args: Path("train"))
+    monkeypatch.setattr(seedext, "_load_json", lambda path: record)
+    monkeypatch.setattr(seedext, "_training_command", lambda *args: ["train"])
+    monkeypatch.setattr(
+        seedext,
+        "_validate_training_outputs",
+        lambda binding, experiment, command: {},
+    )
+
+
+def test_load_train_record_accepts_locked_metadata(monkeypatch):
+    binding = _binding()
+    experiment = next(iter(seedext.iter_experiments(binding["spec"])))
+    record = _valid_train_record(binding, experiment)
+    _install_train_record_stubs(monkeypatch, record)
+
+    _, loaded, outputs = seedext._load_train_record(binding, experiment)
+
+    assert loaded == record
+    assert outputs == {}
+
+
+@pytest.mark.parametrize(
+    ("case", "match"),
+    [
+        ("auxiliary_id", "auxiliary_id"),
+        ("condition", "unexpected condition"),
+        ("gpu_partition", "locked GPU profile"),
+        ("gpu_account", "locked GPU profile"),
+        ("gpu_gres", "locked GPU profile"),
+        ("runtime_missing", "must contain exactly"),
+        ("runtime_extra", "must contain exactly"),
+        ("runtime_partition", "runtime partition"),
+        ("runtime_environment", "runtime environment"),
+        ("runtime_job", "slurm_job_id"),
+        ("runtime_node", "node"),
+        ("runtime_device_empty", "cuda_device"),
+        ("runtime_device_wrong", "not an A100"),
+    ],
+)
+def test_load_train_record_rejects_metadata_tampering(monkeypatch, case, match):
+    binding = _binding()
+    experiment = next(iter(seedext.iter_experiments(binding["spec"])))
+    record = _valid_train_record(binding, experiment)
+    if case == "auxiliary_id":
+        record["auxiliary_id"] = "retargeted"
+    elif case == "condition":
+        record["condition"] = "retargeted"
+    elif case.startswith("gpu_"):
+        record["gpu_profile"][case.removeprefix("gpu_")] = "retargeted"
+    elif case == "runtime_missing":
+        record["runtime"].pop("node")
+    elif case == "runtime_extra":
+        record["runtime"]["unexpected"] = "value"
+    elif case == "runtime_partition":
+        record["runtime"]["partition"] = "retargeted"
+    elif case == "runtime_environment":
+        record["runtime"]["environment"]["torch"] = "retargeted"
+    elif case == "runtime_job":
+        record["runtime"]["slurm_job_id"] = ""
+    elif case == "runtime_node":
+        record["runtime"]["node"] = None
+    elif case == "runtime_device_empty":
+        record["runtime"]["cuda_device"] = " "
+    elif case == "runtime_device_wrong":
+        record["runtime"]["cuda_device"] = "NVIDIA H100"
+    else:
+        raise AssertionError(f"unhandled case {case}")
+    _install_train_record_stubs(monkeypatch, record)
+
+    with pytest.raises(ValueError, match=match):
+        seedext._load_train_record(binding, experiment)
+
+
+@pytest.mark.parametrize("model", ["clipseg", "deeplabv3"])
+def test_run_freeze_verifies_locked_base_model_before_inference(monkeypatch, model):
+    binding = _binding()
+    experiment = next(
+        entry
+        for entry in seedext.iter_experiments(binding["spec"])
+        if entry["model"]["name"] == model
+    )
+    monkeypatch.setattr(seedext, "_verify_slurm_context", lambda profile: None)
+    monkeypatch.setattr(seedext, "_verify_environment", lambda spec: None)
+
+    def checked(*args):
+        raise RuntimeError("locked base model checked")
+
+    monkeypatch.setattr(seedext, "_verify_base_model_files", checked)
+
+    with pytest.raises(RuntimeError, match="locked base model checked"):
+        seedext.run_freeze(
+            binding,
+            {},
+            dataset=experiment["dataset"]["name"],
+            model=model,
+            seed=experiment["training_seed"],
+            expected_partition=experiment["gpu_profile"]["partition"],
+        )
 
 
 def test_static_spec_is_strict_and_grid_is_exactly_twenty():
@@ -291,12 +419,109 @@ def test_checkpoint_lock_writer_requires_all_twenty_and_never_overwrites(
         }
         return record, {}, outputs
 
+    experiments = list(seedext.iter_experiments(binding["spec"]))
+    for index in range(len(experiments)):
+        (tmp_path / f"record-{index}.json").write_text("{}\n")
+    expected_record_set_sha = seedext._training_record_set_sha256(
+        [
+            {
+                "dataset": experiment["dataset"]["name"],
+                "model": experiment["model"]["name"],
+                "training_seed": experiment["training_seed"],
+                "train_record_sha256": seedext._sha256(
+                    tmp_path / f"record-{index}.json"
+                ),
+            }
+            for index, experiment in enumerate(experiments)
+        ]
+    )
+
     monkeypatch.setattr(seedext, "_load_train_record", fake_record)
-    seedext.write_checkpoint_lock(binding, destination)
+    with pytest.raises(TypeError, match="expected_training_record_set_sha256"):
+        seedext.write_checkpoint_lock(binding, destination)
+    with pytest.raises(ValueError, match="changed after scheduler closure"):
+        seedext.write_checkpoint_lock(
+            binding,
+            destination,
+            expected_training_record_set_sha256="f" * 64,
+        )
+    assert not destination.exists()
+
+    seedext.write_checkpoint_lock(
+        binding,
+        destination,
+        expected_training_record_set_sha256=expected_record_set_sha,
+    )
     payload = json.loads(destination.read_text())
     assert len(payload["checkpoints"]) == 20
     with pytest.raises(FileExistsError, match="overwrite"):
-        seedext.write_checkpoint_lock(binding, destination)
+        seedext.write_checkpoint_lock(
+            binding,
+            destination,
+            expected_training_record_set_sha256=expected_record_set_sha,
+        )
+
+
+def test_training_record_set_digest_matches_scheduler_contract():
+    rows = [
+        {
+            "dataset": f"dataset-{index}",
+            "model": "model",
+            "training_seed": 1 + index % 2,
+            "train_record_sha256": f"{index + 1:064x}",
+        }
+        for index in range(20)
+    ]
+    scheduler_rows = [
+        {
+            **row,
+            "receipt_job_id": str(900000 + index),
+            "record_slurm_job_id": str(900000 + index),
+        }
+        for index, row in enumerate(rows)
+    ]
+
+    assert seedext._training_record_set_sha256(rows) == (
+        scheduler_ledger._record_set_sha256(scheduler_rows)
+    )
+
+
+@pytest.mark.parametrize("kind", ["leaf", "ancestor"])
+def test_json_loader_rejects_symlink_path_components(tmp_path, kind):
+    real_dir = tmp_path / "real"
+    real_dir.mkdir()
+    target = real_dir / "payload.json"
+    target.write_text("{}\n")
+    if kind == "leaf":
+        source = tmp_path / "payload-link.json"
+        source.symlink_to(target)
+    else:
+        linked_dir = tmp_path / "linked"
+        linked_dir.symlink_to(real_dir, target_is_directory=True)
+        source = linked_dir / target.name
+
+    with pytest.raises(ValueError, match="symlink path components"):
+        seedext._load_json(source)
+
+
+@pytest.mark.parametrize("kind", ["leaf", "ancestor"])
+def test_atomic_writer_rejects_symlink_path_components(tmp_path, kind):
+    real_dir = tmp_path / "real"
+    real_dir.mkdir()
+    if kind == "leaf":
+        target = real_dir / "existing.json"
+        target.write_text("{}\n")
+        destination = tmp_path / "output.json"
+        destination.symlink_to(target)
+    else:
+        linked_dir = tmp_path / "linked"
+        linked_dir.symlink_to(real_dir, target_is_directory=True)
+        destination = linked_dir / "output.json"
+
+    with pytest.raises(ValueError, match="symlink path components"):
+        seedext._atomic_write_new(destination, {"new": True})
+    if kind == "ancestor":
+        assert not (real_dir / "output.json").exists()
 
 
 def test_scheduler_preflight_checks_both_profiles_and_fails_closed(monkeypatch):

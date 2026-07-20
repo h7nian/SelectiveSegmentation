@@ -637,7 +637,9 @@ Run `--write` only when the preview reports 20 successful `COMPLETED` jobs and
 no failures. Record the displayed public-summary SHA-256. The checkpoint
 planner revalidates the fixed private ledger, public summary, training receipt,
 all 20 current records, and their identity-to-job bindings before it can write
-the immutable checkpoint lock. Then submit exactly 20 freeze jobs, and create
+the immutable checkpoint lock. It passes the closure's record-set digest into
+the writer, which recomputes the same canonical aggregate immediately before
+publication. Then submit exactly 20 freeze jobs, and create
 the downstream lock only after all frozen artifacts validate:
 
 ```bash

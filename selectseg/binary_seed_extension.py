@@ -15,6 +15,7 @@ import importlib.metadata
 import json
 import math
 import os
+import stat
 import subprocess
 import sys
 import tempfile
@@ -187,8 +188,22 @@ def _unique_object(pairs):
     return result
 
 
+def _reject_symlink_ancestors(path):
+    absolute = Path(path).absolute()
+    current = Path(absolute.anchor)
+    for part in absolute.parts[1:]:
+        current = current / part
+        try:
+            mode = current.lstat().st_mode
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(mode):
+            raise ValueError(f"symlink path components are forbidden: {path}")
+
+
 def _load_json(path):
     source = Path(path)
+    _reject_symlink_ancestors(source)
     if not source.is_file() or source.is_symlink():
         raise FileNotFoundError(f"expected a regular non-symlink JSON file: {source}")
     try:
@@ -394,6 +409,7 @@ def load_spec_lock(path=DEFAULT_SPEC_LOCK, *, expected_sha256=None):
     """Load and rehash the immutable extension spec and all small dependencies."""
 
     source = Path(path)
+    _reject_symlink_ancestors(source)
     actual_lock_sha256 = _sha256(source)
     expected = expected_sha256
     if expected is None and source.as_posix() == DEFAULT_SPEC_LOCK:
@@ -720,7 +736,9 @@ def _verify_slurm_context(profile):
 
 def _atomic_write_new(path, payload):
     destination = Path(path)
+    _reject_symlink_ancestors(destination)
     destination.parent.mkdir(parents=True, exist_ok=True)
+    _reject_symlink_ancestors(destination.parent)
     encoded = (
         json.dumps(payload, indent=2, sort_keys=True, allow_nan=False) + "\n"
     ).encode()
@@ -733,6 +751,7 @@ def _atomic_write_new(path, payload):
             handle.write(encoded)
             handle.flush()
             os.fsync(handle.fileno())
+        _reject_symlink_ancestors(destination)
         try:
             os.link(temporary, destination)
         except FileExistsError as error:
@@ -915,6 +934,8 @@ def _load_train_record(binding, experiment):
     _exact_fields(record, frozenset(required), location=f"train record {record_path}")
     if record["train_record_schema_version"] != TRAIN_RECORD_SCHEMA_VERSION:
         raise ValueError("unsupported training-record schema")
+    if record["auxiliary_id"] != EXPECTED_AUXILIARY_ID:
+        raise ValueError("unexpected training-record auxiliary_id")
     if record["spec_lock"] != {
         "path": binding["path"].as_posix(),
         "sha256": binding["sha256"],
@@ -926,6 +947,32 @@ def _load_train_record(binding, experiment):
         seed,
     ):
         raise ValueError("training record identity differs from its expected cell")
+    if record["condition"] != experiment["model"]["condition"]:
+        raise ValueError("training record has an unexpected condition")
+    if record["gpu_profile"] != experiment["gpu_profile"]:
+        raise ValueError("training record differs from its locked GPU profile")
+    runtime_fields = frozenset(
+        {"slurm_job_id", "partition", "node", "cuda_device", "environment"}
+    )
+    _exact_fields(
+        record["runtime"],
+        runtime_fields,
+        location=f"train record {record_path}.runtime",
+    )
+    runtime = record["runtime"]
+    if runtime["partition"] != experiment["gpu_profile"]["partition"]:
+        raise ValueError(
+            "training runtime partition differs from its locked GPU profile"
+        )
+    if runtime["environment"] != binding["spec"]["environment"]:
+        raise ValueError(
+            "training runtime environment differs from the locked environment"
+        )
+    for field in ("slurm_job_id", "node", "cuda_device"):
+        if not isinstance(runtime[field], str) or not runtime[field].strip():
+            raise ValueError(f"training runtime {field} must be a non-empty string")
+    if "a100" not in runtime["cuda_device"].casefold():
+        raise ValueError("training runtime CUDA device is not an A100")
     expected_command = _training_command(binding, experiment)
     outputs = _validate_training_outputs(binding, experiment, expected_command)
     if record["outputs"] != outputs:
@@ -954,19 +1001,50 @@ def _checkpoint_entry_from_training_record(binding, experiment):
     }
 
 
-def write_checkpoint_lock(binding, output_path=None):
+def _training_record_set_sha256(checkpoints):
+    rows = [
+        {
+            "dataset": row["dataset"],
+            "model": row["model"],
+            "training_seed": row["training_seed"],
+            "train_record_sha256": row["train_record_sha256"],
+        }
+        for row in checkpoints
+    ]
+    payload = json.dumps(
+        rows,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("ascii")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def write_checkpoint_lock(
+    binding, output_path=None, *, expected_training_record_set_sha256
+):
     """Validate all 20 final checkpoints and atomically publish their lock."""
 
     destination = Path(output_path or binding["spec"]["paths"]["checkpoint_lock"])
     expected_destination = Path(binding["spec"]["paths"]["checkpoint_lock"])
     if destination != expected_destination:
         raise ValueError(f"checkpoint lock must be written to {expected_destination}")
+    expected_record_set_sha = _digest(
+        expected_training_record_set_sha256,
+        location="expected training-record-set sha256",
+    )
     checkpoints = [
         _checkpoint_entry_from_training_record(binding, experiment)
         for experiment in iter_experiments(binding["spec"])
     ]
     if len(checkpoints) != 20:
         raise RuntimeError("checkpoint lock does not contain exactly 20 experiments")
+    observed_record_set_sha = _training_record_set_sha256(checkpoints)
+    if observed_record_set_sha != expected_record_set_sha:
+        raise ValueError(
+            "training-record set changed after scheduler closure validation"
+        )
     payload = {
         "checkpoint_lock_schema_version": CHECKPOINT_LOCK_SCHEMA_VERSION,
         "auxiliary_id": EXPECTED_AUXILIARY_ID,
@@ -985,6 +1063,7 @@ def write_checkpoint_lock(binding, output_path=None):
 
 def load_checkpoint_lock(binding, path, *, expected_sha256=None, verify_files=True):
     source = Path(path)
+    _reject_symlink_ancestors(source)
     actual_sha256 = _sha256(source)
     if expected_sha256 is not None and actual_sha256 != _digest(
         expected_sha256, location="expected checkpoint-lock sha256"
@@ -1080,6 +1159,7 @@ def run_freeze(
         )
     _verify_slurm_context(profile)
     _verify_environment(binding["spec"])
+    _verify_base_model_files(binding, model)
     _verify_cohorts(binding, experiment["dataset"])
     entry = _checkpoint_entry(checkpoint_binding, dataset, model, seed)
     expected_entry = _checkpoint_entry_from_training_record(binding, experiment)

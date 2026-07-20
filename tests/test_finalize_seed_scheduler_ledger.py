@@ -398,10 +398,12 @@ def test_checkpoint_cli_runs_complete_closure_gate_before_lock_write(monkeypatch
         assert planned == jobs
         assert expected_public_summary_sha256 == "b" * 64
         calls.append("gate")
+        return {"training_record_set_sha256": "c" * 64}
 
-    def write(value, destination):
+    def write(value, destination, *, expected_training_record_set_sha256):
         assert value is binding
         assert destination == "x"
+        assert expected_training_record_set_sha256 == "c" * 64
         calls.append("write")
         return destination
 
@@ -423,6 +425,21 @@ def test_checkpoint_cli_runs_complete_closure_gate_before_lock_write(monkeypatch
     )
     assert result == "x"
     assert calls == ["gate", "write"]
+
+    calls.clear()
+    with pytest.raises(ValueError, match="creates the checkpoint lock"):
+        submit.main(
+            [
+                "--phase",
+                "checkpoint-lock",
+                "--write-checkpoint-lock",
+                "--expected-scheduler-summary-sha256",
+                "b" * 64,
+                "--expected-checkpoint-lock-sha256",
+                "d" * 64,
+            ]
+        )
+    assert calls == []
 
 
 @pytest.mark.parametrize("target", ["receipt_duplicate", "ledger_parent"])

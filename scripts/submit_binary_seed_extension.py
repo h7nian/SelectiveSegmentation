@@ -611,6 +611,11 @@ def main(argv=None):
             raise ValueError(
                 "checkpoint-lock requires --expected-scheduler-summary-sha256"
             )
+        if args.expected_checkpoint_lock_sha256:
+            raise ValueError(
+                "checkpoint-lock creates the checkpoint lock; "
+                "omit --expected-checkpoint-lock-sha256"
+            )
         if args.receipt:
             raise ValueError("checkpoint-lock does not submit; omit --receipt")
         if (
@@ -632,12 +637,16 @@ def main(argv=None):
             validate_complete_training_closure,
         )
 
-        validate_complete_training_closure(
+        closure = validate_complete_training_closure(
             binding,
             plan_training_jobs(binding),
             expected_public_summary_sha256=(args.expected_scheduler_summary_sha256),
         )
-        return write_checkpoint_lock(binding, destination)
+        return write_checkpoint_lock(
+            binding,
+            destination,
+            expected_training_record_set_sha256=closure["training_record_set_sha256"],
+        )
 
     if args.phase == "downstream-lock":
         if args.submit:
