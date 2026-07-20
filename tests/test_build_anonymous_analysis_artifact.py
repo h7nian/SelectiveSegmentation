@@ -267,3 +267,31 @@ def test_seed_table_is_bound_to_public_provenance_and_source_comment(
         artifact.ArtifactValidationError, match="source-analysis SHA-256 comment"
     ):
         artifact._validate_public_seed_closure(wrong_comment)
+
+
+def test_seed_validation_resolves_a_symlinked_temporary_prefix(
+    tmp_path, monkeypatch, portable_seed_inputs
+):
+    payloads, calls = portable_seed_inputs
+    real_root = tmp_path / "real-temporary-root"
+    real_root.mkdir()
+    linked_root = tmp_path / "linked-temporary-root"
+    linked_root.symlink_to(real_root, target_is_directory=True)
+
+    class ExistingTemporaryDirectory:
+        def __init__(self, **kwargs):
+            assert kwargs["prefix"] == "selectseg-public-seed-"
+
+        def __enter__(self):
+            return linked_root
+
+        def __exit__(self, exc_type, exc_value, traceback):
+            return False
+
+    monkeypatch.setattr(
+        artifact.tempfile, "TemporaryDirectory", ExistingTemporaryDirectory
+    )
+    artifact._validate_public_seed_closure(dict(payloads))
+
+    assert len(calls) == 1
+    assert all(path.parent == real_root.resolve(strict=True) for path in calls[0])

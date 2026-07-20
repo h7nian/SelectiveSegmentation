@@ -596,7 +596,10 @@ def _validate_public_seed_closure(files: dict[str, bytes]) -> None:
         PUBLIC_SEED_PROVENANCE_SOURCE,
     )
     with tempfile.TemporaryDirectory(prefix="selectseg-public-seed-") as directory:
-        root = Path(directory)
+        # macOS commonly reports temporary paths below /var, which is itself a
+        # symlink to /private/var.  The public-release loader deliberately
+        # rejects every symlink ancestor, so pass it the canonical real path.
+        root = Path(directory).resolve(strict=True)
         paths = []
         for source in seed_sources:
             destination = root / PurePosixPath(source).name
