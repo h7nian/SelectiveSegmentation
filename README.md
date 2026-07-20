@@ -903,27 +903,38 @@ for table in main_results full_target_results complete_results \
 done
 ```
 
-### Build the anonymous analysis artifact
+### Build the anonymous analysis artifact v4
 
-The deterministic builder publishes only the byte-exact core needed for the
-16-record analysis and seven canonical tables. It excludes Git history,
-external URLs, identities, scheduler metadata, training artifacts, and private
-filesystem paths; every member is explicitly allowlisted, hash-covered, and
-rescanned by the verifier. From this orchestration workspace use:
+The deterministic builder publishes the byte-exact core needed for the
+16-record analysis and seven canonical tables together with the mandatory
+four-file portable seed release: the public seed analysis, aggregate scheduler
+summary, provenance guard, and `seed_robustness.tex`. The strict seed-release
+loader validates the three JSON schemas and their cross-file joins; the table
+must match both the provenance table hash and its source-analysis hash comment.
+The 50 source files produce exactly 53 archive members. Git history, external
+URLs, identities, private paths, raw job identifiers, checkpoint bytes, NPZ
+payloads, and submission-receipt contents remain excluded by explicit
+allowlists and fail-closed scans. From this orchestration workspace use:
 
 ```bash
 python -m scripts.build_anonymous_analysis_artifact build \
   --repo-root github \
-  --output output/artifacts/selective-segmentation-analysis-v3.tar.gz
+  --output output/artifacts/selective-segmentation-analysis-v4.tar.gz
 python -m scripts.build_anonymous_analysis_artifact verify \
-  output/artifacts/selective-segmentation-analysis-v3.tar.gz
+  output/artifacts/selective-segmentation-analysis-v4.tar.gz
 ```
 
 Inside a clean public clone, replace `--repo-root github` with
-`--repo-root .`. The archive is deliberately an analysis-reproducibility
-artifact, not a claim that training or inference can be rerun without the
-external datasets, checkpoints, and frozen probability maps. During anonymous
-review, distribute the archive through the review system without linking the
+`--repo-root .`. The v4 filename is intentionally distinct from the retained
+v3 artifact, and the builder refuses to overwrite either an existing v4 or any
+other existing destination. The 16-condition core remains analysis
+reproducible from its included per-image records. The seed addition is
+verification-level: its public schemas, cross-file hashes, scheduler closure,
+and rendered table can be checked, but its per-image analysis cannot be rerun
+because seed records, probability maps, receipts, and checkpoints are not in
+the archive. The artifact therefore makes no claim that training or inference
+can be rerun without the external datasets and model assets. During anonymous
+review, distribute it through the review system without linking the
 identity-bearing public repository.
 
 ## Verify

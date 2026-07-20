@@ -1,9 +1,10 @@
-"""Build and verify the deterministic anonymous core-analysis artifact.
+"""Build and verify the deterministic anonymous analysis artifact v4.
 
 The release is deliberately smaller than the full project.  It contains only
 the code and immutable data needed to reproduce the locked selective-risk
-analysis and its seven canonical table artifacts.  Every input and archive
-destination is explicitly allowlisted below; no filesystem discovery is used.
+analysis and its seven canonical table artifacts, plus the portable seed
+robustness verification bundle.  Every input and archive destination is
+explicitly allowlisted below; no filesystem discovery is used.
 
 The builder is fail closed: it validates the analysis/campaign/assembly hash
 closure, rejects symlinked inputs and privacy markers, verifies the completed
@@ -28,11 +29,15 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Sequence
 
+from scripts.export_binary_seed_provenance import load_public_seed_release
 
-ARCHIVE_ROOT = "selective-segmentation-analysis-artifact"
+
+ARCHIVE_ROOT = "selective-segmentation-analysis-artifact-v4"
 ARCHIVE_MTIME = 0
 ARCHIVE_FILE_MODE = 0o644
 EXPECTED_CONDITION_COUNT = 16
+EXPECTED_RELEASE_FILE_COUNT = 50
+EXPECTED_ARCHIVE_MEMBER_COUNT = 53
 
 # The builder consumes the byte-exact public-mirror layout.  This makes the
 # same command usable in a clean public clone and prevents the anonymous
@@ -40,6 +45,10 @@ EXPECTED_CONDITION_COUNT = 16
 ANALYSIS_SOURCE = "results/analysis.json"
 CSV_SOURCE = "results/main_table.csv"
 CAMPAIGN_LOCK_SOURCE = "results/campaign.lock.json"
+PUBLIC_SEED_ANALYSIS_SOURCE = "results/seed_robustness_analysis.json"
+PUBLIC_SEED_SCHEDULER_SOURCE = "results/seed_scheduler_summary.json"
+PUBLIC_SEED_PROVENANCE_SOURCE = "results/seed_provenance.json"
+PUBLIC_SEED_TABLE_SOURCE = "docs/Tables/seed_robustness.tex"
 
 CANONICAL_TABLE_NAMES = (
     "main_results.tex",
@@ -118,9 +127,38 @@ _TABLE_FILES = tuple(
     for name in CANONICAL_TABLE_NAMES
 )
 
+_PUBLIC_SEED_FILES = (
+    ReleaseFile(
+        PUBLIC_SEED_ANALYSIS_SOURCE,
+        "results/seed_robustness_analysis.json",
+        "seed-analysis",
+    ),
+    ReleaseFile(
+        PUBLIC_SEED_SCHEDULER_SOURCE,
+        "results/seed_scheduler_summary.json",
+        "seed-scheduler-summary",
+    ),
+    ReleaseFile(
+        PUBLIC_SEED_PROVENANCE_SOURCE,
+        "results/seed_provenance.json",
+        "seed-provenance",
+    ),
+    ReleaseFile(
+        PUBLIC_SEED_TABLE_SOURCE,
+        "tables/seed_robustness.tex",
+        "seed-table",
+    ),
+)
+
 # The only repository files eligible for inclusion.  Generated metadata below
 # is separately fixed by GENERATED_MEMBER_NAMES.
-RELEASE_FILES = _CODE_FILES + _LOCKED_RESULT_FILES + _ASSEMBLED_FILES + _TABLE_FILES
+RELEASE_FILES = (
+    _CODE_FILES
+    + _LOCKED_RESULT_FILES
+    + _ASSEMBLED_FILES
+    + _TABLE_FILES
+    + _PUBLIC_SEED_FILES
+)
 GENERATED_MEMBER_NAMES = (
     "MANIFEST.sha256",
     "README.md",
@@ -133,8 +171,9 @@ ANONYMOUS_README = """# Core analysis reproduction artifact
 
 This anonymous artifact contains the fixed 16-condition records, their
 manifests, the immutable campaign lock, the analysis and table source code,
-and the seven canonical table artifacts.  It does not contain model weights,
-raw images, training data, scheduler metadata, or author identities.
+the seven canonical tables, and the four-file public seed-robustness bundle.
+It does not contain model weights, raw images, training data, per-job scheduler
+records, submission receipts, checkpoint bytes, or author identities.
 
 Use Python 3.12.4 and install the pinned analysis dependencies:
 
@@ -165,9 +204,17 @@ for name in main_results full_target_results complete_results cross_loss_results
 done
 ```
 
+The seed bundle consists of `results/seed_robustness_analysis.json`,
+`results/seed_scheduler_summary.json`, `results/seed_provenance.json`, and
+`tables/seed_robustness.tex`.  These files support verification-level review:
+the verifier checks their strict schemas, cross-file bindings, and table
+hashes.  They do not include the per-image seed records or probability maps
+needed to recompute the seed analysis from individual examples.
+
 `MANIFEST.sha256` authenticates every other archive member.  Verification can
 also be performed before extraction with the artifact builder's `verify`
-subcommand.
+subcommand, which reruns both the core and seed cross-file validators on the
+archive members rather than trusting the checksum manifest alone.
 """
 
 
@@ -175,6 +222,8 @@ class ArtifactValidationError(RuntimeError):
     """Raised when a release input or archive violates the fixed contract."""
 
 
+_OVERLEAF_TOKEN_PATTERN = b"olp" + rb"_[A-Za-z0-9]+"
+_OPENAI_PROJECT_TOKEN_PATTERN = b"sk" + rb"-proj-[A-Za-z0-9_-]+"
 _FORBIDDEN_PATTERNS = (
     (
         "URL",
@@ -210,14 +259,40 @@ _FORBIDDEN_PATTERNS = (
             rb"(?i)(?:github"
             rb"_pat_[A-Za-z0-9_]+|ghp"
             rb"_[A-Za-z0-9]+|"
+            + _OVERLEAF_TOKEN_PATTERN
+            + rb"|"
+            + _OPENAI_PROJECT_TOKEN_PATTERN
+            + rb"|"
             rb"\b(?:api[_-]?key|access[_-]?token|password|passwd|bearer)\b\s*[:=])"
         ),
+    ),
+    (
+        "raw job identifier",
+        re.compile(rb"(?i)[\"'](?:job_id|receipt_job_id|record_slurm_job_id)[\"']\s*:"),
+    ),
+    (
+        "submission receipt content",
+        re.compile(rb"(?i)[\"']receipt_schema_version[\"']\s*:"),
     ),
 )
 
 _TABLE_ANALYSIS_HASH = re.compile(rb"Source analysis\.json SHA-256: ([0-9a-f]{64})")
 _MANIFEST_LINE = re.compile(rb"([0-9a-f]{64})  ([^\r\n]+)\n")
 _GZIP_HEADER = b"\x1f\x8b\x08\x00\x00\x00\x00\x00\x02\xff"
+_FORBIDDEN_RELEASE_SUFFIXES = frozenset(
+    {
+        ".bin",
+        ".ckpt",
+        ".npy",
+        ".npz",
+        ".onnx",
+        ".pickle",
+        ".pkl",
+        ".pt",
+        ".pth",
+        ".safetensors",
+    }
+)
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -240,6 +315,10 @@ def _safe_relative_path(value: str, *, label: str) -> PurePosixPath:
 def scan_anonymous_bytes(data: bytes, *, source: str) -> None:
     """Reject identity, infrastructure, URL, path, and credential markers."""
 
+    if data.startswith(b"PK\x03\x04"):
+        raise ArtifactValidationError(
+            f"{source} contains a forbidden NPZ/checkpoint payload"
+        )
     if b"\x00" in data:
         raise ArtifactValidationError(f"{source} contains a NUL byte")
     try:
@@ -262,6 +341,11 @@ def _validate_allowlist_contract() -> None:
 
     sources = [item.source for item in RELEASE_FILES]
     destinations = [item.destination for item in RELEASE_FILES]
+    if len(RELEASE_FILES) != EXPECTED_RELEASE_FILE_COUNT:
+        raise ArtifactValidationError(
+            "release allowlist must contain exactly "
+            f"{EXPECTED_RELEASE_FILE_COUNT} sources"
+        )
     if len(sources) != len(set(sources)):
         raise ArtifactValidationError("release source allowlist contains duplicates")
     if len(destinations) != len(set(destinations)):
@@ -269,8 +353,16 @@ def _validate_allowlist_contract() -> None:
             "release destination allowlist contains duplicates"
         )
     for item in RELEASE_FILES:
-        _safe_relative_path(item.source, label="release source")
-        _safe_relative_path(item.destination, label="release destination")
+        source = _safe_relative_path(item.source, label="release source")
+        destination = _safe_relative_path(item.destination, label="release destination")
+        for path in (source, destination):
+            lowered_parts = tuple(part.lower() for part in path.parts)
+            if path.suffix.lower() in _FORBIDDEN_RELEASE_SUFFIXES or any(
+                "receipt" in part or "checkpoint" in part for part in lowered_parts
+            ):
+                raise ArtifactValidationError(
+                    f"release allowlist admits a private binary or receipt: {path}"
+                )
 
     for role, count in (("records", 16), ("manifest", 16), ("table", 7)):
         observed = sum(item.role == role for item in RELEASE_FILES)
@@ -285,6 +377,14 @@ def _validate_allowlist_contract() -> None:
     )
     if table_destinations != CANONICAL_TABLE_NAMES:
         raise ArtifactValidationError("canonical table allowlist is incomplete")
+    seed_roles = tuple(item.role for item in _PUBLIC_SEED_FILES)
+    if seed_roles != (
+        "seed-analysis",
+        "seed-scheduler-summary",
+        "seed-provenance",
+        "seed-table",
+    ):
+        raise ArtifactValidationError("public seed release allowlist is incomplete")
 
 
 def _read_regular_source(repo_root: Path, relative: str) -> bytes:
@@ -487,6 +587,60 @@ def _validate_canonical_closure(files: dict[str, bytes]) -> None:
             )
 
 
+def _validate_public_seed_closure(files: dict[str, bytes]) -> None:
+    """Validate the mandatory portable seed bundle and its rendered table."""
+
+    seed_sources = (
+        PUBLIC_SEED_ANALYSIS_SOURCE,
+        PUBLIC_SEED_SCHEDULER_SOURCE,
+        PUBLIC_SEED_PROVENANCE_SOURCE,
+    )
+    with tempfile.TemporaryDirectory(prefix="selectseg-public-seed-") as directory:
+        root = Path(directory)
+        paths = []
+        for source in seed_sources:
+            destination = root / PurePosixPath(source).name
+            destination.write_bytes(files[source])
+            paths.append(destination)
+        try:
+            release = load_public_seed_release(*paths)
+        except (OSError, ValueError) as error:
+            raise ArtifactValidationError(
+                f"invalid public seed release: {error}"
+            ) from error
+
+    observed_hashes = {
+        "analysis": _sha256_bytes(files[PUBLIC_SEED_ANALYSIS_SOURCE]),
+        "scheduler": _sha256_bytes(files[PUBLIC_SEED_SCHEDULER_SOURCE]),
+        "provenance": _sha256_bytes(files[PUBLIC_SEED_PROVENANCE_SOURCE]),
+    }
+    if release.get("sha256") != observed_hashes:
+        raise ArtifactValidationError(
+            "public seed loader did not bind the selected release bytes"
+        )
+
+    table = files[PUBLIC_SEED_TABLE_SOURCE]
+    table_sha256 = _sha256_bytes(table)
+    provenance = release["provenance"]
+    if provenance["analysis"]["table_sha256"] != table_sha256:
+        raise ArtifactValidationError(
+            "seed robustness table differs from the public provenance binding"
+        )
+
+    source_analysis_sha256 = release["analysis"]["provenance"]["source_analysis_sha256"]
+    matches = _TABLE_ANALYSIS_HASH.findall(table)
+    if matches != [source_analysis_sha256.encode("ascii")]:
+        raise ArtifactValidationError(
+            "seed robustness table must contain exactly one matching source-analysis "
+            "SHA-256 comment"
+        )
+
+
+def _validate_release_closure(files: dict[str, bytes]) -> None:
+    _validate_canonical_closure(files)
+    _validate_public_seed_closure(files)
+
+
 def _load_release_files(repo_root: Path) -> dict[str, bytes]:
     _validate_allowlist_contract()
     files = {}
@@ -494,7 +648,7 @@ def _load_release_files(repo_root: Path) -> dict[str, bytes]:
         data = _read_regular_source(repo_root, item.source)
         scan_anonymous_bytes(data, source=item.source)
         files[item.source] = data
-    _validate_canonical_closure(files)
+    _validate_release_closure(files)
     return files
 
 
@@ -521,9 +675,16 @@ def _archive_payload(repo_root: Path) -> dict[str, bytes]:
 def expected_archive_member_names() -> tuple[str, ...]:
     """Return the complete, ordered archive member allowlist."""
 
+    _validate_allowlist_contract()
     relative = [item.destination for item in RELEASE_FILES]
     relative.extend(GENERATED_MEMBER_NAMES)
-    return tuple(sorted(f"{ARCHIVE_ROOT}/{name}" for name in relative))
+    names = tuple(sorted(f"{ARCHIVE_ROOT}/{name}" for name in relative))
+    if len(names) != EXPECTED_ARCHIVE_MEMBER_COUNT:
+        raise ArtifactValidationError(
+            "archive allowlist must contain exactly "
+            f"{EXPECTED_ARCHIVE_MEMBER_COUNT} members"
+        )
+    return names
 
 
 def _write_deterministic_tar_gz(path: Path, members: dict[str, bytes]) -> None:
@@ -676,6 +837,10 @@ def verify_archive(path: str | os.PathLike[str]) -> dict[str, object]:
             raise ArtifactValidationError(
                 f"checksum mismatch for archive member {name}"
             )
+    archived_sources = {
+        item.source: extracted[item.destination] for item in RELEASE_FILES
+    }
+    _validate_release_closure(archived_sources)
     if uncompressed != _deterministic_tar_bytes(extracted):
         raise ArtifactValidationError("archive tar bytes are not canonical")
 
