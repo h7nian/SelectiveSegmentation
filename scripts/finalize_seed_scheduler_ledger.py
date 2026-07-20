@@ -628,7 +628,10 @@ def query_sacct(job_ids, *, runner=subprocess.run):
         if not line.strip():
             continue
         fields = line.split("|")
-        if fields[-1] == "":
+        # Some Slurm builds include a terminal delimiter, while top-level rows
+        # from others do not.  An empty TimelimitRaw on a job-step row is still
+        # the fifth field and must not be mistaken for that optional delimiter.
+        if len(fields) == 6 and fields[-1] == "":
             fields.pop()
         if len(fields) != 5:
             raise ValueError(f"unexpected sacct column count on line {line_number}")

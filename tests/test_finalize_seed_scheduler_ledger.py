@@ -603,7 +603,9 @@ def test_sacct_parser_uses_only_exact_top_level_rows_and_normalizes_suffix():
     for index, job_id in enumerate(job_ids):
         state = "COMPLETED+" if index == 0 else "COMPLETED"
         lines.append(f"{job_id}|{state}|0:0|{100 + index}|120|")
-        lines.append(f"{job_id}.batch|COMPLETED|0:0|{100 + index}|120|")
+        # Real sacct output leaves TimelimitRaw empty for job steps and, with
+        # parsable2, therefore ends at the delimiter introducing field five.
+        lines.append(f"{job_id}.batch|COMPLETED|0:0|{100 + index}|")
 
     def runner(*args, **kwargs):
         return SimpleNamespace(stdout="\n".join(lines) + "\n")
