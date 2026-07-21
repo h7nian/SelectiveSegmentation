@@ -1,0 +1,155 @@
+{
+  "config_schema_version": 2,
+  "campaign_id": "binary-midpoint-main-v2",
+  "protocol": {
+    "gamma_values": [0.5],
+    "m_values": [2, 8, 32],
+    "quadrature_rule": "midpoint-v1",
+    "seeds": [0]
+  },
+  "gpu_partitions": ["saffo-a100", "apollo_agate"],
+  "gpu_partition_candidates": ["saffo-a100", "apollo_agate"],
+  "cpu_partition_candidates": [
+    "saffo-2tb",
+    "agsmall",
+    "amdsmall",
+    "msismall"
+  ],
+  "estimator_spec": "configs/estimators/midpoint-v1.json",
+  "paths": {
+    "artifact_output_root": "outputs/binary_midpoint_main_v2/artifacts",
+    "common_output_root": "outputs/binary_midpoint_main_v2/common_scores",
+    "simulation_output_root": "outputs/binary_midpoint_main_v2/simulations",
+    "assembly_output_root": "outputs/binary_midpoint_main_v2/assembled"
+  },
+  "conditions": [
+    {
+      "dataset": "pet",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "checkpoint": null,
+      "batch_size": 8,
+      "expected_num_samples": 3669
+    },
+    {
+      "dataset": "pet",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "checkpoint": "outputs/binary_train/pet/clipseg/seed-0/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 3669
+    },
+    {
+      "dataset": "pet",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "checkpoint": "outputs/binary_train/pet/deeplabv3/seed-0/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 3669
+    },
+    {
+      "dataset": "pet",
+      "condition": "deeplabv3-external",
+      "model": "deeplabv3",
+      "checkpoint": null,
+      "batch_size": 8,
+      "expected_num_samples": 3669
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "checkpoint": null,
+      "batch_size": 8,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "checkpoint": "outputs/binary_train/kvasir/clipseg/seed-0/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "checkpoint": "outputs/binary_train/kvasir/deeplabv3/seed-0/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "fives",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "checkpoint": null,
+      "batch_size": 4,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "fives",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "checkpoint": "outputs/binary_train/fives/clipseg/seed-0/checkpoint.pt",
+      "batch_size": 4,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "fives",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "checkpoint": "outputs/binary_train/fives/deeplabv3/seed-0/checkpoint.pt",
+      "batch_size": 4,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "isic",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "checkpoint": null,
+      "batch_size": 4,
+      "expected_num_samples": 1000
+    },
+    {
+      "dataset": "isic",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "checkpoint": "outputs/binary_train/isic/clipseg/seed-0/checkpoint.pt",
+      "batch_size": 4,
+      "expected_num_samples": 1000
+    },
+    {
+      "dataset": "isic",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "checkpoint": "outputs/binary_train/isic/deeplabv3/seed-0/checkpoint.pt",
+      "batch_size": 4,
+      "expected_num_samples": 1000
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "checkpoint": null,
+      "batch_size": 4,
+      "expected_num_samples": 614
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "checkpoint": "outputs/binary_train/tn3k/clipseg/seed-0/checkpoint.pt",
+      "batch_size": 4,
+      "expected_num_samples": 614
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "checkpoint": "outputs/binary_train/tn3k/deeplabv3/seed-0/checkpoint.pt",
+      "batch_size": 4,
+      "expected_num_samples": 614
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 import subprocess
 from collections import Counter
@@ -19,8 +20,132 @@ from selectseg import binary_seed_extension as seedext
 from selectseg.binary_artifacts import sample_id_sha256, write_binary_artifact
 
 
+V1_GOLDEN_FILES = {
+    "configs/auxiliary/binary_seed_extension-v1.json": (
+        "8c861e6421270fc16378ca5408db6abaedd47cf0356b0cb2d82f86f7d2d76696"
+    ),
+    "configs/auxiliary/binary_seed_extension-v1.lock.json": (
+        "3fb7b721a4b54e467383c03b03168166a1d2e9f197d3a26eade0161df931deed"
+    ),
+    "selectseg/binary_seed_extension.py": (
+        "3d31ae81d00979fae19d8f3dbb916ea9dad9b96cfa0dee63fcd8fb25945e6e86"
+    ),
+    "selectseg/binary_seed_downstream.py": (
+        "22ce592c0b89a8d4953a1821deaa52b14f5e1bc24a11ee155241a76f533d8115"
+    ),
+    "scripts/submit_binary_seed_extension.py": (
+        "98f4237f7532a674358da1d1256ee5bae79ea3d99c9c75bf395f07fd6581d247"
+    ),
+    "scripts/slurm/train_binary_seed_extension.sbatch": (
+        "f16dc6e60ec65dfdc4de03746ba52932c54e2e33d481a221880b17e3ad2cbb00"
+    ),
+    "scripts/slurm/freeze_binary_seed_extension.sbatch": (
+        "eb273241fcd6884cdfa237e759b41b10acf4df6934dc5e6c89fe576c7d11b5ca"
+    ),
+}
+V1_CHECKPOINT_LOCK_BINDING = {
+    "path": Path("outputs/binary_seed_campaign/checkpoints.lock.json"),
+    "sha256": "9f5db0ff1c9c6b6abd49fdb4f0b40b4821f7e5c78f43f438ea995ba06968c79f",
+}
+V1_TRAIN_PLAN_SHA256 = (
+    "706a2986de98f7acc8020e46b8b35b971563e5ec5561aa280455ebf57612afeb"
+)
+V1_FREEZE_PLAN_SHA256 = (
+    "1df74c3e1bac3386493b435da756f9d021b44e46b38c7be46e5f0bdca20e99e7"
+)
+
+
 def _binding():
     return seedext.load_spec_lock()
+
+
+def _public_v1_golden_binding():
+    spec_path = Path("configs/auxiliary/binary_seed_extension-v1.json")
+    return {
+        "path": Path("configs/auxiliary/binary_seed_extension-v1.lock.json"),
+        "sha256": V1_GOLDEN_FILES[
+            "configs/auxiliary/binary_seed_extension-v1.lock.json"
+        ],
+        "spec": json.loads(spec_path.read_text(encoding="utf-8")),
+    }
+
+
+def _canonical_plan_sha256(jobs):
+    plan = [
+        {
+            "phase": job.phase,
+            "key": list(job.key),
+            "command": list(job.command),
+        }
+        for job in jobs
+    ]
+    payload = json.dumps(
+        plan,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _assert_v1_gpu_plan(jobs, *, phase, wrapper, expected_identities):
+    assert len(jobs) == 20
+    assert {job.phase for job in jobs} == {phase}
+    assert {job.key for job in jobs} == expected_identities
+    assert len({job.key for job in jobs}) == 20
+    for job in jobs:
+        assert job.command.count(wrapper) == 1
+        assert not any(
+            token == "--array" or token.startswith("--array=")
+            for token in job.command
+        )
+
+
+def test_v1_public_files_match_sealed_sha256():
+    observed = {
+        path: hashlib.sha256(Path(path).read_bytes()).hexdigest()
+        for path in V1_GOLDEN_FILES
+    }
+
+    assert observed == V1_GOLDEN_FILES
+
+
+def test_v1_train_and_freeze_plans_match_sealed_golden_replay():
+    binding = _public_v1_golden_binding()
+    expected_identities = {
+        (
+            experiment["dataset"]["name"],
+            experiment["model"]["name"],
+            experiment["training_seed"],
+            experiment["gpu_profile"]["partition"],
+        )
+        for experiment in seedext.iter_experiments(binding["spec"])
+    }
+    train_jobs = submit.plan_training_jobs(binding)
+    checkpoint_binding = {
+        "path": V1_CHECKPOINT_LOCK_BINDING["path"],
+        "sha256": V1_CHECKPOINT_LOCK_BINDING["sha256"],
+    }
+    assert checkpoint_binding["path"].as_posix() == binding["spec"]["paths"][
+        "checkpoint_lock"
+    ]
+    freeze_jobs = submit.plan_freeze_jobs(binding, checkpoint_binding)
+
+    _assert_v1_gpu_plan(
+        train_jobs,
+        phase="seed_train",
+        wrapper="scripts/slurm/train_binary_seed_extension.sbatch",
+        expected_identities=expected_identities,
+    )
+    _assert_v1_gpu_plan(
+        freeze_jobs,
+        phase="seed_freeze",
+        wrapper="scripts/slurm/freeze_binary_seed_extension.sbatch",
+        expected_identities=expected_identities,
+    )
+    assert _canonical_plan_sha256(train_jobs) == V1_TRAIN_PLAN_SHA256
+    assert _canonical_plan_sha256(freeze_jobs) == V1_FREEZE_PLAN_SHA256
 
 
 def _valid_train_record(binding, experiment):

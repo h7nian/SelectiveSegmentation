@@ -23,20 +23,36 @@ all three risks, the three loss-indexed midpoint ladders at `M=2,8,32`, common
 baselines, and the Exact Dice level-set oracle. The strict analysis JSON also
 uses schema v2.
 
-The main campaign freezes model probability maps once for each of 16
-conditions. Every freeze job is eligible on the declared private A100
-partitions, so Slurm chooses an available GPU. After an immutable campaign lock
-is written, 16 CPU jobs compute M-independent fields and 48 independent CPU
-jobs compute the Cartesian product of
-`(artifact, gamma, M, seed, estimator)`. Both CPU phases rotate deterministically
-over three declared CPU partitions. Every experiment is one job and Slurm
-arrays are not used. Sixteen strict assemblies each join one common shard with
-exactly `M=2,8,32`; one read-only diagnostic job is also run per frozen
-artifact. Assemble paths are derived from lock-bound content IDs rather than
-directory scans, and diagnostic inputs are read directly from the lock. All
-five compute phases use separate append-only receipts to prevent blind
-duplicate submissions; selected compute resources are bound into each private
-execution receipt but omitted from the anonymous manuscript package.
+The completed main campaign freezes model probability maps once for each of 16
+conditions. It is an immutable schema-v1 campaign: its GPU jobs retain the
+partition assignments recorded in their receipts, and its CPU phases retain
+their deterministic rotation over the three declared CPU partitions. After
+the campaign lock was written, 16 CPU jobs computed M-independent fields and
+48 independent CPU jobs computed the Cartesian product of
+`(artifact, gamma, M, seed, estimator)`. These historical locks and receipts
+are evidence of what ran; they are not rewritten to claim the newer scheduler
+policy.
+
+For every newly submitted generic `config_schema_version: 2` campaign, each
+GPU job requests exactly the two-candidate list
+`saffo-a100,apollo_agate`, and each CPU job requests exactly the
+four-candidate list `saffo-2tb,agsmall,amdsmall,msismall`. Slurm chooses one
+eligible partition from the applicable list. Every experiment remains one job,
+each M-specific evaluation job receives one scalar M, and Slurm arrays are not
+used. Sixteen strict assemblies each join one common shard with exactly
+`M=2,8,32`; one read-only diagnostic job is also run per frozen artifact.
+Assemble paths are derived from lock-bound content IDs rather than directory
+scans, and diagnostic inputs are read directly from the lock. All five compute
+phases use separate append-only receipts to prevent blind duplicate
+submissions; selected compute resources are bound into each private execution
+receipt but omitted from the anonymous manuscript package.
+
+The companion code repository includes the isolated runnable example
+`configs/binary_midpoint_main_v2.json`. It preserves the reported scientific
+grid while writing only below `outputs/binary_midpoint_main_v2/`; the sealed
+v1 config remains the reproduction record for the numbers in this manuscript.
+Before any schema-v2 receipt write or real submission, every final command in
+the wave must pass `sbatch --test-only`.
 
 The lock validates immutable manifest bytes and structure and records the
 payload hashes declared there; it does not decompress every large payload on

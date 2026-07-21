@@ -12,8 +12,10 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
+from scripts import submit_binary_simulations
 from scripts.submit_binary_simulations import (
     build_campaign_lock,
+    execute_configured_plan,
     execute_plan,
     load_config,
     plan_assemble_jobs,
@@ -453,6 +455,180 @@ def test_execute_plan_is_dry_run_by_default_and_submits_each_job_separately(
     ]
 
 
+@pytest.mark.parametrize("existing_receipt", [False, True])
+def test_schema_v2_final_preflight_failure_is_fail_closed_before_receipt_access(
+    tmp_path, existing_receipt
+):
+    config, _, lock_path, _ = _locked_candidate_campaign(tmp_path)
+    jobs = plan_score_jobs(config, lock_path)
+    receipt = tmp_path / "submission-receipts" / "score.jsonl"
+    sentinel = b"sentinel receipt bytes\n"
+    if existing_receipt:
+        receipt.parent.mkdir(parents=True)
+        receipt.write_bytes(sentinel)
+        sentinel_time = 1_700_000_000_123_456_789
+        os.utime(receipt, ns=(sentinel_time, sentinel_time))
+        initial_stat = receipt.stat()
+
+    preflight_calls = []
+    real_calls = []
+
+    def preflight_runner(command, **kwargs):
+        preflight_calls.append((tuple(command), kwargs))
+        assert "--test-only" in command
+        assert "--parsable" not in command
+        if len(preflight_calls) == len(jobs):
+            return SimpleNamespace(
+                returncode=17,
+                stdout="",
+                stderr="scheduler rejected final job",
+            )
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    def real_runner(command, **kwargs):
+        real_calls.append((tuple(command), kwargs))
+        raise AssertionError("real sbatch must not run after a failed wave preflight")
+
+    with pytest.raises(subprocess.CalledProcessError) as error:
+        execute_configured_plan(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=real_runner,
+            preflight_runner=preflight_runner,
+        )
+
+    assert error.value.returncode == 17
+    assert len(preflight_calls) == len(jobs)
+    assert real_calls == []
+    if existing_receipt:
+        final_stat = receipt.stat()
+        assert receipt.read_bytes() == sentinel
+        assert final_stat.st_mtime_ns == initial_stat.st_mtime_ns
+        assert final_stat.st_size == initial_stat.st_size
+    else:
+        assert not receipt.exists()
+        assert not receipt.parent.exists()
+
+
+def test_schema_v2_preflights_the_whole_wave_before_real_independent_jobs(tmp_path):
+    config, _, lock_path, _ = _locked_candidate_campaign(tmp_path)
+    jobs = plan_score_jobs(config, lock_path)
+    original_jobs = tuple(jobs)
+    receipt = tmp_path / "submission-receipts" / "score.jsonl"
+    candidate_request = "saffo-2tb,agsmall,amdsmall,msismall"
+    calls = []
+
+    def runner(command, **kwargs):
+        command = tuple(command)
+        calls.append((command, kwargs))
+        call_index = len(calls) - 1
+        if call_index < len(jobs):
+            assert "--test-only" in command
+            assert "--parsable" not in command
+            assert not receipt.exists()
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+        assert all("--test-only" in call[0] for call in calls[: len(jobs)])
+        assert "--parsable" in command
+        assert "--test-only" not in command
+        real_index = call_index - len(jobs) + 1
+        return SimpleNamespace(
+            returncode=0,
+            stdout=f"job-{real_index}\n",
+            stderr="",
+        )
+
+    assert execute_configured_plan(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=runner,
+        preflight_runner=runner,
+    ) == ("job-1", "job-2", "job-3")
+
+    assert tuple(jobs) == original_jobs
+    assert len(calls) == 2 * len(jobs)
+    preflight_commands = [call[0] for call in calls[: len(jobs)]]
+    real_commands = [call[0] for call in calls[len(jobs) :]]
+    for job, preflight, real in zip(jobs, preflight_commands, real_commands):
+        expected_preflight = tuple(
+            "--test-only" if token == "--parsable" else token
+            for token in job.command
+        )
+        assert preflight == expected_preflight
+        assert real == job.command
+        assert preflight[preflight.index("--partition") + 1] == candidate_request
+        assert real[real.index("--partition") + 1] == candidate_request
+        assert "--array" not in preflight
+        assert "--array" not in real
+
+    rows = [json.loads(line) for line in receipt.read_text().splitlines()]
+    assert len(rows) == 2 * len(jobs)
+    assert [tuple(row["key"]) for row in rows[::2]] == [job.key for job in jobs]
+    assert [tuple(row["command"]) for row in rows[::2]] == [
+        job.command for job in jobs
+    ]
+
+
+def test_schema_v2_freeze_preflight_preserves_exact_gpu_candidate_request(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = tmp_path / "freeze.jsonl"
+    calls = []
+
+    def runner(command, **kwargs):
+        command = tuple(command)
+        calls.append(command)
+        if "--test-only" in command:
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+        return SimpleNamespace(returncode=0, stdout="gpu-job-1\n", stderr="")
+
+    assert execute_configured_plan(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=runner,
+        preflight_runner=runner,
+    ) == ("gpu-job-1",)
+    assert len(calls) == 2
+    assert "--test-only" in calls[0]
+    assert "--parsable" in calls[1]
+    assert [command[command.index("--partition") + 1] for command in calls] == [
+        "saffo-a100,apollo_agate",
+        "saffo-a100,apollo_agate",
+    ]
+    assert calls[1] == jobs[0].command
+
+
+def test_schema_v1_execution_does_not_gain_scheduler_preflight(tmp_path):
+    config, _, lock_path, _ = _locked_campaign(tmp_path)
+    jobs = plan_score_jobs(config, lock_path)
+    receipt = tmp_path / "score-v1.jsonl"
+    real_commands = []
+
+    def forbidden_preflight(*args, **kwargs):
+        raise AssertionError("schema v1 must not invoke scheduler preflight")
+
+    def real_runner(command, **kwargs):
+        real_commands.append(tuple(command))
+        return SimpleNamespace(stdout=f"job-{len(real_commands)}\n")
+
+    assert execute_configured_plan(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=real_runner,
+        preflight_runner=forbidden_preflight,
+    ) == ("job-1", "job-2", "job-3")
+    assert real_commands == [job.command for job in jobs]
+    assert all("--parsable" in command for command in real_commands)
+    assert all("--test-only" not in command for command in real_commands)
+
+
 def test_lock_creation_requires_explicit_complete_artifacts_and_immutable_payload(
     tmp_path,
 ):
@@ -517,6 +693,104 @@ def test_main_config_has_16_conditions_and_48_independent_simulations():
     assert {job.key[-1] for job in plan_freeze_jobs(config)} == {
         "saffo-a100,apollo_agate"
     }
+
+
+def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
+    monkeypatch,
+):
+    repository = Path(__file__).resolve().parents[1]
+    v1 = load_config(repository / "configs/binary_midpoint_main.json")
+    v2 = load_config(repository / "configs/binary_midpoint_main_v2.json")
+    gpu_request = "saffo-a100,apollo_agate"
+    cpu_request = "saffo-2tb,agsmall,amdsmall,msismall"
+
+    assert v2.data["config_schema_version"] == 2
+    assert v2.data["campaign_id"] == "binary-midpoint-main-v2"
+    assert v2.data["campaign_id"] != v1.data["campaign_id"]
+    assert v2.data["gpu_partition_candidates"] == gpu_request.split(",")
+    assert v2.data["cpu_partition_candidates"] == cpu_request.split(",")
+    assert v2.data["protocol"] == v1.data["protocol"]
+    assert v2.data["conditions"] == v1.data["conditions"]
+    assert v2.data["estimator_spec"] == v1.data["estimator_spec"]
+    assert v2.data["paths"] == {
+        "artifact_output_root": "outputs/binary_midpoint_main_v2/artifacts",
+        "common_output_root": "outputs/binary_midpoint_main_v2/common_scores",
+        "simulation_output_root": "outputs/binary_midpoint_main_v2/simulations",
+        "assembly_output_root": "outputs/binary_midpoint_main_v2/assembled",
+    }
+    assert set(v2.data["paths"].values()).isdisjoint(v1.data["paths"].values())
+
+    freeze_jobs = plan_freeze_jobs(v2)
+    assert len(freeze_jobs) == 16
+    assert len({job.key for job in freeze_jobs}) == len(freeze_jobs)
+    for job in freeze_jobs:
+        command = list(job.command)
+        assert command[command.index("--partition") + 1] == gpu_request
+        assert command.count("scripts/slurm/freeze_binary_maps.sbatch") == 1
+        assert "--array" not in command
+        assert not any(token.startswith("--array=") for token in command)
+
+    lock = {
+        "campaign_id": v2.data["campaign_id"],
+        "protocol": v2.data["protocol"],
+        "estimator": {
+            "spec_path": v2.data["estimator_spec"],
+            "spec_sha256": "e" * 64,
+        },
+        "paths": v2.data["paths"],
+        "artifacts": [
+            {
+                "dataset": condition["dataset"],
+                "condition": condition["condition"],
+                "manifest_path": (
+                    f"artifacts/{condition['dataset']}/"
+                    f"{condition['condition']}/manifest.json"
+                ),
+                "manifest_sha256": hashlib.sha256(
+                    f"{condition['dataset']}/{condition['condition']}".encode()
+                ).hexdigest(),
+            }
+            for condition in v2.data["conditions"]
+        ],
+    }
+    lock_path = repository / "unused-v2-planner-test.lock.json"
+
+    def load_test_lock(path, *, config=None):
+        assert Path(path) == lock_path
+        assert config is v2
+        return lock_path, "f" * 64, lock
+
+    monkeypatch.setattr(submit_binary_simulations, "load_campaign_lock", load_test_lock)
+    common_jobs = plan_common_jobs(v2, lock_path)
+    score_jobs = plan_score_jobs(v2, lock_path)
+    diagnose_jobs = plan_diagnose_jobs(v2, lock_path)
+
+    assert len(common_jobs) == 16
+    assert len(score_jobs) == 48
+    assert len(diagnose_jobs) == 16
+    for jobs in (common_jobs, score_jobs, diagnose_jobs):
+        assert len({job.key for job in jobs}) == len(jobs)
+        for job in jobs:
+            command = list(job.command)
+            assert command.count("--partition") == 1
+            assert command[command.index("--partition") + 1] == cpu_request
+            assert "--array" not in command
+            assert not any(token.startswith("--array=") for token in command)
+
+    score_identities = {
+        (
+            command[command.index("--artifact-manifest") + 1],
+            command[command.index("--gamma") + 1],
+            command[command.index("--m") + 1],
+            command[command.index("--seed") + 1],
+        )
+        for command in (list(job.command) for job in score_jobs)
+    }
+    assert len(score_identities) == len(score_jobs)
+    assert all(
+        job.command.count("scripts/slurm/score_binary_simulation.sbatch") == 1
+        for job in score_jobs
+    )
 
 
 def test_repository_module_clis_work_without_an_editable_install():

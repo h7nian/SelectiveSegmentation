@@ -159,6 +159,25 @@ The generic planner activates this policy only for a new
 new campaign ID and lock for such a wave; never edit a sealed v1 config or
 receipt in place.
 
+The checked-in runnable example is
+`configs/binary_midpoint_main_v2.json`.  It preserves the v1 scientific
+protocol, estimator, and 16 conditions, but uses campaign ID
+`binary-midpoint-main-v2` and four disjoint roots below
+`outputs/binary_midpoint_main_v2/`.  Preview a fresh candidate-partition wave
+with:
+
+```bash
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze
+```
+
+Use the same v2 config for its subsequent lock, common, score, assemble, and
+diagnose phases.  The v1 commands below remain the exact reproduction path for
+the reported campaign; v2 is an isolated scheduler-policy replay and must
+never consume a v1 receipt or output root.  With `--submit`, schema v2 first
+runs `sbatch --test-only` for every final command in the wave.  No receipt is
+opened and no real job is submitted unless the entire preflight succeeds.
+
 1. **Freeze once.** Run the model once for each condition and write immutable,
    content-addressed foreground-probability/truth artifacts. Every job requests
    the combined private partition list `saffo-a100,apollo_agate` under account

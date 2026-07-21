@@ -1170,6 +1170,43 @@ def _load_receipt_events(handle, jobs, *, source):
     return latest
 
 
+def _test_only_command(job):
+    """Return the scheduler-validation command for one unchanged job identity."""
+
+    command = list(job.command)
+    if not command or command[0] != "sbatch":
+        raise ValueError(f"planned job {job.key} is not an sbatch command")
+    if command.count("--parsable") != 1 or "--test-only" in command:
+        raise ValueError(
+            f"planned job {job.key} must contain exactly one --parsable option"
+        )
+    command[command.index("--parsable")] = "--test-only"
+    return tuple(command)
+
+
+def preflight_plan(jobs, *, runner=subprocess.run):
+    """Validate a complete schema-v2 wave without submitting or writing receipts."""
+
+    jobs = tuple(jobs)
+    for job in jobs:
+        command = _test_only_command(job)
+        result = runner(
+            list(command),
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        returncode = getattr(result, "returncode", 0)
+        if returncode != 0:
+            raise subprocess.CalledProcessError(
+                returncode,
+                list(command),
+                output=getattr(result, "stdout", None),
+                stderr=getattr(result, "stderr", None),
+            )
+    return jobs
+
+
 def execute_plan(
     jobs,
     *,
@@ -1229,13 +1266,37 @@ def execute_plan(
     return tuple(job_ids)
 
 
+def execute_configured_plan(
+    config,
+    jobs,
+    *,
+    submit=False,
+    receipt_path=None,
+    runner=subprocess.run,
+    preflight_runner=subprocess.run,
+):
+    """Execute a plan, fail-closing schema-v2 waves behind Slurm preflight."""
+
+    if submit and config.data["config_schema_version"] == CANDIDATE_CONFIG_SCHEMA_VERSION:
+        if receipt_path is None:
+            raise ValueError("--submit requires an append-only --receipt path")
+        jobs = preflight_plan(jobs, runner=preflight_runner)
+    return execute_plan(
+        jobs,
+        submit=submit,
+        receipt_path=receipt_path,
+        runner=runner,
+    )
+
+
 def main(argv=None):
     args = parse_args(argv)
     config = load_config(args.config)
     if args.phase == "freeze":
         if args.artifact_manifest or args.campaign_lock or args.write_lock:
             raise ValueError("freeze phase does not accept lock/artifact inputs")
-        return execute_plan(
+        return execute_configured_plan(
+            config,
             plan_freeze_jobs(config),
             submit=args.submit,
             receipt_path=args.receipt,
@@ -1263,7 +1324,8 @@ def main(argv=None):
     if not args.campaign_lock:
         raise ValueError(f"{args.phase} phase requires --campaign-lock")
     if args.phase == "common":
-        return execute_plan(
+        return execute_configured_plan(
+            config,
             plan_common_jobs(config, args.campaign_lock),
             submit=args.submit,
             receipt_path=args.receipt,
@@ -1278,7 +1340,12 @@ def main(argv=None):
             args.campaign_lock,
             output_root=args.diagnostic_output_root,
         )
-    return execute_plan(jobs, submit=args.submit, receipt_path=args.receipt)
+    return execute_configured_plan(
+        config,
+        jobs,
+        submit=args.submit,
+        receipt_path=args.receipt,
+    )
 
 
 if __name__ == "__main__":
