@@ -197,9 +197,9 @@ In preview-only mode, `--submit` intentionally fails before planning,
 scheduler access, or receipt I/O. In scientific-input-locked mode, the planner
 instead validates the root lock before planning, scheduler preflight, receipt
 I/O, or submission. The sealed v1 commands below remain the exact reproduction
-record for the reported campaign; schema v2 is the independently sealed replay
-path and must not be represented as completed until its jobs and receipts have
-actually reached their terminal gates.
+record for the reported campaign. The independently sealed schema-v2 replay
+reached every terminal job, receipt, and output-integrity gate on 2026-07-21;
+the v1 record is retained rather than rewritten retrospectively.
 
 ### Seal the schema-v2 scientific inputs
 
@@ -297,6 +297,18 @@ condition-specific scientific-input identity. After all 16 freezes succeed,
 schema-v2 post-freeze campaign lock. That lock is the sole input authority for
 common, score, assemble, and diagnose jobs; schema-v2 artifacts/schema-v1
 campaign locks remain historical v1 evidence only.
+
+The completed main replay lock has SHA-256
+`eb3d8f4078f482b541e1771ae43c4c87d12be8733904996d770eef19e09f704b`.
+Its 112 non-array jobs comprise 16 freezes, 16 common-score jobs, 48 scalar-M
+score jobs, 16 assemblies, and 16 diagnostics; every receipt is reconciled to
+`COMPLETED (0:0)`. The CPU jobs ran across all four declared partitions
+(`saffo-2tb=64`, `amdsmall=11`, `agsmall=10`, `msismall=11`). Strict validation
+found 16 frozen artifacts, 64 score inputs, 16 assembled records, and 16
+diagnostic summaries with no hash or row-count mismatch. Against the immutable
+v1 assembled records, all 816 method-by-risk AURCs are exactly equal; the only
+non-provenance row differences are M=32 floating-point roundoff bounded by
+`2.22e-16`.
 
 Real schema-v2 submission requires the phase's canonical receipt path. The
 planner fast-verifies the scientific seal, checks all final commands with

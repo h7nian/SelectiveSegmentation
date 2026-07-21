@@ -82,12 +82,19 @@ score, assemble, and diagnostic inputs are derived without scans. Each phase
 has one canonical append-only receipt; reconciliation appends observed Slurm
 facts, interrupted successful submissions require identity-checked recovery,
 and failed attempts require explicit per-job retry authorization. The sealed v1
-config and receipts remain the reproduction record for the manuscript numbers;
-no schema-v2 full rerun is implied merely by the existence of the new policy.
-The full-byte seal passed on 2026-07-21.  The isolated one-image smoke root
-also passed, but its first scheduler preflight failed closed before receipt
-creation because the Slurm controller was unreachable; no schema-v2 job is
-therefore claimed as submitted or complete yet.
+config and receipts remain the original reproduction record for the manuscript
+numbers. The full-byte seal passed on 2026-07-21. The isolated one-image smoke
+campaign then completed all seven jobs and terminal receipt gates. The full
+schema-v2 replay subsequently completed 112/112 non-array jobs: 16 freezes, 16
+common-score jobs, 48 scalar-M score jobs, 16 assemblies, and 16 diagnostics.
+Its post-freeze campaign-lock SHA-256 is
+`eb3d8f4078f482b541e1771ae43c4c87d12be8733904996d770eef19e09f704b`.
+All 64 score inputs, 16 assembled records, and 16 diagnostic summaries passed
+hash and row-count validation. CPU execution used all four declared partitions
+(`saffo-2tb=64`, `amdsmall=11`, `agsmall=10`, `msismall=11`). Compared with the
+immutable v1 assembled records, every one of the 816 method-by-risk AURCs is
+exactly equal; the only non-provenance row differences are M=32 roundoff no
+larger than `2.22e-16`.
 
 The lock validates immutable manifest bytes and structure and records the
 payload hashes declared there; it does not decompress every large payload on
