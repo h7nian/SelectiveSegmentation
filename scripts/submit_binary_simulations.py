@@ -32,6 +32,7 @@ from pathlib import Path
 
 
 CONFIG_SCHEMA_VERSION = 1
+CANDIDATE_CONFIG_SCHEMA_VERSION = 2
 LOCK_SCHEMA_VERSION = 1
 RECEIPT_SCHEMA_VERSION = 1
 EXPECTED_PROTOCOL = {
@@ -42,6 +43,8 @@ EXPECTED_PROTOCOL = {
 }
 GPU_ACCOUNT = "ssafo"
 DEFAULT_CPU_PARTITIONS = ("agsmall", "amdsmall", "msismall")
+GPU_PARTITION_CANDIDATES = ("saffo-a100", "apollo_agate")
+CPU_PARTITION_CANDIDATES = ("saffo-2tb", *DEFAULT_CPU_PARTITIONS)
 REQUIRED_CONFIG_FIELDS = frozenset(
     {
         "config_schema_version",
@@ -53,7 +56,12 @@ REQUIRED_CONFIG_FIELDS = frozenset(
         "conditions",
     }
 )
-OPTIONAL_CONFIG_FIELDS = frozenset({"cpu_partitions"})
+PARTITION_CANDIDATE_CONFIG_FIELDS = frozenset(
+    {"gpu_partition_candidates", "cpu_partition_candidates"}
+)
+OPTIONAL_CONFIG_FIELDS = frozenset(
+    {"cpu_partitions", *PARTITION_CANDIDATE_CONFIG_FIELDS}
+)
 REQUIRED_CONDITION_FIELDS = frozenset(
     {
         "dataset",
@@ -299,8 +307,29 @@ def load_config(path):
             f"and only optional fields {sorted(OPTIONAL_CONFIG_FIELDS)}"
         )
     _assert_finite(data, location=str(path))
-    if data["config_schema_version"] != CONFIG_SCHEMA_VERSION:
-        raise ValueError(f"config_schema_version must equal {CONFIG_SCHEMA_VERSION}")
+    config_schema_version = data["config_schema_version"]
+    if isinstance(config_schema_version, bool) or config_schema_version not in (
+        CONFIG_SCHEMA_VERSION,
+        CANDIDATE_CONFIG_SCHEMA_VERSION,
+    ):
+        raise ValueError(
+            "config_schema_version must equal "
+            f"{CONFIG_SCHEMA_VERSION} or {CANDIDATE_CONFIG_SCHEMA_VERSION}"
+        )
+    candidate_fields = keys & PARTITION_CANDIDATE_CONFIG_FIELDS
+    if candidate_fields and config_schema_version != CANDIDATE_CONFIG_SCHEMA_VERSION:
+        raise ValueError(
+            "partition candidate fields require config_schema_version "
+            f"{CANDIDATE_CONFIG_SCHEMA_VERSION}"
+        )
+    if (
+        config_schema_version == CANDIDATE_CONFIG_SCHEMA_VERSION
+        and candidate_fields != PARTITION_CANDIDATE_CONFIG_FIELDS
+    ):
+        raise ValueError(
+            "gpu_partition_candidates and cpu_partition_candidates must be "
+            "provided together"
+        )
     _nonempty_string(data["campaign_id"], location=f"{path}.campaign_id")
     _validate_protocol(data["protocol"], location=f"{path}.protocol")
     if (
@@ -329,6 +358,14 @@ def load_config(path):
         or len(cpu_partitions) != len(set(cpu_partitions))
     ):
         raise ValueError(f"{path}.cpu_partitions must be a non-empty unique list")
+    if candidate_fields:
+        expected_candidates = {
+            "gpu_partition_candidates": list(GPU_PARTITION_CANDIDATES),
+            "cpu_partition_candidates": list(CPU_PARTITION_CANDIDATES),
+        }
+        for field, expected in expected_candidates.items():
+            if data[field] != expected:
+                raise ValueError(f"{path}.{field} must equal {expected!r}")
     conditions = data["conditions"]
     if not isinstance(conditions, list) or not conditions:
         raise ValueError(f"{path}.conditions must be a non-empty list")
@@ -395,6 +432,21 @@ def load_config(path):
     return Config(path=path, sha256=_sha256_bytes(raw), data=data)
 
 
+def _gpu_partition_request(config):
+    partitions = config.data.get(
+        "gpu_partition_candidates", config.data["gpu_partitions"]
+    )
+    return ",".join(partitions)
+
+
+def _cpu_partition_request(config, index):
+    candidates = config.data.get("cpu_partition_candidates")
+    if candidates is not None:
+        return ",".join(candidates)
+    partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
+    return partitions[index % len(partitions)]
+
+
 def _load_estimator(config):
     path = _project_path(config.path, config.data["estimator_spec"])
     if not path.is_file():
@@ -421,8 +473,7 @@ def _load_estimator(config):
 def plan_freeze_jobs(config):
     output_root = config.data["paths"]["artifact_output_root"]
     jobs = []
-    partitions = config.data["gpu_partitions"]
-    partition_request = ",".join(partitions)
+    partition_request = _gpu_partition_request(config)
     for condition in config.data["conditions"]:
         checkpoint = condition["checkpoint"] or "-"
         key = (condition["dataset"], condition["condition"], partition_request)
@@ -757,13 +808,12 @@ def plan_score_jobs(config, campaign_lock):
     output_root = lock.get("paths", {}).get("simulation_output_root")
     _nonempty_string(output_root, location=f"{lock_path}.paths.simulation_output_root")
     jobs = []
-    cpu_partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
     for artifact in lock["artifacts"]:
         artifact_path = _project_path(lock_path, artifact["manifest_path"])
         for gamma in lock["protocol"]["gamma_values"]:
             for count in lock["protocol"]["m_values"]:
                 for seed in lock["protocol"]["seeds"]:
-                    partition = cpu_partitions[len(jobs) % len(cpu_partitions)]
+                    partition = _cpu_partition_request(config, len(jobs))
                     key = (
                         artifact["dataset"],
                         artifact["condition"],
@@ -833,10 +883,9 @@ def plan_common_jobs(config, campaign_lock):
     output_root = lock.get("paths", {}).get("common_output_root")
     _nonempty_string(output_root, location=f"{lock_path}.paths.common_output_root")
     jobs = []
-    cpu_partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
     for artifact_index, artifact in enumerate(lock["artifacts"]):
         artifact_path = _project_path(lock_path, artifact["manifest_path"])
-        partition = cpu_partitions[artifact_index % len(cpu_partitions)]
+        partition = _cpu_partition_request(config, artifact_index)
         key = (artifact["dataset"], artifact["condition"], partition, gamma)
         gamma_tag = str(gamma).replace(".", "p")
         job_name = (
@@ -955,7 +1004,6 @@ def plan_assemble_jobs(config, campaign_lock):
     assembly_lock = load_assembly_lock(lock_path)
     output_root = lock["paths"]["assembly_output_root"]
     _nonempty_string(output_root, location=f"{lock_path}.paths.assembly_output_root")
-    cpu_partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
     jobs = []
     for artifact_index, artifact in enumerate(lock["artifacts"]):
         common_manifest, simulation_manifests = _expected_score_manifests(
@@ -981,7 +1029,7 @@ def plan_assemble_jobs(config, campaign_lock):
         if target.exists() or target.is_symlink():
             raise FileExistsError(f"assembled output already exists: {target}")
 
-        partition = cpu_partitions[artifact_index % len(cpu_partitions)]
+        partition = _cpu_partition_request(config, artifact_index)
         key = (artifact["dataset"], artifact["condition"], partition)
         job_name = f"selseg-assemble-{artifact['dataset']}-{artifact['condition']}"
         command = [
@@ -1023,11 +1071,10 @@ def plan_diagnose_jobs(
     if len(gamma_values) != 1:
         raise ValueError("diagnostics require exactly one locked decision threshold")
     gamma = gamma_values[0]
-    cpu_partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
     jobs = []
     for artifact_index, artifact in enumerate(lock["artifacts"]):
         artifact_path = _project_path(lock_path, artifact["manifest_path"])
-        partition = cpu_partitions[artifact_index % len(cpu_partitions)]
+        partition = _cpu_partition_request(config, artifact_index)
         key = (artifact["dataset"], artifact["condition"], partition)
         job_name = f"selseg-diagnose-{artifact['dataset']}-{artifact['condition']}"
         command = (

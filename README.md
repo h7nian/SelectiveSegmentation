@@ -86,14 +86,22 @@ python -m scripts.download_binary_assets
 FIVES extraction additionally requires `unrar`; every downloaded archive is
 checked against the SHA-256 recorded in the script.
 
-Target checkpoints must exist before the main freeze-and-score campaign. The
-ISIC/TN3K bootstrap launcher submits one training job per model; it also runs
-the older fused evaluator for independent validation, not for the canonical
-campaign artifacts:
+Target checkpoints must exist before the main freeze-and-score campaign. All
+shell launchers under `scripts/slurm/submit_*.sh` are retained as
+legacy/noncanonical utilities; they do not generate the paper's locked
+artifacts. The maintained `submit_extended_binary.sh` helper is only an
+ISIC/TN3K checkpoint bootstrap and independent validator. It submits one
+training condition per job and one scalar `M` in `{2,8,32}` per evaluation
+job:
 
 ```bash
 bash scripts/slurm/submit_extended_binary.sh
 ```
+
+Do not use the other shell submitters (`submit_all.sh`, `submit_config_b.sh`,
+`submit_selective.sh`, or `submit_quadrature.sh`) to reproduce reported
+results. The config/lock-aware Python planners documented below are the
+canonical interfaces.
 
 ## Reproduce the main campaign
 
@@ -132,6 +140,25 @@ CPU jobs, 48 M-specific CPU jobs, 16 strict assemblies, and 16 read-only
 artifact diagnostics. Every independent experiment is one `sbatch` job; no
 Slurm arrays or multi-experiment jobs are used.
 
+For every new campaign, the current scheduler rule is exact: each GPU training
+or freeze job requests the candidate list `saffo-a100,apollo_agate`, and each
+GPU-free job requests `saffo-2tb,agsmall,amdsmall,msismall`, always under
+account `ssafo`. A comma-delimited candidate request lets Slurm place one job;
+it does not create one job per partition. Every `sbatch` must still represent
+exactly one experiment, and every quadrature score job must receive exactly
+one scalar `M` (`2`, `8`, or `32`); Slurm arrays and fused `M` lists are not
+allowed. Partition commands recorded in completed immutable receipts are
+historical evidence and remain byte-for-byte unchanged even when they predate
+this rule.
+
+The generic planner activates this policy only for a new
+`config_schema_version: 2` campaign containing both exact fields
+`gpu_partition_candidates: ["saffo-a100", "apollo_agate"]` and
+`cpu_partition_candidates: ["saffo-2tb", "agsmall", "amdsmall",
+"msismall"]`.  The two fields are inseparable and order-sensitive.  Create a
+new campaign ID and lock for such a wave; never edit a sealed v1 config or
+receipt in place.
+
 1. **Freeze once.** Run the model once for each condition and write immutable,
    content-addressed foreground-probability/truth artifacts. Every job requests
    the combined private partition list `saffo-a100,apollo_agate` under account
@@ -169,9 +196,9 @@ Slurm arrays or multi-experiment jobs are used.
 
 3. **Compute common fields once.** Each frozen artifact gets one CPU job for
    the three deployment risks, M-independent baselines, and Exact Dice. This
-   avoids recomputing shared floating-point fields on different nodes. Jobs
-   rotate deterministically over `agsmall`, `amdsmall`, and `msismall` under
-   account `ssafo`:
+   avoids recomputing shared floating-point fields on different nodes. The
+   completed seed-0 receipts preserve their historical deterministic rotation
+   over `agsmall`, `amdsmall`, and `msismall` under account `ssafo`:
 
    ```bash
    python -m scripts.submit_binary_simulations \
@@ -188,8 +215,8 @@ Slurm arrays or multi-experiment jobs are used.
    `(artifact, gamma, M, seed, estimator)` tuple; no Slurm array or fused list
    of `M` values is used. Dice, nHD, and nHD95 confidence are computed from the
    same tuple and shared candidate-boundary distances, preserving paired
-   comparisons without repeating inference. These jobs use the same
-   deterministic `agsmall`/`amdsmall`/`msismall` rotation.
+   comparisons without repeating inference. The completed receipts use the
+   same historical `agsmall`/`amdsmall`/`msismall` rotation.
 
    ```bash
    python -m scripts.submit_binary_simulations \
@@ -603,10 +630,11 @@ python -m scripts.render_binary_runtime \
 
 Training-seed robustness is isolated from the seed-0 campaign. The locked
 extension contains exactly five datasets by two target architectures by seeds
-1 and 2, hence 20 one-GPU training jobs. This completed v1 extension balanced
-the jobs across single `saffo-a100` and `apollo_agate` assignments because
-those exact requests, runtime partitions, records, and receipts are already
-immutable:
+1 and 2, hence 20 one-GPU training jobs.
+
+**Historical v1 receipt record (immutable).** The completed v1 extension
+balanced jobs across single `saffo-a100` and `apollo_agate` assignments. Those
+exact requests, runtime partitions, records, and receipts are already sealed:
 
 ```bash
 python -m scripts.submit_binary_seed_extension --phase train
@@ -621,10 +649,12 @@ spec lock under `outputs/binary_seed_campaign/`.
 
 Do not rewrite the completed v1 train or freeze commands to a comma-delimited
 partition request: doing so would invalidate the exact receipt and scheduler
-closure. A new seed campaign must use a new v2 spec/lock and request the fixed
-GPU candidate list `saffo-a100,apollo_agate` for every train and freeze job,
-matching the already multi-partition canonical seed-0 freeze policy. This is a
-forward migration rule, not a retrospective change to v1 evidence.
+closure. The current `scripts.submit_binary_seed_extension` module is the v1
+replay/finalization planner and deliberately preserves those historical
+commands; it does **not** implement a future v2 candidate-GPU mode. Any new
+seed campaign requires a separate v2 spec, lock, and planner update that uses
+`saffo-a100,apollo_agate` for every train and freeze job. This is a forward
+migration rule, not a retrospective change to v1 evidence.
 
 After all 20 jobs are terminal, first apply the reviewed post-training record
 validator hardening and run its focused tests. This ordering makes the stronger
@@ -688,16 +718,16 @@ independent job; arrays are never used. `common`, `score`, and `diagnose` are
 separate waves and may overlap, but assembly must wait until all common and
 score outputs validate:
 
-The three already submitted CPU waves retain the single-partition commands in
-their immutable receipts. In contrast, every not-yet-submitted seed assembly,
-analysis, and render job requests the exact candidate list
-`saffo-2tb,agsmall,amdsmall,msismall`. This order is the canonical receipt
-serialization, not a priority declaration: Slurm may normalize the displayed
-list and dispatches the one experiment to the eligible partition it expects
-to start earliest. It does not create four jobs.
-Immediately before submission, the planner runs `sbatch --test-only` on the
-combined request and aborts the whole wave before touching its receipt if the
-candidate pool is ineligible.
+**Historical v1 CPU receipt record (immutable).** The completed common, score,
+and diagnostic waves retain their submitted single-partition commands. The
+completed assembly, analysis, and render jobs requested the exact candidate
+list `saffo-2tb,agsmall,amdsmall,msismall`. This order is receipt serialization,
+not a priority declaration: Slurm may normalize the displayed list and places
+the one experiment on one eligible partition. Before those submissions, the
+planner ran `sbatch --test-only` on the combined request and would have aborted
+the whole wave before touching its receipt if the candidate pool was
+ineligible. These paragraphs document completed v1 provenance; all new CPU
+campaign jobs follow the four-candidate rule stated above.
 
 The already submitted common and score waves have one deliberately narrow
 scheduler-only maintenance path. Their original wrappers requested 12 hours,
@@ -1105,7 +1135,7 @@ scripts/render_cardinality_diagnostics.py  compact target-condition diagnostic t
 scripts/submit_binary_runtime.py  one fixed-protocol runtime job per condition
 scripts/submit_binary_runtime_ladder.py  locked M2/M8/M32/Exact runtime ladder
 scripts/analyze_binary_runtime.py  strict hardware-dependent timing summary
-scripts/submit_binary_seed_extension.py  balanced private-A100 seed planner
+scripts/submit_binary_seed_extension.py  immutable v1 seed replay/finalization planner
 scripts/publish_binary_seed_extension.py  hash-bound write-once seed-table publisher
 scripts/submit_synthetic_posterior.py  gated one-cell-per-job synthetic planner
 scripts/analyze_synthetic_posterior.py  strict known-posterior analysis

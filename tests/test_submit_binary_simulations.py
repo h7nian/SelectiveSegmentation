@@ -89,6 +89,24 @@ def _write_config(tmp_path):
     return load_config(path)
 
 
+def _write_candidate_config(tmp_path):
+    legacy = _write_config(tmp_path)
+    config = json.loads(legacy.path.read_text())
+    config.update(
+        config_schema_version=2,
+        gpu_partition_candidates=["saffo-a100", "apollo_agate"],
+        cpu_partition_candidates=[
+            "saffo-2tb",
+            "agsmall",
+            "amdsmall",
+            "msismall",
+        ],
+    )
+    path = tmp_path / "campaign-candidates-v2.json"
+    path.write_text(json.dumps(config, indent=2) + "\n")
+    return load_config(path)
+
+
 def _write_artifact(tmp_path):
     sample_ids = ["image-0", "image-1"]
     probability = np.linspace(0.05, 0.95, 12 * 12, dtype=np.float32).reshape(12, 12)
@@ -136,6 +154,16 @@ def _locked_campaign(tmp_path):
     artifact = _write_artifact(tmp_path)
     lock = build_campaign_lock(config, [artifact])
     lock_path, lock_sha = write_campaign_lock(lock, tmp_path / "campaign.lock.json")
+    return config, artifact, lock_path, lock_sha
+
+
+def _locked_candidate_campaign(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    artifact = _write_artifact(tmp_path)
+    lock = build_campaign_lock(config, [artifact])
+    lock_path, lock_sha = write_campaign_lock(
+        lock, tmp_path / "campaign-candidates-v2.lock.json"
+    )
     return config, artifact, lock_path, lock_sha
 
 
@@ -211,6 +239,148 @@ def test_freeze_and_score_plans_are_one_job_per_cartesian_row(tmp_path):
 
     with pytest.raises(FileNotFoundError, match="scoring outputs are incomplete"):
         plan_assemble_jobs(config, lock_path)
+
+
+def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_path):
+    config, _, lock_path, _ = _locked_candidate_campaign(tmp_path)
+    gpu_request = "saffo-a100,apollo_agate"
+    cpu_request = "saffo-2tb,agsmall,amdsmall,msismall"
+
+    freeze_jobs = plan_freeze_jobs(config)
+    common_jobs = plan_common_jobs(config, lock_path)
+    score_jobs = plan_score_jobs(config, lock_path)
+    diagnose_jobs = plan_diagnose_jobs(config, lock_path)
+
+    assert len(freeze_jobs) == len(common_jobs) == len(diagnose_jobs) == 1
+    assert len(score_jobs) == 3
+    assert len({job.key for job in score_jobs}) == 3
+    score_identities = {
+        (
+            command[command.index("--artifact-manifest") + 1],
+            command[command.index("--gamma") + 1],
+            command[command.index("--m") + 1],
+            command[command.index("--seed") + 1],
+        )
+        for command in (list(job.command) for job in score_jobs)
+    }
+    assert len(score_identities) == 3
+
+    for job in freeze_jobs:
+        command = list(job.command)
+        assert command[command.index("--partition") + 1] == gpu_request
+        assert command.count("scripts/slurm/freeze_binary_maps.sbatch") == 1
+        assert "--array" not in command
+        assert not any(token.startswith("--array=") for token in command)
+
+    cpu_jobs = (*common_jobs, *score_jobs, *diagnose_jobs)
+    for job in cpu_jobs:
+        command = list(job.command)
+        assert command.count("--partition") == 1
+        assert command[command.index("--partition") + 1] == cpu_request
+        assert "--array" not in command
+        assert not any(token.startswith("--array=") for token in command)
+    assert all(
+        job.command.count("scripts/slurm/score_binary_simulation.sbatch") == 1
+        for job in score_jobs
+    )
+
+    common_command = list(common_jobs[0].command)
+    common_wrapper = common_command.index("scripts/slurm/score_binary_common.sbatch")
+    _, common_manifest = run_common(
+        parse_common_args(common_command[common_wrapper + 1 :])
+    )
+    for job in score_jobs:
+        command = list(job.command)
+        score_wrapper = command.index("scripts/slurm/score_binary_simulation.sbatch")
+        run_simulation(parse_score_args(command[score_wrapper + 1 :]))
+    assemble_jobs = plan_assemble_jobs(config, lock_path)
+    assert len(assemble_jobs) == 1
+    assemble_command = list(assemble_jobs[0].command)
+    assert assemble_command[assemble_command.index("--partition") + 1] == cpu_request
+    assert assemble_command.count("scripts/slurm/assemble_binary_simulations.sbatch") == 1
+    assert assemble_command[assemble_command.index("--common") + 1] == str(
+        common_manifest
+    )
+    assert "--array" not in assemble_command
+    assert not any(token.startswith("--array=") for token in assemble_command)
+
+
+def test_schema_v1_partition_commands_remain_legacy_compatible(tmp_path):
+    config, _, lock_path, _ = _locked_campaign(tmp_path)
+    assert config.data["config_schema_version"] == 1
+    assert "gpu_partition_candidates" not in config.data
+    assert "cpu_partition_candidates" not in config.data
+    assert [
+        job.command[job.command.index("--partition") + 1]
+        for job in plan_freeze_jobs(config)
+    ] == ["saffo-a100,apollo_agate"]
+    assert [
+        job.command[job.command.index("--partition") + 1]
+        for job in plan_common_jobs(config, lock_path)
+    ] == ["agsmall"]
+    score_jobs = plan_score_jobs(config, lock_path)
+    assert [
+        job.command[job.command.index("--partition") + 1] for job in score_jobs
+    ] == ["agsmall", "amdsmall", "msismall"]
+    assert [job.key[2] for job in score_jobs] == [
+        "agsmall",
+        "amdsmall",
+        "msismall",
+    ]
+
+
+@pytest.mark.parametrize(
+    ("version", "updates", "message"),
+    [
+        (
+            2,
+            {},
+            "must be provided together",
+        ),
+        (
+            1,
+            {
+                "gpu_partition_candidates": ["saffo-a100", "apollo_agate"],
+                "cpu_partition_candidates": [
+                    "saffo-2tb",
+                    "agsmall",
+                    "amdsmall",
+                    "msismall",
+                ],
+            },
+            "require config_schema_version 2",
+        ),
+        (
+            2,
+            {"gpu_partition_candidates": ["saffo-a100", "apollo_agate"]},
+            "must be provided together",
+        ),
+        (
+            2,
+            {
+                "gpu_partition_candidates": ["apollo_agate", "saffo-a100"],
+                "cpu_partition_candidates": [
+                    "saffo-2tb",
+                    "agsmall",
+                    "amdsmall",
+                    "msismall",
+                ],
+            },
+            "gpu_partition_candidates must equal",
+        ),
+    ],
+)
+def test_candidate_partition_fields_are_versioned_paired_and_exact(
+    tmp_path, version, updates, message
+):
+    config = _write_config(tmp_path)
+    payload = json.loads(config.path.read_text())
+    payload["config_schema_version"] = version
+    payload.update(updates)
+    path = tmp_path / "invalid-candidate-config.json"
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    with pytest.raises(ValueError, match=message):
+        load_config(path)
 
 
 def test_freeze_plan_supports_an_explicit_reproducible_development_subset(tmp_path):

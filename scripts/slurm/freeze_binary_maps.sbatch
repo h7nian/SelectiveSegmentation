@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --partition=saffo-a100
+#SBATCH --partition=saffo-a100,apollo_agate
 #SBATCH --account=ssafo
 #SBATCH --gres=gpu:a100:1
 #SBATCH --mem=48g
