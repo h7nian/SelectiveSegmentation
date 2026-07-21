@@ -8,6 +8,7 @@ import pytest
 from scripts.render_paper_tables import (
     COMPLETION_MARKER,
     CONTRASTS,
+    CONTROL_CONDITIONS,
     EXPECTED_CONDITIONS,
     HOLM_FAMILY_BY_DATASET,
     METHODS,
@@ -283,6 +284,8 @@ def test_complete_render_has_declared_artifacts_and_main_orientation():
     assert "Dark blue" in main
     assert "raw/Holm-transformed" not in main
     assert "CLIP-T:" in main and "DL-T:" in main
+    assert r"\resizebox{\textwidth}{!}" in main
+    assert r"\begin{tabular*}" not in main
     assert "significant" not in main.lower()
     assert "significance" not in main.lower()
 
@@ -299,38 +302,91 @@ def test_top1_highlight_uses_the_exact_unrounded_minimum():
 def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
     tables = render_tables(_analysis(), source_hash="b" * 64)
 
-    for name in ("full_target_results.tex", "complete_results.tex"):
-        table = tables[name]
-        assert table.count(r"\begin{tabular}{l*{5}{c}}") == len(RISKS)
-        assert table.count(r"\begin{table*}[t]") == len(RISKS)
-        for label in METHODS.values():
-            assert table.count(f"\n{label} &") == len(RISKS)
-        assert table.count(r"\shortstack{") == len(RISKS) * len(METHODS) * 5
-        assert r"\bestresult{" in table
-        assert r"raw AURC $\times100$ (nAURC)" in table
+    target = tables["full_target_results.tex"]
+    assert target.count(r"\begin{table*}[t]") == len(RISKS)
+    assert target.count(r"\begin{tabular*}{\textwidth}") == 2 * len(RISKS)
+    assert r"\resizebox" not in target
+    assert target.count(r"{\scriptsize") == len(RISKS)
+    assert r"\shortstack{" not in target
+    for label in METHODS.values():
+        assert target.count(f"\n{label} &") == 2 * len(RISKS)
+    for panel_label in (
+        "CLIPSeg target (CLIP-T)",
+        "DeepLabV3 target (DL-T)",
+    ):
+        assert target.count(panel_label) == len(RISKS)
+    for dataset_label in ("Oxford Pet", "Kvasir-SEG", "FIVES", "ISIC 2018", "TN3K"):
+        assert target.count(dataset_label) == 2 * len(RISKS)
+    assert target.count(r"\bestresult{") == len(TARGET_CONDITIONS) * len(RISKS)
+    assert r"raw AURC $\times100$ (nAURC)" in target
+
+    control = tables["complete_results.tex"]
+    assert control.count(r"\begin{table*}[t]") == len(RISKS)
+    assert control.count(r"\begin{tabular*}{\textwidth}") == len(RISKS)
+    assert control.count(r"\begin{tabular*}{0.62\textwidth}") == len(RISKS)
+    assert r"\resizebox" not in control
+    assert control.count(r"{\scriptsize") == len(RISKS)
+    assert r"\shortstack{" not in control
+    for label in METHODS.values():
+        assert control.count(f"\n{label} &") == 2 * len(RISKS)
+    for panel_label in (
+        "CLIPSeg general (CLIP-G)",
+        "DeepLabV3 external (DL-E)",
+    ):
+        assert control.count(panel_label) == len(RISKS)
+    assert control.count("Oxford Pet") == 2 * len(RISKS)
+    for dataset_label in ("Kvasir-SEG", "FIVES", "ISIC 2018", "TN3K"):
+        assert control.count(dataset_label) == len(RISKS)
+    assert control.count(r"\bestresult{") == len(CONTROL_CONDITIONS) * len(RISKS)
+    assert r"raw AURC $\times100$ (nAURC)" in control
 
     cross = tables["cross_loss_results.tex"]
     assert "Full $3\\times3$" in cross
-    assert cross.count(r"\multicolumn{6}{l}{\textit{") == len(RISKS)
-    assert cross.count(r"\shortstack{") == len(RISKS) * 3 * 5
+    assert cross.count(r"\begin{tabular*}{\textwidth}") == 3
+    assert cross.count(r"\begin{tabular*}{0.62\textwidth}") == 1
+    assert r"\resizebox" not in cross
+    assert cross.count(r"{\scriptsize") == 1
+    assert r"\shortstack{" not in cross
     for method in ("Dice-M32", "nHD-M32", "nHD95-M32"):
-        assert cross.count(f"\n{method} &") == len(RISKS)
-    for condition in ("CLIP-G:", "CLIP-T:", "DL-T:", "DL-E:"):
-        assert condition in cross
+        assert cross.count(f"\n{method} &") == 4 * len(RISKS)
+    for panel_label in (
+        "CLIPSeg general (CLIP-G)",
+        "CLIPSeg target (CLIP-T)",
+        "DeepLabV3 target (DL-T)",
+        "DeepLabV3 external (DL-E)",
+    ):
+        assert cross.count(panel_label) == 1
+    for risk_label in RISKS.values():
+        assert cross.count(rf"\textit{{{risk_label}}}") == 4
+    assert cross.count("Oxford Pet") == 4
+    for dataset_label in ("Kvasir-SEG", "FIVES", "ISIC 2018", "TN3K"):
+        assert cross.count(dataset_label) == 3
+    assert cross.count(r"\bestresult{") == len(EXPECTED_CONDITIONS) * len(RISKS)
     assert "descriptive" in cross
 
 
 def test_quadrature_table_includes_exact_and_all_declared_midpoint_rules():
     table = render_tables(_analysis(), source_hash="c" * 64)["quadrature_ablation.tex"]
+    primary, fidelity = table.split(r"\clearpage", 1)
 
-    assert table.count("\nDice-Exact &") == 1
+    assert primary.count(r"\begin{tabular*}{\textwidth}") == 2
+    assert r"\resizebox" not in primary
+    assert r"\resizebox{\textwidth}{!}" in fidelity
+    assert r"\shortstack{" not in primary
+    assert primary.count("\nDice-Exact &") == 2
     for count in (2, 8, 32):
-        assert table.count(f"\nDice-M{count} &") == 1
+        assert primary.count(f"\nDice-M{count} &") == 2
         assert table.count(f"\nDice-M{count} / ") == 6
     for prefix in ("nHD", "nHD95"):
         for count in (2, 8, 32):
-            assert table.count(f"\n{prefix}-M{count} &") == 1
-    assert table.count(r"\shortstack{") == (4 + 3 + 3) * 5
+            assert primary.count(f"\n{prefix}-M{count} &") == 2
+    for panel_label in (
+        "CLIPSeg target (CLIP-T)",
+        "DeepLabV3 target (DL-T)",
+    ):
+        assert primary.count(panel_label) == 1
+    for dataset_label in ("Oxford Pet", "Kvasir-SEG", "FIVES", "ISIC 2018", "TN3K"):
+        assert primary.count(dataset_label) == 2
     assert "exact level-set oracle" in table
     assert table.count(r"\bestresult{") == len(RISKS) * len(TARGET_CONDITIONS)
     assert "Dark blue" in table

@@ -15,6 +15,7 @@ import pytest
 from scripts import submit_binary_simulations
 from scripts.submit_binary_simulations import (
     build_campaign_lock,
+    canonical_runtime_receipt_path,
     execute_configured_plan,
     execute_plan,
     load_config,
@@ -23,6 +24,8 @@ from scripts.submit_binary_simulations import (
     plan_diagnose_jobs,
     plan_freeze_jobs,
     plan_score_jobs,
+    recover_configured_submission,
+    reconcile_configured_plan,
     write_campaign_lock,
 )
 from scripts.assemble_binary_simulations import FINAL_SCORE_FIELDS, assemble
@@ -96,6 +99,7 @@ def _write_candidate_config(tmp_path):
     config = json.loads(legacy.path.read_text())
     config.update(
         config_schema_version=2,
+        execution_policy="scheduler-preview-only",
         gpu_partition_candidates=["saffo-a100", "apollo_agate"],
         cpu_partition_candidates=[
             "saffo-2tb",
@@ -107,6 +111,35 @@ def _write_candidate_config(tmp_path):
     path = tmp_path / "campaign-candidates-v2.json"
     path.write_text(json.dumps(config, indent=2) + "\n")
     return load_config(path)
+
+
+def _execute_candidate_runtime(
+    config,
+    jobs,
+    *,
+    submit=True,
+    receipt_path,
+    runner,
+    preflight_runner,
+    retry_failed_job_ids=(),
+    retry_submission_failures=False,
+):
+    """Exercise future runtime primitives without bypassing the public v2 gate."""
+
+    assert submit is True
+    jobs = submit_binary_simulations._validate_runtime_jobs(jobs)
+    receipt = submit_binary_simulations._validated_runtime_receipt_path(
+        config, jobs, receipt_path
+    )
+    jobs = submit_binary_simulations.preflight_plan(jobs, runner=preflight_runner)
+    return submit_binary_simulations._execute_runtime_plan(
+        config,
+        jobs,
+        receipt_path=receipt,
+        runner=runner,
+        retry_failed_job_ids=retry_failed_job_ids,
+        retry_submission_failures=retry_submission_failures,
+    )
 
 
 def _write_artifact(tmp_path):
@@ -299,7 +332,9 @@ def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_p
     assert len(assemble_jobs) == 1
     assemble_command = list(assemble_jobs[0].command)
     assert assemble_command[assemble_command.index("--partition") + 1] == cpu_request
-    assert assemble_command.count("scripts/slurm/assemble_binary_simulations.sbatch") == 1
+    assert (
+        assemble_command.count("scripts/slurm/assemble_binary_simulations.sbatch") == 1
+    )
     assert assemble_command[assemble_command.index("--common") + 1] == str(
         common_manifest
     )
@@ -336,7 +371,7 @@ def test_schema_v1_partition_commands_remain_legacy_compatible(tmp_path):
     [
         (
             2,
-            {},
+            {"execution_policy": "scheduler-preview-only"},
             "must be provided together",
         ),
         (
@@ -354,12 +389,16 @@ def test_schema_v1_partition_commands_remain_legacy_compatible(tmp_path):
         ),
         (
             2,
-            {"gpu_partition_candidates": ["saffo-a100", "apollo_agate"]},
+            {
+                "execution_policy": "scheduler-preview-only",
+                "gpu_partition_candidates": ["saffo-a100", "apollo_agate"],
+            },
             "must be provided together",
         ),
         (
             2,
             {
+                "execution_policy": "scheduler-preview-only",
                 "gpu_partition_candidates": ["apollo_agate", "saffo-a100"],
                 "cpu_partition_candidates": [
                     "saffo-2tb",
@@ -380,6 +419,38 @@ def test_candidate_partition_fields_are_versioned_paired_and_exact(
     payload["config_schema_version"] = version
     payload.update(updates)
     path = tmp_path / "invalid-candidate-config.json"
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    with pytest.raises(ValueError, match=message):
+        load_config(path)
+
+
+@pytest.mark.parametrize(
+    ("version", "policy", "message"),
+    [
+        (2, None, "execution_policy must equal"),
+        (2, "scientific-input-locked", "execution_policy must equal"),
+        (1, "scheduler-preview-only", "requires config_schema_version 2"),
+    ],
+)
+def test_execution_policy_is_exact_and_schema_v2_only(
+    tmp_path, version, policy, message
+):
+    config = _write_config(tmp_path)
+    payload = json.loads(config.path.read_text())
+    payload["config_schema_version"] = version
+    if version == 2:
+        payload.update(
+            gpu_partition_candidates=["saffo-a100", "apollo_agate"],
+            cpu_partition_candidates=[
+                "saffo-2tb",
+                "agsmall",
+                "amdsmall",
+                "msismall",
+            ],
+        )
+    if policy is not None:
+        payload["execution_policy"] = policy
+    path = tmp_path / "invalid-execution-policy.json"
     path.write_text(json.dumps(payload, indent=2) + "\n")
     with pytest.raises(ValueError, match=message):
         load_config(path)
@@ -439,12 +510,15 @@ def test_execute_plan_is_dry_run_by_default_and_submits_each_job_separately(
         receipt_path=diagnostic_receipt,
         runner=runner,
     ) == ("job-4",)
-    assert execute_plan(
-        diagnostic_jobs,
-        submit=True,
-        receipt_path=diagnostic_receipt,
-        runner=runner,
-    ) == ()
+    assert (
+        execute_plan(
+            diagnostic_jobs,
+            submit=True,
+            receipt_path=diagnostic_receipt,
+            runner=runner,
+        )
+        == ()
+    )
     diagnostic_rows = [
         json.loads(line) for line in diagnostic_receipt.read_text().splitlines()
     ]
@@ -456,12 +530,12 @@ def test_execute_plan_is_dry_run_by_default_and_submits_each_job_separately(
 
 
 @pytest.mark.parametrize("existing_receipt", [False, True])
-def test_schema_v2_final_preflight_failure_is_fail_closed_before_receipt_access(
+def test_schema_v2_real_submit_is_rejected_before_scheduler_or_receipt_access(
     tmp_path, existing_receipt
 ):
     config, _, lock_path, _ = _locked_candidate_campaign(tmp_path)
     jobs = plan_score_jobs(config, lock_path)
-    receipt = tmp_path / "submission-receipts" / "score.jsonl"
+    receipt = canonical_runtime_receipt_path(config, "score")
     sentinel = b"sentinel receipt bytes\n"
     if existing_receipt:
         receipt.parent.mkdir(parents=True)
@@ -470,38 +544,23 @@ def test_schema_v2_final_preflight_failure_is_fail_closed_before_receipt_access(
         os.utime(receipt, ns=(sentinel_time, sentinel_time))
         initial_stat = receipt.stat()
 
-    preflight_calls = []
-    real_calls = []
+    calls = []
 
-    def preflight_runner(command, **kwargs):
-        preflight_calls.append((tuple(command), kwargs))
-        assert "--test-only" in command
-        assert "--parsable" not in command
-        if len(preflight_calls) == len(jobs):
-            return SimpleNamespace(
-                returncode=17,
-                stdout="",
-                stderr="scheduler rejected final job",
-            )
-        return SimpleNamespace(returncode=0, stdout="", stderr="")
+    def forbidden_runner(command, **kwargs):
+        calls.append((tuple(command), kwargs))
+        raise AssertionError("preview-only rejection must precede scheduler access")
 
-    def real_runner(command, **kwargs):
-        real_calls.append((tuple(command), kwargs))
-        raise AssertionError("real sbatch must not run after a failed wave preflight")
-
-    with pytest.raises(subprocess.CalledProcessError) as error:
+    with pytest.raises(RuntimeError, match="scientific inputs"):
         execute_configured_plan(
             config,
             jobs,
             submit=True,
             receipt_path=receipt,
-            runner=real_runner,
-            preflight_runner=preflight_runner,
+            runner=forbidden_runner,
+            preflight_runner=forbidden_runner,
         )
 
-    assert error.value.returncode == 17
-    assert len(preflight_calls) == len(jobs)
-    assert real_calls == []
+    assert calls == []
     if existing_receipt:
         final_stat = receipt.stat()
         assert receipt.read_bytes() == sentinel
@@ -512,95 +571,100 @@ def test_schema_v2_final_preflight_failure_is_fail_closed_before_receipt_access(
         assert not receipt.parent.exists()
 
 
-def test_schema_v2_preflights_the_whole_wave_before_real_independent_jobs(tmp_path):
+def test_schema_v2_preflights_the_whole_wave_without_real_jobs_or_receipt(tmp_path):
     config, _, lock_path, _ = _locked_candidate_campaign(tmp_path)
     jobs = plan_score_jobs(config, lock_path)
     original_jobs = tuple(jobs)
-    receipt = tmp_path / "submission-receipts" / "score.jsonl"
     candidate_request = "saffo-2tb,agsmall,amdsmall,msismall"
-    calls = []
+    preflight_calls = []
 
-    def runner(command, **kwargs):
+    def preflight_runner(command, **kwargs):
         command = tuple(command)
-        calls.append((command, kwargs))
-        call_index = len(calls) - 1
-        if call_index < len(jobs):
-            assert "--test-only" in command
-            assert "--parsable" not in command
-            assert not receipt.exists()
-            return SimpleNamespace(returncode=0, stdout="", stderr="")
-        assert all("--test-only" in call[0] for call in calls[: len(jobs)])
-        assert "--parsable" in command
-        assert "--test-only" not in command
-        real_index = call_index - len(jobs) + 1
-        return SimpleNamespace(
-            returncode=0,
-            stdout=f"job-{real_index}\n",
-            stderr="",
-        )
+        preflight_calls.append((command, kwargs))
+        assert "--test-only" in command
+        assert "--parsable" not in command
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
 
-    assert execute_configured_plan(
-        config,
-        jobs,
-        submit=True,
-        receipt_path=receipt,
-        runner=runner,
-        preflight_runner=runner,
-    ) == ("job-1", "job-2", "job-3")
+    def forbidden_real_runner(*args, **kwargs):
+        raise AssertionError("scheduler preview must not invoke real sbatch")
+
+    assert (
+        execute_configured_plan(
+            config,
+            jobs,
+            scheduler_preflight_only=True,
+            runner=forbidden_real_runner,
+            preflight_runner=preflight_runner,
+        )
+        == ()
+    )
 
     assert tuple(jobs) == original_jobs
-    assert len(calls) == 2 * len(jobs)
-    preflight_commands = [call[0] for call in calls[: len(jobs)]]
-    real_commands = [call[0] for call in calls[len(jobs) :]]
-    for job, preflight, real in zip(jobs, preflight_commands, real_commands):
+    assert len(preflight_calls) == len(jobs)
+    preflight_commands = [call[0] for call in preflight_calls]
+    for job, preflight in zip(jobs, preflight_commands):
         expected_preflight = tuple(
-            "--test-only" if token == "--parsable" else token
-            for token in job.command
+            "--test-only" if token == "--parsable" else token for token in job.command
         )
         assert preflight == expected_preflight
-        assert real == job.command
         assert preflight[preflight.index("--partition") + 1] == candidate_request
-        assert real[real.index("--partition") + 1] == candidate_request
         assert "--array" not in preflight
-        assert "--array" not in real
+    assert not canonical_runtime_receipt_path(config, "score").exists()
 
-    rows = [json.loads(line) for line in receipt.read_text().splitlines()]
-    assert len(rows) == 2 * len(jobs)
-    assert [tuple(row["key"]) for row in rows[::2]] == [job.key for job in jobs]
-    assert [tuple(row["command"]) for row in rows[::2]] == [
-        job.command for job in jobs
-    ]
+
+def test_schema_v2_scheduler_preflight_rejects_receipt_before_scheduler(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+    calls = []
+
+    def forbidden_runner(*args, **kwargs):
+        calls.append((args, kwargs))
+        raise AssertionError("receipt validation must precede scheduler access")
+
+    with pytest.raises(ValueError, match="never accepts --receipt"):
+        execute_configured_plan(
+            config,
+            jobs,
+            scheduler_preflight_only=True,
+            receipt_path=receipt,
+            runner=forbidden_runner,
+            preflight_runner=forbidden_runner,
+        )
+    assert calls == []
+    assert not receipt.exists()
 
 
 def test_schema_v2_freeze_preflight_preserves_exact_gpu_candidate_request(tmp_path):
     config = _write_candidate_config(tmp_path)
     jobs = plan_freeze_jobs(config)
-    receipt = tmp_path / "freeze.jsonl"
     calls = []
 
     def runner(command, **kwargs):
         command = tuple(command)
         calls.append(command)
-        if "--test-only" in command:
-            return SimpleNamespace(returncode=0, stdout="", stderr="")
-        return SimpleNamespace(returncode=0, stdout="gpu-job-1\n", stderr="")
+        assert "--test-only" in command
+        assert "--parsable" not in command
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
 
-    assert execute_configured_plan(
-        config,
-        jobs,
-        submit=True,
-        receipt_path=receipt,
-        runner=runner,
-        preflight_runner=runner,
-    ) == ("gpu-job-1",)
-    assert len(calls) == 2
+    assert (
+        execute_configured_plan(
+            config,
+            jobs,
+            scheduler_preflight_only=True,
+            runner=lambda *args, **kwargs: pytest.fail("real sbatch was called"),
+            preflight_runner=runner,
+        )
+        == ()
+    )
+    assert len(calls) == 1
     assert "--test-only" in calls[0]
-    assert "--parsable" in calls[1]
     assert [command[command.index("--partition") + 1] for command in calls] == [
         "saffo-a100,apollo_agate",
-        "saffo-a100,apollo_agate",
     ]
-    assert calls[1] == jobs[0].command
+    job_name = jobs[0].command[jobs[0].command.index("--job-name") + 1]
+    assert job_name.endswith(f"-c{config.sha256[:16]}")
+    assert not canonical_runtime_receipt_path(config, "freeze").exists()
 
 
 def test_schema_v1_execution_does_not_gain_scheduler_preflight(tmp_path):
@@ -627,6 +691,635 @@ def test_schema_v1_execution_does_not_gain_scheduler_preflight(tmp_path):
     assert real_commands == [job.command for job in jobs]
     assert all("--parsable" in command for command in real_commands)
     assert all("--test-only" not in command for command in real_commands)
+    assert all(
+        not command[command.index("--job-name") + 1].rsplit("-", 1)[-1].startswith("c")
+        for command in real_commands
+    )
+
+
+def test_schema_v2_receipt_path_is_canonical_and_substitution_is_rejected(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    canonical = canonical_runtime_receipt_path(config, "freeze")
+    assert canonical == (tmp_path / "receipts" / "freeze.jsonl").resolve()
+    substitute = tmp_path / "other-receipts" / "freeze.jsonl"
+    calls = []
+
+    def forbidden_runner(command, **kwargs):
+        calls.append((command, kwargs))
+        raise AssertionError("path validation must precede scheduler access")
+
+    with pytest.raises(ValueError, match="path substitution rejected"):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=substitute,
+            runner=forbidden_runner,
+            preflight_runner=forbidden_runner,
+        )
+    with pytest.raises(ValueError, match="path substitution rejected"):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=canonical_runtime_receipt_path(config, "score"),
+            runner=forbidden_runner,
+            preflight_runner=forbidden_runner,
+        )
+    assert calls == []
+    assert not substitute.exists()
+    assert not canonical.exists()
+
+
+def test_schema_v2_config_requires_one_campaign_root_for_canonical_receipts(tmp_path):
+    config = _write_config(tmp_path)
+    payload = json.loads(config.path.read_text())
+    payload.update(
+        config_schema_version=2,
+        execution_policy="scheduler-preview-only",
+        gpu_partition_candidates=["saffo-a100", "apollo_agate"],
+        cpu_partition_candidates=[
+            "saffo-2tb",
+            "agsmall",
+            "amdsmall",
+            "msismall",
+        ],
+    )
+    payload["paths"]["simulation_output_root"] = str(
+        tmp_path / "different-campaign" / "simulations"
+    )
+    path = tmp_path / "split-roots-v2.json"
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    with pytest.raises(ValueError, match="sibling directories"):
+        load_config(path)
+
+
+def test_schema_v2_running_and_unknown_jobs_are_never_resubmitted(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+    real_calls = []
+
+    def preflight(command, **kwargs):
+        assert "--test-only" in command
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    def submit(command, **kwargs):
+        real_calls.append(tuple(command))
+        return SimpleNamespace(returncode=0, stdout="3001\n", stderr="")
+
+    assert _execute_candidate_runtime(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=submit,
+        preflight_runner=preflight,
+    ) == ("3001",)
+    assert (
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=submit,
+            preflight_runner=preflight,
+        )
+        == ()
+    )
+    assert real_calls == [jobs[0].command]
+
+    scheduler_calls = []
+
+    def running_scheduler(command, **kwargs):
+        scheduler_calls.append(tuple(command))
+        if command[0] == "sacct":
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+        assert command[0] == "squeue"
+        return SimpleNamespace(
+            returncode=0,
+            stdout="3001|RUNNING|saffo-a100|gpu-a|None\n",
+            stderr="",
+        )
+
+    before = receipt.read_bytes()
+    assert (
+        reconcile_configured_plan(
+            config, jobs, receipt_path=receipt, runner=running_scheduler
+        )
+        == ()
+    )
+    assert [command[0] for command in scheduler_calls] == ["sacct", "squeue"]
+    assert receipt.read_bytes() == before
+
+    unknown_calls = []
+
+    def unknown_scheduler(command, **kwargs):
+        unknown_calls.append(tuple(command))
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    with pytest.raises(RuntimeError, match="state remained unknown"):
+        reconcile_configured_plan(
+            config, jobs, receipt_path=receipt, runner=unknown_scheduler
+        )
+    assert [command[0] for command in unknown_calls] == ["sacct", "squeue"]
+    assert receipt.read_bytes() == before
+    assert (
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=submit,
+            preflight_runner=preflight,
+        )
+        == ()
+    )
+    assert real_calls == [jobs[0].command]
+
+
+def test_schema_v2_reconcile_records_terminal_facts_once(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+
+    def preflight(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    def submit(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="3101\n", stderr="")
+
+    _execute_candidate_runtime(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=submit,
+        preflight_runner=preflight,
+    )
+    scheduler_calls = []
+
+    def completed_scheduler(command, **kwargs):
+        scheduler_calls.append(tuple(command))
+        assert command[0] == "sacct"
+        return SimpleNamespace(
+            returncode=0,
+            stdout="3101|COMPLETED|0:0|saffo-a100|gpu-b|None\n",
+            stderr="",
+        )
+
+    assert reconcile_configured_plan(
+        config, jobs, receipt_path=receipt, runner=completed_scheduler
+    ) == (("3101", "completed"),)
+    rows = [json.loads(line) for line in receipt.read_text().splitlines()]
+    assert [row["event"] for row in rows] == [
+        "submitting",
+        "submitted",
+        "completed",
+    ]
+    terminal = rows[-1]
+    assert terminal["scheduler_state"] == "COMPLETED"
+    assert terminal["scheduler_exit_code"] == "0:0"
+    assert terminal["scheduler_partition"] == "saffo-a100"
+    assert terminal["scheduler_nodes"] == "gpu-b"
+    assert terminal["scheduler_reason"] == "None"
+
+    scheduler_calls.clear()
+    before = receipt.read_bytes()
+    assert (
+        reconcile_configured_plan(
+            config, jobs, receipt_path=receipt, runner=completed_scheduler
+        )
+        == ()
+    )
+    assert scheduler_calls == []
+    assert receipt.read_bytes() == before
+
+
+def test_schema_v2_failed_job_requires_exact_replacement_and_records_lineage(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+    submitted_ids = iter(("4001", "4002"))
+    submit_calls = []
+
+    def preflight(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    def submit(command, **kwargs):
+        submit_calls.append(tuple(command))
+        return SimpleNamespace(
+            returncode=0, stdout=next(submitted_ids) + "\n", stderr=""
+        )
+
+    assert _execute_candidate_runtime(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=submit,
+        preflight_runner=preflight,
+    ) == ("4001",)
+
+    def failed_scheduler(command, **kwargs):
+        return SimpleNamespace(
+            returncode=0,
+            stdout="4001|OUT_OF_MEMORY|0:125|saffo-a100|gpu-c|oom-kill\n",
+            stderr="",
+        )
+
+    assert reconcile_configured_plan(
+        config, jobs, receipt_path=receipt, runner=failed_scheduler
+    ) == (("4001", "failed"),)
+    assert (
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=submit,
+            preflight_runner=preflight,
+        )
+        == ()
+    )
+    assert len(submit_calls) == 1
+
+    with pytest.raises(ValueError, match="does not name a current failed job"):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=submit,
+            preflight_runner=preflight,
+            retry_failed_job_ids=("4999",),
+        )
+    assert len(submit_calls) == 1
+    assert _execute_candidate_runtime(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=submit,
+        preflight_runner=preflight,
+        retry_failed_job_ids=("4001",),
+    ) == ("4002",)
+    assert submit_calls == [jobs[0].command, jobs[0].command]
+
+    rows = [json.loads(line) for line in receipt.read_text().splitlines()]
+    assert [row["event"] for row in rows] == [
+        "submitting",
+        "submitted",
+        "failed",
+        "submitting",
+        "submitted",
+    ]
+    replacement = rows[-2:]
+    assert {row["attempt"] for row in replacement} == {2}
+    assert {row["authorization"] for row in replacement} == {"retry_failed_job_id"}
+    assert {row["predecessor_job_id"] for row in replacement} == {"4001"}
+    assert replacement[-1]["job_id"] == "4002"
+    assert tuple(replacement[-1]["command"]) == jobs[0].command
+    assert "--array" not in replacement[-1]["command"]
+
+
+@pytest.mark.parametrize("crash_window", ["before_scheduler", "after_scheduler"])
+def test_schema_v2_dangling_submission_intent_fails_closed(
+    tmp_path, monkeypatch, crash_window
+):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+
+    def preflight(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    if crash_window == "before_scheduler":
+
+        def crashing_submit(command, **kwargs):
+            raise KeyboardInterrupt("simulated process death before sbatch returns")
+
+    else:
+
+        def crashing_submit(command, **kwargs):
+            return SimpleNamespace(returncode=0, stdout="5001\n", stderr="")
+
+        original_append = submit_binary_simulations._append_runtime_receipt_event
+
+        def crash_before_submitted_commit(handle, event):
+            if event["event"] == "submitted":
+                raise KeyboardInterrupt("simulated death before job-id commit")
+            return original_append(handle, event)
+
+        monkeypatch.setattr(
+            submit_binary_simulations,
+            "_append_runtime_receipt_event",
+            crash_before_submitted_commit,
+        )
+
+    with pytest.raises(KeyboardInterrupt):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=crashing_submit,
+            preflight_runner=preflight,
+        )
+    if crash_window == "after_scheduler":
+        monkeypatch.setattr(
+            submit_binary_simulations,
+            "_append_runtime_receipt_event",
+            original_append,
+        )
+    rows = [json.loads(line) for line in receipt.read_text().splitlines()]
+    assert [row["event"] for row in rows] == ["submitting"]
+
+    if crash_window == "before_scheduler":
+        recovery_calls = []
+
+        def absent_scheduler(command, **kwargs):
+            recovery_calls.append(tuple(command))
+            return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+        with pytest.raises(RuntimeError, match="cannot prove"):
+            recover_configured_submission(
+                config,
+                jobs,
+                receipt_path=receipt,
+                job_id="5001",
+                runner=absent_scheduler,
+            )
+        assert [command[0] for command in recovery_calls] == ["sacct", "squeue"]
+        assert [
+            json.loads(line)["event"] for line in receipt.read_text().splitlines()
+        ] == ["submitting"]
+    else:
+        command = jobs[0].command
+        expected_name = command[command.index("--job-name") + 1]
+        recovery_calls = []
+
+        def matching_scheduler(command, **kwargs):
+            recovery_calls.append(tuple(command))
+            assert command[0] == "sacct"
+            return SimpleNamespace(
+                returncode=0,
+                stdout=(
+                    f"5001|{expected_name}|ssafo|saffo-a100|RUNNING|0:0|gpu-d|None\n"
+                ),
+                stderr="",
+            )
+
+        assert recover_configured_submission(
+            config,
+            jobs,
+            receipt_path=receipt,
+            job_id="5001",
+            runner=matching_scheduler,
+        ) == ("5001",)
+        assert [command[0] for command in recovery_calls] == ["sacct"]
+        recovery_calls.clear()
+
+        def forbidden_idempotent_query(command, **kwargs):
+            recovery_calls.append(tuple(command))
+            raise AssertionError("repeated recovery must use the durable binding")
+
+        assert recover_configured_submission(
+            config,
+            jobs,
+            receipt_path=receipt,
+            job_id="5001",
+            runner=forbidden_idempotent_query,
+        ) == ("5001",)
+        assert recovery_calls == []
+        recovered_rows = [json.loads(line) for line in receipt.read_text().splitlines()]
+        assert [row["event"] for row in recovered_rows] == [
+            "submitting",
+            "submission_recovered",
+        ]
+        recovered = recovered_rows[-1]
+        assert recovered["job_id"] == "5001"
+        assert recovered["scheduler_job_name"] == expected_name
+        assert recovered["scheduler_account"] == "ssafo"
+        assert recovered["scheduler_partition"] == "saffo-a100"
+
+    scheduler_calls = []
+
+    def forbidden_scheduler(command, **kwargs):
+        scheduler_calls.append(tuple(command))
+        raise AssertionError("an intent without a durable job id is ambiguous")
+
+    if crash_window == "before_scheduler":
+        with pytest.raises(RuntimeError, match="fails closed"):
+            reconcile_configured_plan(
+                config, jobs, receipt_path=receipt, runner=forbidden_scheduler
+            )
+        assert scheduler_calls == []
+
+    real_calls = []
+
+    def forbidden_submit(command, **kwargs):
+        real_calls.append(tuple(command))
+        raise AssertionError("a dangling intent must never be resubmitted")
+
+    if crash_window == "before_scheduler":
+        with pytest.raises(RuntimeError, match="fail closed"):
+            _execute_candidate_runtime(
+                config,
+                jobs,
+                submit=True,
+                receipt_path=receipt,
+                runner=forbidden_submit,
+                preflight_runner=preflight,
+            )
+    else:
+        assert (
+            _execute_candidate_runtime(
+                config,
+                jobs,
+                submit=True,
+                receipt_path=receipt,
+                runner=forbidden_submit,
+                preflight_runner=preflight,
+            )
+            == ()
+        )
+    assert real_calls == []
+
+
+def test_schema_v2_recovery_rejects_wrong_job_id_and_scheduler_identity(
+    tmp_path, monkeypatch
+):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+    original_append = submit_binary_simulations._append_runtime_receipt_event
+
+    def crash_before_submitted_commit(handle, event):
+        if event["event"] == "submitted":
+            raise KeyboardInterrupt("simulated post-sbatch crash")
+        return original_append(handle, event)
+
+    monkeypatch.setattr(
+        submit_binary_simulations,
+        "_append_runtime_receipt_event",
+        crash_before_submitted_commit,
+    )
+    with pytest.raises(KeyboardInterrupt):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=lambda *args, **kwargs: SimpleNamespace(
+                returncode=0, stdout="5101\n", stderr=""
+            ),
+            preflight_runner=lambda *args, **kwargs: SimpleNamespace(
+                returncode=0, stdout="", stderr=""
+            ),
+        )
+    monkeypatch.setattr(
+        submit_binary_simulations,
+        "_append_runtime_receipt_event",
+        original_append,
+    )
+    before = receipt.read_bytes()
+
+    def missing_job(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    with pytest.raises(RuntimeError, match="cannot prove"):
+        recover_configured_submission(
+            config,
+            jobs,
+            receipt_path=receipt,
+            job_id="5199",
+            runner=missing_job,
+        )
+    assert receipt.read_bytes() == before
+
+    def wrong_identity(command, **kwargs):
+        if command[0] == "sacct":
+            return SimpleNamespace(
+                returncode=0,
+                stdout=(
+                    "5101|unrelated-job|wrong-account|msismall|RUNNING|"
+                    "0:0|node-x|None\n"
+                ),
+                stderr="",
+            )
+        raise AssertionError("a present sacct row must not fall back to squeue")
+
+    with pytest.raises(ValueError, match="does not match"):
+        recover_configured_submission(
+            config,
+            jobs,
+            receipt_path=receipt,
+            job_id="5101",
+            runner=wrong_identity,
+        )
+    assert receipt.read_bytes() == before
+
+
+def test_schema_v2_sbatch_failure_requires_explicit_retry(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+    calls = []
+
+    def preflight(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    def rejected(command, **kwargs):
+        calls.append(tuple(command))
+        raise subprocess.CalledProcessError(9, command, stderr="rejected")
+
+    with pytest.raises(subprocess.CalledProcessError):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=rejected,
+            preflight_runner=preflight,
+        )
+    assert (
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            submit=True,
+            receipt_path=receipt,
+            runner=rejected,
+            preflight_runner=preflight,
+        )
+        == ()
+    )
+    assert len(calls) == 1
+
+    def accepted(command, **kwargs):
+        calls.append(tuple(command))
+        return SimpleNamespace(returncode=0, stdout="6001\n", stderr="")
+
+    assert _execute_candidate_runtime(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=accepted,
+        preflight_runner=preflight,
+        retry_submission_failures=True,
+    ) == ("6001",)
+    rows = [json.loads(line) for line in receipt.read_text().splitlines()]
+    assert [row["event"] for row in rows] == [
+        "submitting",
+        "submission_failed",
+        "submitting",
+        "submitted",
+    ]
+    assert rows[1]["scheduler_reason"].startswith("CalledProcessError:")
+    assert rows[-1]["attempt"] == 2
+    assert rows[-1]["authorization"] == "retry_submission_failure"
+
+
+def test_schema_v2_success_with_ambiguous_job_id_stays_dangling(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+    real_calls = []
+
+    def preflight(command, **kwargs):
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    def ambiguous_success(command, **kwargs):
+        real_calls.append(tuple(command))
+        return SimpleNamespace(
+            returncode=0,
+            stdout="7001\nwarning-after-id\n",
+            stderr="",
+        )
+
+    with pytest.raises(ValueError, match="non-array Slurm job id"):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            receipt_path=receipt,
+            runner=ambiguous_success,
+            preflight_runner=preflight,
+        )
+    assert [json.loads(line)["event"] for line in receipt.read_text().splitlines()] == [
+        "submitting"
+    ]
+    with pytest.raises(RuntimeError, match="unresolved schema-v2 submission intent"):
+        _execute_candidate_runtime(
+            config,
+            jobs,
+            receipt_path=receipt,
+            runner=ambiguous_success,
+            preflight_runner=preflight,
+            retry_submission_failures=True,
+        )
+    assert real_calls == [jobs[0].command]
 
 
 def test_lock_creation_requires_explicit_complete_artifacts_and_immutable_payload(
@@ -706,6 +1399,8 @@ def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
 
     assert v2.data["config_schema_version"] == 2
     assert v2.data["campaign_id"] == "binary-midpoint-main-v2"
+    assert v2.data["execution_policy"] == "scheduler-preview-only"
+    assert not any("scientific" in field or "lock" in field for field in v2.data)
     assert v2.data["campaign_id"] != v1.data["campaign_id"]
     assert v2.data["gpu_partition_candidates"] == gpu_request.split(",")
     assert v2.data["cpu_partition_candidates"] == cpu_request.split(",")
@@ -844,13 +1539,12 @@ def test_actual_scorer_shards_assemble_without_repeating_inference(tmp_path):
     assert command[command.index("--common") + 1] == str(common_manifest)
     assert command.count("--input") == 3
     planned_inputs = [
-        command[index + 1]
-        for index, value in enumerate(command)
-        if value == "--input"
+        command[index + 1] for index, value in enumerate(command) if value == "--input"
     ]
     assert planned_inputs == [str(path) for path in partials]
-    assert command[command.index("--output-root") + 1] == (
-        config.data["paths"]["assembly_output_root"]
+    assert (
+        command[command.index("--output-root") + 1]
+        == (config.data["paths"]["assembly_output_root"])
     )
 
     target = assemble(

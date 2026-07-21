@@ -24,9 +24,10 @@ analysis output also uses schema v2.
 
 ## Install
 
-Python 3.10 or newer is supported; Python 3.12.4 is the reference environment
-recorded by the canonical artifacts. An editable install exposes the module
-CLIs and two equivalent console entry points, `selectseg-train` and
+Exact reproduction requires Python 3.12.4, the interpreter recorded by the
+canonical artifacts.  In particular, the exact NumPy and SciPy versions in
+`requirements.txt` require Python 3.12 or newer.  An editable install exposes
+the module CLIs and two equivalent console entry points, `selectseg-train` and
 `selectseg-binary-eval`. Install the exact recorded dependency set before the
 editable package when reproducing reported results:
 
@@ -36,9 +37,11 @@ python -m venv .venv
 .venv/bin/python -m pip install --no-deps -e .
 ```
 
-For development against compatible newer dependencies, `pip install -e
-".[dev,plots]"` remains available. On the MSI cluster, load the Python module
-and source `scripts/slurm/env.sh` before running jobs.
+The package metadata retains Python 3.10 as the compatibility floor for an
+unpinned development install using its lower-bound dependencies.  For that
+path, `pip install -e ".[dev,plots]"` remains available, but it is not the
+byte-for-byte environment used for the reported results. On the MSI cluster,
+load the Python module and source `scripts/slurm/env.sh` before running jobs.
 
 ## Build the manuscript
 
@@ -151,32 +154,40 @@ allowed. Partition commands recorded in completed immutable receipts are
 historical evidence and remain byte-for-byte unchanged even when they predate
 this rule.
 
-The generic planner activates this policy only for a new
-`config_schema_version: 2` campaign containing both exact fields
+The generic planner exposes this policy through a scheduler-only
+`config_schema_version: 2` fixture containing
+`execution_policy: "scheduler-preview-only"` and both exact fields
 `gpu_partition_candidates: ["saffo-a100", "apollo_agate"]` and
 `cpu_partition_candidates: ["saffo-2tb", "agsmall", "amdsmall",
-"msismall"]`.  The two fields are inseparable and order-sensitive.  Create a
-new campaign ID and lock for such a wave; never edit a sealed v1 config or
-receipt in place.
+"msismall"]`. The candidate fields are inseparable and order-sensitive.
+This fixture validates job granularity and scheduler eligibility; it is not a
+scientific replay config and cannot create a campaign lock or receipt.
 
-The checked-in runnable example is
-`configs/binary_midpoint_main_v2.json`.  It preserves the v1 scientific
-protocol, estimator, and 16 conditions, but uses campaign ID
-`binary-midpoint-main-v2` and four disjoint roots below
-`outputs/binary_midpoint_main_v2/`.  Preview a fresh candidate-partition wave
-with:
+The checked-in fixture is `configs/binary_midpoint_main_v2.json`. It preserves
+the v1 protocol grid for command comparison, uses campaign ID
+`binary-midpoint-main-v2`, and reserves four disjoint roots below
+`outputs/binary_midpoint_main_v2/`. Purely print the 16 independent freeze
+commands with:
 
 ```bash
 python -m scripts.submit_binary_simulations \
   --config configs/binary_midpoint_main_v2.json --phase freeze
 ```
 
-Use the same v2 config for its subsequent lock, common, score, assemble, and
-diagnose phases.  The v1 commands below remain the exact reproduction path for
-the reported campaign; v2 is an isolated scheduler-policy replay and must
-never consume a v1 receipt or output root.  With `--submit`, schema v2 first
-runs `sbatch --test-only` for every final command in the wave.  No receipt is
-opened and no real job is submitted unless the entire preflight succeeds.
+To ask Slurm to validate every command against both private GPU candidates,
+without creating a job or receipt, run:
+
+```bash
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze \
+  --scheduler-preflight-only
+```
+
+For this fixture, `--submit` intentionally fails before planning, scheduler
+access, or receipt I/O. A real schema-v2 campaign remains disabled until a
+reviewed content-addressed lock independently binds dataset/cohort bytes,
+checkpoints, base-model revisions, and freeze-worker sources. The sealed v1
+commands below remain the exact reproduction path for the reported campaign.
 
 1. **Freeze once.** Run the model once for each condition and write immutable,
    content-addressed foreground-probability/truth artifacts. Every job requests

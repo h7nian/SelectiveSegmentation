@@ -33,8 +33,8 @@ the campaign lock was written, 16 CPU jobs computed M-independent fields and
 are evidence of what ran; they are not rewritten to claim the newer scheduler
 policy.
 
-For every newly submitted generic `config_schema_version: 2` campaign, each
-GPU job requests exactly the two-candidate list
+In the scheduler-preview `config_schema_version: 2` fixture, each GPU job
+requests exactly the two-candidate list
 `saffo-a100,apollo_agate`, and each CPU job requests exactly the
 four-candidate list `saffo-2tb,agsmall,amdsmall,msismall`. Slurm chooses one
 eligible partition from the applicable list. Every experiment remains one job,
@@ -42,17 +42,19 @@ each M-specific evaluation job receives one scalar M, and Slurm arrays are not
 used. Sixteen strict assemblies each join one common shard with exactly
 `M=2,8,32`; one read-only diagnostic job is also run per frozen artifact.
 Assemble paths are derived from lock-bound content IDs rather than directory
-scans, and diagnostic inputs are read directly from the lock. All five compute
-phases use separate append-only receipts to prevent blind duplicate
-submissions; selected compute resources are bound into each private execution
-receipt but omitted from the anonymous manuscript package.
+scans, and diagnostic inputs are read directly from the lock. The candidate
+runtime design assigns all five compute phases separate append-only receipts
+to prevent blind duplicate submissions. That ledger is tested as future
+groundwork but is not reachable from the checked-in preview fixture.
 
-The companion code repository includes the isolated runnable example
-`configs/binary_midpoint_main_v2.json`. It preserves the reported scientific
-grid while writing only below `outputs/binary_midpoint_main_v2/`; the sealed
-v1 config remains the reproduction record for the numbers in this manuscript.
-Before any schema-v2 receipt write or real submission, every final command in
-the wave must pass `sbatch --test-only`.
+The companion code repository includes the isolated scheduler fixture
+`configs/binary_midpoint_main_v2.json`. It preserves the reported grid only to
+compare planned commands and reserves paths below
+`outputs/binary_midpoint_main_v2/`; the sealed v1 config remains the
+reproduction record for the manuscript numbers. A dry-run performs no writes.
+`--scheduler-preflight-only` runs every final command through
+`sbatch --test-only`, still with no receipt or real job. `--submit` is rejected
+until a separate reviewed lock binds all scientific input bytes.
 
 The lock validates immutable manifest bytes and structure and records the
 payload hashes declared there; it does not decompress every large payload on

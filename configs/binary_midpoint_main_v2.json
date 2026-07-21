@@ -1,6 +1,7 @@
 {
   "config_schema_version": 2,
   "campaign_id": "binary-midpoint-main-v2",
+  "execution_policy": "scheduler-preview-only",
   "protocol": {
     "gamma_values": [0.5],
     "m_values": [2, 8, 32],

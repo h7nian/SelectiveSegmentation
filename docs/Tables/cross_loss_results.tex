@@ -3,30 +3,99 @@
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Full $3\times3$ loss-indexed $M=32$ cross-loss matrix over all 16 unpooled conditions. Confidence methods are rows and evaluation risks form blocks; datasets are columns and condition labels remain in every raw AURC $\times100$ (nAURC) entry. Lower is better. Dark blue marks every lowest unrounded raw AURC among the three indexed scores within each condition and risk block. These cells are descriptive; paired inference is restricted to the four fixed adjacent-geometry contrasts.}
+\caption{Full $3\times3$ loss-indexed $M=32$ cross-loss matrix over all 16 unpooled conditions. Confidence methods are rows and evaluation risks form blocks; datasets are columns and conditions are identified by the stacked panel headings. Each entry is raw AURC $\times100$ (nAURC). Lower is better. Dark blue marks every lowest unrounded raw AURC among the three indexed scores within each condition and risk block. These cells are descriptive; paired inference is restricted to the four fixed adjacent-geometry contrasts.}
 \label{tab:cross-loss-results}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{l*{5}{c}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
 \toprule
+\multicolumn{6}{l}{\textit{CLIPSeg general (CLIP-G)}} \\
+\midrule
 Loss-indexed confidence & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
 \multicolumn{6}{l}{\textit{Dice risk}} \\
-Dice-M32 & \shortstack{CLIP-G: \bestresult{7.919 (0.4380)}\\CLIP-T: \bestresult{3.316 (0.5608)}\\DL-T: \bestresult{3.241 (0.4800)}\\DL-E: \bestresult{6.790 (0.2478)}} & \shortstack{CLIP-G: 53.244 (1.0200)\\CLIP-T: \bestresult{9.077 (0.1358)}\\DL-T: \bestresult{5.234 (0.1356)}} & \shortstack{CLIP-G: 89.847 (1.1149)\\CLIP-T: 87.310 (0.9610)\\DL-T: 41.102 (0.7143)} & \shortstack{CLIP-G: 98.738 (1.3235)\\CLIP-T: \bestresult{7.176 (0.2457)}\\DL-T: \bestresult{6.354 (0.1795)}} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: 16.153 (0.2064)\\DL-T: \bestresult{8.792 (0.1892)}} \\
-nHD-M32 & \shortstack{CLIP-G: 8.697 (0.6256)\\CLIP-T: 3.549 (0.6909)\\DL-T: 3.514 (0.6106)\\DL-E: 8.488 (0.5857)} & \shortstack{CLIP-G: \bestresult{45.574 (0.7284)}\\CLIP-T: 10.335 (0.2200)\\DL-T: 5.604 (0.1750)} & \shortstack{CLIP-G: 88.680 (0.9108)\\CLIP-T: 86.094 (0.7490)\\DL-T: 40.635 (0.6441)} & \shortstack{CLIP-G: 98.646 (1.3173)\\CLIP-T: 8.640 (0.4716)\\DL-T: 7.533 (0.3307)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: 16.366 (0.2178)\\DL-T: 9.547 (0.2531)} \\
-nHD95-M32 & \shortstack{CLIP-G: 8.785 (0.6469)\\CLIP-T: 3.609 (0.7247)\\DL-T: 3.523 (0.6152)\\DL-E: 8.597 (0.6074)} & \shortstack{CLIP-G: 45.664 (0.7318)\\CLIP-T: 10.000 (0.1976)\\DL-T: 5.463 (0.1600)} & \shortstack{CLIP-G: \bestresult{88.560 (0.8897)}\\CLIP-T: \bestresult{84.290 (0.4345)}\\DL-T: \bestresult{40.426 (0.6126)}} & \shortstack{CLIP-G: \bestresult{98.492 (1.3068)}\\CLIP-T: 8.368 (0.4297)\\DL-T: 7.310 (0.3022)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: \bestresult{16.022 (0.1994)}\\DL-T: 9.250 (0.2280)} \\
+Dice-M32 & \bestresult{7.919 (0.4380)} & 53.244 (1.0200) & 89.847 (1.1149) & 98.738 (1.3235) & \bestresult{100.000 (--)} \\
+nHD-M32 & 8.697 (0.6256) & \bestresult{45.574 (0.7284)} & 88.680 (0.9108) & 98.646 (1.3173) & \bestresult{100.000 (--)} \\
+nHD95-M32 & 8.785 (0.6469) & 45.664 (0.7318) & \bestresult{88.560 (0.8897)} & \bestresult{98.492 (1.3068)} & \bestresult{100.000 (--)} \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
-Dice-M32 & \shortstack{CLIP-G: 6.965 (0.6941)\\CLIP-T: 5.140 (0.8436)\\DL-T: 5.294 (0.7302)\\DL-E: 6.379 (0.5468)} & \shortstack{CLIP-G: 34.957 (1.1896)\\CLIP-T: 12.863 (0.6342)\\DL-T: 10.475 (0.7105)} & \shortstack{CLIP-G: 57.251 (1.4353)\\CLIP-T: 48.988 (1.9626)\\DL-T: 10.530 (1.0307)} & \shortstack{CLIP-G: 97.125 (1.5532)\\CLIP-T: 5.009 (0.5137)\\DL-T: 4.637 (0.3460)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: 9.577 (0.5046)\\DL-T: 5.479 (0.4762)} \\
-nHD-M32 & \shortstack{CLIP-G: \bestresult{6.471 (0.5796)}\\CLIP-T: \bestresult{4.569 (0.6600)}\\DL-T: \bestresult{4.234 (0.4533)}\\DL-E: \bestresult{5.614 (0.3879)}} & \shortstack{CLIP-G: 30.167 (0.8679)\\CLIP-T: \bestresult{10.172 (0.4098)}\\DL-T: \bestresult{7.036 (0.3682)}} & \shortstack{CLIP-G: 51.952 (1.0510)\\CLIP-T: 40.553 (1.2296)\\DL-T: \bestresult{9.202 (0.6264)}} & \shortstack{CLIP-G: 97.018 (1.5493)\\CLIP-T: \bestresult{3.386 (0.1295)}\\DL-T: \bestresult{3.414 (0.1289)}} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: \bestresult{7.259 (0.2698)}\\DL-T: \bestresult{3.818 (0.2155)}} \\
-nHD95-M32 & \shortstack{CLIP-G: 6.746 (0.6434)\\CLIP-T: 4.602 (0.6709)\\DL-T: 4.376 (0.4906)\\DL-E: 5.840 (0.4348)} & \shortstack{CLIP-G: \bestresult{29.877 (0.8484)}\\CLIP-T: 10.689 (0.4529)\\DL-T: 7.528 (0.4172)} & \shortstack{CLIP-G: \bestresult{51.539 (1.0210)}\\CLIP-T: \bestresult{34.303 (0.6865)}\\DL-T: 10.090 (0.8968)} & \shortstack{CLIP-G: \bestresult{96.712 (1.5382)}\\CLIP-T: 3.432 (0.1404)\\DL-T: 3.470 (0.1389)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: 7.345 (0.2785)\\DL-T: 3.818 (0.2156)} \\
+Dice-M32 & 6.965 (0.6941) & 34.957 (1.1896) & 57.251 (1.4353) & 97.125 (1.5532) & \bestresult{100.000 (--)} \\
+nHD-M32 & \bestresult{6.471 (0.5796)} & 30.167 (0.8679) & 51.952 (1.0510) & 97.018 (1.5493) & \bestresult{100.000 (--)} \\
+nHD95-M32 & 6.746 (0.6434) & \bestresult{29.877 (0.8484)} & \bestresult{51.539 (1.0210)} & \bestresult{96.712 (1.5382)} & \bestresult{100.000 (--)} \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
-Dice-M32 & \shortstack{CLIP-G: 4.239 (0.6137)\\CLIP-T: 2.891 (0.9404)\\DL-T: 3.007 (0.7706)\\DL-E: 3.833 (0.5072)} & \shortstack{CLIP-G: 30.565 (1.2460)\\CLIP-T: 5.369 (0.3454)\\DL-T: 3.033 (0.2786)} & \shortstack{CLIP-G: 52.438 (1.4594)\\CLIP-T: 42.459 (2.1147)\\DL-T: 4.585 (1.0069)} & \shortstack{CLIP-G: 96.946 (1.5577)\\CLIP-T: 3.477 (0.4478)\\DL-T: 3.191 (0.2847)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: 7.929 (0.4736)\\DL-T: 4.544 (0.4577)} \\
-nHD-M32 & \shortstack{CLIP-G: \bestresult{3.994 (0.5275)}\\CLIP-T: 2.580 (0.7544)\\DL-T: 2.416 (0.5079)\\DL-E: 3.455 (0.3872)} & \shortstack{CLIP-G: 25.614 (0.9045)\\CLIP-T: 4.408 (0.2164)\\DL-T: \bestresult{2.366 (0.1512)}} & \shortstack{CLIP-G: 46.488 (1.0519)\\CLIP-T: 33.650 (1.3214)\\DL-T: \bestresult{3.875 (0.6406)}} & \shortstack{CLIP-G: 96.842 (1.5541)\\CLIP-T: 2.500 (0.1477)\\DL-T: 2.527 (0.1376)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: 5.905 (0.2540)\\DL-T: 3.160 (0.2183)} \\
-nHD95-M32 & \shortstack{CLIP-G: 4.118 (0.5714)\\CLIP-T: \bestresult{2.506 (0.7101)}\\DL-T: \bestresult{2.393 (0.4974)}\\DL-E: \bestresult{3.448 (0.3848)}} & \shortstack{CLIP-G: \bestresult{25.267 (0.8805)}\\CLIP-T: \bestresult{4.319 (0.2045)}\\DL-T: 2.389 (0.1556)} & \shortstack{CLIP-G: \bestresult{46.043 (1.0214)}\\CLIP-T: \bestresult{26.305 (0.6600)}\\DL-T: 4.289 (0.8542)} & \shortstack{CLIP-G: \bestresult{96.513 (1.5426)}\\CLIP-T: \bestresult{2.498 (0.1470)}\\DL-T: \bestresult{2.503 (0.1324)}} & \shortstack{CLIP-G: \bestresult{100.000 (--)}\\CLIP-T: \bestresult{5.891 (0.2525)}\\DL-T: \bestresult{3.095 (0.2072)}} \\
+Dice-M32 & 4.239 (0.6137) & 30.565 (1.2460) & 52.438 (1.4594) & 96.946 (1.5577) & \bestresult{100.000 (--)} \\
+nHD-M32 & \bestresult{3.994 (0.5275)} & 25.614 (0.9045) & 46.488 (1.0519) & 96.842 (1.5541) & \bestresult{100.000 (--)} \\
+nHD95-M32 & 4.118 (0.5714) & \bestresult{25.267 (0.8805)} & \bestresult{46.043 (1.0214)} & \bestresult{96.513 (1.5426)} & \bestresult{100.000 (--)} \\
 \bottomrule
-\end{tabular}
-}
+\end{tabular*}
+\par\smallskip
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
+\toprule
+\multicolumn{6}{l}{\textit{CLIPSeg target (CLIP-T)}} \\
+\midrule
+Loss-indexed confidence & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
+\midrule
+\multicolumn{6}{l}{\textit{Dice risk}} \\
+Dice-M32 & \bestresult{3.316 (0.5608)} & \bestresult{9.077 (0.1358)} & 87.310 (0.9610) & \bestresult{7.176 (0.2457)} & 16.153 (0.2064) \\
+nHD-M32 & 3.549 (0.6909) & 10.335 (0.2200) & 86.094 (0.7490) & 8.640 (0.4716) & 16.366 (0.2178) \\
+nHD95-M32 & 3.609 (0.7247) & 10.000 (0.1976) & \bestresult{84.290 (0.4345)} & 8.368 (0.4297) & \bestresult{16.022 (0.1994)} \\
+\midrule
+\multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
+Dice-M32 & 5.140 (0.8436) & 12.863 (0.6342) & 48.988 (1.9626) & 5.009 (0.5137) & 9.577 (0.5046) \\
+nHD-M32 & \bestresult{4.569 (0.6600)} & \bestresult{10.172 (0.4098)} & 40.553 (1.2296) & \bestresult{3.386 (0.1295)} & \bestresult{7.259 (0.2698)} \\
+nHD95-M32 & 4.602 (0.6709) & 10.689 (0.4529) & \bestresult{34.303 (0.6865)} & 3.432 (0.1404) & 7.345 (0.2785) \\
+\midrule
+\multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
+Dice-M32 & 2.891 (0.9404) & 5.369 (0.3454) & 42.459 (2.1147) & 3.477 (0.4478) & 7.929 (0.4736) \\
+nHD-M32 & 2.580 (0.7544) & 4.408 (0.2164) & 33.650 (1.3214) & 2.500 (0.1477) & 5.905 (0.2540) \\
+nHD95-M32 & \bestresult{2.506 (0.7101)} & \bestresult{4.319 (0.2045)} & \bestresult{26.305 (0.6600)} & \bestresult{2.498 (0.1470)} & \bestresult{5.891 (0.2525)} \\
+\bottomrule
+\end{tabular*}
+\par\smallskip
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
+\toprule
+\multicolumn{6}{l}{\textit{DeepLabV3 target (DL-T)}} \\
+\midrule
+Loss-indexed confidence & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
+\midrule
+\multicolumn{6}{l}{\textit{Dice risk}} \\
+Dice-M32 & \bestresult{3.241 (0.4800)} & \bestresult{5.234 (0.1356)} & 41.102 (0.7143) & \bestresult{6.354 (0.1795)} & \bestresult{8.792 (0.1892)} \\
+nHD-M32 & 3.514 (0.6106) & 5.604 (0.1750) & 40.635 (0.6441) & 7.533 (0.3307) & 9.547 (0.2531) \\
+nHD95-M32 & 3.523 (0.6152) & 5.463 (0.1600) & \bestresult{40.426 (0.6126)} & 7.310 (0.3022) & 9.250 (0.2280) \\
+\midrule
+\multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
+Dice-M32 & 5.294 (0.7302) & 10.475 (0.7105) & 10.530 (1.0307) & 4.637 (0.3460) & 5.479 (0.4762) \\
+nHD-M32 & \bestresult{4.234 (0.4533)} & \bestresult{7.036 (0.3682)} & \bestresult{9.202 (0.6264)} & \bestresult{3.414 (0.1289)} & \bestresult{3.818 (0.2155)} \\
+nHD95-M32 & 4.376 (0.4906) & 7.528 (0.4172) & 10.090 (0.8968) & 3.470 (0.1389) & 3.818 (0.2156) \\
+\midrule
+\multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
+Dice-M32 & 3.007 (0.7706) & 3.033 (0.2786) & 4.585 (1.0069) & 3.191 (0.2847) & 4.544 (0.4577) \\
+nHD-M32 & 2.416 (0.5079) & \bestresult{2.366 (0.1512)} & \bestresult{3.875 (0.6406)} & 2.527 (0.1376) & 3.160 (0.2183) \\
+nHD95-M32 & \bestresult{2.393 (0.4974)} & 2.389 (0.1556) & 4.289 (0.8542) & \bestresult{2.503 (0.1324)} & \bestresult{3.095 (0.2072)} \\
+\bottomrule
+\end{tabular*}
+\par\smallskip
+\begin{tabular*}{0.62\textwidth}{@{\extracolsep{\fill}}l*{1}{c}@{}}
+\toprule
+\multicolumn{2}{l}{\textit{DeepLabV3 external (DL-E)}} \\
+\midrule
+Loss-indexed confidence & Oxford Pet \\
+\midrule
+\multicolumn{2}{l}{\textit{Dice risk}} \\
+Dice-M32 & \bestresult{6.790 (0.2478)} \\
+nHD-M32 & 8.488 (0.5857) \\
+nHD95-M32 & 8.597 (0.6074) \\
+\midrule
+\multicolumn{2}{l}{\textit{Normalized penalized Hausdorff risk}} \\
+Dice-M32 & 6.379 (0.5468) \\
+nHD-M32 & \bestresult{5.614 (0.3879)} \\
+nHD95-M32 & 5.840 (0.4348) \\
+\midrule
+\multicolumn{2}{l}{\textit{Normalized penalized HD95 risk}} \\
+Dice-M32 & 3.833 (0.5072) \\
+nHD-M32 & 3.455 (0.3872) \\
+nHD95-M32 & \bestresult{3.448 (0.3848)} \\
+\bottomrule
+\end{tabular*}
 }
 \end{table*}

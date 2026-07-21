@@ -3,99 +3,177 @@
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Complete $17\times3$ general and external control results, panel for Dice risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$ (nAURC), with condition labels retained. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
+\caption{Complete $17\times3$ general and external control results, panel for Dice risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$ (nAURC), with conditions identified by the stacked panel headings. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
 \label{tab:complete-results}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{l*{5}{c}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
 \toprule
+\multicolumn{6}{l}{\textit{CLIPSeg general (CLIP-G)}} \\
+\midrule
 Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
-SDC & \shortstack{CLIP-G: \bestresult{7.536 (0.3454)}\\DL-E: \bestresult{6.771 (0.2442)}} & \shortstack{CLIP-G: 55.650 (1.1115)} & \shortstack{CLIP-G: \bestresult{86.493 (0.5281)}} & \shortstack{CLIP-G: 83.650 (0.3024)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Mean max probability & \shortstack{CLIP-G: 9.951 (0.9284)\\DL-E: 10.841 (1.0538)} & \shortstack{CLIP-G: 38.320 (0.4525)} & \shortstack{CLIP-G: 89.916 (1.1270)} & \shortstack{CLIP-G: 98.885 (1.3334)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Negative entropy & \shortstack{CLIP-G: 10.278 (1.0074)\\DL-E: 10.766 (1.0389)} & \shortstack{CLIP-G: 38.040 (0.4419)} & \shortstack{CLIP-G: 89.682 (1.0861)} & \shortstack{CLIP-G: 98.776 (1.3261)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-Exact & \shortstack{CLIP-G: 7.911 (0.4359)\\DL-E: 6.809 (0.2516)} & \shortstack{CLIP-G: 53.288 (1.0217)} & \shortstack{CLIP-G: 89.904 (1.1249)} & \shortstack{CLIP-G: 98.742 (1.3238)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-QFR-Entropy & \shortstack{CLIP-G: 7.665 (0.3767)\\DL-E: 6.805 (0.2509)} & \shortstack{CLIP-G: 46.833 (0.7762)} & \shortstack{CLIP-G: 89.599 (1.0715)} & \shortstack{CLIP-G: 98.152 (1.2838)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-PLM-10/PLA-10-Entropy & \shortstack{CLIP-G: 8.860 (0.6649)\\DL-E: 9.848 (0.8564)} & \shortstack{CLIP-G: 50.461 (0.9142)} & \shortstack{CLIP-G: 92.376 (1.5575)} & \shortstack{CLIP-G: 99.262 (1.3589)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-MMMC-Entropy & \shortstack{CLIP-G: 10.877 (1.1518)\\DL-E: 12.357 (1.3555)} & \shortstack{CLIP-G: \bestresult{37.065 (0.4048)}} & \shortstack{CLIP-G: 89.164 (0.9954)} & \shortstack{CLIP-G: 98.192 (1.2866)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Foreground entropy & \shortstack{CLIP-G: 8.473 (0.5716)\\DL-E: 6.860 (0.2618)} & \shortstack{CLIP-G: 38.652 (0.4651)} & \shortstack{CLIP-G: 87.326 (0.6738)} & \shortstack{CLIP-G: \bestresult{82.759 (0.2421)}} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M2 & \shortstack{CLIP-G: 7.723 (0.3907)\\DL-E: 7.474 (0.3840)} & \shortstack{CLIP-G: 50.706 (0.9235)} & \shortstack{CLIP-G: 89.170 (0.9964)} & \shortstack{CLIP-G: 98.875 (1.3328)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M8 & \shortstack{CLIP-G: 8.073 (0.4750)\\DL-E: 6.788 (0.2474)} & \shortstack{CLIP-G: 54.170 (1.0552)} & \shortstack{CLIP-G: 89.963 (1.1352)} & \shortstack{CLIP-G: 98.663 (1.3184)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M32 & \shortstack{CLIP-G: 7.919 (0.4380)\\DL-E: 6.790 (0.2478)} & \shortstack{CLIP-G: 53.244 (1.0200)} & \shortstack{CLIP-G: 89.847 (1.1149)} & \shortstack{CLIP-G: 98.738 (1.3235)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M2 & \shortstack{CLIP-G: 8.583 (0.5982)\\DL-E: 9.276 (0.7425)} & \shortstack{CLIP-G: 45.302 (0.7180)} & \shortstack{CLIP-G: 89.363 (1.0302)} & \shortstack{CLIP-G: 98.871 (1.3325)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M8 & \shortstack{CLIP-G: 8.774 (0.6443)\\DL-E: 8.535 (0.5950)} & \shortstack{CLIP-G: 46.788 (0.7745)} & \shortstack{CLIP-G: 88.627 (0.9015)} & \shortstack{CLIP-G: 98.512 (1.3082)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M32 & \shortstack{CLIP-G: 8.697 (0.6256)\\DL-E: 8.488 (0.5857)} & \shortstack{CLIP-G: 45.574 (0.7284)} & \shortstack{CLIP-G: 88.680 (0.9108)} & \shortstack{CLIP-G: 98.646 (1.3173)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M2 & \shortstack{CLIP-G: 8.602 (0.6028)\\DL-E: 9.510 (0.7891)} & \shortstack{CLIP-G: 45.639 (0.7308)} & \shortstack{CLIP-G: 89.320 (1.0227)} & \shortstack{CLIP-G: 98.888 (1.3337)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M8 & \shortstack{CLIP-G: 8.840 (0.6602)\\DL-E: 8.701 (0.6282)} & \shortstack{CLIP-G: 46.917 (0.7794)} & \shortstack{CLIP-G: 88.564 (0.8904)} & \shortstack{CLIP-G: 98.278 (1.2924)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M32 & \shortstack{CLIP-G: 8.785 (0.6469)\\DL-E: 8.597 (0.6074)} & \shortstack{CLIP-G: 45.664 (0.7318)} & \shortstack{CLIP-G: 88.560 (0.8897)} & \shortstack{CLIP-G: 98.492 (1.3068)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
+SDC & \bestresult{7.536 (0.3454)} & 55.650 (1.1115) & \bestresult{86.493 (0.5281)} & 83.650 (0.3024) & \bestresult{100.000 (--)} \\
+Mean max probability & 9.951 (0.9284) & 38.320 (0.4525) & 89.916 (1.1270) & 98.885 (1.3334) & \bestresult{100.000 (--)} \\
+Negative entropy & 10.278 (1.0074) & 38.040 (0.4419) & 89.682 (1.0861) & 98.776 (1.3261) & \bestresult{100.000 (--)} \\
+Dice-Exact & 7.911 (0.4359) & 53.288 (1.0217) & 89.904 (1.1249) & 98.742 (1.3238) & \bestresult{100.000 (--)} \\
+QFR-Entropy & 7.665 (0.3767) & 46.833 (0.7762) & 89.599 (1.0715) & 98.152 (1.2838) & \bestresult{100.000 (--)} \\
+PLM-10/PLA-10-Entropy & 8.860 (0.6649) & 50.461 (0.9142) & 92.376 (1.5575) & 99.262 (1.3589) & \bestresult{100.000 (--)} \\
+MMMC-Entropy & 10.877 (1.1518) & \bestresult{37.065 (0.4048)} & 89.164 (0.9954) & 98.192 (1.2866) & \bestresult{100.000 (--)} \\
+Foreground entropy & 8.473 (0.5716) & 38.652 (0.4651) & 87.326 (0.6738) & \bestresult{82.759 (0.2421)} & \bestresult{100.000 (--)} \\
+Dice-M2 & 7.723 (0.3907) & 50.706 (0.9235) & 89.170 (0.9964) & 98.875 (1.3328) & \bestresult{100.000 (--)} \\
+Dice-M8 & 8.073 (0.4750) & 54.170 (1.0552) & 89.963 (1.1352) & 98.663 (1.3184) & \bestresult{100.000 (--)} \\
+Dice-M32 & 7.919 (0.4380) & 53.244 (1.0200) & 89.847 (1.1149) & 98.738 (1.3235) & \bestresult{100.000 (--)} \\
+nHD-M2 & 8.583 (0.5982) & 45.302 (0.7180) & 89.363 (1.0302) & 98.871 (1.3325) & \bestresult{100.000 (--)} \\
+nHD-M8 & 8.774 (0.6443) & 46.788 (0.7745) & 88.627 (0.9015) & 98.512 (1.3082) & \bestresult{100.000 (--)} \\
+nHD-M32 & 8.697 (0.6256) & 45.574 (0.7284) & 88.680 (0.9108) & 98.646 (1.3173) & \bestresult{100.000 (--)} \\
+nHD95-M2 & 8.602 (0.6028) & 45.639 (0.7308) & 89.320 (1.0227) & 98.888 (1.3337) & \bestresult{100.000 (--)} \\
+nHD95-M8 & 8.840 (0.6602) & 46.917 (0.7794) & 88.564 (0.8904) & 98.278 (1.2924) & \bestresult{100.000 (--)} \\
+nHD95-M32 & 8.785 (0.6469) & 45.664 (0.7318) & 88.560 (0.8897) & 98.492 (1.3068) & \bestresult{100.000 (--)} \\
 \bottomrule
-\end{tabular}
-}
+\end{tabular*}
+\par\smallskip
+\begin{tabular*}{0.62\textwidth}{@{\extracolsep{\fill}}l*{1}{c}@{}}
+\toprule
+\multicolumn{2}{l}{\textit{DeepLabV3 external (DL-E)}} \\
+\midrule
+Confidence method & Oxford Pet \\
+\midrule
+SDC & \bestresult{6.771 (0.2442)} \\
+Mean max probability & 10.841 (1.0538) \\
+Negative entropy & 10.766 (1.0389) \\
+Dice-Exact & 6.809 (0.2516) \\
+QFR-Entropy & 6.805 (0.2509) \\
+PLM-10/PLA-10-Entropy & 9.848 (0.8564) \\
+MMMC-Entropy & 12.357 (1.3555) \\
+Foreground entropy & 6.860 (0.2618) \\
+Dice-M2 & 7.474 (0.3840) \\
+Dice-M8 & 6.788 (0.2474) \\
+Dice-M32 & 6.790 (0.2478) \\
+nHD-M2 & 9.276 (0.7425) \\
+nHD-M8 & 8.535 (0.5950) \\
+nHD-M32 & 8.488 (0.5857) \\
+nHD95-M2 & 9.510 (0.7891) \\
+nHD95-M8 & 8.701 (0.6282) \\
+nHD95-M32 & 8.597 (0.6074) \\
+\bottomrule
+\end{tabular*}
 }
 \end{table*}
 
 \begin{table*}[t]
 \centering
-\caption{Complete $17\times3$ general and external control results, panel for Normalized penalized Hausdorff risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$ (nAURC), with condition labels retained. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
+\caption{Complete $17\times3$ general and external control results, panel for Normalized penalized Hausdorff risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$ (nAURC), with conditions identified by the stacked panel headings. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
 \label{tab:complete-results-nhd}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{l*{5}{c}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
 \toprule
+\multicolumn{6}{l}{\textit{CLIPSeg general (CLIP-G)}} \\
+\midrule
 Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
-SDC & \shortstack{CLIP-G: 6.891 (0.6768)\\DL-E: 6.375 (0.5461)} & \shortstack{CLIP-G: 33.001 (1.0582)} & \shortstack{CLIP-G: \bestresult{42.922 (0.3961)}} & \shortstack{CLIP-G: 57.269 (0.1085)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Mean max probability & \shortstack{CLIP-G: 6.760 (0.6465)\\DL-E: 7.420 (0.7630)} & \shortstack{CLIP-G: 26.743 (0.6378)} & \shortstack{CLIP-G: 54.171 (1.2119)} & \shortstack{CLIP-G: 96.415 (1.5274)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Negative entropy & \shortstack{CLIP-G: 6.895 (0.6778)\\DL-E: 7.176 (0.7124)} & \shortstack{CLIP-G: 26.029 (0.5899)} & \shortstack{CLIP-G: 53.414 (1.1570)} & \shortstack{CLIP-G: 96.018 (1.5131)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-Exact & \shortstack{CLIP-G: 6.960 (0.6929)\\DL-E: 6.383 (0.5477)} & \shortstack{CLIP-G: 35.089 (1.1984)} & \shortstack{CLIP-G: 57.487 (1.4524)} & \shortstack{CLIP-G: 97.136 (1.5536)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-QFR-Entropy & \shortstack{CLIP-G: 6.829 (0.6625)\\DL-E: 6.371 (0.5452)} & \shortstack{CLIP-G: 31.549 (0.9606)} & \shortstack{CLIP-G: 55.952 (1.3410)} & \shortstack{CLIP-G: 96.123 (1.5168)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-PLM-10/PLA-10-Entropy & \shortstack{CLIP-G: 6.800 (0.6559)\\DL-E: 7.264 (0.7306)} & \shortstack{CLIP-G: 37.521 (1.3617)} & \shortstack{CLIP-G: 65.629 (2.0429)} & \shortstack{CLIP-G: 97.441 (1.5646)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-MMMC-Entropy & \shortstack{CLIP-G: 7.144 (0.7355)\\DL-E: 7.682 (0.8174)} & \shortstack{CLIP-G: \bestresult{25.111 (0.5283)}} & \shortstack{CLIP-G: 51.831 (1.0422)} & \shortstack{CLIP-G: 93.855 (1.4346)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Foreground entropy & \shortstack{CLIP-G: 7.126 (0.7313)\\DL-E: 6.357 (0.5423)} & \shortstack{CLIP-G: 25.691 (0.5672)} & \shortstack{CLIP-G: 46.942 (0.6877)} & \shortstack{CLIP-G: \bestresult{57.094 (0.1021)}} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M2 & \shortstack{CLIP-G: 7.047 (0.7131)\\DL-E: 7.114 (0.6994)} & \shortstack{CLIP-G: 34.146 (1.1351)} & \shortstack{CLIP-G: 54.565 (1.2405)} & \shortstack{CLIP-G: 97.391 (1.5628)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M8 & \shortstack{CLIP-G: 6.998 (0.7016)\\DL-E: 6.397 (0.5505)} & \shortstack{CLIP-G: 36.020 (1.2610)} & \shortstack{CLIP-G: 57.689 (1.4670)} & \shortstack{CLIP-G: 96.984 (1.5481)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M32 & \shortstack{CLIP-G: 6.965 (0.6941)\\DL-E: 6.379 (0.5468)} & \shortstack{CLIP-G: 34.957 (1.1896)} & \shortstack{CLIP-G: 57.251 (1.4353)} & \shortstack{CLIP-G: 97.125 (1.5532)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M2 & \shortstack{CLIP-G: \bestresult{6.254 (0.5294)}\\DL-E: 6.463 (0.5643)} & \shortstack{CLIP-G: 30.422 (0.8850)} & \shortstack{CLIP-G: 53.644 (1.1737)} & \shortstack{CLIP-G: 97.333 (1.5607)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M8 & \shortstack{CLIP-G: 6.330 (0.5468)\\DL-E: 5.650 (0.3955)} & \shortstack{CLIP-G: 31.395 (0.9503)} & \shortstack{CLIP-G: 51.550 (1.0218)} & \shortstack{CLIP-G: 96.824 (1.5423)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M32 & \shortstack{CLIP-G: 6.471 (0.5796)\\DL-E: \bestresult{5.614 (0.3879)}} & \shortstack{CLIP-G: 30.167 (0.8679)} & \shortstack{CLIP-G: 51.952 (1.0510)} & \shortstack{CLIP-G: 97.018 (1.5493)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M2 & \shortstack{CLIP-G: 6.384 (0.5594)\\DL-E: 6.700 (0.6135)} & \shortstack{CLIP-G: 30.748 (0.9068)} & \shortstack{CLIP-G: 53.618 (1.1718)} & \shortstack{CLIP-G: 97.345 (1.5612)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M8 & \shortstack{CLIP-G: 6.498 (0.5859)\\DL-E: 5.899 (0.4471)} & \shortstack{CLIP-G: 31.029 (0.9258)} & \shortstack{CLIP-G: 51.309 (1.0044)} & \shortstack{CLIP-G: 96.353 (1.5252)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M32 & \shortstack{CLIP-G: 6.746 (0.6434)\\DL-E: 5.840 (0.4348)} & \shortstack{CLIP-G: 29.877 (0.8484)} & \shortstack{CLIP-G: 51.539 (1.0210)} & \shortstack{CLIP-G: 96.712 (1.5382)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
+SDC & 6.891 (0.6768) & 33.001 (1.0582) & \bestresult{42.922 (0.3961)} & 57.269 (0.1085) & \bestresult{100.000 (--)} \\
+Mean max probability & 6.760 (0.6465) & 26.743 (0.6378) & 54.171 (1.2119) & 96.415 (1.5274) & \bestresult{100.000 (--)} \\
+Negative entropy & 6.895 (0.6778) & 26.029 (0.5899) & 53.414 (1.1570) & 96.018 (1.5131) & \bestresult{100.000 (--)} \\
+Dice-Exact & 6.960 (0.6929) & 35.089 (1.1984) & 57.487 (1.4524) & 97.136 (1.5536) & \bestresult{100.000 (--)} \\
+QFR-Entropy & 6.829 (0.6625) & 31.549 (0.9606) & 55.952 (1.3410) & 96.123 (1.5168) & \bestresult{100.000 (--)} \\
+PLM-10/PLA-10-Entropy & 6.800 (0.6559) & 37.521 (1.3617) & 65.629 (2.0429) & 97.441 (1.5646) & \bestresult{100.000 (--)} \\
+MMMC-Entropy & 7.144 (0.7355) & \bestresult{25.111 (0.5283)} & 51.831 (1.0422) & 93.855 (1.4346) & \bestresult{100.000 (--)} \\
+Foreground entropy & 7.126 (0.7313) & 25.691 (0.5672) & 46.942 (0.6877) & \bestresult{57.094 (0.1021)} & \bestresult{100.000 (--)} \\
+Dice-M2 & 7.047 (0.7131) & 34.146 (1.1351) & 54.565 (1.2405) & 97.391 (1.5628) & \bestresult{100.000 (--)} \\
+Dice-M8 & 6.998 (0.7016) & 36.020 (1.2610) & 57.689 (1.4670) & 96.984 (1.5481) & \bestresult{100.000 (--)} \\
+Dice-M32 & 6.965 (0.6941) & 34.957 (1.1896) & 57.251 (1.4353) & 97.125 (1.5532) & \bestresult{100.000 (--)} \\
+nHD-M2 & \bestresult{6.254 (0.5294)} & 30.422 (0.8850) & 53.644 (1.1737) & 97.333 (1.5607) & \bestresult{100.000 (--)} \\
+nHD-M8 & 6.330 (0.5468) & 31.395 (0.9503) & 51.550 (1.0218) & 96.824 (1.5423) & \bestresult{100.000 (--)} \\
+nHD-M32 & 6.471 (0.5796) & 30.167 (0.8679) & 51.952 (1.0510) & 97.018 (1.5493) & \bestresult{100.000 (--)} \\
+nHD95-M2 & 6.384 (0.5594) & 30.748 (0.9068) & 53.618 (1.1718) & 97.345 (1.5612) & \bestresult{100.000 (--)} \\
+nHD95-M8 & 6.498 (0.5859) & 31.029 (0.9258) & 51.309 (1.0044) & 96.353 (1.5252) & \bestresult{100.000 (--)} \\
+nHD95-M32 & 6.746 (0.6434) & 29.877 (0.8484) & 51.539 (1.0210) & 96.712 (1.5382) & \bestresult{100.000 (--)} \\
 \bottomrule
-\end{tabular}
-}
+\end{tabular*}
+\par\smallskip
+\begin{tabular*}{0.62\textwidth}{@{\extracolsep{\fill}}l*{1}{c}@{}}
+\toprule
+\multicolumn{2}{l}{\textit{DeepLabV3 external (DL-E)}} \\
+\midrule
+Confidence method & Oxford Pet \\
+\midrule
+SDC & 6.375 (0.5461) \\
+Mean max probability & 7.420 (0.7630) \\
+Negative entropy & 7.176 (0.7124) \\
+Dice-Exact & 6.383 (0.5477) \\
+QFR-Entropy & 6.371 (0.5452) \\
+PLM-10/PLA-10-Entropy & 7.264 (0.7306) \\
+MMMC-Entropy & 7.682 (0.8174) \\
+Foreground entropy & 6.357 (0.5423) \\
+Dice-M2 & 7.114 (0.6994) \\
+Dice-M8 & 6.397 (0.5505) \\
+Dice-M32 & 6.379 (0.5468) \\
+nHD-M2 & 6.463 (0.5643) \\
+nHD-M8 & 5.650 (0.3955) \\
+nHD-M32 & \bestresult{5.614 (0.3879)} \\
+nHD95-M2 & 6.700 (0.6135) \\
+nHD95-M8 & 5.899 (0.4471) \\
+nHD95-M32 & 5.840 (0.4348) \\
+\bottomrule
+\end{tabular*}
 }
 \end{table*}
 
 \begin{table*}[t]
 \centering
-\caption{Complete $17\times3$ general and external control results, panel for Normalized penalized HD95 risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$ (nAURC), with condition labels retained. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
+\caption{Complete $17\times3$ general and external control results, panel for Normalized penalized HD95 risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$ (nAURC), with conditions identified by the stacked panel headings. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
 \label{tab:complete-results-nhd95}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{l*{5}{c}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
 \toprule
+\multicolumn{6}{l}{\textit{CLIPSeg general (CLIP-G)}} \\
+\midrule
 Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
-SDC & \shortstack{CLIP-G: 4.204 (0.6014)\\DL-E: 3.824 (0.5045)} & \shortstack{CLIP-G: 28.558 (1.1076)} & \shortstack{CLIP-G: \bestresult{36.834 (0.3907)}} & \shortstack{CLIP-G: 54.790 (0.0909)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Mean max probability & \shortstack{CLIP-G: 4.253 (0.6187)\\DL-E: 4.923 (0.8536)} & \shortstack{CLIP-G: 21.526 (0.6225)} & \shortstack{CLIP-G: 48.900 (1.2171)} & \shortstack{CLIP-G: 96.287 (1.5348)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Negative entropy & \shortstack{CLIP-G: 4.354 (0.6541)\\DL-E: 4.633 (0.7614)} & \shortstack{CLIP-G: 20.770 (0.5704)} & \shortstack{CLIP-G: 48.063 (1.1598)} & \shortstack{CLIP-G: 95.872 (1.5203)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-Exact & \shortstack{CLIP-G: 4.232 (0.6112)\\DL-E: 3.822 (0.5037)} & \shortstack{CLIP-G: 30.705 (1.2557)} & \shortstack{CLIP-G: 52.699 (1.4773)} & \shortstack{CLIP-G: 96.957 (1.5581)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-QFR-Entropy & \shortstack{CLIP-G: 4.167 (0.5886)\\DL-E: 3.808 (0.4993)} & \shortstack{CLIP-G: 26.581 (0.9712)} & \shortstack{CLIP-G: 50.941 (1.3569)} & \shortstack{CLIP-G: 95.891 (1.5210)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-PLM-10/PLA-10-Entropy & \shortstack{CLIP-G: 4.389 (0.6663)\\DL-E: 4.879 (0.8396)} & \shortstack{CLIP-G: 32.600 (1.3864)} & \shortstack{CLIP-G: 61.644 (2.0900)} & \shortstack{CLIP-G: 97.318 (1.5707)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-MMMC-Entropy & \shortstack{CLIP-G: 4.554 (0.7246)\\DL-E: 4.925 (0.8544)} & \shortstack{CLIP-G: \bestresult{19.876 (0.5087)}} & \shortstack{CLIP-G: 46.298 (1.0389)} & \shortstack{CLIP-G: 93.604 (1.4414)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Foreground entropy & \shortstack{CLIP-G: 4.344 (0.6505)\\DL-E: 3.700 (0.4649)} & \shortstack{CLIP-G: 20.369 (0.5427)} & \shortstack{CLIP-G: 40.900 (0.6691)} & \shortstack{CLIP-G: \bestresult{54.703 (0.0878)}} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M2 & \shortstack{CLIP-G: 4.456 (0.6901)\\DL-E: 4.601 (0.7514)} & \shortstack{CLIP-G: 29.692 (1.1858)} & \shortstack{CLIP-G: 49.405 (1.2517)} & \shortstack{CLIP-G: 97.228 (1.5675)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M8 & \shortstack{CLIP-G: 4.254 (0.6190)\\DL-E: 3.862 (0.5164)} & \shortstack{CLIP-G: 31.656 (1.3213)} & \shortstack{CLIP-G: 52.920 (1.4924)} & \shortstack{CLIP-G: 96.794 (1.5524)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-Dice-M32 & \shortstack{CLIP-G: 4.239 (0.6137)\\DL-E: 3.833 (0.5072)} & \shortstack{CLIP-G: 30.565 (1.2460)} & \shortstack{CLIP-G: 52.438 (1.4594)} & \shortstack{CLIP-G: 96.946 (1.5577)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M2 & \shortstack{CLIP-G: 4.009 (0.5329)\\DL-E: 4.324 (0.6633)} & \shortstack{CLIP-G: 25.865 (0.9218)} & \shortstack{CLIP-G: 48.338 (1.1786)} & \shortstack{CLIP-G: 97.174 (1.5656)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M8 & \shortstack{CLIP-G: \bestresult{3.923 (0.5027)}\\DL-E: 3.494 (0.3997)} & \shortstack{CLIP-G: 26.825 (0.9880)} & \shortstack{CLIP-G: 46.045 (1.0215)} & \shortstack{CLIP-G: 96.639 (1.5470)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD-M32 & \shortstack{CLIP-G: 3.994 (0.5275)\\DL-E: 3.455 (0.3872)} & \shortstack{CLIP-G: 25.614 (0.9045)} & \shortstack{CLIP-G: 46.488 (1.0519)} & \shortstack{CLIP-G: 96.842 (1.5541)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M2 & \shortstack{CLIP-G: 4.033 (0.5413)\\DL-E: 4.328 (0.6646)} & \shortstack{CLIP-G: 26.080 (0.9367)} & \shortstack{CLIP-G: 48.313 (1.1769)} & \shortstack{CLIP-G: 97.184 (1.5660)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M8 & \shortstack{CLIP-G: 3.987 (0.5253)\\DL-E: 3.546 (0.4160)} & \shortstack{CLIP-G: 26.442 (0.9616)} & \shortstack{CLIP-G: 45.788 (1.0039)} & \shortstack{CLIP-G: 96.136 (1.5295)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
-nHD95-M32 & \shortstack{CLIP-G: 4.118 (0.5714)\\DL-E: \bestresult{3.448 (0.3848)}} & \shortstack{CLIP-G: 25.267 (0.8805)} & \shortstack{CLIP-G: 46.043 (1.0214)} & \shortstack{CLIP-G: 96.513 (1.5426)} & \shortstack{CLIP-G: \bestresult{100.000 (--)}} \\
+SDC & 4.204 (0.6014) & 28.558 (1.1076) & \bestresult{36.834 (0.3907)} & 54.790 (0.0909) & \bestresult{100.000 (--)} \\
+Mean max probability & 4.253 (0.6187) & 21.526 (0.6225) & 48.900 (1.2171) & 96.287 (1.5348) & \bestresult{100.000 (--)} \\
+Negative entropy & 4.354 (0.6541) & 20.770 (0.5704) & 48.063 (1.1598) & 95.872 (1.5203) & \bestresult{100.000 (--)} \\
+Dice-Exact & 4.232 (0.6112) & 30.705 (1.2557) & 52.699 (1.4773) & 96.957 (1.5581) & \bestresult{100.000 (--)} \\
+QFR-Entropy & 4.167 (0.5886) & 26.581 (0.9712) & 50.941 (1.3569) & 95.891 (1.5210) & \bestresult{100.000 (--)} \\
+PLM-10/PLA-10-Entropy & 4.389 (0.6663) & 32.600 (1.3864) & 61.644 (2.0900) & 97.318 (1.5707) & \bestresult{100.000 (--)} \\
+MMMC-Entropy & 4.554 (0.7246) & \bestresult{19.876 (0.5087)} & 46.298 (1.0389) & 93.604 (1.4414) & \bestresult{100.000 (--)} \\
+Foreground entropy & 4.344 (0.6505) & 20.369 (0.5427) & 40.900 (0.6691) & \bestresult{54.703 (0.0878)} & \bestresult{100.000 (--)} \\
+Dice-M2 & 4.456 (0.6901) & 29.692 (1.1858) & 49.405 (1.2517) & 97.228 (1.5675) & \bestresult{100.000 (--)} \\
+Dice-M8 & 4.254 (0.6190) & 31.656 (1.3213) & 52.920 (1.4924) & 96.794 (1.5524) & \bestresult{100.000 (--)} \\
+Dice-M32 & 4.239 (0.6137) & 30.565 (1.2460) & 52.438 (1.4594) & 96.946 (1.5577) & \bestresult{100.000 (--)} \\
+nHD-M2 & 4.009 (0.5329) & 25.865 (0.9218) & 48.338 (1.1786) & 97.174 (1.5656) & \bestresult{100.000 (--)} \\
+nHD-M8 & \bestresult{3.923 (0.5027)} & 26.825 (0.9880) & 46.045 (1.0215) & 96.639 (1.5470) & \bestresult{100.000 (--)} \\
+nHD-M32 & 3.994 (0.5275) & 25.614 (0.9045) & 46.488 (1.0519) & 96.842 (1.5541) & \bestresult{100.000 (--)} \\
+nHD95-M2 & 4.033 (0.5413) & 26.080 (0.9367) & 48.313 (1.1769) & 97.184 (1.5660) & \bestresult{100.000 (--)} \\
+nHD95-M8 & 3.987 (0.5253) & 26.442 (0.9616) & 45.788 (1.0039) & 96.136 (1.5295) & \bestresult{100.000 (--)} \\
+nHD95-M32 & 4.118 (0.5714) & 25.267 (0.8805) & 46.043 (1.0214) & 96.513 (1.5426) & \bestresult{100.000 (--)} \\
 \bottomrule
-\end{tabular}
-}
+\end{tabular*}
+\par\smallskip
+\begin{tabular*}{0.62\textwidth}{@{\extracolsep{\fill}}l*{1}{c}@{}}
+\toprule
+\multicolumn{2}{l}{\textit{DeepLabV3 external (DL-E)}} \\
+\midrule
+Confidence method & Oxford Pet \\
+\midrule
+SDC & 3.824 (0.5045) \\
+Mean max probability & 4.923 (0.8536) \\
+Negative entropy & 4.633 (0.7614) \\
+Dice-Exact & 3.822 (0.5037) \\
+QFR-Entropy & 3.808 (0.4993) \\
+PLM-10/PLA-10-Entropy & 4.879 (0.8396) \\
+MMMC-Entropy & 4.925 (0.8544) \\
+Foreground entropy & 3.700 (0.4649) \\
+Dice-M2 & 4.601 (0.7514) \\
+Dice-M8 & 3.862 (0.5164) \\
+Dice-M32 & 3.833 (0.5072) \\
+nHD-M2 & 4.324 (0.6633) \\
+nHD-M8 & 3.494 (0.3997) \\
+nHD-M32 & 3.455 (0.3872) \\
+nHD95-M2 & 4.328 (0.6646) \\
+nHD95-M8 & 3.546 (0.4160) \\
+nHD95-M32 & \bestresult{3.448 (0.3848)} \\
+\bottomrule
+\end{tabular*}
 }
 \end{table*}

@@ -186,6 +186,12 @@ CONDITION_ABBREVIATIONS = {
     "deeplabv3-target": "DL-T",
     "deeplabv3-external": "DL-E",
 }
+CONDITION_PANEL_LABELS = {
+    "clipseg-general": "CLIPSeg general (CLIP-G)",
+    "clipseg-target": "CLIPSeg target (CLIP-T)",
+    "deeplabv3-target": "DeepLabV3 target (DL-T)",
+    "deeplabv3-external": "DeepLabV3 external (DL-E)",
+}
 DATASET_LABELS = {
     "pet": "Oxford Pet",
     "kvasir": "Kvasir-SEG",
@@ -1075,6 +1081,29 @@ def _groups(conditions, declared):
     return groups
 
 
+def _condition_panels(conditions, declared):
+    """Group declared results into model-condition panels with dataset columns."""
+
+    by_key = {
+        (condition["dataset"], condition["condition"]): condition
+        for condition in conditions
+    }
+    declared = tuple(declared)
+    declared_set = set(declared)
+    condition_order = tuple(dict.fromkeys(name for _, name in declared))
+    panels = []
+    for condition_name in condition_order:
+        groups = tuple(
+            (dataset, by_key[(dataset, condition_name)])
+            for dataset in DATASET_LABELS
+            if (dataset, condition_name) in declared_set
+            and (dataset, condition_name) in by_key
+        )
+        if groups:
+            panels.append((condition_name, groups))
+    return tuple(panels)
+
+
 def _tabular_start(groups, *, row_label):
     return [
         rf"\begin{{tabular}}{{l*{{{len(groups)}}}{{c}}}}",
@@ -1083,6 +1112,47 @@ def _tabular_start(groups, *, row_label):
         + r" \\",
         r"\midrule",
     ]
+
+
+def _condition_panel_start(condition_name, groups, *, row_label):
+    width = r"\textwidth" if len(groups) > 1 else r"0.62\textwidth"
+    columns = len(groups)
+    return [
+        rf"\begin{{tabular*}}{{{width}}}"
+        rf"{{@{{\extracolsep{{\fill}}}}l*{{{columns}}}{{c}}@{{}}}}",
+        r"\toprule",
+        rf"\multicolumn{{{1 + columns}}}{{l}}"
+        rf"{{\textit{{{CONDITION_PANEL_LABELS[condition_name]}}}}}" + " \\\\",
+        r"\midrule",
+        " & ".join(
+            [row_label, *(DATASET_LABELS[dataset] for dataset, _ in groups)]
+        )
+        + " \\\\",
+        r"\midrule",
+    ]
+
+
+def _condition_panel_end():
+    return [r"\bottomrule", r"\end{tabular*}"]
+
+
+def _result_number(
+    condition,
+    risk_field,
+    method_field,
+    candidates,
+    *,
+    normalized,
+    highlight_best=True,
+):
+    methods = condition["risks"][risk_field]["methods"]
+    method = methods[method_field]
+    number = _aurc_number(method["aurc"])
+    if normalized:
+        number += rf" ({_number(method['normalized_aurc'])})"
+    if highlight_best and _is_best(methods, method_field, candidates):
+        number = _best_result(number)
+    return number
 
 
 def _result_cell(
@@ -1096,13 +1166,14 @@ def _result_cell(
 ):
     entries = []
     for condition in group:
-        methods = condition["risks"][risk_field]["methods"]
-        method = methods[method_field]
-        number = _aurc_number(method["aurc"])
-        if normalized:
-            number += rf" ({_number(method['normalized_aurc'])})"
-        if highlight_best and _is_best(methods, method_field, candidates):
-            number = _best_result(number)
+        number = _result_number(
+            condition,
+            risk_field,
+            method_field,
+            candidates,
+            normalized=normalized,
+            highlight_best=highlight_best,
+        )
         entries.append(f"{CONDITION_ABBREVIATIONS[condition['condition']]}: {number}")
     return r"\shortstack{" + r"\\".join(entries) + "}"
 
@@ -1220,7 +1291,7 @@ def render_main_results(conditions, *, header):
 
 
 def _complete_results_table(conditions, *, header, declared, label, caption_prefix):
-    groups = _groups(conditions, declared)
+    panels = _condition_panels(conditions, declared)
     lines = [header.rstrip()]
     candidates = tuple(METHODS)
     for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
@@ -1231,23 +1302,35 @@ def _complete_results_table(conditions, *, header, declared, label, caption_pref
                 r"\centering",
                 rf"\caption{{{caption_prefix} {risk_label}. Methods are rows and "
                 r"datasets are columns; each entry is raw AURC $\times100$ (nAURC), with "
-                r"condition labels retained. Lower is better. Dark blue marks every "
+                r"conditions identified by the stacked panel headings. Lower is better. "
+                r"Dark blue marks every "
                 r"lowest unrounded raw AURC within each condition.}",
                 rf"\label{{{panel_label}}}",
                 r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
-                r"\resizebox{\textwidth}{!}{%",
-                *_tabular_start(groups, row_label="Confidence method"),
             ]
         )
-        for method_field in candidates:
-            cells = [
-                _result_cell(
-                    group, risk_field, method_field, candidates, normalized=True
+        for panel_index, (condition_name, groups) in enumerate(panels):
+            if panel_index:
+                lines.append(r"\par\smallskip")
+            lines.extend(
+                _condition_panel_start(
+                    condition_name, groups, row_label="Confidence method"
                 )
-                for _, group in groups
-            ]
-            lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
-        lines.extend(_table_end())
+            )
+            for method_field in candidates:
+                cells = [
+                    _result_number(
+                        condition,
+                        risk_field,
+                        method_field,
+                        candidates,
+                        normalized=True,
+                    )
+                    for _, condition in groups
+                ]
+                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+            lines.extend(_condition_panel_end())
+        lines.extend([r"}", r"\end{table*}", ""])
     return "\n".join(lines)
 
 
@@ -1274,55 +1357,65 @@ def render_complete_results(conditions, *, header):
 
 
 def render_cross_loss_results(conditions, *, header):
-    groups = _groups(conditions, EXPECTED_CONDITIONS)
+    panels = _condition_panels(conditions, EXPECTED_CONDITIONS)
     lines = [
         header.rstrip(),
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{Full $3\times3$ loss-indexed $M=32$ cross-loss matrix over all "
         r"16 unpooled conditions. Confidence methods are rows and evaluation risks "
-        r"form blocks; datasets are columns and condition labels remain in every "
-        r"raw AURC $\times100$ (nAURC) entry. Lower is better. Dark blue marks every lowest "
+        r"form blocks; datasets are columns and conditions are identified by the "
+        r"stacked panel headings. Each entry is raw AURC $\times100$ (nAURC). "
+        r"Lower is better. Dark blue marks every lowest "
         r"unrounded raw AURC among the three indexed scores within each condition "
         r"and risk block. These cells are descriptive; paired inference is restricted "
         r"to the four fixed adjacent-geometry contrasts.}",
         r"\label{tab:cross-loss-results}",
         r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
-        r"\resizebox{\textwidth}{!}{%",
-        *_tabular_start(groups, row_label="Loss-indexed confidence"),
     ]
-    for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
-        if risk_index:
-            lines.append(r"\midrule")
-        lines.append(
-            rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+    for panel_index, (condition_name, groups) in enumerate(panels):
+        if panel_index:
+            lines.append(r"\par\smallskip")
+        lines.extend(
+            _condition_panel_start(
+                condition_name, groups, row_label="Loss-indexed confidence"
+            )
         )
-        for method_field in LOSS_INDEXED_M32:
-            cells = [
-                _result_cell(
-                    group,
-                    risk_field,
-                    method_field,
-                    LOSS_INDEXED_M32,
-                    normalized=True,
-                )
-                for _, group in groups
-            ]
-            lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
-    lines.extend(_table_end())
+        for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
+            if risk_index:
+                lines.append(r"\midrule")
+            lines.append(
+                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+            )
+            for method_field in LOSS_INDEXED_M32:
+                cells = [
+                    _result_number(
+                        condition,
+                        risk_field,
+                        method_field,
+                        LOSS_INDEXED_M32,
+                        normalized=True,
+                    )
+                    for _, condition in groups
+                ]
+                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+        lines.extend(_condition_panel_end())
+    lines.extend([r"}", r"\end{table*}", ""])
     return "\n".join(lines)
 
 
 def render_quadrature_ablation(conditions, *, header):
-    groups = _groups(conditions, TARGET_CONDITIONS)
+    panels = _condition_panels(conditions, TARGET_CONDITIONS)
+    fidelity_groups = _groups(conditions, TARGET_CONDITIONS)
     lines = [
         header.rstrip(),
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{Matched-loss quadrature ablation on target-adapted conditions. "
         r"Dice-Exact is the exact level-set oracle; $M=2,8,32$ are midpoint rules. "
-        r"Methods are rows, datasets are columns, and cells retain CLIP-T and DL-T "
-        r"raw AURCs $\times100$ separately. Lower AURC is better as a ranking outcome, but a "
+        r"Methods are rows, datasets are columns, and CLIP-T and DL-T are shown as "
+        r"stacked condition panels. Cells report raw AURC $\times100$. Lower AURC "
+        r"is better as a ranking outcome, but a "
         r"coarser rule can win accidentally; numerical fidelity is judged against "
         r"Dice-Exact below and against the high-resolution boundary reference in "
         r"the auxiliary study. AURC need not improve monotonically with $M$. "
@@ -1330,29 +1423,34 @@ def render_quadrature_ablation(conditions, *, header):
         r"and risk block.}",
         r"\label{tab:quadrature-ablation}",
         r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
-        r"\resizebox{\textwidth}{!}{%",
-        *_tabular_start(groups, row_label="Estimator"),
     ]
-    for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
-        if risk_index:
-            lines.append(r"\midrule")
-        candidates = MATCHED_METHODS[risk_field]
-        lines.append(
-            rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+    for panel_index, (condition_name, groups) in enumerate(panels):
+        if panel_index:
+            lines.append(r"\par\smallskip")
+        lines.extend(
+            _condition_panel_start(condition_name, groups, row_label="Estimator")
         )
-        for method_field in candidates:
-            cells = [
-                _result_cell(
-                    group,
-                    risk_field,
-                    method_field,
-                    candidates,
-                    normalized=False,
-                )
-                for _, group in groups
-            ]
-            lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
-    lines.extend(_table_end())
+        for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
+            if risk_index:
+                lines.append(r"\midrule")
+            candidates = MATCHED_METHODS[risk_field]
+            lines.append(
+                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+            )
+            for method_field in candidates:
+                cells = [
+                    _result_number(
+                        condition,
+                        risk_field,
+                        method_field,
+                        candidates,
+                        normalized=False,
+                    )
+                    for _, condition in groups
+                ]
+                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+        lines.extend(_condition_panel_end())
+    lines.extend([r"}", r"\end{table*}", ""])
     if all("numerical_validation" in condition for condition in conditions):
         lines.extend(
             [
@@ -1373,7 +1471,7 @@ def render_quadrature_ablation(conditions, *, header):
                 r"\label{tab:dice-quadrature-fidelity}",
                 r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
                 r"\resizebox{\textwidth}{!}{%",
-                *_tabular_start(groups, row_label="Estimator / statistic"),
+                *_tabular_start(fidelity_groups, row_label="Estimator / statistic"),
             ]
         )
         metrics = (
@@ -1411,7 +1509,7 @@ def render_quadrature_ablation(conditions, *, header):
                         getter,
                         percentage=percentage,
                     )
-                    for _, group in groups
+                    for _, group in fidelity_groups
                 ]
                 row = f"{METHODS[method_field]} / {statistic}"
                 lines.append(" & ".join([row, *cells]) + r" \\")

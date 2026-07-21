@@ -10,9 +10,11 @@ shard paths from the lock (never from a glob), and ``diagnose`` plans one
 read-only diagnostic per locked artifact.  Every compute phase uses one
 independent Slurm job per planned row; Slurm arrays are intentionally not used.
 
-All submission phases are dry-run by default; pass ``--submit`` to call
-``sbatch``.  Lock files are written only when ``--write-lock`` is provided and
-are never overwritten.
+All submission phases are dry-run by default. Schema v1 can call ``sbatch``
+with ``--submit``. The checked-in schema-v2 policy permits only dry-run and
+``--scheduler-preflight-only`` until scientific inputs are independently
+content-bound. Lock files are written only when ``--write-lock`` is provided
+and are never overwritten.
 """
 
 from __future__ import annotations
@@ -23,7 +25,9 @@ import hashlib
 import json
 import math
 import os
+import re
 import shlex
+import stat
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -35,6 +39,8 @@ CONFIG_SCHEMA_VERSION = 1
 CANDIDATE_CONFIG_SCHEMA_VERSION = 2
 LOCK_SCHEMA_VERSION = 1
 RECEIPT_SCHEMA_VERSION = 1
+RUNTIME_RECEIPT_SCHEMA_VERSION = 2
+SCHEDULER_PREVIEW_ONLY = "scheduler-preview-only"
 EXPECTED_PROTOCOL = {
     "gamma_values": [0.5],
     "m_values": [2, 8, 32],
@@ -60,7 +66,7 @@ PARTITION_CANDIDATE_CONFIG_FIELDS = frozenset(
     {"gpu_partition_candidates", "cpu_partition_candidates"}
 )
 OPTIONAL_CONFIG_FIELDS = frozenset(
-    {"cpu_partitions", *PARTITION_CANDIDATE_CONFIG_FIELDS}
+    {"cpu_partitions", "execution_policy", *PARTITION_CANDIDATE_CONFIG_FIELDS}
 )
 REQUIRED_CONDITION_FIELDS = frozenset(
     {
@@ -132,6 +138,73 @@ REQUIRED_RECEIPT_FIELDS = frozenset(
         "job_id",
     }
 )
+REQUIRED_RUNTIME_RECEIPT_FIELDS = frozenset(
+    {
+        "receipt_schema_version",
+        "created_utc",
+        "campaign_id",
+        "config_sha256",
+        "event",
+        "phase",
+        "key",
+        "command",
+        "attempt",
+        "authorization",
+        "job_id",
+        "predecessor_job_id",
+        "scheduler_state",
+        "scheduler_exit_code",
+        "scheduler_job_name",
+        "scheduler_account",
+        "scheduler_partition",
+        "scheduler_nodes",
+        "scheduler_reason",
+    }
+)
+RUNTIME_RECEIPT_EVENTS = frozenset(
+    {
+        "submitting",
+        "submitted",
+        "submission_recovered",
+        "submission_failed",
+        "completed",
+        "failed",
+    }
+)
+RUNTIME_AUTHORIZATIONS = frozenset(
+    {"initial", "retry_failed_job_id", "retry_submission_failure"}
+)
+SLURM_ACTIVE_STATES = frozenset(
+    {
+        "PENDING",
+        "RUNNING",
+        "CONFIGURING",
+        "COMPLETING",
+        "RESIZING",
+        "SUSPENDED",
+        "REQUEUED",
+        "REQUEUE_FED",
+        "REQUEUE_HOLD",
+        "SIGNALING",
+        "STAGE_OUT",
+    }
+)
+SLURM_FAILED_STATES = frozenset(
+    {
+        "BOOT_FAIL",
+        "CANCELLED",
+        "DEADLINE",
+        "FAILED",
+        "NODE_FAIL",
+        "OUT_OF_MEMORY",
+        "PREEMPTED",
+        "REVOKED",
+        "SPECIAL_EXIT",
+        "STOPPED",
+        "TIMEOUT",
+    }
+)
+SLURM_JOB_ID_PATTERN = re.compile(r"^[0-9]+(?:;[A-Za-z0-9_.-]+)?$")
 
 
 @dataclass(frozen=True)
@@ -146,6 +219,28 @@ class PlannedJob:
     phase: str
     key: tuple
     command: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class SchedulerObservation:
+    disposition: str
+    state: str | None = None
+    exit_code: str | None = None
+    partition: str | None = None
+    nodes: str | None = None
+    reason: str | None = None
+
+
+@dataclass(frozen=True)
+class SchedulerJobRecord:
+    job_id: str
+    job_name: str
+    account: str
+    partition: str
+    state: str
+    exit_code: str | None = None
+    nodes: str | None = None
+    reason: str | None = None
 
 
 def parse_args(argv=None):
@@ -167,16 +262,58 @@ def parse_args(argv=None):
         "--write-lock",
         help="write the verified lock here during --phase lock (no overwrite)",
     )
-    parser.add_argument(
+    execution = parser.add_mutually_exclusive_group()
+    execution.add_argument(
         "--submit",
         action="store_true",
         help="call sbatch; without this flag submission phases are dry-runs",
+    )
+    execution.add_argument(
+        "--scheduler-preflight-only",
+        action="store_true",
+        help=(
+            "schema-v2 preview only: run every final command through "
+            "sbatch --test-only without opening a receipt or submitting a job"
+        ),
+    )
+    execution.add_argument(
+        "--reconcile",
+        action="store_true",
+        help=(
+            "schema-v2 only: query sacct/squeue and append observed terminal "
+            "states without submitting jobs"
+        ),
+    )
+    execution.add_argument(
+        "--recover-submitted-job-id",
+        metavar="JOB_ID",
+        help=(
+            "schema-v2 only: explicitly bind the one dangling submission "
+            "intent to this Slurm job after scheduler identity verification"
+        ),
     )
     parser.add_argument(
         "--receipt",
         help=(
             "phase-specific append-only receipt; required with --submit and "
             "used to prevent blind duplicate resubmission"
+        ),
+    )
+    parser.add_argument(
+        "--retry-failed-job-id",
+        action="append",
+        default=[],
+        help=(
+            "schema-v2 only: explicitly authorize replacement of this exact "
+            "terminal failed Slurm job; repeat for multiple jobs"
+        ),
+    )
+    parser.add_argument(
+        "--retry-submission-failure",
+        action="store_true",
+        help=(
+            "schema-v2 only: explicitly retry attempts for which sbatch itself "
+            "failed and therefore returned no Slurm job id"
         ),
     )
     parser.add_argument(
@@ -290,6 +427,53 @@ def _validate_protocol(protocol, *, location):
         )
 
 
+def _runtime_campaign_root(config):
+    """Return the single schema-v2 output root that anchors runtime receipts."""
+
+    if config.data["config_schema_version"] != CANDIDATE_CONFIG_SCHEMA_VERSION:
+        raise ValueError("canonical runtime receipts are defined only for schema v2")
+    output_roots = tuple(
+        _project_path(config.path, config.data["paths"][field])
+        for field in sorted(REQUIRED_PATH_FIELDS)
+    )
+    parents = {path.parent for path in output_roots}
+    if len(parents) != 1:
+        raise ValueError(
+            "schema-v2 output roots must be sibling directories under one campaign root"
+        )
+    return next(iter(parents))
+
+
+def canonical_runtime_receipt_path(config, phase):
+    """Derive the only accepted schema-v2 receipt pathname for a phase."""
+
+    if phase not in {"freeze", "common", "score", "assemble", "diagnose"}:
+        raise ValueError(f"phase {phase!r} has no schema-v2 runtime receipt")
+    return _runtime_campaign_root(config) / "receipts" / f"{phase}.jsonl"
+
+
+def _validated_runtime_receipt_path(config, jobs, receipt_path):
+    if receipt_path is None:
+        raise ValueError("schema-v2 execution requires its canonical --receipt path")
+    jobs = _validate_runtime_jobs(jobs)
+    phases = {job.phase for job in jobs}
+    if len(phases) != 1:
+        raise ValueError("a schema-v2 receipt may contain exactly one planned phase")
+    phase = next(iter(phases))
+    expected = canonical_runtime_receipt_path(config, phase)
+    observed = Path(os.path.abspath(os.path.normpath(os.fspath(receipt_path))))
+    if observed != expected:
+        raise ValueError(
+            "schema-v2 receipt path substitution rejected: expected "
+            f"{expected}, received {observed}"
+        )
+    if expected.parent.is_symlink():
+        raise ValueError(
+            f"schema-v2 receipt directory must not be a symlink: {expected.parent}"
+        )
+    return expected
+
+
 def load_config(path):
     path = Path(path).resolve()
     if not path.is_file():
@@ -317,9 +501,18 @@ def load_config(path):
             f"{CONFIG_SCHEMA_VERSION} or {CANDIDATE_CONFIG_SCHEMA_VERSION}"
         )
     candidate_fields = keys & PARTITION_CANDIDATE_CONFIG_FIELDS
+    has_execution_policy = "execution_policy" in keys
+    execution_policy = data.get("execution_policy")
     if candidate_fields and config_schema_version != CANDIDATE_CONFIG_SCHEMA_VERSION:
         raise ValueError(
             "partition candidate fields require config_schema_version "
+            f"{CANDIDATE_CONFIG_SCHEMA_VERSION}"
+        )
+    if has_execution_policy and (
+        config_schema_version != CANDIDATE_CONFIG_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "execution_policy requires config_schema_version "
             f"{CANDIDATE_CONFIG_SCHEMA_VERSION}"
         )
     if (
@@ -329,6 +522,12 @@ def load_config(path):
         raise ValueError(
             "gpu_partition_candidates and cpu_partition_candidates must be "
             "provided together"
+        )
+    if config_schema_version == CANDIDATE_CONFIG_SCHEMA_VERSION and (
+        execution_policy != SCHEDULER_PREVIEW_ONLY
+    ):
+        raise ValueError(
+            f"schema-v2 execution_policy must equal {SCHEDULER_PREVIEW_ONLY!r}"
         )
     _nonempty_string(data["campaign_id"], location=f"{path}.campaign_id")
     _validate_protocol(data["protocol"], location=f"{path}.protocol")
@@ -429,7 +628,10 @@ def load_config(path):
         if key in seen:
             raise ValueError(f"duplicate configured condition {key}")
         seen.add(key)
-    return Config(path=path, sha256=_sha256_bytes(raw), data=data)
+    config = Config(path=path, sha256=_sha256_bytes(raw), data=data)
+    if config_schema_version == CANDIDATE_CONFIG_SCHEMA_VERSION:
+        _runtime_campaign_root(config)
+    return config
 
 
 def _gpu_partition_request(config):
@@ -445,6 +647,15 @@ def _cpu_partition_request(config, index):
         return ",".join(candidates)
     partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
     return partitions[index % len(partitions)]
+
+
+def _scheduler_job_name(config, base):
+    """Keep v1 names byte-stable and bind v2 names to exact config bytes."""
+
+    if config.data["config_schema_version"] != CANDIDATE_CONFIG_SCHEMA_VERSION:
+        return base[:128]
+    suffix = f"-c{config.sha256[:16]}"
+    return f"{base[: 128 - len(suffix)]}{suffix}"
 
 
 def _load_estimator(config):
@@ -482,7 +693,7 @@ def plan_freeze_jobs(config):
             "sbatch",
             "--parsable",
             "--job-name",
-            job_name[:128],
+            _scheduler_job_name(config, job_name),
             "--partition",
             partition_request,
             "--account",
@@ -831,7 +1042,7 @@ def plan_score_jobs(config, campaign_lock):
                         "sbatch",
                         "--parsable",
                         "--job-name",
-                        job_name[:128],
+                        _scheduler_job_name(config, job_name),
                         "--partition",
                         partition,
                         "--account",
@@ -895,7 +1106,7 @@ def plan_common_jobs(config, campaign_lock):
             "sbatch",
             "--parsable",
             "--job-name",
-            job_name[:128],
+            _scheduler_job_name(config, job_name),
             "--partition",
             partition,
             "--account",
@@ -955,9 +1166,7 @@ def _expected_score_manifests(config, lock_path, lock_sha, lock, artifact):
         source_sha256=common_source_fingerprint(),
         gamma=gamma,
     )
-    common_root = _project_path(
-        config.path, lock["paths"]["common_output_root"]
-    )
+    common_root = _project_path(config.path, lock["paths"]["common_output_root"])
     common_manifest = (
         common_root
         / artifact["dataset"]
@@ -992,7 +1201,7 @@ def _expected_score_manifests(config, lock_path, lock_sha, lock, artifact):
     return common_manifest, tuple(simulation_manifests)
 
 
-def plan_assemble_jobs(config, campaign_lock):
+def plan_assemble_jobs(config, campaign_lock, *, allow_existing_output=False):
     """Plan one strict assembly job per locked artifact, without discovery."""
 
     lock_path, lock_sha, lock = load_campaign_lock(campaign_lock, config=config)
@@ -1026,7 +1235,7 @@ def plan_assemble_jobs(config, campaign_lock):
             raise RuntimeError("derived assembly inputs target a different condition")
         resolved_output_root = _project_path(config.path, output_root)
         target = resolved_output_root / dataset / condition / run_id
-        if target.exists() or target.is_symlink():
+        if not allow_existing_output and (target.exists() or target.is_symlink()):
             raise FileExistsError(f"assembled output already exists: {target}")
 
         partition = _cpu_partition_request(config, artifact_index)
@@ -1036,7 +1245,7 @@ def plan_assemble_jobs(config, campaign_lock):
             "sbatch",
             "--parsable",
             "--job-name",
-            job_name[:128],
+            _scheduler_job_name(config, job_name),
             "--partition",
             partition,
             "--account",
@@ -1081,7 +1290,7 @@ def plan_diagnose_jobs(
             "sbatch",
             "--parsable",
             "--job-name",
-            job_name[:128],
+            _scheduler_job_name(config, job_name),
             "--partition",
             partition,
             "--account",
@@ -1207,6 +1416,832 @@ def preflight_plan(jobs, *, runner=subprocess.run):
     return jobs
 
 
+def _validate_runtime_jobs(jobs):
+    jobs = tuple(jobs)
+    if not jobs:
+        raise ValueError("schema-v2 runtime execution requires a non-empty plan")
+    identities = set()
+    phases = set()
+    for job in jobs:
+        identity = (job.phase, job.key)
+        if identity in identities:
+            raise ValueError(f"duplicate schema-v2 job identity {identity}")
+        identities.add(identity)
+        phases.add(job.phase)
+        if not job.command or job.command[0] != "sbatch":
+            raise ValueError(f"schema-v2 job {job.key} is not an sbatch command")
+        if any(
+            token == "--array" or token.startswith("--array=") for token in job.command
+        ):
+            raise ValueError("schema-v2 runtime execution forbids Slurm arrays")
+    if len(phases) != 1:
+        raise ValueError("schema-v2 runtime execution requires one phase per wave")
+    return jobs
+
+
+def _validate_slurm_job_id(value, *, location):
+    value = _nonempty_string(value, location=location)
+    if not SLURM_JOB_ID_PATTERN.fullmatch(value):
+        raise ValueError(f"{location} is not a non-array Slurm job id")
+    return value
+
+
+def _runtime_event(
+    config,
+    job,
+    *,
+    event,
+    attempt,
+    authorization,
+    job_id=None,
+    predecessor_job_id=None,
+    scheduler_state=None,
+    scheduler_exit_code=None,
+    scheduler_job_name=None,
+    scheduler_account=None,
+    scheduler_partition=None,
+    scheduler_nodes=None,
+    scheduler_reason=None,
+):
+    return {
+        "receipt_schema_version": RUNTIME_RECEIPT_SCHEMA_VERSION,
+        "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "campaign_id": config.data["campaign_id"],
+        "config_sha256": config.sha256,
+        "event": event,
+        "phase": job.phase,
+        "key": list(job.key),
+        "command": list(job.command),
+        "attempt": attempt,
+        "authorization": authorization,
+        "job_id": job_id,
+        "predecessor_job_id": predecessor_job_id,
+        "scheduler_state": scheduler_state,
+        "scheduler_exit_code": scheduler_exit_code,
+        "scheduler_job_name": scheduler_job_name,
+        "scheduler_account": scheduler_account,
+        "scheduler_partition": scheduler_partition,
+        "scheduler_nodes": scheduler_nodes,
+        "scheduler_reason": scheduler_reason,
+    }
+
+
+def _append_runtime_receipt_event(handle, event):
+    """Append one locked schema-v2 event and make it durable before returning."""
+
+    payload = (_canonical_json(event) + "\n").encode("utf-8")
+    handle.flush()
+    written = os.write(handle.fileno(), payload)
+    if written != len(payload):
+        raise OSError(
+            f"short schema-v2 receipt append ({written} of {len(payload)} bytes)"
+        )
+    os.fsync(handle.fileno())
+
+
+def _nullable_string(value, *, location):
+    if value is not None:
+        _nonempty_string(value, location=location)
+    return value
+
+
+def _normalized_slurm_state(value):
+    if value is None:
+        return None
+    value = value.strip().upper()
+    if not value:
+        return None
+    return value.split(None, 1)[0].rstrip("+")
+
+
+def _load_runtime_receipt_events(
+    handle, config, jobs, *, source, include_job_owners=False
+):
+    """Validate the complete append-only runtime ledger and return latest rows."""
+
+    jobs = _validate_runtime_jobs(jobs)
+    by_identity = {(job.phase, job.key): job for job in jobs}
+    latest = {}
+    job_owners = {}
+    handle.seek(0)
+    for line_number, raw_line in enumerate(handle, start=1):
+        location = f"{source}:{line_number}"
+        try:
+            line = raw_line.decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise ValueError(f"invalid UTF-8 receipt row at {location}") from error
+        if not line.strip():
+            raise ValueError(f"blank schema-v2 receipt row at {location}")
+        event = _loads_strict(line, source=location)
+        if not isinstance(event, dict) or set(event) != REQUIRED_RUNTIME_RECEIPT_FIELDS:
+            raise ValueError(f"invalid schema-v2 receipt fields at {location}")
+        _assert_finite(event, location=location)
+        if event["receipt_schema_version"] != RUNTIME_RECEIPT_SCHEMA_VERSION:
+            raise ValueError(f"unsupported schema-v2 receipt version at {location}")
+        _nonempty_string(event["created_utc"], location=f"{location}.created_utc")
+        if event["campaign_id"] != config.data["campaign_id"]:
+            raise ValueError(f"receipt campaign changed at {location}")
+        if event["config_sha256"] != config.sha256:
+            raise ValueError(f"receipt config binding changed at {location}")
+        phase = _nonempty_string(event["phase"], location=f"{location}.phase")
+        if not isinstance(event["key"], list):
+            raise ValueError(f"{location}.key must be a list")
+        identity = (phase, tuple(event["key"]))
+        if identity not in by_identity:
+            raise ValueError(f"receipt contains a job outside this plan at {location}")
+        if (
+            not isinstance(event["command"], list)
+            or tuple(event["command"]) != by_identity[identity].command
+        ):
+            raise ValueError(f"submission identity changed at {location}")
+        kind = event["event"]
+        if kind not in RUNTIME_RECEIPT_EVENTS:
+            raise ValueError(f"invalid runtime event at {location}")
+        attempt = event["attempt"]
+        if isinstance(attempt, bool) or not isinstance(attempt, int) or attempt <= 0:
+            raise ValueError(f"{location}.attempt must be a positive integer")
+        authorization = event["authorization"]
+        if authorization not in RUNTIME_AUTHORIZATIONS:
+            raise ValueError(f"invalid retry authorization at {location}")
+        predecessor = _nullable_string(
+            event["predecessor_job_id"],
+            location=f"{location}.predecessor_job_id",
+        )
+        if predecessor is not None:
+            _validate_slurm_job_id(
+                predecessor, location=f"{location}.predecessor_job_id"
+            )
+        job_id = _nullable_string(event["job_id"], location=f"{location}.job_id")
+        if job_id is not None:
+            _validate_slurm_job_id(job_id, location=f"{location}.job_id")
+            owner = (identity, attempt)
+            if job_id in job_owners and job_owners[job_id] != owner:
+                raise ValueError(f"Slurm job id is reused at {location}")
+            job_owners[job_id] = owner
+            if job_id == predecessor:
+                raise ValueError(f"replacement reused its predecessor at {location}")
+
+        scheduler_fields = (
+            "scheduler_state",
+            "scheduler_exit_code",
+            "scheduler_job_name",
+            "scheduler_account",
+            "scheduler_partition",
+            "scheduler_nodes",
+            "scheduler_reason",
+        )
+        for field in scheduler_fields:
+            _nullable_string(event[field], location=f"{location}.{field}")
+        if kind == "submitting":
+            if job_id is not None or any(
+                event[field] is not None for field in scheduler_fields
+            ):
+                raise ValueError(
+                    f"submitting event carries scheduler data at {location}"
+                )
+        elif kind == "submitted":
+            if job_id is None or any(
+                event[field] is not None for field in scheduler_fields
+            ):
+                raise ValueError(f"invalid submitted event at {location}")
+        elif kind == "submission_recovered":
+            required_recovery_fields = (
+                "scheduler_state",
+                "scheduler_job_name",
+                "scheduler_account",
+                "scheduler_partition",
+            )
+            if job_id is None or any(
+                event[field] is None for field in required_recovery_fields
+            ):
+                raise ValueError(f"recovered event lacks scheduler proof at {location}")
+        elif kind == "submission_failed":
+            if (
+                job_id is not None
+                or any(event[field] is not None for field in scheduler_fields[:-1])
+                or event["scheduler_reason"] is None
+            ):
+                raise ValueError(f"invalid submission-failure event at {location}")
+        else:
+            state = _normalized_slurm_state(event["scheduler_state"])
+            if job_id is None or state is None or event["scheduler_exit_code"] is None:
+                raise ValueError(f"terminal event lacks Slurm facts at {location}")
+            if kind == "completed":
+                if state != "COMPLETED" or event["scheduler_exit_code"] != "0:0":
+                    raise ValueError(f"invalid completed event at {location}")
+            elif state not in SLURM_FAILED_STATES and not (
+                state == "COMPLETED" and event["scheduler_exit_code"] != "0:0"
+            ):
+                raise ValueError(f"invalid failed event at {location}")
+
+        previous = latest.get(identity)
+        if previous is None:
+            if not (
+                kind == "submitting"
+                and attempt == 1
+                and authorization == "initial"
+                and predecessor is None
+            ):
+                raise ValueError(f"invalid initial runtime event at {location}")
+        else:
+            previous_kind = previous["event"]
+            if previous_kind == "submitting":
+                if kind not in {
+                    "submitted",
+                    "submission_recovered",
+                    "submission_failed",
+                }:
+                    raise ValueError(f"invalid runtime transition at {location}")
+                if (
+                    attempt != previous["attempt"]
+                    or authorization != previous["authorization"]
+                    or predecessor != previous["predecessor_job_id"]
+                ):
+                    raise ValueError(f"attempt identity changed at {location}")
+            elif previous_kind in {"submitted", "submission_recovered"}:
+                if kind not in {"completed", "failed"}:
+                    raise ValueError(f"invalid runtime transition at {location}")
+                if (
+                    attempt != previous["attempt"]
+                    or authorization != previous["authorization"]
+                    or predecessor != previous["predecessor_job_id"]
+                    or job_id != previous["job_id"]
+                ):
+                    raise ValueError(f"submitted job identity changed at {location}")
+            elif previous_kind == "failed":
+                if not (
+                    kind == "submitting"
+                    and attempt == previous["attempt"] + 1
+                    and authorization == "retry_failed_job_id"
+                    and predecessor == previous["job_id"]
+                ):
+                    raise ValueError(
+                        f"unauthorized failed-job replacement at {location}"
+                    )
+            elif previous_kind == "submission_failed":
+                if not (
+                    kind == "submitting"
+                    and attempt == previous["attempt"] + 1
+                    and authorization == "retry_submission_failure"
+                    and predecessor == previous["predecessor_job_id"]
+                ):
+                    raise ValueError(f"unauthorized submission retry at {location}")
+            else:
+                raise ValueError(f"completed job has later events at {location}")
+        latest[identity] = event
+    if include_job_owners:
+        return latest, job_owners
+    return latest
+
+
+def _open_runtime_receipt(path, *, create):
+    flags = os.O_RDWR | os.O_APPEND | getattr(os, "O_NOFOLLOW", 0)
+    if create:
+        flags |= os.O_CREAT
+    descriptor = os.open(path, flags, 0o600)
+    metadata = os.fstat(descriptor)
+    if not stat.S_ISREG(metadata.st_mode) or metadata.st_nlink != 1:
+        os.close(descriptor)
+        raise ValueError(f"schema-v2 receipt is not a private regular file: {path}")
+    return os.fdopen(descriptor, "a+b", buffering=0)
+
+
+def _fsync_directory(path):
+    descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _submission_failure_reason(error):
+    message = f"{type(error).__name__}: {error}".replace("\x00", "")
+    return message[:4096] or type(error).__name__
+
+
+def _execute_runtime_plan(
+    config,
+    jobs,
+    *,
+    receipt_path,
+    runner,
+    retry_failed_job_ids=(),
+    retry_submission_failures=False,
+):
+    jobs = _validate_runtime_jobs(jobs)
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    requested_retries = tuple(retry_failed_job_ids)
+    if len(requested_retries) != len(set(requested_retries)):
+        raise ValueError("--retry-failed-job-id values must be unique")
+    for index, job_id in enumerate(requested_retries):
+        _validate_slurm_job_id(job_id, location=f"retry_failed_job_ids[{index}]")
+    requested_retries = set(requested_retries)
+    created = not receipt_path.exists()
+    job_ids = []
+    skipped = 0
+    with _open_runtime_receipt(receipt_path, create=True) as receipt:
+        fcntl.flock(receipt.fileno(), fcntl.LOCK_EX)
+        if created:
+            _fsync_directory(receipt_path.parent)
+        latest, job_owners = _load_runtime_receipt_events(
+            receipt,
+            config,
+            jobs,
+            source=receipt_path,
+            include_job_owners=True,
+        )
+        dangling = [
+            job.key
+            for job in jobs
+            if latest.get((job.phase, job.key), {}).get("event") == "submitting"
+        ]
+        if dangling:
+            raise RuntimeError(
+                "unresolved schema-v2 submission intent(s) have no durably "
+                f"recorded Slurm job id; fail closed and inspect Slurm: {dangling}"
+            )
+        failed_by_id = {
+            event["job_id"]: identity
+            for identity, event in latest.items()
+            if event["event"] == "failed"
+        }
+        unknown_retries = requested_retries - set(failed_by_id)
+        if unknown_retries:
+            raise ValueError(
+                "replacement authorization does not name a current failed job: "
+                f"{sorted(unknown_retries)}"
+            )
+
+        for job in jobs:
+            identity = (job.phase, job.key)
+            previous = latest.get(identity)
+            previous_kind = None if previous is None else previous["event"]
+            if previous_kind in {"submitted", "submission_recovered", "completed"}:
+                skipped += 1
+                print(f"{job.key}: already {previous_kind} as {previous['job_id']}")
+                continue
+            if (
+                previous_kind == "failed"
+                and previous["job_id"] not in requested_retries
+            ):
+                skipped += 1
+                print(
+                    f"{job.key}: failed as {previous['job_id']}; replacement "
+                    "requires --retry-failed-job-id"
+                )
+                continue
+            if previous_kind == "submission_failed" and not retry_submission_failures:
+                skipped += 1
+                print(
+                    f"{job.key}: sbatch failed; retry requires "
+                    "--retry-submission-failure"
+                )
+                continue
+
+            if previous is None:
+                attempt = 1
+                authorization = "initial"
+                predecessor = None
+            elif previous_kind == "failed":
+                attempt = previous["attempt"] + 1
+                authorization = "retry_failed_job_id"
+                predecessor = previous["job_id"]
+            else:
+                attempt = previous["attempt"] + 1
+                authorization = "retry_submission_failure"
+                predecessor = previous["predecessor_job_id"]
+            intent = _runtime_event(
+                config,
+                job,
+                event="submitting",
+                attempt=attempt,
+                authorization=authorization,
+                predecessor_job_id=predecessor,
+            )
+            _append_runtime_receipt_event(receipt, intent)
+            try:
+                result = runner(
+                    list(job.command),
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+            except (OSError, subprocess.CalledProcessError) as error:
+                failed = _runtime_event(
+                    config,
+                    job,
+                    event="submission_failed",
+                    attempt=attempt,
+                    authorization=authorization,
+                    predecessor_job_id=predecessor,
+                    scheduler_reason=_submission_failure_reason(error),
+                )
+                _append_runtime_receipt_event(receipt, failed)
+                raise
+            returncode = getattr(result, "returncode", 0)
+            if returncode != 0:
+                error = subprocess.CalledProcessError(
+                    returncode,
+                    list(job.command),
+                    output=getattr(result, "stdout", None),
+                    stderr=getattr(result, "stderr", None),
+                )
+                failed = _runtime_event(
+                    config,
+                    job,
+                    event="submission_failed",
+                    attempt=attempt,
+                    authorization=authorization,
+                    predecessor_job_id=predecessor,
+                    scheduler_reason=_submission_failure_reason(error),
+                )
+                _append_runtime_receipt_event(receipt, failed)
+                raise error
+
+            # A zero exit status means Slurm may already own a real job.  Any
+            # local parsing or duplicate-ID failure after this point must leave
+            # the durable intent dangling for explicit scheduler recovery; it
+            # must never become an automatically retryable submission failure.
+            job_id = _validate_slurm_job_id(
+                getattr(result, "stdout", "").strip(),
+                location=f"sbatch output for {job.key}",
+            )
+            if job_id in job_owners:
+                raise ValueError(
+                    f"sbatch reused already recorded Slurm job id {job_id}"
+                )
+            submitted = _runtime_event(
+                config,
+                job,
+                event="submitted",
+                attempt=attempt,
+                authorization=authorization,
+                job_id=job_id,
+                predecessor_job_id=predecessor,
+            )
+            _append_runtime_receipt_event(receipt, submitted)
+            latest[identity] = submitted
+            job_owners[job_id] = (identity, attempt)
+            job_ids.append(job_id)
+            print(f"{job.key}: {job_id}")
+    print(
+        f"planned_jobs={len(jobs)} submitted_jobs={len(job_ids)} skipped_jobs={skipped}"
+    )
+    return tuple(job_ids)
+
+
+def _query_command(runner, command):
+    try:
+        result = runner(
+            list(command),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return None
+    if getattr(result, "returncode", 0) != 0:
+        return None
+    return getattr(result, "stdout", "")
+
+
+def _split_scheduler_row(line, expected_fields):
+    fields = [field.strip() for field in line.rstrip("\n").split("|")]
+    if fields and fields[-1] == "":
+        fields.pop()
+    if len(fields) != expected_fields:
+        return None
+    return fields
+
+
+def _scheduler_job_record(job_id, *, runner=subprocess.run):
+    """Return scheduler-owned identity fields for an exact non-array job id."""
+
+    query_id = job_id.split(";", 1)[0]
+    sacct_output = _query_command(
+        runner,
+        (
+            "sacct",
+            "-X",
+            "--noheader",
+            "--parsable2",
+            "--jobs",
+            query_id,
+            "--format=JobIDRaw,JobName%128,Account,Partition,State,ExitCode,NodeList,Reason",
+        ),
+    )
+    if sacct_output is not None:
+        for line in sacct_output.splitlines():
+            fields = _split_scheduler_row(line, 8)
+            if fields is None or fields[0] != query_id:
+                continue
+            _, name, account, partition, state, exit_code, nodes, reason = fields
+            if name and account and partition and state:
+                return SchedulerJobRecord(
+                    job_id=job_id,
+                    job_name=name,
+                    account=account,
+                    partition=partition,
+                    state=state,
+                    exit_code=exit_code or None,
+                    nodes=nodes or None,
+                    reason=reason or None,
+                )
+    squeue_output = _query_command(
+        runner,
+        (
+            "squeue",
+            "--noheader",
+            "--jobs",
+            query_id,
+            "--format=%i|%.128j|%a|%P|%T|%N|%R",
+        ),
+    )
+    if squeue_output is not None:
+        for line in squeue_output.splitlines():
+            fields = _split_scheduler_row(line, 7)
+            if fields is None or fields[0] != query_id:
+                continue
+            _, name, account, partition, state, nodes, reason = fields
+            if name and account and partition and state:
+                return SchedulerJobRecord(
+                    job_id=job_id,
+                    job_name=name,
+                    account=account,
+                    partition=partition,
+                    state=state,
+                    nodes=nodes or None,
+                    reason=reason or None,
+                )
+    return None
+
+
+def _sbatch_option(job, option):
+    values = []
+    command = job.command
+    for index, token in enumerate(command):
+        if token == option:
+            if index + 1 >= len(command):
+                raise ValueError(f"planned job {job.key} has no value for {option}")
+            values.append(command[index + 1])
+        elif token.startswith(f"{option}="):
+            values.append(token.split("=", 1)[1])
+    if len(values) != 1 or not values[0]:
+        raise ValueError(f"planned job {job.key} must carry exactly one {option} value")
+    return values[0]
+
+
+def _verify_recovered_scheduler_identity(job, record):
+    expected_name = _sbatch_option(job, "--job-name")
+    expected_account = _sbatch_option(job, "--account")
+    expected_partitions = set(_sbatch_option(job, "--partition").split(","))
+    observed_partitions = set(record.partition.split(","))
+    mismatches = []
+    if record.job_name != expected_name:
+        mismatches.append(f"job_name={record.job_name!r} expected {expected_name!r}")
+    if record.account != expected_account:
+        mismatches.append(f"account={record.account!r} expected {expected_account!r}")
+    if not observed_partitions or not observed_partitions <= expected_partitions:
+        mismatches.append(
+            f"partition={record.partition!r} outside {sorted(expected_partitions)!r}"
+        )
+    if mismatches:
+        raise ValueError(
+            "scheduler job does not match the dangling planned identity: "
+            + "; ".join(mismatches)
+        )
+
+
+def _scheduler_observation(job_id, *, runner=subprocess.run):
+    query_id = job_id.split(";", 1)[0]
+    sacct_output = _query_command(
+        runner,
+        (
+            "sacct",
+            "-X",
+            "--noheader",
+            "--parsable2",
+            "--jobs",
+            query_id,
+            "--format=JobIDRaw,State,ExitCode,Partition,NodeList,Reason",
+        ),
+    )
+    if sacct_output is not None:
+        for line in sacct_output.splitlines():
+            fields = _split_scheduler_row(line, 6)
+            if fields is None or fields[0] != query_id:
+                continue
+            _, raw_state, exit_code, partition, nodes, reason = fields
+            state = _normalized_slurm_state(raw_state)
+            observation = SchedulerObservation(
+                disposition="unknown",
+                state=raw_state or None,
+                exit_code=exit_code or None,
+                partition=partition or None,
+                nodes=nodes or None,
+                reason=reason or None,
+            )
+            if state in SLURM_ACTIVE_STATES:
+                return SchedulerObservation(
+                    **{**observation.__dict__, "disposition": "active"}
+                )
+            if state == "COMPLETED" and exit_code == "0:0":
+                return SchedulerObservation(
+                    **{**observation.__dict__, "disposition": "completed"}
+                )
+            if state in SLURM_FAILED_STATES or (
+                state == "COMPLETED" and exit_code and exit_code != "0:0"
+            ):
+                return SchedulerObservation(
+                    **{**observation.__dict__, "disposition": "failed"}
+                )
+
+    squeue_output = _query_command(
+        runner,
+        (
+            "squeue",
+            "--noheader",
+            "--jobs",
+            query_id,
+            "--format=%i|%T|%P|%N|%R",
+        ),
+    )
+    if squeue_output is not None:
+        for line in squeue_output.splitlines():
+            fields = _split_scheduler_row(line, 5)
+            if fields is None or fields[0] != query_id:
+                continue
+            _, raw_state, partition, nodes, reason = fields
+            if _normalized_slurm_state(raw_state) in SLURM_ACTIVE_STATES:
+                return SchedulerObservation(
+                    disposition="active",
+                    state=raw_state or None,
+                    partition=partition or None,
+                    nodes=nodes or None,
+                    reason=reason or None,
+                )
+    return SchedulerObservation(disposition="unknown")
+
+
+def recover_configured_submission(
+    config,
+    jobs,
+    *,
+    receipt_path,
+    job_id,
+    runner=subprocess.run,
+):
+    """Auditably bind one dangling intent to an operator-supplied Slurm id."""
+
+    if config.data["config_schema_version"] != CANDIDATE_CONFIG_SCHEMA_VERSION:
+        raise ValueError("submission recovery is available only for schema v2")
+    jobs = _validate_runtime_jobs(jobs)
+    receipt_path = _validated_runtime_receipt_path(config, jobs, receipt_path)
+    job_id = _validate_slurm_job_id(job_id, location="recover_submitted_job_id")
+    if not receipt_path.is_file():
+        raise FileNotFoundError(f"schema-v2 receipt does not exist: {receipt_path}")
+    with _open_runtime_receipt(receipt_path, create=False) as receipt:
+        fcntl.flock(receipt.fileno(), fcntl.LOCK_EX)
+        latest, job_owners = _load_runtime_receipt_events(
+            receipt,
+            config,
+            jobs,
+            source=receipt_path,
+            include_job_owners=True,
+        )
+        dangling = [
+            (job, latest[(job.phase, job.key)])
+            for job in jobs
+            if latest.get((job.phase, job.key), {}).get("event") == "submitting"
+        ]
+        if not dangling:
+            matching = [
+                event
+                for event in latest.values()
+                if event.get("job_id") == job_id
+                and event["event"]
+                in {"submitted", "submission_recovered", "completed", "failed"}
+            ]
+            if matching:
+                print(f"job {job_id} was already durably bound; recovery is idempotent")
+                return (job_id,)
+            raise RuntimeError("receipt has no dangling submission intent to recover")
+        if len(dangling) != 1:
+            raise RuntimeError(
+                "receipt has multiple dangling intents; recovery refuses to guess identity"
+            )
+        job, intent = dangling[0]
+        if job_id in job_owners:
+            raise ValueError(
+                f"recovery job id {job_id} is already bound to another attempt"
+            )
+        record = _scheduler_job_record(job_id, runner=runner)
+        if record is None:
+            raise RuntimeError(
+                f"Slurm cannot prove that job {job_id} exists; intent remains dangling"
+            )
+        _verify_recovered_scheduler_identity(job, record)
+        recovered = _runtime_event(
+            config,
+            job,
+            event="submission_recovered",
+            attempt=intent["attempt"],
+            authorization=intent["authorization"],
+            job_id=job_id,
+            predecessor_job_id=intent["predecessor_job_id"],
+            scheduler_state=record.state,
+            scheduler_exit_code=record.exit_code,
+            scheduler_job_name=record.job_name,
+            scheduler_account=record.account,
+            scheduler_partition=record.partition,
+            scheduler_nodes=record.nodes,
+            scheduler_reason=record.reason,
+        )
+        _append_runtime_receipt_event(receipt, recovered)
+    print(f"{job.key}: recovered {job_id} after validating name/account/partition")
+    return (job_id,)
+
+
+def reconcile_configured_plan(
+    config,
+    jobs,
+    *,
+    receipt_path,
+    runner=subprocess.run,
+):
+    """Append actual terminal Slurm facts for submitted schema-v2 jobs."""
+
+    if config.data["config_schema_version"] != CANDIDATE_CONFIG_SCHEMA_VERSION:
+        raise ValueError("runtime reconciliation is available only for schema v2")
+    jobs = _validate_runtime_jobs(jobs)
+    receipt_path = _validated_runtime_receipt_path(config, jobs, receipt_path)
+    if not receipt_path.is_file():
+        raise FileNotFoundError(f"schema-v2 receipt does not exist: {receipt_path}")
+    transitions = []
+    active = 0
+    unknown = []
+    with _open_runtime_receipt(receipt_path, create=False) as receipt:
+        fcntl.flock(receipt.fileno(), fcntl.LOCK_EX)
+        latest = _load_runtime_receipt_events(
+            receipt, config, jobs, source=receipt_path
+        )
+        dangling = [
+            job.key
+            for job in jobs
+            if latest.get((job.phase, job.key), {}).get("event") == "submitting"
+        ]
+        if dangling:
+            raise RuntimeError(
+                "unresolved schema-v2 submission intent has no recorded job id; "
+                f"scheduler recovery is ambiguous and therefore fails closed: {dangling}"
+            )
+        for job in jobs:
+            previous = latest.get((job.phase, job.key))
+            if previous is None or previous["event"] not in {
+                "submitted",
+                "submission_recovered",
+            }:
+                continue
+            observation = _scheduler_observation(previous["job_id"], runner=runner)
+            if observation.disposition == "active":
+                active += 1
+                print(f"{job.key}: {previous['job_id']} remains {observation.state}")
+                continue
+            if observation.disposition == "unknown":
+                unknown.append(previous["job_id"])
+                print(f"{job.key}: {previous['job_id']} scheduler state is unknown")
+                continue
+            event = _runtime_event(
+                config,
+                job,
+                event=observation.disposition,
+                attempt=previous["attempt"],
+                authorization=previous["authorization"],
+                job_id=previous["job_id"],
+                predecessor_job_id=previous["predecessor_job_id"],
+                scheduler_state=observation.state,
+                scheduler_exit_code=observation.exit_code,
+                scheduler_partition=observation.partition,
+                scheduler_nodes=observation.nodes,
+                scheduler_reason=observation.reason,
+            )
+            _append_runtime_receipt_event(receipt, event)
+            transitions.append((previous["job_id"], observation.disposition))
+            print(
+                f"{job.key}: {previous['job_id']} -> {observation.disposition} "
+                f"({observation.state}, {observation.exit_code})"
+            )
+    print(
+        f"reconciled_terminal={len(transitions)} active={active} unknown={len(unknown)}"
+    )
+    if unknown:
+        raise RuntimeError(
+            "Slurm state remained unknown; receipt stays submitted and no "
+            f"replacement is permitted: {unknown}"
+        )
+    return tuple(transitions)
+
+
 def execute_plan(
     jobs,
     *,
@@ -1271,16 +2306,40 @@ def execute_configured_plan(
     jobs,
     *,
     submit=False,
+    scheduler_preflight_only=False,
     receipt_path=None,
     runner=subprocess.run,
     preflight_runner=subprocess.run,
+    retry_failed_job_ids=(),
+    retry_submission_failures=False,
 ):
-    """Execute a plan, fail-closing schema-v2 waves behind Slurm preflight."""
+    """Execute v1, or safely preview the scheduler-only schema-v2 fixture."""
 
-    if submit and config.data["config_schema_version"] == CANDIDATE_CONFIG_SCHEMA_VERSION:
-        if receipt_path is None:
-            raise ValueError("--submit requires an append-only --receipt path")
-        jobs = preflight_plan(jobs, runner=preflight_runner)
+    if config.data["config_schema_version"] == CANDIDATE_CONFIG_SCHEMA_VERSION:
+        if submit:
+            raise RuntimeError(
+                "schema-v2 is scheduler-preview-only because scientific inputs "
+                "are not independently bound; use a dry-run or "
+                "--scheduler-preflight-only"
+            )
+        if retry_failed_job_ids or retry_submission_failures:
+            raise ValueError("schema-v2 preview does not accept retry authorization")
+        if receipt_path is not None:
+            raise ValueError("schema-v2 scheduler preview never accepts --receipt")
+        if scheduler_preflight_only:
+            jobs = preflight_plan(_validate_runtime_jobs(jobs), runner=preflight_runner)
+            print(
+                f"planned_jobs={len(jobs)} scheduler_preflight_jobs={len(jobs)} "
+                "submitted_jobs=0"
+            )
+            return ()
+        return execute_plan(jobs, submit=False, runner=runner)
+    if scheduler_preflight_only:
+        raise ValueError(
+            "--scheduler-preflight-only is reserved for schema-v2 preview configs"
+        )
+    if retry_failed_job_ids or retry_submission_failures:
+        raise ValueError("schema-v2 retry authorization is not valid for schema v1")
     return execute_plan(
         jobs,
         submit=submit,
@@ -1289,21 +2348,86 @@ def execute_configured_plan(
     )
 
 
+def _validate_execution_request(config, args):
+    """Enforce the checked-in v2 authorization boundary before planning or I/O."""
+
+    is_v2 = config.data["config_schema_version"] == CANDIDATE_CONFIG_SCHEMA_VERSION
+    if not is_v2:
+        if args.scheduler_preflight_only:
+            raise ValueError(
+                "--scheduler-preflight-only is reserved for schema-v2 preview configs"
+            )
+        return
+    if args.submit:
+        raise RuntimeError(
+            "schema-v2 is scheduler-preview-only because scientific inputs are "
+            "not independently bound; use a dry-run or "
+            "--scheduler-preflight-only"
+        )
+    if args.reconcile or args.recover_submitted_job_id:
+        raise RuntimeError(
+            "schema-v2 scheduler preview has no real submission to reconcile or recover"
+        )
+    if args.retry_failed_job_id or args.retry_submission_failure:
+        raise RuntimeError("schema-v2 scheduler preview has no attempts to retry")
+    if args.receipt:
+        raise ValueError("schema-v2 scheduler preview never accepts --receipt")
+    if args.phase == "lock" or args.write_lock:
+        raise RuntimeError(
+            "schema-v2 scheduler preview cannot create a scientific campaign lock"
+        )
+
+
 def main(argv=None):
     args = parse_args(argv)
     config = load_config(args.config)
+    _validate_execution_request(config, args)
+    if (args.reconcile or args.recover_submitted_job_id) and (
+        config.data["config_schema_version"] != CANDIDATE_CONFIG_SCHEMA_VERSION
+    ):
+        raise ValueError(
+            "runtime reconciliation/recovery is available only for schema-v2 campaigns"
+        )
+    if (args.retry_failed_job_id or args.retry_submission_failure) and not args.submit:
+        raise ValueError("retry authorization flags require --submit")
+
+    def dispatch(jobs):
+        if args.recover_submitted_job_id:
+            return recover_configured_submission(
+                config,
+                jobs,
+                receipt_path=args.receipt,
+                job_id=args.recover_submitted_job_id,
+            )
+        if args.reconcile:
+            return reconcile_configured_plan(
+                config,
+                jobs,
+                receipt_path=args.receipt,
+            )
+        return execute_configured_plan(
+            config,
+            jobs,
+            submit=args.submit,
+            scheduler_preflight_only=args.scheduler_preflight_only,
+            receipt_path=args.receipt,
+            retry_failed_job_ids=args.retry_failed_job_id,
+            retry_submission_failures=args.retry_submission_failure,
+        )
+
     if args.phase == "freeze":
         if args.artifact_manifest or args.campaign_lock or args.write_lock:
             raise ValueError("freeze phase does not accept lock/artifact inputs")
-        return execute_configured_plan(
-            config,
-            plan_freeze_jobs(config),
-            submit=args.submit,
-            receipt_path=args.receipt,
-        )
+        return dispatch(plan_freeze_jobs(config))
     if args.phase == "lock":
         if args.submit:
             raise ValueError("lock phase never invokes sbatch; omit --submit")
+        if args.reconcile:
+            raise ValueError("lock phase has no scheduler state to reconcile")
+        if args.recover_submitted_job_id:
+            raise ValueError("lock phase has no scheduler submission to recover")
+        if args.retry_failed_job_id or args.retry_submission_failure:
+            raise ValueError("lock phase has no scheduler attempts to retry")
         if args.receipt:
             raise ValueError("lock phase does not submit jobs; omit --receipt")
         if args.campaign_lock:
@@ -1324,28 +2448,24 @@ def main(argv=None):
     if not args.campaign_lock:
         raise ValueError(f"{args.phase} phase requires --campaign-lock")
     if args.phase == "common":
-        return execute_configured_plan(
-            config,
-            plan_common_jobs(config, args.campaign_lock),
-            submit=args.submit,
-            receipt_path=args.receipt,
-        )
+        return dispatch(plan_common_jobs(config, args.campaign_lock))
     if args.phase == "score":
         jobs = plan_score_jobs(config, args.campaign_lock)
     elif args.phase == "assemble":
-        jobs = plan_assemble_jobs(config, args.campaign_lock)
+        jobs = plan_assemble_jobs(
+            config,
+            args.campaign_lock,
+            allow_existing_output=(
+                args.reconcile or bool(args.recover_submitted_job_id)
+            ),
+        )
     else:
         jobs = plan_diagnose_jobs(
             config,
             args.campaign_lock,
             output_root=args.diagnostic_output_root,
         )
-    return execute_configured_plan(
-        config,
-        jobs,
-        submit=args.submit,
-        receipt_path=args.receipt,
-    )
+    return dispatch(jobs)
 
 
 if __name__ == "__main__":
