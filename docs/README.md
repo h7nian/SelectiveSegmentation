@@ -83,7 +83,10 @@ has one canonical append-only receipt; reconciliation appends observed Slurm
 facts, interrupted successful submissions require identity-checked recovery,
 and failed attempts require explicit per-job retry authorization. The sealed v1
 config and receipts remain the original reproduction record for the manuscript
-numbers. The full-byte seal passed on 2026-07-21. The isolated one-image smoke
+numbers. The following schema-v2 execution facts are a local release audit;
+private receipts, job identifiers, node facts, and the completed v2 campaign
+lock are not included in the anonymous artifact. The full-byte seal passed on
+2026-07-21. The isolated one-image smoke
 campaign then completed all seven jobs and terminal receipt gates. The full
 schema-v2 replay subsequently completed 112/112 non-array jobs: 16 freezes, 16
 common-score jobs, 48 scalar-M score jobs, 16 assemblies, and 16 diagnostics.

@@ -300,8 +300,10 @@ Use Python 3.12.4 and install the pinned analysis dependencies:
 python -m pip install -r requirements-analysis.txt
 ```
 
-From this directory, rerun the locked analysis with all records listed
-explicitly (the analyzer rejects an incomplete final campaign):
+From this directory, use Bash 4 or newer and rerun the locked analysis with all
+records listed explicitly (the analyzer rejects an incomplete final campaign).
+The fixed 10,000-resample bootstrap can take several minutes or longer depending
+on CPU and worker count:
 
 ```bash
 mapfile -t inputs < <(find results/assembled -type f -name records.jsonl -print | LC_ALL=C sort)

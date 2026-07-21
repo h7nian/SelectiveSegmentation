@@ -1224,8 +1224,8 @@ def _baseline_table(conditions, *, header):
         r"are columns; each cell gives CLIP-T and DL-T raw AURC $\times100$. The table follows "
         r"the two adjacent geometric steps and includes SDC as the Dice-specific "
         r"reference; the complete 17-score panels are in the appendix. Lower is "
-        r"better. Dark blue marks every exactly lowest unrounded AURC within each "
-        r"displayed condition and risk block.}",
+        r"better. Dark blue marks every exactly lowest unrounded AURC among the "
+        r"methods shown within each condition and risk block.}",
         r"\label{tab:main-results}",
         r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
         r"\resizebox{\textwidth}{!}{%",

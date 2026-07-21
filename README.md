@@ -239,7 +239,7 @@ python -m selectseg.scientific_inputs build-source \
   --output "$SCIENCE_DIR/source.json"
 python -m selectseg.scientific_inputs build-base-models \
   --seed-extension-lock configs/auxiliary/binary_seed_extension-v1.lock.json \
-  --output "$SCIENCE_DIR/base-models.json"
+  --output "$SCIENCE_DIR/base_models.json"
 python -m selectseg.scientific_inputs build-checkpoints \
   --config configs/binary_midpoint_main_v2.json \
   --output "$SCIENCE_DIR/checkpoints.json"
@@ -253,7 +253,7 @@ python -m selectseg.scientific_inputs build-root \
   --dataset-component isic="$SCIENCE_DIR/datasets/isic.json" \
   --dataset-component tn3k="$SCIENCE_DIR/datasets/tn3k.json" \
   --source-component "$SCIENCE_DIR/source.json" \
-  --base-model-component "$SCIENCE_DIR/base-models.json" \
+  --base-model-component "$SCIENCE_DIR/base_models.json" \
   --checkpoint-component "$SCIENCE_DIR/checkpoints.json" \
   --environment-component "$SCIENCE_DIR/environment.json" \
   --output "$SCIENCE_DIR/root.lock.json"
@@ -298,7 +298,8 @@ schema-v2 post-freeze campaign lock. That lock is the sole input authority for
 common, score, assemble, and diagnose jobs; schema-v2 artifacts/schema-v1
 campaign locks remain historical v1 evidence only.
 
-The completed main replay lock has SHA-256
+As a local release audit (not a component of the anonymous review artifact),
+the completed main replay lock has SHA-256
 `eb3d8f4078f482b541e1771ae43c4c87d12be8733904996d770eef19e09f704b`.
 Its 112 non-array jobs comprise 16 freezes, 16 common-score jobs, 48 scalar-M
 score jobs, 16 assemblies, and 16 diagnostics; every receipt is reconciled to
@@ -309,6 +310,13 @@ diagnostic summaries with no hash or row-count mismatch. Against the immutable
 v1 assembled records, all 816 method-by-risk AURCs are exactly equal; the only
 non-provenance row differences are M=32 floating-point roundoff bounded by
 `2.22e-16`.
+
+The anonymous artifact instead exposes the immutable v1 per-image analysis
+records needed to reproduce the manuscript statistics. Private schema-v2
+receipts, job identifiers, node facts, and the completed v2 campaign lock are
+intentionally excluded; the execution counts and partition placement above
+are therefore locally audited operational evidence, not an anonymously
+published scheduler record.
 
 Real schema-v2 submission requires the phase's canonical receipt path. The
 planner fast-verifies the scientific seal, checks all final commands with
@@ -495,7 +503,12 @@ python -m scripts.submit_binary_simulations \
    descriptors when present), source-artifact manifest digest, condition,
    ordered sample-ID digest, and cohort count against the lock. It reports
    Brier, ECE, truth/prediction empty rates, and fixed M32 ladder-diversity
-   summaries per condition without pooling or choosing example images.
+   summaries per condition without pooling or choosing example images. Final
+   mode accepts only the two sealed canonical campaign identities
+   (`binary-midpoint-main-v1` and `binary-midpoint-main-v2`); an unknown or
+   future campaign identity remains fail-closed. The completed schema-v2
+   replay was aggregated from its 16 explicit diagnostics into
+   `outputs/binary_midpoint_main_v2/diagnostics_analysis/`.
 
 7. **Analyze and render.** Once all 16 assembled condition artifacts exist,
    invoke the final analyzer with the immutable lock and all 16 paths listed
@@ -824,6 +837,16 @@ python -m scripts.render_binary_runtime \
 Training-seed robustness is isolated from the seed-0 campaign. The locked
 extension contains exactly five datasets by two target architectures by seeds
 1 and 2, hence 20 one-GPU training jobs.
+
+The historical v1 scheduler is source-sealed and intentionally rejects the
+current working tree, whose data/artifact validators have since been hardened.
+Replay or scheduler forensics for that campaign must use the lightweight tag
+`seed-extension-v1-source` (commit
+`8c7af8ca1715fcf345cd64f33bc159d765911e62`) in a detached worktree, together
+with the original external locks and receipts. All five source files named by
+`binary_seed_extension-v1.lock.json` match that commit byte for byte. The
+commands below document the completed historical campaign; they are not
+instructions to resubmit it from current `main`.
 
 **Historical v1 receipt record (immutable).** The completed v1 extension
 balanced jobs across single `saffo-a100` and `apollo_agate` assignments. Those
@@ -1212,10 +1235,13 @@ retinal vessels.
 
 ### Rebuild the locked analysis from a clean checkout
 
-The shell enumeration below verifies that exactly 16 committed record files
+The shell enumeration below requires Bash 4 or newer (`mapfile` and process
+substitution). It verifies that exactly 16 committed record files
 exist, then passes every path explicitly to the strict analyzer; the analyzer
 itself does not discover inputs. The two `cmp` calls certify exact canonical
-JSON and CSV reproduction.
+JSON and CSV reproduction. The fixed 10,000-resample bootstrap can take several
+minutes or longer depending on CPU and worker count; it writes only small
+analysis outputs, while the included records are read in place.
 
 ```bash
 mapfile -t analysis_inputs < <(
@@ -1241,17 +1267,17 @@ done
 ### Build the anonymous analysis artifact v4
 
 The deterministic builder publishes the byte-exact core needed for the
-16-record analysis and seven canonical tables together with the mandatory
-five-file portable seed release: the public seed analysis, aggregate scheduler
-summary, provenance guard, full `seed_robustness.tex`, and compact Gate-C table.
-The strict seed-release loader validates the three JSON schemas and their
-cross-file joins; the full table must match its provenance hash and source
-comment, while the compact table is independently rebuilt from the public seed
-analysis. The 51 source files produce exactly 54 archive members. Git history,
-external
-URLs, identities, private paths, raw job identifiers, checkpoint bytes, NPZ
-payloads, and submission-receipt contents remain excluded by explicit
-allowlists and fail-closed scans. From this orchestration workspace use:
+16-condition analysis and seven canonical tables together with the portable
+seed release: public analysis, aggregate scheduler summary, provenance guard,
+both seed tables, the path-free replay lock and completion guard, and all 30
+seed-0/1/2 target-condition manifest/record pairs. The strict loaders validate
+the JSON schemas, per-record hashes, cohort joins, and cross-file bindings; the
+full and compact seed tables are independently rebuilt from the released
+records. The 114 explicitly allowlisted source files produce exactly 117
+regular archive members. Git history, external URLs, identities, private
+paths, raw job identifiers, checkpoint bytes, NPZ probability maps, and
+submission-receipt contents remain excluded by explicit allowlists and
+fail-closed scans. From this orchestration workspace use:
 
 ```bash
 python -m scripts.build_anonymous_analysis_artifact build \
@@ -1264,15 +1290,15 @@ python -m scripts.build_anonymous_analysis_artifact verify \
 Inside a clean public clone, replace `--repo-root github` with
 `--repo-root .`. The v4 filename is intentionally distinct from the retained
 v3 artifact, and the builder refuses to overwrite either an existing v4 or any
-other existing destination. The 16-condition core remains analysis
-reproducible from its included per-image records. The seed addition is
-verification-level: its public schemas, cross-file hashes, scheduler closure,
-and rendered tables can be checked, but its per-image analysis cannot be rerun
-because seed records, probability maps, receipts, and checkpoints are not in
-the archive. The artifact therefore makes no claim that training or inference
-can be rerun without the external datasets and model assets. During anonymous
-review, distribute it through the review system without linking the
-identity-bearing public repository.
+other existing destination. The 16-condition core and the complete three-seed
+post-inference statistical analysis are reproducible from the included
+per-image records. Running `python -m scripts.replay_seed_robustness` from the
+extracted archive rebuilds the seed analysis JSON and both TeX tables and
+requires byte-for-byte agreement with the released references. Probability
+maps, raw datasets, checkpoints, training receipts, and model assets remain
+intentionally absent, so the artifact does not claim to rerun training or
+inference. During anonymous review, distribute it through the review system
+without linking the identity-bearing public repository.
 
 ## Verify
 

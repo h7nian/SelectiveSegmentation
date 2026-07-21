@@ -44,7 +44,7 @@ Seven fixed single-map references---SDC, mean maximum probability, mean negative
 entropy, QFR-Entropy, PLM/PLA-10-Entropy, MMMC-Entropy, and foreground
 entropy---give seventeen scores \citep{sdc,guarino2026aggregation,
 holder2021uncertainty}. The three primary indexed scores form a complete
-\(3\times3\) score--risk matrix. Four confirmatory contrasts compare the adjacent
+\(3\times3\) score--risk matrix. Four prespecified primary contrasts compare the adjacent
 steps Dice--nHD under Dice/nHD risk and nHD--nHD95 under nHD/nHD95 risk; all
 nonadjacent or mismatched cells are descriptive. The M-ladder, M128 boundary
 reference, and Dice-Exact audit numerical sensitivity.
@@ -59,8 +59,14 @@ diagnostics examine marginals, action quality, accepted-set agreement, and exact
 but cannot validate a conditional posterior. A 360-cell known-posterior study
 separates numerical from coupling error, while a fixed
 \(\gamma\in\{.3,.7\}\) analysis tests action sensitivity without tuning the
-primary \(\gamma=.5\) action. Appendix~\ref{app:benchmark-protocol} gives their
-complete designs and the predeclared warning rules.
+primary \(\gamma=.5\) action. Before inspecting either auxiliary, we declared a
+comparison threshold-sensitive if its target-condition macro contrast changed
+sign at \(\gamma=.3\) or .7, or if at least three target conditions reversed
+relative to \(\gamma=.5\). We declared a comparison training-sensitive if seed 0
+disagreed with the three-checkpoint majority in any target condition, or if at
+least three conditions reversed across checkpoints. The primary
+\(\gamma=.5\) action and seed-0 checkpoints remain fixed regardless.
+Appendix~\ref{app:benchmark-protocol} gives the complete designs and rules.
 
 We use tie-aware empirical AURC, exactly averaging uniform order within ties.
 Displayed raw AURC, gaps/regrets, and contrasts are multiplied by \(100\); nAURC

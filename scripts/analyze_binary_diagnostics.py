@@ -40,7 +40,12 @@ from selectseg.binary_diagnostics import (  # noqa: E402
 
 ANALYSIS_SCHEMA_VERSION = 1
 ANALYSIS_ARTIFACT_TYPE = "selectseg.binary_diagnostics_analysis"
-EXPECTED_CAMPAIGN_ID = "binary-midpoint-main-v1"
+EXPECTED_CAMPAIGN_IDS = frozenset(
+    {
+        "binary-midpoint-main-v1",
+        "binary-midpoint-main-v2",
+    }
+)
 JSON_NAME = "diagnostics_analysis.json"
 TEX_NAME = "binary_diagnostics.tex"
 EXPECTED_SAMPLE_COUNTS = {
@@ -217,9 +222,10 @@ def _validate_lock_scope(lock, *, allow_incomplete):
     keys = [(item["dataset"], item["condition"]) for item in artifacts]
     observed = set(keys)
     expected = set(EXPECTED_CONDITIONS)
-    if not allow_incomplete and lock["campaign_id"] != EXPECTED_CAMPAIGN_ID:
+    if not allow_incomplete and lock["campaign_id"] not in EXPECTED_CAMPAIGN_IDS:
         raise ValueError(
-            f"canonical diagnostics require campaign_id={EXPECTED_CAMPAIGN_ID!r}"
+            "canonical diagnostics require one of the sealed campaign IDs: "
+            f"{sorted(EXPECTED_CAMPAIGN_IDS)}"
         )
     if (
         lock["estimator"]["estimator_id"] != "midpoint-v1"

@@ -8,33 +8,35 @@ probability. This source intentionally contains no transcribed result values.
 
 \subsection{Immutable campaign and execution graph}
 
-The reproducibility release is accepted only when it contains exactly sixteen
-schema-v2 frozen-map manifests, one for every declared model--dataset condition.
-Each manifest binds the ordered sample identifiers, probability/truth payload,
-cohort and checkpoint metadata, evaluator-source fingerprint, package versions,
-device metadata, and SHA-256 digests. A no-overwrite campaign lock binds those
-sixteen manifests to \(\gamma=0.5\), midpoint \(M\in\{2,8,32\}\), and seed 0.
-Append-only, phase-specific submission receipts record every intended Slurm job
-and its returned job identifier; unresolved submission intent blocks blind
-resubmission.
+The anonymous post-inference release is accepted only when it contains exactly
+sixteen assembled manifest/record pairs, one for every declared
+model--dataset condition, together with the immutable campaign lock, analysis,
+and generated tables. Each path-free assembled manifest binds the condition,
+ordered sample identities, row count, schema, source digest, and record
+SHA-256. The released per-image records are sufficient to recompute every AURC,
+contrast, interval, and table. Probability maps, reference masks, checkpoints,
+submission receipts, job identifiers, and machine metadata are deliberately
+excluded from the anonymous package.
 
-The execution graph separates expensive inference from repeated geometry. One
-GPU \emph{freeze} job per condition writes the immutable native-resolution map
-artifact; every freeze job is eligible on either of two private A100 partitions. One CPU
-\emph{common} job per artifact computes the three observed risks, both raw-pixel
-boundary auxiliaries, and the eight \(M\)-independent scores. Finally, each
-independent pair \((\text{condition},M)\) is one CPU simulation job---48 jobs,
-not a Slurm array---and writes only the Dice, nHD, and nHD95 scores for that
-\(M\). A strict assembler joins one common shard and the three \(M\)-specific
-shards only when schemas, identities, row counts, sample ordering, hashes, and
-campaign bindings agree exactly. This design computes each shared floating-point
-quantity once and lets the three numerical resolutions run in parallel.
+The separately retained local execution audit binds sixteen schema-v3 frozen
+map manifests through a no-overwrite schema-v2 campaign lock. Its graph
+separates expensive inference from repeated geometry: one GPU \emph{freeze}
+job per condition writes the native-resolution map artifact; one CPU
+\emph{common} job computes observed risks, raw-pixel boundary auxiliaries, and
+the \(M\)-independent scores; and each independent
+\((\text{condition},M)\) pair is one CPU score job---48 jobs, not a Slurm
+array. A strict assembler joins one common shard and the three \(M\)-specific
+shards only when schemas, identities, counts, sample ordering, hashes, and lock
+bindings agree. Append-only phase receipts support identity-checked
+reconciliation and block blind resubmission. These private execution records
+validate the pipeline but are not part of the anonymous release.
 
-The manifests, lock, assembled records, diagnostics, and analysis JSON are the
-authoritative computational provenance. They retain checkpoint and source
-hashes plus software/hardware versions; a portable release descriptor adds the
-exact cached CLIPSeg revision, torchvision weight digest, and available
-training-configuration hashes without exporting private execution paths.
+For anonymous statistical reproduction, the assembled records, campaign lock,
+analysis JSON, and generated tables are authoritative. For local inference and
+scheduler forensics, the frozen manifests, scientific-input root, diagnostics,
+receipts, and schema-v2 replay lock provide the additional private provenance.
+The two closures are checked separately rather than implying that private maps
+or scheduler records are distributed to reviewers.
 
 \IfFileExists{Tables/results_complete.tex}{%
   \input{Tables/results_complete.tex}

@@ -123,6 +123,7 @@ def _campaign(
     descriptors=False,
     ece_bins=15,
     offset_base=0,
+    campaign_id="binary-midpoint-main-v1",
 ):
     estimator = _estimator(tmp_path / "config" / "midpoint-v1.json")
     manifests = []
@@ -160,7 +161,7 @@ def _campaign(
         path=tmp_path / "config" / "campaign.json",
         sha256="a" * 64,
         data={
-            "campaign_id": "binary-midpoint-main-v1",
+            "campaign_id": campaign_id,
             "protocol": deepcopy(EXPECTED_PROTOCOL),
             "estimator_spec": str(estimator),
             "paths": {
@@ -239,6 +240,45 @@ def test_exact_16_condition_path_succeeds_when_canonical_counts_are_pinned(
     assert result["campaign"]["num_analyzed_conditions"] == 16
     assert result["campaign"]["complete_predeclared_campaign"] is True
     assert len(result["conditions"]) == 16
+
+
+@pytest.mark.parametrize(
+    "campaign_id",
+    ("binary-midpoint-main-v1", "binary-midpoint-main-v2"),
+)
+def test_canonical_mode_accepts_each_sealed_campaign_id(
+    tmp_path, monkeypatch, campaign_id
+):
+    monkeypatch.setattr(
+        diagnostic_analysis,
+        "EXPECTED_SAMPLE_COUNTS",
+        {dataset: 1 for dataset, _ in EXPECTED_CONDITIONS},
+    )
+    lock, summaries = _campaign(
+        tmp_path,
+        EXPECTED_CONDITIONS,
+        count=1,
+        campaign_id=campaign_id,
+    )
+    result = analyze(lock, summaries)
+    assert result["campaign"]["campaign_id"] == campaign_id
+    assert result["campaign"]["complete_predeclared_campaign"] is True
+
+
+def test_canonical_mode_rejects_an_unsealed_campaign_id(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        diagnostic_analysis,
+        "EXPECTED_SAMPLE_COUNTS",
+        {dataset: 1 for dataset, _ in EXPECTED_CONDITIONS},
+    )
+    lock, summaries = _campaign(
+        tmp_path,
+        EXPECTED_CONDITIONS,
+        count=1,
+        campaign_id="binary-midpoint-main-v3-unsealed",
+    )
+    with pytest.raises(ValueError, match="sealed campaign IDs"):
+        analyze(lock, summaries)
 
 
 def test_explicit_inputs_reject_duplicates_unlocked_conditions_and_wrong_spec(tmp_path):

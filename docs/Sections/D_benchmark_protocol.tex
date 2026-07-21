@@ -203,3 +203,17 @@ unavailable. Equal-tail intervals are pointwise and condition on the fitted
 checkpoint. All 64 fixed contrasts are released without filtering; no
 null-calibrated \(p\)-values, simultaneous intervals, or finite-sample
 family-wise-error guarantees are claimed.
+
+\subsection{Prespecified auxiliary sensitivity rules}
+
+The deployment-threshold check (called Gate B in the locked auxiliary
+artifacts) flags a comparison if its target-condition macro contrast changes
+sign at \(\gamma=.3\) or .7 relative to the primary \(\gamma=.5\) analysis, or
+if at least three of the ten target conditions reverse direction. The
+training-seed check (Gate C in the generated seed artifact) flags a comparison
+if seed 0 disagrees with the three-checkpoint majority in any target condition,
+or if at least three target conditions reverse direction across seeds 0, 1,
+and 2. These are descriptive warning rules fixed before the auxiliary outputs,
+not null-hypothesis tests. A warning changes the prominence and wording of the
+sensitivity result; it never changes the primary action, checkpoint, score, or
+contrast.
