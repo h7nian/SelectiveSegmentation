@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "auxiliary_id": "binary-probability-ensemble-v1",
+  "aggregation": {
+    "training_seeds": [0, 1, 2],
+    "rule": "arithmetic-mean",
+    "accumulator_dtype": "float64",
+    "output_dtype": "float32"
+  },
+  "protocol": {
+    "gamma": 0.5,
+    "m_values": [2, 8, 32],
+    "primary_m": 32,
+    "quadrature_rule": "midpoint-v1"
+  },
+  "scheduler": {
+    "cpu_partition_candidates": [
+      "amdsmall",
+      "agsmall",
+      "msismall",
+      "saffo-2tb"
+    ],
+    "one_experiment_per_job": true,
+    "slurm_arrays": false
+  },
+  "source": {
+    "seed0_campaign_lock": "../outputs/binary_midpoint_main_v2/campaign.lock.json",
+    "seed_extension_provenance": "../outputs/public_seed/seed_provenance.json",
+    "seed_extension_artifact_root": "../outputs/binary_seed_artifacts"
+  },
+  "paths": {
+    "source_lock": "../outputs/binary_probability_ensemble_v1/source.lock.json",
+    "artifact_output_root": "../outputs/binary_probability_ensemble_v1/artifacts",
+    "common_output_root": "../outputs/binary_probability_ensemble_v1/common_scores",
+    "simulation_output_root": "../outputs/binary_probability_ensemble_v1/simulations",
+    "assembly_output_root": "../outputs/binary_probability_ensemble_v1/assembled",
+    "diagnostic_output_root": "../outputs/binary_probability_ensemble_v1/diagnostics"
+  },
+  "conditions": [
+    {"dataset": "pet", "condition": "clipseg-target", "model": "clipseg", "expected_num_samples": 3669},
+    {"dataset": "pet", "condition": "deeplabv3-target", "model": "deeplabv3", "expected_num_samples": 3669},
+    {"dataset": "kvasir", "condition": "clipseg-target", "model": "clipseg", "expected_num_samples": 200},
+    {"dataset": "kvasir", "condition": "deeplabv3-target", "model": "deeplabv3", "expected_num_samples": 200},
+    {"dataset": "fives", "condition": "clipseg-target", "model": "clipseg", "expected_num_samples": 200},
+    {"dataset": "fives", "condition": "deeplabv3-target", "model": "deeplabv3", "expected_num_samples": 200},
+    {"dataset": "isic", "condition": "clipseg-target", "model": "clipseg", "expected_num_samples": 1000},
+    {"dataset": "isic", "condition": "deeplabv3-target", "model": "deeplabv3", "expected_num_samples": 1000},
+    {"dataset": "tn3k", "condition": "clipseg-target", "model": "clipseg", "expected_num_samples": 614},
+    {"dataset": "tn3k", "condition": "deeplabv3-target", "model": "deeplabv3", "expected_num_samples": 614}
+  ],
+  "predeclared_gates": {
+    "brier_improved_condition_count_minimum": 7,
+    "nhd_m32_beats_dice_m32_under_nhd_condition_count_minimum": 9,
+    "boundary_indexed_beats_sdc_condition_count_minimum": 9,
+    "nhd_boundary_minus_sdc_median_gain_x100_minimum": 1.1260571388622096,
+    "nhd95_boundary_minus_sdc_median_gain_x100_minimum": 0.6029231060697553
+  }
+}

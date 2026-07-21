@@ -29,7 +29,10 @@ wandb/
 # Local repository mirrors and audit workspaces
 github/
 overleaf/
-scratch*/
+overleaf_project/
+scratch*
+tmp/
+figures/
 *.sbatch.out
 
 # LaTeX build artifacts (sources and checked-in tables remain visible)

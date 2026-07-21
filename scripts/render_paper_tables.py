@@ -46,24 +46,14 @@ METHODS = {
     "confidence_nhd95_m8": "nHD95-M8",
     "confidence_nhd95_m32": "nHD95-M32",
 }
-MAIN_METHODS_BY_RISK = {
-    "risk_dice": (
-        "confidence_dice_m32",
-        "confidence_nhd_m32",
-        "confidence_sdc",
-    ),
-    "risk_nhd": (
-        "confidence_dice_m32",
-        "confidence_nhd_m32",
-        "confidence_nhd95_m32",
-        "confidence_sdc",
-    ),
-    "risk_nhd95": (
-        "confidence_nhd_m32",
-        "confidence_nhd95_m32",
-        "confidence_sdc",
-    ),
-}
+MAIN_METHODS = (
+    "confidence_dice_m32",
+    "confidence_nhd_m32",
+    "confidence_nhd95_m32",
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+)
 LOSS_INDEXED_M32 = (
     "confidence_dice_m32",
     "confidence_nhd_m32",
@@ -168,9 +158,7 @@ CORE_CONDITIONS = tuple(
     key for key in EXPECTED_CONDITIONS if HOLM_FAMILY_BY_DATASET[key[0]] == "core"
 )
 EXTENSION_CONDITIONS = tuple(
-    key
-    for key in EXPECTED_CONDITIONS
-    if HOLM_FAMILY_BY_DATASET[key[0]] == "extension"
+    key for key in EXPECTED_CONDITIONS if HOLM_FAMILY_BY_DATASET[key[0]] == "extension"
 )
 EXPECTED_HOLM_FAMILY_SIZES = {
     family: len(CONTRASTS)
@@ -1124,9 +1112,7 @@ def _condition_panel_start(condition_name, groups, *, row_label):
         rf"\multicolumn{{{1 + columns}}}{{l}}"
         rf"{{\textit{{{CONDITION_PANEL_LABELS[condition_name]}}}}}" + " \\\\",
         r"\midrule",
-        " & ".join(
-            [row_label, *(DATASET_LABELS[dataset] for dataset, _ in groups)]
-        )
+        " & ".join([row_label, *(DATASET_LABELS[dataset] for dataset, _ in groups)])
         + " \\\\",
         r"\midrule",
     ]
@@ -1215,38 +1201,48 @@ def _table_end(*, resize=True):
 
 
 def _baseline_table(conditions, *, header):
-    groups = _groups(conditions, TARGET_CONDITIONS)
+    panels = _condition_panels(conditions, TARGET_CONDITIONS)
     lines = [
         header.rstrip(),
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{Primary target-adapted results. Methods are rows and datasets "
-        r"are columns; each cell gives CLIP-T and DL-T raw AURC $\times100$. The table follows "
-        r"the two adjacent geometric steps and includes SDC as the Dice-specific "
-        r"reference; the complete 17-score panels are in the appendix. Lower is "
-        r"better. Dark blue marks every exactly lowest unrounded AURC among the "
-        r"methods shown within each condition and risk block.}",
+        r"are columns, with separate CLIP-T and DL-T panels. Every risk block uses "
+        r"the same six confidence methods and reports raw AURC $\times100$. The "
+        r"complete 17-score panels are in the appendix. Lower is better. Dark blue "
+        r"marks every exactly lowest unrounded AURC among the six displayed methods "
+        r"within each model, dataset, and risk block.}",
         r"\label{tab:main-results}",
-        r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
-        r"\resizebox{\textwidth}{!}{%",
-        *_tabular_start(groups, row_label="Confidence method"),
+        r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
     ]
-    for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
-        if risk_index:
-            lines.append(r"\midrule")
-        candidates = MAIN_METHODS_BY_RISK[risk_field]
-        lines.append(
-            rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+    for panel_index, (condition_name, groups) in enumerate(panels):
+        if panel_index:
+            lines.append(r"\par\smallskip")
+        lines.extend(
+            _condition_panel_start(
+                condition_name, groups, row_label="Confidence method"
+            )
         )
-        for method_field in candidates:
-            cells = [
-                _result_cell(
-                    group, risk_field, method_field, candidates, normalized=False
-                )
-                for _, group in groups
-            ]
-            lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
-    lines.extend(_table_end())
+        for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
+            if risk_index:
+                lines.append(r"\midrule")
+            lines.append(
+                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+            )
+            for method_field in MAIN_METHODS:
+                cells = [
+                    _result_number(
+                        condition,
+                        risk_field,
+                        method_field,
+                        MAIN_METHODS,
+                        normalized=False,
+                    )
+                    for _, condition in groups
+                ]
+                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+        lines.extend(_condition_panel_end())
+    lines.extend([r"}", r"\end{table*}", ""])
     return lines
 
 

@@ -1,0 +1,556 @@
+% Legacy core manuscript fragment retained only for provenance.
+% It assumes the theorem environments and notation commands defined in main.tex.
+% Replace the corresponding old sections before including this file, because several
+% labels intentionally retain their old names for cross-reference compatibility.
+
+\begin{abstract}
+Selective segmentation requires more than an accurate mask: a system must also rank
+its predictions by the harm they would incur if accepted. That ranking depends on the
+deployment loss. A confidence useful for Dice need not be useful for a boundary loss,
+and an area-based confidence is not automatically meaningful when the application
+cares about surface error. We formalize this dependence by indexing both selective
+risk and confidence by a bounded, measurable segmentation loss $L$. The ideal score
+is the negative conditional risk of the mask actually deployed,
+$C_L^\star(x)=-\mathbb{E}[L(Y,\widehat Y(x))\mid X=x]$.
+
+The true label posterior needed by this definition is unavailable from a single
+probability map. We therefore introduce the level-set law as an explicit
+\emph{working posterior}: draw one threshold $T\sim\mathrm{Unif}(0,1)$ and set
+$Y_T=\{i:p_i\geq T\}$. Under this stated model, expected loss is exactly the
+one-dimensional integral $\int_0^1 L(Y_t,\widehat Y)\,dt$, which yields a common
+$M$-point quadrature estimator for any such loss. We separate its two sources of
+error: a deterministic quadrature term, bounded by $V(H_x)/(2M)$ for midpoint
+quadrature, and a loss-specific discrepancy between the working and true posteriors.
+Thus the numerical approximation can be controlled without claiming that the
+working posterior is the true one.
+
+For Dice, the framework estimates an expectation of a ratio. Soft Dice Confidence
+(SDC), its closest predecessor, is instead a ratio of expectations. We give their
+exact relationship, a finite counterexample showing that they generally differ, and
+clarify that their probabilistic assumptions are not ordered: our construction is
+more general in the deployment loss, but not uniformly weaker in its assumptions.
+The result is a loss-indexed formulation of post-hoc, image-level confidence that
+keeps the deployed decision, the evaluation risk, and the confidence score explicit.
+\end{abstract}
+
+\section{Introduction}
+
+A segmentation system deployed with human oversight must decide which predictions
+can be accepted and which should be deferred. Average test accuracy does not answer
+this question. Two systems with the same average Dice can have very different value
+if one reliably sends its failures to a human and the other assigns those failures
+high confidence. Selective prediction captures this requirement: a fixed model emits
+a prediction $\widehat Y(x)$ and an image-level confidence $g(x)$; predictions are
+accepted from high to low confidence, and the induced ranking is evaluated through a
+risk--coverage curve \cite{selectivenet,feng,jaeger}.
+
+The risk in that curve is application-dependent. In segmentation, Dice and IoU
+measure overlap, whereas surface Dice, average symmetric surface distance, and
+HD95 measure boundary behavior. The distinction is operational rather than
+terminological. Moving a small component far from the target can change little in
+overlap while producing a large surface error; a spatially diffuse boundary error can
+have the opposite profile. Consequently, a confidence score cannot be called
+``correct'' without specifying the loss under which accepted predictions are judged.
+
+Most single-pass post-hoc scores aggregate a per-pixel quantity such as maximum
+probability or entropy. Systematic studies have shown that aggregation is itself a
+major design choice \cite{values,zenk}. Soft Dice Confidence (SDC) takes a more direct
+route: it aligns confidence with the Dice objective and provides an efficient
+Dice-specific marginal surrogate \cite{sdc}. Its success motivates a broader
+question:
+
+\begin{quote}
+Can the same metric-alignment principle produce a post-hoc confidence for an
+arbitrary bounded segmentation loss, while making clear what posterior assumptions are
+required?
+\end{quote}
+
+We answer this question by separating three objects that are often conflated.
+First, the \emph{deployed action} $\widehat Y(x)$ is the mask that will actually be
+accepted or rejected. It may be obtained with a threshold of $0.5$, a threshold of
+$0.3$, an argmax, or a fixed post-processing pipeline; the theory assigns no special
+status to one decision rule. Second, the \emph{deployment loss} $L$ specifies what a
+bad accepted prediction means. Third, a distribution over possible labels is needed
+to evaluate the conditional risk of the deployed action before its label is observed.
+
+The first two objects are specified by the task. The third is not supplied by a
+standard segmentation network: a probability map gives one number per pixel but not
+the joint distribution of an entire mask. We use a classical random-set construction
+as an explicit working model. A single uniform threshold applied to the probability
+map generates a nested family of candidate masks. This construction preserves the
+map as its one-pixel coverage function and turns expected loss into a one-dimensional
+threshold integral \cite{goodman,molchanov}. We do not claim that the resulting law
+is the true label posterior. Its role is analogous to that of a working likelihood:
+it makes the assumed dependence structure visible and produces a computable target.
+
+This perspective gives a simple loss-indexed estimator. For selected nodes $t_m$ and
+weights $w_m$,
+\begin{equation*}
+  C_{L,M}(x)
+  =-\sum_{m=1}^M w_m L\!\left(Y_{t_m},\widehat Y(x)\right).
+\end{equation*}
+Only $L$ changes between an overlap confidence and a boundary confidence. Every
+candidate label is compared with the same deployed mask; pairwise dispersion among
+candidate labels is a different estimand.
+
+The formulation also prevents an overly strong interpretation of numerical
+convergence. Increasing $M$ improves the approximation of expected loss under the
+working posterior. It cannot repair a miscalibrated probability map or an incorrect
+joint model. We make this separation explicit with a total error bound containing a
+quadrature term and a loss-specific posterior discrepancy. The latter is deliberately
+weaker than requiring the two complete posteriors to be close in total variation: for
+selective prediction, only their expected loss for the action actually deployed is
+directly relevant.
+
+Our contributions are:
+\begin{enumerate}
+\item We define loss-indexed selective risk $\AURC_L$ and its Bayes-optimal
+image-level confidence $C_L^\star$. This makes the deployment loss and deployed mask
+part of the problem statement rather than implicit evaluation choices.
+\item We introduce a unified level-set risk estimator for any bounded, measurable
+segmentation loss with an explicit empty-set convention. Under the level-set working
+posterior its target is exact, and midpoint quadrature has a deterministic
+$O(1/M)$ error bound. A separate discrepancy term states precisely what must be
+assumed for proximity to the true ideal confidence.
+\item We establish the exact relationship to SDC. SDC is a ratio of expected Dice
+components and therefore depends only on pixel marginals; the level-set Dice score is
+an expected Dice and depends on a joint law. Neither estimator's probabilistic
+assumptions imply the other's.
+\end{enumerate}
+
+The contribution is therefore not a claim that one posterior model is universally
+correct, nor that one confidence must dominate for every risk. It is a framework for
+constructing and testing a sharper claim: a confidence should be indexed by the loss
+used to evaluate selective decisions.
+
+\section{Loss-indexed selective segmentation}\label{sec:setup}
+
+\paragraph{Prediction and loss.}
+Let $(X,Y)$ be an image and its binary segmentation mask, drawn from an unknown
+distribution. A fixed segmentation system returns a probability map
+$p(X)\in[0,1]^N$ and a deployed hard prediction $\Yhat(X)$. For example,
+$\Yhat(X)=\{i:p_i(X)\geq\gamma\}$ for a fixed binary decision threshold $\gamma$,
+but all definitions below apply to any deterministic deployed decision rule.
+
+Let $L_x(A,B)$ be the loss incurred when $B$ is deployed and $A$ is the label. We
+assume that $L_x$ is measurable and bounded,
+\begin{equation}\label{eq:bounded-assumption}
+  0\leq L_x(A,B)\leq D_x<\infty.
+\end{equation}
+We suppress the subscript $x$ when no ambiguity arises. Boundedness is automatic for
+$1-\Dice$ and $1-\IoU$. A surface loss that is undefined for an empty mask must be
+extended before it enters the framework; for example, one can assign a one-sided
+empty comparison the image diagonal. The choice is part of the definition of $L$ and
+must be shared by the confidence computation and the selective-risk evaluation.
+
+\paragraph{Risk and coverage are loss-indexed.}
+A confidence $g:\mathcal X\to\mathbb R$ is oriented so that larger values mean more
+confident predictions. At threshold $\tau$, define
+\begin{equation}\label{eq:risk-coverage}
+\begin{split}
+  \mathrm{cov}_g(\tau)
+  &=\Prb\!\left(g(X)\geq\tau\right),\\
+  R_L(\tau;g)
+  &=\frac{\Ex\!\left[
+      L(Y,\Yhat(X))\mathbf 1\{g(X)\geq\tau\}
+    \right]}
+    {\Prb(g(X)\geq\tau)} .
+\end{split}
+\end{equation}
+Randomization within a tied confidence level can be used to attain any desired
+coverage. Writing $R_L(c;g)$ for the resulting risk at coverage $c$, the
+loss-indexed area under the risk--coverage curve is
+\begin{equation}\label{eq:aurc-l}
+  \AURC_L(g)=\int_0^1 R_L(c;g)\,dc .
+\end{equation}
+% TODO(citation): add a canonical primary reference for the risk--coverage/AURC
+% definition used in selective prediction.
+The subscript is essential: $\AURC_{1-\Dice}$ and $\AURC_{\HDF}$ evaluate different
+orderings of harm and have different units. Raw values should not be averaged across
+heterogeneous losses without an explicit normalization.
+
+In a finite evaluation set, sorting images by $g$ and averaging the loss over the top
+$k$ predictions gives the empirical risk at coverage $k/n$. Consequently,
+\begin{equation}\label{eq:rank}
+  \AURC_L(g)\text{ depends on }g\text{ only through its induced ranking,}
+\end{equation}
+up to the stated tie rule. Any strictly increasing transformation of $g$ gives the
+same empirical AURC.
+
+\paragraph{Ideal confidence.}
+Before observing the label, the relevant quantity is the conditional risk of the
+mask actually deployed.
+\begin{definition}[Ideal loss-indexed confidence]\label{def:ideal}
+For a fixed deployed predictor $\Yhat$, define
+\begin{equation}\label{eq:ideal}
+  \rho_L^\star(x)
+  :=\Ex\!\left[L(Y,\Yhat(x))\mid X=x\right],
+  \qquad
+  C_L^\star(x):=-\rho_L^\star(x).
+\end{equation}
+\end{definition}
+If the deployment threshold changes from $\gamma=0.5$ to $\gamma=0.3$, then
+$\Yhat$ changes and so does $C_L^\star$. The confidence is decision-aware; it is not
+only a property of the uncertainty distribution.
+
+\begin{proposition}[Optimal selective ordering]\label{prop:ideal-ranking}
+Among all acceptance rules measurable with respect to $X$, accepting images in
+increasing order of $\rho_L^\star(X)$ minimizes selective risk at every coverage,
+up to randomization among ties. Equivalently, ranking by $C_L^\star$ produces a
+pointwise optimal risk--coverage curve and hence minimizes $\AURC_L$.
+\end{proposition}
+\begin{proof}
+For an acceptance function $a(X)\in[0,1]$ with $\Ex[a(X)]=c$, conditioning on $X$
+gives
+\begin{equation*}
+  \Ex\!\left[L(Y,\Yhat(X))a(X)\right]
+  =\Ex\!\left[\rho_L^\star(X)a(X)\right].
+\end{equation*}
+If an accepted point has larger conditional risk than a rejected point, exchanging
+an equal amount of acceptance probability between them weakly decreases the
+objective while preserving coverage. Repeating this exchange yields a threshold on
+$\rho_L^\star$, with randomization only at a tied threshold. Division by the fixed
+coverage $c$ proves the risk statement; integration over $c$ proves the AURC
+statement.
+\end{proof}
+
+Definition~\ref{def:ideal} is a target, not an available score. It requires the full
+conditional law of $Y$ given $x$. A standard probability map provides at most
+estimates of the pixel marginals
+$q_i(x)=\Prb(Y_i=1\mid X=x)$; those marginals do not identify how pixels vary jointly,
+and nonlinear losses such as Dice and HD95 depend on that joint structure. The next
+section makes one working choice explicit.
+
+\section{Level-set risk framework}\label{sec:framework}
+
+\subsection{An explicit working posterior}\label{sec:posterior}
+
+For a fixed image, write $p=(p_1,\ldots,p_N)$. We use a shared random threshold to
+construct a law over masks.
+
+\begin{definition}[Level-set working posterior $Q_p$]\label{def:levelset}
+Let $T\sim\mathrm{Unif}(0,1)$ and define
+\begin{equation}\label{eq:levelset}
+  Y_T=\{i:p_i\geq T\},
+  \qquad
+  Y_t=\{i:p_i\geq t\}.
+\end{equation}
+The distribution of $Y_T$ is denoted by $Q_p$.
+\end{definition}
+
+This construction has two immediate properties:
+\begin{equation}\label{eq:levelset-marginals}
+  \Prb_{Q_p}(i\in Y_T)=p_i,
+  \qquad
+  \Prb_{Q_p}(i,j\in Y_T)=\min(p_i,p_j).
+\end{equation}
+Thus $p$ is exactly the one-pixel coverage function of $Q_p$, while the common
+threshold selects the comonotone coupling of those marginals. Samples are nested:
+if $s<t$, then $Y_t\subseteq Y_s$. The object is a classical coverage-function
+random set \cite{goodman,molchanov}; related shared-level constructions are used for
+uncertain contours \cite{poethkow,bolin}.
+
+Equation~\eqref{eq:levelset-marginals} is an identity internal to $Q_p$, not evidence
+that $p_i$ equals the true marginal $q_i$ or that the true labels are comonotone.
+Calling $Q_p$ a working posterior is meant to keep this distinction visible. It is
+attractive because it generates spatially coherent, nested candidates at negligible
+sampling cost. It can be inaccurate when real ambiguity changes topology, moves
+several components independently, or is poorly represented by the probability map.
+
+\subsection{Expected loss as a threshold integral}
+
+\begin{proposition}[Threshold-integral risk]\label{prop:integral}
+For any loss satisfying \eqref{eq:bounded-assumption},
+\begin{equation}\label{eq:integral}
+  r_{L,Q}(x)
+  :=\Ex_{Y\sim Q_{p(x)}}\!\left[L(Y,\Yhat(x))\right]
+  =\int_0^1 L(Y_t,\Yhat(x))\,dt .
+\end{equation}
+\end{proposition}
+\begin{proof}
+By Definition~\ref{def:levelset}, a draw $Y\sim Q_p$ is $Y_T$ with
+$T\sim\mathrm{Unif}(0,1)$. Taking the expectation over $T$ gives the integral.
+Boundedness implies integrability.
+\end{proof}
+
+The proposition is exact for the stated working posterior and does not depend on a
+particular algebraic form of $L$. For example, one may insert $1-\Dice$, $1-\IoU$,
+a bounded surface distance, or a task-specific asymmetric cost. This is the sense in
+which the framework is loss-general. It does not say that the integral equals the
+true conditional risk.
+
+Let
+\begin{equation*}
+  H_{L,x}(t):=L(Y_t,\Yhat(x)).
+\end{equation*}
+For nodes $t_m\in(0,1)$ and nonnegative weights $w_m$ with
+$\sum_m w_m=1$, define
+\begin{equation}\label{eq:quad}
+  r_{L,M}(x)=\sum_{m=1}^M w_m H_{L,x}(t_m),
+  \qquad
+  C_{L,M}(x)=-r_{L,M}(x).
+\end{equation}
+Every candidate mask is compared with the fixed deployed prediction $\Yhat(x)$.
+By contrast, averaging $L(Y_{t_m},Y_{t_n})$ over pairs of level sets estimates
+posterior dispersion; it does not estimate the conditional risk of the deployed
+action in Definition~\ref{def:ideal}.
+
+A simple parameter-free numerical rule is equal-width midpoint quadrature,
+\begin{equation}\label{eq:midpoint-nodes}
+  t_m=\frac{m-1/2}{M},
+  \qquad
+  w_m=\frac1M,
+  \qquad m=1,\ldots,M.
+\end{equation}
+Here ``parameter-free'' means that the nodes are fixed by the numerical rule once
+$M$ is chosen; it does not mean that midpoint nodes are optimal for AURC or for every
+finite-$M$ integrand.
+
+For a finite image, $H_{L,x}$ is a bounded step function: its value changes only
+when $t$ crosses a distinct value in $p(x)$. It therefore has finite total variation
+$V(H_{L,x})$. The one-dimensional Koksma bound for the midpoint rule gives
+\begin{equation}\label{eq:koksma}
+  \left|r_{L,M}(x)-r_{L,Q}(x)\right|
+  \leq \frac{V(H_{L,x})}{2M}.
+\end{equation}
+% TODO(citation): add a primary reference for the one-dimensional
+% Koksma--Hlawka inequality and midpoint star discrepancy 1/(2M).
+This proves convergence to the working-posterior risk as $M$ grows. It does not
+provide a uniform numerical guarantee unless $V(H_{L,x})$ is itself controlled, and
+it does not imply that empirical AURC improves monotonically with $M$.
+
+\subsection{Numerical error and posterior discrepancy}\label{sec:error}
+
+Let $P_x=\Prb(Y\in\cdot\mid X=x)$ denote the true label posterior and define the
+loss-specific discrepancy for the deployed action
+\begin{equation}\label{eq:loss-discrepancy}
+  \Delta_{L,\Yhat}(x)
+  :=\left|
+  \Ex_{Y\sim P_x}L(Y,\Yhat(x))
+  -\Ex_{Y\sim Q_{p(x)}}L(Y,\Yhat(x))
+  \right|.
+\end{equation}
+This quantity asks only whether the two posteriors agree on the expected loss of the
+action being scored. It is weaker than requiring the full distributions to be close.
+For example, if
+$\mathrm{TV}(P_x,Q_{p(x)})\leq\delta_x$, with total variation defined as the
+supremum over events, then boundedness gives the sufficient but potentially loose
+bound
+\begin{equation}\label{eq:tv-sufficient}
+  \Delta_{L,\Yhat}(x)\leq D_x\delta_x.
+\end{equation}
+The converse need not hold: two posteriors can disagree strongly on events irrelevant
+to the chosen loss and action while having zero discrepancy in
+\eqref{eq:loss-discrepancy}.
+
+\begin{proposition}[Conditional total-error bound]\label{prop:total-bound}
+For midpoint quadrature and any bounded measurable $L$,
+\begin{equation}\label{eq:decomp}
+  \left|C_{L,M}(x)-C_L^\star(x)\right|
+  \leq
+  \frac{V(H_{L,x})}{2M}
+  +\Delta_{L,\Yhat}(x).
+\end{equation}
+Consequently, under the stronger sufficient condition
+$\mathrm{TV}(P_x,Q_{p(x)})\leq\delta_x$, the second term may be replaced by
+$D_x\delta_x$.
+\end{proposition}
+\begin{proof}
+Negating risks does not change their absolute difference. Insert the
+working-posterior risk $r_{L,Q}(x)$ between $r_{L,M}(x)$ and the true conditional
+risk, apply the triangle inequality, then use \eqref{eq:koksma} and
+\eqref{eq:loss-discrepancy}. Equation~\eqref{eq:tv-sufficient} gives the final
+statement.
+\end{proof}
+
+The bound exposes an irreducible distinction. Increasing $M$ can make the first term
+arbitrarily small. It does not change $p$, the coupling selected by $Q_p$, or the
+second term. Perfect marginal calibration alone also does not make the second term
+zero for a non-additive loss: multiple joint posteriors can share the same calibrated
+marginals and assign different probabilities to whole masks.
+
+For AURC, numerical accuracy matters through ordering. If an available bound
+$\varepsilon_i$ satisfies
+$|r_{L,M}(x_i)-\rho_L^\star(x_i)|\leq\varepsilon_i$, then the order of two images is
+certified whenever
+\begin{equation}\label{eq:ranking-margin}
+  r_{L,M}(x_j)-r_{L,M}(x_i)>\varepsilon_i+\varepsilon_j.
+\end{equation}
+Small pointwise error does not certify pairs whose conditional risks are nearly tied.
+This is why a quadrature bound should not be presented as an AURC bound without an
+additional margin argument.
+
+\section{Dice instantiation and relation to SDC}\label{sec:theory}
+
+For binary masks, define
+\begin{equation}\label{eq:dice-definition}
+  \Dice(A,B)=\frac{2|A\cap B|}{|A|+|B|},
+\end{equation}
+with $\Dice(\varnothing,\varnothing)=1$ and Dice equal to zero when exactly one mask
+is empty. The loss $L_{\Dice}=1-\Dice$ lies in $[0,1]$. The framework gives
+\begin{equation}\label{eq:levelset-dice}
+\begin{split}
+  C_{\Dice,M}(x)
+  &:=-\sum_{m=1}^M w_m
+      \left[1-\Dice(Y_{t_m},\Yhat)\right],\\
+  1+C_{\Dice,M}(x)
+  &=\sum_{m=1}^M w_m\Dice(Y_{t_m},\Yhat).
+\end{split}
+\end{equation}
+Thus $1+C_{\Dice,M}$ is a quadrature estimate of expected Dice under $Q_p$ and is
+rank-equivalent to the loss-oriented confidence.
+
+For the ratio algebra below, assume that the deployed mask is nonempty, so the Dice
+denominator is positive for every possible $Y$. Empty deployed masks remain covered
+by the conventions above but require carrying the separately defined $0/0$ case
+rather than treating Dice as an ordinary ratio.
+
+SDC instead computes the soft Dice between $p$ and the deployed binary mask,
+\begin{equation}\label{eq:sdc}
+  \SDC(p,\Yhat)
+  =\frac{2\sum_i p_i\hat y_i}
+  {\sum_i p_i+\sum_i\hat y_i},
+  \qquad
+  \hat y_i=\mathbf 1\{i\in\Yhat\}.
+\end{equation}
+The degenerate zero-denominator case requires the same explicit empty convention as
+Dice. In the nonempty setting just stated, SDC has the following exact interpretation.
+
+\begin{proposition}[SDC is a ratio of expected Dice components]\label{prop:sdc}
+Let $Q$ be any distribution over binary masks with pixel marginals
+$\Ex_Q[Y_i]=p_i$. Define
+\begin{equation*}
+  N(Y)=2\sum_iY_i\hat y_i,
+  \qquad
+  D(Y)=\sum_iY_i+\sum_i\hat y_i.
+\end{equation*}
+Then
+\begin{equation}\label{eq:sdc-ratio-expectations}
+  \frac{\Ex_Q[N(Y)]}{\Ex_Q[D(Y)]}
+  =\SDC(p,\Yhat).
+\end{equation}
+The value on the right is therefore invariant to the coupling among pixels once the
+marginals are fixed.
+\end{proposition}
+\begin{proof}
+Both $N$ and $D$ are affine in $Y$. Hence
+$\Ex_Q[N]=2\sum_i p_i\hat y_i$ and
+$\Ex_Q[D]=\sum_i p_i+\sum_i\hat y_i$, irrespective of higher-order dependence.
+\end{proof}
+
+Proposition~\ref{prop:sdc} does not make expected Dice coupling-invariant. Expected
+Dice is an expectation of a ratio,
+\begin{equation}\label{eq:expected-ratio}
+  \Ex_Q[\Dice(Y,\Yhat)]
+  =\Ex_Q\!\left[\frac{N(Y)}{D(Y)}\right],
+\end{equation}
+whereas SDC is the ratio in \eqref{eq:sdc-ratio-expectations}. In general,
+\begin{equation}\label{eq:ratio-noncommute}
+  \Ex_Q\!\left[\frac{N(Y)}{D(Y)}\right]
+  \neq
+  \frac{\Ex_Q[N(Y)]}{\Ex_Q[D(Y)]}.
+\end{equation}
+
+The distinction appears with only two pixels. Let
+$p=(1/2,1/2)$ and $\Yhat=\{1\}$. If the two label pixels are independent, direct
+enumeration gives
+\begin{equation*}
+  \Ex_{Q_{\mathrm{ind}}}[\Dice(Y,\Yhat)]=\frac{5}{12}.
+\end{equation*}
+Under the level-set coupling, $Y$ is either $\{1,2\}$ or $\varnothing$, each with
+probability $1/2$, so
+\begin{equation*}
+  \Ex_{Q_p}[\Dice(Y,\Yhat)]=\frac13.
+\end{equation*}
+In both cases the marginals are $p$, and
+$\SDC(p,\Yhat)=1/2$. The expected Dice under the two couplings and SDC are three
+different quantities.
+
+\paragraph{What each approximation assumes.}
+Computing SDC requires no explicit joint posterior: equation~\eqref{eq:sdc} is a
+function of $(p,\hat y)$ alone. Interpreting it as an approximation to the true ideal
+expected Dice requires more. The pixel scores must represent the relevant marginals,
+and the random denominator in \eqref{eq:expected-ratio} must concentrate sufficiently
+for a ratio of expectations to approximate an expectation of a ratio. Conditional
+pixel independence is a sufficient concentration regime used in the analysis of SDC
+\cite{sdc}; it is not required merely to evaluate the SDC formula.
+
+The level-set estimator makes a different trade. It evaluates expected Dice exactly
+under the explicit comonotone working posterior $Q_p$ in the dense-quadrature limit.
+Its connection to the true ideal confidence requires the loss-specific discrepancy
+in \eqref{eq:loss-discrepancy} to be small. This is a statement about the joint law,
+not only the marginals.
+
+The assumptions are not ordered. If the true labels are conditionally independent
+Bernoulli pixels with nondegenerate marginals, an independence-based concentration
+argument may be appropriate while $Q_p$ can be far from the true posterior. If the
+true label is generated by one shared threshold, then $Q_p$ is exact while conditional
+independence fails except in degenerate cases. Neither example implies the other.
+
+The correct comparison is therefore:
+\begin{itemize}
+\item SDC is Dice-specific, marginal-only, and computationally closed form. Its
+ratio-of-expectations target can approximate ideal expected Dice under suitable
+calibration and concentration.
+\item The level-set construction is indexed by a general bounded loss and retains an
+explicit joint working model. It estimates expectation of the chosen loss under that
+model, with a separate posterior-discrepancy term.
+\end{itemize}
+Our framework generalizes the \emph{loss-indexed principle} beyond Dice; it neither
+contains SDC as a literal special case nor has uniformly weaker probabilistic
+assumptions.
+
+\section{Limitations}\label{sec:limitations}
+
+\paragraph{The working posterior is not identified by a probability map.}
+The shared-threshold construction selects one coupling from many with the same pixel
+marginals. Marginal calibration, even if exact, does not identify the expected value
+of a nonlinear geometric loss. Validating the coupling requires repeated labels for
+the same image or another source of information about annotation variability; a
+single reference mask per image cannot separate marginal calibration error from
+dependence-model error.
+
+\paragraph{The loss convention is substantive.}
+Dice is naturally bounded, but surface distances are undefined when one mask is empty.
+Assigning the image diagonal, a fixed cap, or another application cost produces
+different valid losses and can change the induced ranking. The convention must be
+chosen from deployment semantics and declared before evaluation. Dropping undefined
+cases changes the evaluated population and should be treated as a sensitivity
+analysis rather than a silent implementation detail.
+
+\paragraph{Quadrature control is not posterior control.}
+The bound in \eqref{eq:decomp} separates these terms but does not make either small by
+assertion. Total variation bounds are usually unavailable, the loss-specific
+discrepancy must be supported empirically or stated as an assumption, and
+$V(H_{L,x})/(2M)$ can be loose. A larger $M$ is guaranteed to improve the worst-case
+midpoint approximation rate to the $Q_p$ integral, not to improve AURC monotonically
+on a finite dataset.
+
+\paragraph{Probability-map-only confidence misses information absent from the map.}
+If two cases produce the same $(p,\Yhat)$, every deterministic score in this framework
+assigns them the same confidence, even if external context makes one more likely to be
+wrong. Confidently wrong, sharply delineated predictions remain a general failure
+mode. Features, auxiliary failure predictors, ensembles, or distribution-shift
+detectors can add information but lie outside the single-map post-hoc setting studied
+here.
+
+\paragraph{Scope.}
+The formulation above is written for binary masks to isolate the relationship among
+the deployed action, the loss, and the score. Extensions beyond this binary setting
+require additional label-space and aggregation choices and are outside the present
+scope. Finally, AURC evaluates ranking; it does not imply that the numerical value of
+$C_{L,M}$ is calibrated as a probability or as an absolute forecast of loss.
+
+\section{Conclusion}
+
+Selective segmentation confidence is meaningful only relative to a deployed mask and
+a deployment loss. We defined the corresponding ideal confidence, represented a
+classical level-set construction as an explicit working posterior, and obtained a
+single quadrature form for any bounded measurable segmentation loss. The resulting
+theory makes two errors visible rather than conflating them: numerical approximation
+of the working-posterior integral and disagreement between that posterior and the true
+label law. Dice illustrates why the distinction matters. Expected Dice under the
+level-set law and SDC's ratio of expected components are different estimands with
+incomparable probabilistic assumptions. This loss-indexed view supports a direct
+experimental question: how do confidence scores induced by different losses rank
+predictions under the corresponding and cross-matched selective risks?

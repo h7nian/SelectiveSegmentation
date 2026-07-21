@@ -9,7 +9,19 @@ SELECTSEG_TMPDIR=$(mktemp -d "/tmp/selectseg-${SLURM_JOB_ID:-local}.XXXXXX")
 export TMPDIR="$SELECTSEG_TMPDIR"
 
 module load python3/3.12.4_anaconda2024.06-1_libmamba
-source "$REPO_ROOT/.venv/bin/activate"
+
+# A standalone clone owns its environment directly.  The development workspace
+# keeps the publishable clone in ``github/`` and shares the parent environment;
+# support both layouts explicitly and fail closed everywhere else.
+if [[ -f "$REPO_ROOT/.venv/bin/activate" ]]; then
+  SELECTSEG_VENV="$REPO_ROOT/.venv"
+elif [[ -f "$REPO_ROOT/../.venv/bin/activate" ]]; then
+  SELECTSEG_VENV="$(cd "$REPO_ROOT/../.venv" && pwd)"
+else
+  echo "selectseg virtual environment not found" >&2
+  exit 1
+fi
+source "$SELECTSEG_VENV/bin/activate"
 export PYTHONPATH="$REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
 
 # Keep model caches inside the repo so jobs never touch the network.

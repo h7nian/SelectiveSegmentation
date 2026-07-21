@@ -3,31 +3,71 @@
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Primary target-adapted results. Methods are rows and datasets are columns; each cell gives CLIP-T and DL-T raw AURC $\times100$. The table follows the two adjacent geometric steps and includes SDC as the Dice-specific reference; the complete 17-score panels are in the appendix. Lower is better. Dark blue marks every exactly lowest unrounded AURC among the methods shown within each condition and risk block.}
+\caption{Primary target-adapted results. Methods are rows and datasets are columns, with separate CLIP-T and DL-T panels. Every risk block uses the same six confidence methods and reports raw AURC $\times100$. The complete 17-score panels are in the appendix. Lower is better. Dark blue marks every exactly lowest unrounded AURC among the six displayed methods within each model, dataset, and risk block.}
 \label{tab:main-results}
-{\scriptsize\setlength{\tabcolsep}{3pt}%
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{l*{5}{c}}
+{\scriptsize\setlength{\tabcolsep}{2pt}%
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
 \toprule
+\multicolumn{6}{l}{\textit{CLIPSeg target (CLIP-T)}} \\
+\midrule
 Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
 \multicolumn{6}{l}{\textit{Dice risk}} \\
-Dice-M32 & \shortstack{CLIP-T: \bestresult{3.316}\\DL-T: \bestresult{3.241}} & \shortstack{CLIP-T: 9.077\\DL-T: 5.234} & \shortstack{CLIP-T: 87.310\\DL-T: 41.102} & \shortstack{CLIP-T: \bestresult{7.176}\\DL-T: \bestresult{6.354}} & \shortstack{CLIP-T: 16.153\\DL-T: 8.792} \\
-nHD-M32 & \shortstack{CLIP-T: 3.549\\DL-T: 3.514} & \shortstack{CLIP-T: 10.335\\DL-T: 5.604} & \shortstack{CLIP-T: 86.094\\DL-T: \bestresult{40.635}} & \shortstack{CLIP-T: 8.640\\DL-T: 7.533} & \shortstack{CLIP-T: 16.366\\DL-T: 9.547} \\
-SDC & \shortstack{CLIP-T: 3.321\\DL-T: 3.248} & \shortstack{CLIP-T: \bestresult{8.923}\\DL-T: \bestresult{5.165}} & \shortstack{CLIP-T: \bestresult{82.200}\\DL-T: 41.345} & \shortstack{CLIP-T: 7.301\\DL-T: 6.615} & \shortstack{CLIP-T: \bestresult{15.566}\\DL-T: \bestresult{7.922}} \\
+Dice-M32 & \bestresult{3.316} & 9.077 & 87.310 & \bestresult{7.176} & 16.153 \\
+nHD-M32 & 3.549 & 10.335 & 86.094 & 8.640 & 16.366 \\
+nHD95-M32 & 3.609 & 10.000 & 84.290 & 8.368 & 16.022 \\
+SDC & 3.321 & \bestresult{8.923} & \bestresult{82.200} & 7.301 & \bestresult{15.566} \\
+Mean max probability & 4.411 & 20.117 & 86.475 & 9.538 & 28.826 \\
+Negative entropy & 4.391 & 17.024 & 85.293 & 9.402 & 27.389 \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
-Dice-M32 & \shortstack{CLIP-T: 5.140\\DL-T: 5.294} & \shortstack{CLIP-T: 12.863\\DL-T: 10.475} & \shortstack{CLIP-T: 48.988\\DL-T: 10.530} & \shortstack{CLIP-T: 5.009\\DL-T: 4.637} & \shortstack{CLIP-T: 9.577\\DL-T: 5.479} \\
-nHD-M32 & \shortstack{CLIP-T: \bestresult{4.569}\\DL-T: \bestresult{4.234}} & \shortstack{CLIP-T: \bestresult{10.172}\\DL-T: \bestresult{7.036}} & \shortstack{CLIP-T: 40.553\\DL-T: \bestresult{9.202}} & \shortstack{CLIP-T: \bestresult{3.386}\\DL-T: \bestresult{3.414}} & \shortstack{CLIP-T: \bestresult{7.259}\\DL-T: \bestresult{3.818}} \\
-nHD95-M32 & \shortstack{CLIP-T: 4.602\\DL-T: 4.376} & \shortstack{CLIP-T: 10.689\\DL-T: 7.528} & \shortstack{CLIP-T: 34.303\\DL-T: 10.090} & \shortstack{CLIP-T: 3.432\\DL-T: 3.470} & \shortstack{CLIP-T: 7.345\\DL-T: 3.818} \\
-SDC & \shortstack{CLIP-T: 5.158\\DL-T: 5.302} & \shortstack{CLIP-T: 12.893\\DL-T: 10.656} & \shortstack{CLIP-T: \bestresult{31.255}\\DL-T: 10.385} & \shortstack{CLIP-T: 5.216\\DL-T: 4.893} & \shortstack{CLIP-T: 8.306\\DL-T: 4.475} \\
+Dice-M32 & 5.140 & 12.863 & 48.988 & 5.009 & 9.577 \\
+nHD-M32 & \bestresult{4.569} & \bestresult{10.172} & 40.553 & \bestresult{3.386} & \bestresult{7.259} \\
+nHD95-M32 & 4.602 & 10.689 & 34.303 & 3.432 & 7.345 \\
+SDC & 5.158 & 12.893 & \bestresult{31.255} & 5.216 & 8.306 \\
+Mean max probability & 4.867 & 15.393 & 35.811 & 3.501 & 12.872 \\
+Negative entropy & 4.841 & 13.189 & 33.518 & 3.488 & 11.221 \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
-nHD-M32 & \shortstack{CLIP-T: 2.580\\DL-T: 2.416} & \shortstack{CLIP-T: 4.408\\DL-T: \bestresult{2.366}} & \shortstack{CLIP-T: 33.650\\DL-T: \bestresult{3.875}} & \shortstack{CLIP-T: 2.500\\DL-T: 2.527} & \shortstack{CLIP-T: 5.905\\DL-T: 3.160} \\
-nHD95-M32 & \shortstack{CLIP-T: \bestresult{2.506}\\DL-T: \bestresult{2.393}} & \shortstack{CLIP-T: \bestresult{4.319}\\DL-T: 2.389} & \shortstack{CLIP-T: 26.305\\DL-T: 4.289} & \shortstack{CLIP-T: \bestresult{2.498}\\DL-T: \bestresult{2.503}} & \shortstack{CLIP-T: \bestresult{5.891}\\DL-T: \bestresult{3.095}} \\
-SDC & \shortstack{CLIP-T: 2.900\\DL-T: 3.013} & \shortstack{CLIP-T: 4.919\\DL-T: 2.995} & \shortstack{CLIP-T: \bestresult{22.591}\\DL-T: 4.460} & \shortstack{CLIP-T: 3.637\\DL-T: 3.398} & \shortstack{CLIP-T: 6.583\\DL-T: 3.505} \\
+Dice-M32 & 2.891 & 5.369 & 42.459 & 3.477 & 7.929 \\
+nHD-M32 & 2.580 & 4.408 & 33.650 & 2.500 & 5.905 \\
+nHD95-M32 & \bestresult{2.506} & \bestresult{4.319} & 26.305 & \bestresult{2.498} & \bestresult{5.891} \\
+SDC & 2.900 & 4.919 & \bestresult{22.591} & 3.637 & 6.583 \\
+Mean max probability & 2.835 & 10.364 & 27.435 & 2.597 & 11.825 \\
+Negative entropy & 2.814 & 7.881 & 24.993 & 2.588 & 10.123 \\
 \bottomrule
-\end{tabular}
-}
+\end{tabular*}
+\par\smallskip
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
+\toprule
+\multicolumn{6}{l}{\textit{DeepLabV3 target (DL-T)}} \\
+\midrule
+Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
+\midrule
+\multicolumn{6}{l}{\textit{Dice risk}} \\
+Dice-M32 & \bestresult{3.241} & 5.234 & 41.102 & \bestresult{6.354} & 8.792 \\
+nHD-M32 & 3.514 & 5.604 & 40.635 & 7.533 & 9.547 \\
+nHD95-M32 & 3.523 & 5.463 & \bestresult{40.426} & 7.310 & 9.250 \\
+SDC & 3.248 & \bestresult{5.165} & 41.345 & 6.615 & \bestresult{7.922} \\
+Mean max probability & 4.089 & 9.014 & 46.286 & 8.626 & 17.574 \\
+Negative entropy & 4.050 & 7.747 & 45.228 & 8.539 & 16.245 \\
+\midrule
+\multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
+Dice-M32 & 5.294 & 10.475 & 10.530 & 4.637 & 5.479 \\
+nHD-M32 & \bestresult{4.234} & \bestresult{7.036} & \bestresult{9.202} & \bestresult{3.414} & \bestresult{3.818} \\
+nHD95-M32 & 4.376 & 7.528 & 10.090 & 3.470 & 3.818 \\
+SDC & 5.302 & 10.656 & 10.385 & 4.893 & 4.475 \\
+Mean max probability & 4.966 & 8.967 & 13.359 & 3.828 & 8.329 \\
+Negative entropy & 4.880 & 7.921 & 12.771 & 3.766 & 7.156 \\
+\midrule
+\multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
+Dice-M32 & 3.007 & 3.033 & 4.585 & 3.191 & 4.544 \\
+nHD-M32 & 2.416 & \bestresult{2.366} & \bestresult{3.875} & 2.527 & 3.160 \\
+nHD95-M32 & \bestresult{2.393} & 2.389 & 4.289 & \bestresult{2.503} & \bestresult{3.095} \\
+SDC & 3.013 & 2.995 & 4.460 & 3.398 & 3.505 \\
+Mean max probability & 2.907 & 4.357 & 6.953 & 2.856 & 7.720 \\
+Negative entropy & 2.835 & 3.287 & 6.373 & 2.809 & 6.541 \\
+\bottomrule
+\end{tabular*}
 }
 \end{table*}

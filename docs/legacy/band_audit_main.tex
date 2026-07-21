@@ -1,0 +1,2249 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue]{hyperref}
+
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{observation}{Observation}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\Yhat}{\widehat{Y}}
+\newcommand{\Ylo}{Y_{\alpha}}
+\newcommand{\Yhi}{Y_{1-\alpha}}
+\newcommand{\HD}{\mathrm{HD}}
+\newcommand{\HDF}{\mathrm{HD}_{95}}
+\newcommand{\Dice}{\mathrm{Dice}}
+\newcommand{\IoU}{\mathrm{IoU}}
+\newcommand{\AURC}{\mathrm{AURC}}
+\newcommand{\SDC}{\mathrm{SDC}}
+\newcommand{\Ex}{\mathbb{E}}
+\newcommand{\Prb}{\mathbb{P}}
+\newcommand{\bd}{\partial}
+\newcommand{\diag}{\mathrm{diag}}
+
+\title{Metric-Aligned Confidence for Selective Segmentation:\\
+Level-Set Posteriors and the Bi-Level Distance Band}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A selective segmentation system must decide, per image, whether to trust its own
+mask or defer it to a human. This requires collapsing a per-pixel probability map
+into one image-level confidence that ranks images by how bad the prediction
+actually is. The right notion of ``bad'' is the deployment metric, and deployment
+metrics disagree: overlap metrics (Dice, IoU) and boundary metrics (HD95, ASSD)
+do not agree about which segmentations are failures. Existing post-hoc confidence
+scores are almost all built for overlap risk; the strongest, Soft Dice Confidence
+(SDC), is Dice-specific by construction.
+
+We give one framework that produces a confidence aligned to \emph{any}
+segmentation metric, post-hoc, from a single forward pass. We treat the
+probability map as inducing a distribution over plausible ground truths --- the
+\emph{level-set posterior}, the law of $\{i : p_i \ge T\}$ for
+$T\sim\mathrm{Unif}(0,1)$, a classical random-set construction --- and score an
+image by its expected loss under it. The expected loss collapses from a sum over
+$2^N$ masks to a one-dimensional integral in the threshold, which we evaluate by
+$M$-point quadrature. Instantiated at $M=2$ with $L=\HDF$, the estimator is a
+single-pass, $O(N)$ score with a direct geometric reading: the width, in pixels,
+of the probability band between the aggressive level set $\{p\ge\alpha\}$ and the
+conservative one $\{p\ge 1-\alpha\}$, read by a Euclidean distance transform.
+
+Our discriminating theoretical claim is a one-line lemma: SDC, and every
+area-based readout of the band, is a \emph{permutation-invariant} functional of
+$(p,\hat y)$ --- invariant under any joint relabelling of pixels --- and therefore
+cannot resolve boundary geometry, whereas the distance readout can. This predicts,
+before any experiment, that overlap risk should be well served by a spatially blind
+score and boundary risk should not.
+
+Across $4$ model conditions $\times\ 2$ datasets and $16$ published single-pass
+baselines, the distance readout beats the band's own area readouts under boundary
+risk in $8/8$ cells --- the paper's core result, and the only one invariant to every
+convention we vary --- and beats SDC in $6/8$ under overlap risk and $6/8$ under a
+boundary risk that charges detection failures rather than deleting them. Two further
+results concern the estimator itself. At \emph{matched} nodes, the two-point quadrature
+$r_2$ that the framework derives beats the band width we actually deployed on every
+condition under every risk ($24/24$) --- same thresholds, same aggregation, the
+functional the only difference --- at no extra cost; and denser quadrature beats SDC in
+$7/8$ where the $M=2$ band manages $6/8$, contradicting our own $M=2$ argument. An audit
+found an aggregation defect in the ladder that measured the latter and we withheld it;
+it has since been recomputed, it reproduces to the digit, the defect never fired at the
+deployed $\alpha$, and the embargo is lifted (Remark~\ref{rem:mladdercontam}).
+
+We report the negative results rather than leaving them for a reviewer. The band's
+win over SDC under boundary risk is $8/8$ only under the medical-imaging convention
+that \emph{drops} images whose classes are present on one side; charging those
+failures the image diagonal reduces it to $6/8$. The two cells it loses are the same
+two it loses under overlap risk, which rules out a metric-alignment explanation: they
+are CLIPSeg on multi-class VOC, where $54$--$67\%$ of images contain a hallucinated or
+missed class, so the risk is dominated by \emph{detection} error --- and a
+contour-displacement score cannot see whether a class is present at all. Two
+\emph{spatially aware} baselines are also competitive under boundary risk, each
+beating the band in one cell, which is itself evidence for the thesis. Finally, the
+band's area readout is, up to reparameterization, the SAM stability score, which we
+re-label as a published baseline rather than our own ablation.
+\end{abstract}
+
+\section{Introduction}
+
+Segmentation models are deployed with a human in the loop. When the mask is good it
+is accepted; when it is bad a clinician or annotator corrects it. The value of such
+a system is governed not by average accuracy but by whether it can \emph{tell which
+of its own outputs are bad}. This is selective prediction: the model emits, with its
+mask, a scalar confidence $g(x)$; predictions are accepted in decreasing order of
+$g$, and the system is judged by the risk--coverage trade-off.
+
+We work in the \emph{post-hoc, image-level, single-pass} regime. Post-hoc: the
+network is fixed and not retrained, because in practice one is handed a model.
+Image-level: an entire image is accepted or rejected, because partial masks with a
+few pixels abstained still require the expert to re-examine the whole image.
+Single-pass: the score comes from one probability map --- no ensembles, no dropout
+sampling, no test-time augmentation --- because these multiply inference cost.
+
+The central question is how to collapse the $N$-dimensional probability map into
+one number. The literature aggregates a per-pixel uncertainty --- mean maximum
+softmax probability, mean entropy, patch and threshold variants. These share a
+defect: they are stated in probability units and are agnostic to the metric the
+application cares about. Soft Dice Confidence (SDC) \cite{sdc} fixed this for one
+metric, showing the confidence should estimate the \emph{expected Dice of the
+prediction under the label posterior}, and giving a near-optimal $O(N)$ estimator.
+
+But Dice is not the only deployment metric, and often not the relevant one. A mask
+can have excellent Dice and a catastrophic boundary --- a detached false-positive
+blob far from the organ, a leak into an adjacent structure --- and boundary metrics
+such as the $95$th-percentile Hausdorff distance (HD95) exist precisely to catch
+what Dice does not. The two disagree strongly on our data: among VOC images with
+\emph{identical} per-image mIoU, HD95 differs by up to $26$\,px
+(\S\ref{sec:setup}), and the rank correlation between $1-\mathrm{mIoU}$ and HD95 is
+only $0.46$--$0.67$ on VOC. A confidence aligned to Dice is, by construction,
+aligned to the wrong thing when the risk is boundary error.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item \textbf{A metric-agnostic framework} (\S\ref{sec:framework}). We define the
+ideal metric-aligned confidence $C^\star_L(x) = -\Ex[L(Y,\Yhat)\mid x]$ for an
+arbitrary loss $L$, and make it computable by replacing the unknown label posterior
+with the level-set posterior: the law of $Y^{(T)} = \{i : p_i \ge T\}$ under
+$T\sim\mathrm{Unif}(0,1)$. Under it the ideal confidence collapses from $2^N$ masks
+to a one-dimensional integral $\int_0^1 L(Y_t,\Yhat)\,dt$, evaluated by $M$-point
+quadrature. The posterior itself is classical (\S\ref{sec:posterior}); what is new
+is pairing it with a \emph{boundary} loss to obtain a post-hoc confidence.
+
+\item \textbf{Theory: spatial blindness, not the coupling}
+(\S\ref{sec:theory}). We prove SDC is the \emph{ratio-of-expectations} Dice
+instantiation of our framework and is invariant to the coupling of the marginals
+(Prop.~\ref{prop:sdc}). We then give the lemma that actually discriminates
+(Lemma~\ref{lem:perm}): SDC and every area readout of the band are permutation
+invariant in the pixel index, hence spatially blind, while the distance readout is
+not. We are explicit that the stronger claim --- that expected Dice itself is
+coupling-free --- is \emph{false}, and quantify it.
+
+\item \textbf{The bi-level distance band} (\S\ref{sec:band}). The $M=2$, $L=\HDF$
+instantiation: a Euclidean distance transform between the contours of
+$\{p\ge\alpha\}$ and $\{p\ge 1-\alpha\}$, giving a confidence in \emph{pixels}, on
+the scale of the metric it predicts, for two EDTs per present class.
+
+\item \textbf{Experiments and five negative results} (\S\ref{sec:experiments}).
+The distance-vs-area ablation is decisive and is the paper's core evidence. We also
+report that the area readout coincides with the SAM stability score; that two
+spatially aware baselines beat the band in one cell each; that $\alpha$ was
+selected on the test set and the headline is not robust to it
+(\S\ref{sec:threshold}); that vertex-aware node placement --- the rule our own
+integrand analysis prescribes --- \emph{loses} to the nodes it was built to replace,
+making it the fourth principled adaptive node rule in this paper to fail on measurement
+(\S\ref{sec:openitems}); and that the two diagnostics we built to test our posterior's
+assumption cannot identify the thing they were built to test, on this data or any
+single-annotation data (\S\ref{sec:termb}).
+
+\item \textbf{Threshold selection} (\S\ref{sec:threshold}). We show a fixed
+threshold in probability space is structurally wrong --- for diffuse maps it
+collapses the band onto the image diagonal outright on up to $17.7\%$ of images at
+the deployed $\alpha=0.1$ and on $98.6$--$99.6\%$ at $\alpha=0.01$, and it pollutes
+the multi-class score far more often than that: on $27.1$--$63.1\%$ of VOC images at
+$\alpha=0.1$ at least one predicted class saturates, a rate fine-tuning does not fix
+--- and give the corrected estimand and three label-free selection rules.
+\end{enumerate}
+
+\section{Setup}\label{sec:setup}
+
+\paragraph{Selective segmentation.}
+A fixed model maps an image $x$ to a probability map $p\in[0,1]^N$ over $N$ pixels
+(one foreground class for now; \S\ref{sec:multiclass} handles $C$ classes) and to a
+hard prediction $\Yhat = \{i : p_i \ge \gamma\}$, $\gamma=\tfrac12$. The ground
+truth is a random mask $Y \sim \Prb(\cdot\mid x)$. A confidence $g$ and threshold
+$\tau$ accept $x$ iff $g(x)\ge\tau$; for a loss $L\ge 0$,
+\begin{equation}
+\mathrm{cov}(\tau) = \Prb(g(x)\ge\tau),
+\qquad
+R(\tau) = \frac{\Ex[\,L(Y,\Yhat)\,\mathbf{1}\{g(x)\ge\tau\}\,]}{\Prb(g(x)\ge\tau)} .
+\end{equation}
+Sweeping $\tau$ traces the risk--coverage curve, summarized by
+$\AURC(g)=\int_0^1 R(c)\,dc$, estimated as the mean selective risk over the $n$
+empirical coverage levels $k/n$. Lower is better. One fact drives much of what
+follows:
+\begin{equation}\label{eq:rank}
+\AURC(g) \text{ depends on } g \text{ only through the ranking it induces.}
+\end{equation}
+Hence any strictly increasing reparameterization of a score leaves AURC unchanged:
+we never need the \emph{scale} of an estimate right, only its order.
+(Ties are broken by a fixed, score-independent order, so \eqref{eq:rank} is a
+statement about the induced total preorder; ties are not innocuous, and
+\S\ref{sec:threshold} shows they are the mechanism by which a badly chosen
+threshold destroys the score.)
+
+\paragraph{Risks.} Three per-image risks, two of overlap type and one of boundary
+type:
+\begin{equation}
+L_{\IoU} = 1 - \mathrm{mIoU}(Y,\Yhat), \qquad
+L_{\Dice} = 1 - \mathrm{mDice}(Y,\Yhat), \qquad
+L_{\HDF} = \HDF(Y,\Yhat),
+\end{equation}
+\begin{equation}\label{eq:hd95}
+\HDF(A,B) = \mathrm{P}_{95}\Big(
+\{ d(u,\bd B) : u\in\bd A \} \cup \{ d(v,\bd A) : v\in\bd B \}
+\Big),
+\quad d(u,S)=\min_{w\in S}\lVert u-w\rVert_2 ,
+\end{equation}
+with $\bd A$ the surface (mask minus its erosion). \textbf{Conventions, stated
+because they matter.} Per-image mIoU/mDice are averaged over the classes observed
+in the prediction or the ground truth of that image, \emph{background included}
+(the VOC convention). HD95 is averaged over \emph{foreground} classes only, and is
+undefined for a class present on one side only --- a hallucinated or a wholly
+missed class. We therefore report two boundary conventions: $\HDF^{\mathrm{drop}}$
+averages over classes present in both (the medical-imaging convention, which costs
+a detection failure \emph{nothing} and deletes images that detect nothing:
+$23$--$44\%$ of VOC class instances and up to $2.1\%$ of images), and
+$\HDF^{\mathrm{pen}}$ charges each one-sided class the image diagonal, so every
+risk is evaluated on the same image set. We report \emph{both} conventions throughout
+(Tables~\ref{tab:boundary} and~\ref{tab:penalized}). The $\HDF^{\mathrm{pen}}$ run is
+complete, and it \emph{degraded} the boundary headline: the band's win over SDC falls
+from $8/8$ to $6/8$ (\S\ref{sec:results}, Finding~2), while the distance-vs-area
+ablation is unchanged at $8/8$ under both. We report it degraded rather than reporting
+only the convention that flatters us. (An earlier version of this paragraph described
+$\HDF^{\mathrm{pen}}$ as ``pending re-run''; it is not, and \S\ref{sec:openitems}
+closes the item.)
+
+\paragraph{Overlap and boundary genuinely disagree.} On VOC we find images with
+identical per-image mIoU and wildly different boundary error: at mIoU $0.333$,
+HD95 of $0.00$ vs $26.03$\,px; at mIoU $0.885$, $7.10$ vs $21.31$\,px. Spearman
+$\rho(1-\mathrm{mIoU},\HDF)$ is $0.46$--$0.67$ on VOC ($0.83$--$0.88$ on Pet). IoU
+counts mislabelled pixels; it is blind to \emph{where} they are.
+
+\section{Metric-aligned confidence}\label{sec:framework}
+
+\subsection{The ideal confidence, and a bounded loss}
+
+\begin{definition}[Ideal metric-aligned confidence]\label{def:ideal}
+$C^\star_L(x) = -\,\Ex_{Y\sim\Prb(\cdot\mid x)}[\,L(Y,\Yhat(x))\,]$.
+\end{definition}
+With $L=1-\Dice$ this is the Ideal Dice Confidence of \cite{sdc}; the definition
+removes the commitment to Dice. Ranking by $C^\star_L$ gives the pointwise-lowest
+risk--coverage curve achievable by any function of $x$.
+
+\begin{remark}[Bounded convention, required not optional]\label{rem:bounded}
+$\HDF(\varnothing,\Yhat)$ is undefined, and the posterior below places strictly
+positive mass on the empty mask. We therefore fix, once and for all,
+\begin{equation}\label{eq:bounded}
+L(\varnothing,\Yhat) := \diag \ \text{(boundary losses)}, \qquad
+\Dice(\varnothing,\Yhat) := 0 ,
+\end{equation}
+$\diag$ the image diagonal. Without \eqref{eq:bounded} the expectation in
+Definition~\ref{def:ideal} does not exist for $\HDF$. With it, $L$ is bounded and
+every statement below is well posed. This convention is not cosmetic: it is the
+sole reason $\Ex_{Q_p}[\HDF]$ is finite, and \S\ref{sec:threshold} shows it is
+also what the estimator's failure mode is made of.
+\end{remark}
+
+Definition~\ref{def:ideal} is not computable: it is an expectation over $2^N$ masks
+under a posterior a segmentation network never gives us. What the network gives is
+the per-pixel marginals $p_i \approx \Prb(Y_i=1\mid x)$, and every post-hoc method
+is a way of turning those into an estimate of Definition~\ref{def:ideal}.
+
+\begin{remark}[We do not need the label; we need a law over labels]
+The ideal confidence does not require the ground truth of the image at hand; it
+requires a distribution over what it might be. A forecast of ``$70\%$ chance of
+rain'' does not say whether it rains, yet suffices to compute the expected loss of
+carrying an umbrella. The price is that the estimate inherits the quality of the
+probability map: a miscalibrated model yields a miscalibrated confidence, and no
+post-hoc score repairs it.
+\end{remark}
+
+\subsection{The level-set posterior}\label{sec:posterior}
+
+The marginals do not determine the joint. We must \emph{choose} a joint consistent
+with them, and we take the one generated by a single random global threshold.
+
+\begin{definition}[Level-set posterior $Q_p$]\label{def:levelset}
+Let $T\sim\mathrm{Unif}(0,1)$ and $Y^{(T)} = \{i : p_i \ge T\}$. Write $Q_p$ for its
+law and $Y_t = \{i : p_i\ge t\}$ for the deterministic level set.
+\end{definition}
+
+\begin{remark}[This object is classical; we are importing it]\label{rem:classical}
+$Q_p$ is the canonical \emph{coverage-function random set}: a random closed set
+whose one-point coverage function is exactly $p$ \cite{goodman,molchanov}. Its two
+defining properties --- (i) $\Prb_{Q_p}(Y_i=1)=p_i$, since $\Prb(T\le p_i)=p_i$;
+and (ii) $\Prb_{Q_p}(Y_i=1,Y_j=1)=\min(p_i,p_j)$, the Fr\'echet--Hoeffding upper
+bound, so $Q_p$ is the comonotone (inverse-transform, common-uniform) coupling of
+the marginals, with almost surely nested samples --- are textbook. We claim no
+novelty for them and cite the sources. The observation that an \emph{independent}
+coupling destroys contour geometry, while a spatially coherent one preserves it, is
+likewise established in the uncertain-isocontour literature
+\cite{poethkow,bolin}. Our contribution begins one step later: pairing this
+posterior with a \emph{boundary} loss to obtain a post-hoc, single-pass,
+image-level confidence.
+\end{remark}
+
+Samples from $Q_p$ cost nothing --- they are thresholdings --- and are the nested
+chain of level sets, $Y_1\subseteq\cdots\subseteq Y_0$. Low thresholds give
+aggressive, dilated candidates; high thresholds conservative, eroded ones. Under
+the independent coupling, a boundary region with $p\approx 0.5$ is realized as
+per-pixel coin flips, i.e.\ salt-and-pepper speckle whose surface is fractal and
+whose $\HDF$ against $\Yhat$ is dominated by isolated flipped pixels. Under $Q_p$
+the same region is realized as a coherent inward or outward displacement of the
+contour --- which is what segmentation ambiguity looks like.
+
+\subsection{From posterior to score: a one-dimensional integral}
+
+\begin{proposition}[Threshold-integral risk]\label{prop:integral}
+For any loss $L$ bounded via \eqref{eq:bounded},
+\begin{equation}\label{eq:integral}
+r_{\mathrm{ls}}(x) := \Ex_{Y\sim Q_p}[L(Y,\Yhat)] = \int_0^1 L(Y_t,\Yhat)\,dt .
+\end{equation}
+\end{proposition}
+\begin{proof}
+$Y^{(T)}=Y_T$ with $T\sim\mathrm{Unif}(0,1)$, so the expectation over $Q_p$ is the
+expectation over $T$. Boundedness (Remark~\ref{rem:bounded}) makes the integral
+finite.
+\end{proof}
+
+Equation~\eqref{eq:integral} is exact \emph{for $Q_p$}, and holds for any $L$:
+Dice, IoU, HD95, ASSD, surface Dice, or an application cost. This is the
+metric-agnostic step. The integrand $H_x(t) = L(Y_t,\Yhat(x))$ is a scalar function
+of one variable, and we estimate the integral by $M$-point quadrature:
+\begin{equation}\label{eq:quad}
+\boxed{\;
+r_M(x) = \sum_{m=1}^{M} w_m\, L(Y_{t_m},\Yhat(x)),
+\qquad
+C_L(x) = -\, r_M(x)
+\;}
+\end{equation}
+with $\sum_m w_m = 1$. Each term costs a thresholding plus one evaluation of $L$;
+for $L=\HDF$ that is a Euclidean distance transform, $O(N)$.
+
+\begin{remark}[The dense limit contains a max-softmax term]\label{rem:atom}
+$Q_p$ places mass $1-\max_i p_i$ on the empty mask, so by \eqref{eq:bounded}
+\begin{equation}
+r_{\mathrm{ls}}(x) = \int_0^{\max_i p_i} H_x(t)\,dt \;+\; \big(1-\max_i p_i\big)\cdot\diag .
+\end{equation}
+The dense-$M$ reference therefore \emph{contains an explicit max-softmax term},
+weighted by the image diagonal. On Pet, $\diag\approx 375$\,px against typical HD95
+$\approx 12$\,px, so even $\max_i p_i = 0.97$ contributes $\approx 11$\,px. This is
+a real property of the estimator, not an artifact: it is why we expect the dense
+reference to disagree with $M=2$ precisely on the diffuse zero-shot conditions, and
+it is the same mechanism that makes $\alpha=0.01$ degenerate
+(\S\ref{sec:threshold}).
+\end{remark}
+
+\subsection{Where the error comes from}\label{sec:error}
+
+Let $r_{\mathrm{true}}(x) = \Ex_{\Prb(\cdot\mid x)}[L(Y,\Yhat)]$. Then
+\begin{equation}\label{eq:decomp}
+| r_M - r_{\mathrm{true}} |
+\;\le\;
+\underbrace{| r_M - r_{\mathrm{ls}} |}_{\text{(a) quadrature error}}
+\;+\;
+\underbrace{| r_{\mathrm{ls}} - r_{\mathrm{true}} |}_{\text{(b) posterior model error}} .
+\end{equation}
+Term (a) is numerical and is controlled by $M$; \S\ref{sec:openitems} gives the
+ablation that measures it. Term (b) is a modelling error and \emph{$M$ does not
+reduce it}: it is the price of substituting $Q_p$ for the true posterior, and has
+two sources --- whether $p$ is calibrated, and whether real ambiguity is nested
+contour displacement rather than topological change. We do not claim (b) is zero.
+
+We tried to measure it. \S\ref{sec:termb} reports that attempt; it is a negative result
+about our own diagnostic, and it changes what the rest of the paper is allowed to say
+about $Q_p$.
+
+\subsection{Term (b) is not identified on this data --- a negative result about our own
+diagnostic}\label{sec:termb}
+
+We built two label-using diagnostics of term (b), and intended them as a headline:
+\emph{our posterior's assumption nearly holds, SDC's is grossly violated everywhere.}
+\begin{itemize}
+\item \textbf{\texttt{levelset\_auc}} --- is the ground truth a level set of $p$? Rank
+pixels by $p_i$ and ask how well that ranking separates $Y^*_i=1$ from $Y^*_i=0$. $Q_p$
+predicts AUC $=1$ \emph{exactly}: under $Q_p$ every sample \emph{is} a level set of $p$.
+\item \textbf{\texttt{residual\_moran\_i}} --- Moran's $I$ of the residual $Y^*-p$.
+Conditional independence given $p$, which is SDC's assumption \cite[eq.~30]{sdc},
+predicts $\approx 0$: independent residuals are spatially uncorrelated.
+\end{itemize}
+Measured across the eight conditions: \texttt{levelset\_auc} $\in[0.985, 0.999]$,
+\texttt{residual\_moran\_i} $\in[0.841, 0.964]$. That reads exactly like the headline.
+
+\textbf{Both statistics are implemented correctly, and the headline is not licensed by
+them.} The failure is \emph{identification}, not power --- no sample size and no
+sharpening of either statistic repairs it. We set it out in full because we believed the
+headline for some time.
+
+\paragraph{(i) Both statistics test a conjunction, and neither can attribute a
+violation.} Write $q$ for the true marginal. The residual decomposes as
+\begin{equation}\label{eq:residualdecomp}
+Y^* - p \;=\; \underbrace{(Y^* - q)}_{\text{coupling}} \;+\; \underbrace{(q - p)}_{\text{calibration}} .
+\end{equation}
+A spatially structured $q-p$ --- a miscalibrated but spatially coherent map, which is
+exactly what a segmentation network emits --- produces autocorrelated residuals
+\emph{whatever the coupling is}. So Moran's $I$ tests the conjunction ``\emph{the
+coupling is not independent} \textbf{and} $p=q$'', and a rejection cannot be assigned to
+either leg. \texttt{levelset\_auc} tests the same conjunction from the other side.
+
+\paragraph{(ii) A generator satisfying SDC's \emph{own} assumption reproduces the entire
+measured signature.} We simulated the rival hypothesis: a deterministic mask $q$; ground
+truths $Y^*_i \sim \mathrm{Bern}(q_i)$ drawn \emph{independently}, so that conditional
+independence holds \textbf{exactly}, by construction; and $p = \mathrm{blur}(q)$ ---
+accurate but miscalibrated. It yields \texttt{levelset\_auc} $=0.9995$ (including
+$100\%$ of images at AUC exactly $1.0$, with a $6.3\%$ non-degenerate band),
+\texttt{residual\_moran\_i} $\in[0.84, 0.95]$, $\rho(\text{auc},\text{mIoU})>0$ and
+$\rho(\text{moran},\text{mIoU})<0$: every qualitative and quantitative feature we had
+read as evidence \emph{for} $Q_p$ and \emph{against} independence.
+
+\emph{Therefore ``Moran $0.84$--$0.96$ against $\approx 0$ under independence'' is not a
+refutation of independence.} The $\approx 0$ null silently assumes perfect calibration,
+which nobody has. We had computed our own side's null and never the rival's.
+
+\paragraph{(iii) On Pet and VOC the question is vacuous, and the statistics are
+measuring model accuracy.} A coupling is a statement about the joint law of an
+\emph{ambiguous} label. Pet and VOC ground truth is near-deterministic --- there is no
+real ambiguity about where the cat is --- and where the marginal is $\{0,1\}$-valued
+\emph{every} coupling with those marginals coincides. There is nothing there for the
+diagnostic to discriminate. What it does discriminate is how good the model is:
+
+\begin{center}
+\small
+\begin{tabular}{lcc}
+\toprule
+statistic & $\rho$ with per-image mIoU, by condition & pooled \\
+\midrule
+\texttt{levelset\_auc}      & $+0.41$ to $+0.85$ & $\mathbf{+0.888}$ \\
+\texttt{residual\_moran\_i} & $-0.28$ to $-0.77$ & $\mathbf{-0.49}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+An ``assumption check'' that correlates with mIoU at $0.888$ is an accuracy meter.
+
+\paragraph{(iv) And we do not get to claim our own assumption holds either.} $Q_p$ makes
+a point prediction --- \texttt{levelset\_auc} $=1.0$ exactly, with zero variance --- and
+it is \textbf{refuted on $81\%$ of images}. The violation is tiny (median
+$1-\mathrm{AUC} = 2\times 10^{-5}$), which is precisely why the aggregate reads
+$0.985$--$0.999$ and looks like confirmation; but a point prediction with no variance is
+refuted by any violation at all. The honest reading of our own table is that $Q_p$ is an
+excellent approximation on this data \emph{and} false on it, and that we cannot say how
+much of the residual is coupling error and how much is miscalibration.
+
+\paragraph{The framing was worse than unsupported: it invented a tension that cannot
+exist.} The story was ``SDC's assumption is violated, yet SDC survives''. But by
+Prop.~\ref{prop:sdc} the SDC \emph{value} is a function of $(p,\hat y)$ alone --- no
+coupling enters it --- so \emph{no coupling diagnostic can move it}. SDC is not
+\emph{surviving} a violated assumption; it is \textbf{invariant} to it. (Its $<\!1\%$
+error \emph{bound} is proved under independence and does not transport to $Q_p$ ---
+Remark~\ref{rem:notcoupling} --- but that is a fact about the bound, not about the
+score.) The subsidiary defence ``SDC is near-optimal under overlap risk anyway'' is also
+false on our own data: it loses $6/8$ to the band under overlap risk, and its AURC is
+$1.2$--$2.7\times$ the band's on all four Pet conditions against $0.8$--$1.1\times$ on
+the four VOC ones (Table~\ref{tab:overlap}). It is near-optimal on VOC only.
+
+\paragraph{What would decide it --- and why it cannot be run here.} The discriminating
+data is \textbf{multiple annotations of the same image} (LIDC-IDRI, QUBIQ, multi-rater
+lesion sets). Estimate $\hat q$ as the per-pixel mean over raters, then test the
+\emph{spread of the foreground count}, on which the two couplings disagree by orders of
+magnitude rather than in the third decimal:
+\begin{equation}\label{eq:countspread}
+\text{independence:}\quad \mathrm{Var}\Big(\sum_i Y_i\Big) = \sum_i q_i(1-q_i),
+\qquad
+\text{$Q_p$:}\quad \mathrm{Var}\Big(\sum_i Y_i\Big) \text{ at the Fr\'echet--Hoeffding maximum.}
+\end{equation}
+The independence null is closed-form and we validated it (Monte-Carlo sd $21.54$ against
+analytic $21.42$); at matched sharpness $Q_p$ gives an sd $23$--$75\times$ larger ($830$
+against $22$\,px). A handful of raters settles it, and it is exactly the quantity SDC's
+own bound needs.
+
+\textbf{Pet and VOC have a single ground truth per image, so this cannot be run on our
+data at all.} That is the finding, and it is not a matter of effort: \emph{no reanalysis
+of our evaluation can license either half of the headline.} It also changes the status
+of the scope limitation in \S\ref{sec:limitations}. The absence of medical, multi-rater
+data is not merely a gap in coverage --- it is a \textbf{precondition} for making any
+claim about term (b) at all.
+
+One cheaper interim check exists, and we have not run it: recalibrate $p$ (temperature,
+or per-pixel isotonic on a held-out split) and recompute both statistics. If Moran's $I$
+collapses toward $0$, the ``gross violation'' was miscalibration all along. Given
+$\rho(\text{moran},\text{mIoU}) = -0.5$ to $-0.77$, we predict a large collapse.
+
+\begin{remark}[The lesson, stated because we did not follow it]\label{rem:rivalnull}
+A diagnostic that confirms your hypothesis has not confirmed it until you compute what
+the \emph{rival} hypothesis predicts for the same statistic. Both couplings predicted
+the same AUC and the same Moran's $I$. The entire finding was an artifact of only ever
+computing our own side's null.
+\end{remark}
+
+\section{Relation to Soft Dice Confidence}\label{sec:theory}
+
+SDC \cite{sdc} scores an image by the soft Dice between the probability map and the
+hard prediction,
+\begin{equation}\label{eq:sdc}
+\SDC(p,\Yhat) = \frac{2\sum_i p_i \hat{y}_i}{\sum_i p_i + \sum_i \hat{y}_i},
+\qquad \hat{y}_i = \mathbf{1}\{i\in\Yhat\},
+\end{equation}
+in $O(N)$, with no ground truth. It is the closest prior work.
+
+\begin{proposition}[SDC is the ratio-of-expectations Dice instantiation]\label{prop:sdc}
+Let $Q$ be \emph{any} coupling with marginals $p$. Then
+\begin{equation}
+\frac{\Ex_Q[\,2\sum_i Y_i\hat y_i\,]}{\Ex_Q[\,\sum_i Y_i + \sum_i \hat y_i\,]}
+= \frac{2\sum_i p_i \hat y_i}{\sum_i p_i + \sum_i \hat y_i} = \SDC(p,\Yhat).
+\end{equation}
+Hence the ratio-of-expectations surrogate for expected Dice depends on the joint law
+of $Y$ only through its marginals.
+\end{proposition}
+\begin{proof}
+Numerator and denominator are linear in $Y$; linearity of expectation gives
+$\Ex_Q[\sum_i Y_i\hat y_i]=\sum_i p_i\hat y_i$ and $\Ex_Q[\sum_i Y_i]=\sum_i p_i$
+for any coupling with marginals $p$. The higher-order structure of $Q$ never
+enters.
+\end{proof}
+
+\begin{remark}[What Prop.~\ref{prop:sdc} does \emph{not} say]\label{rem:notcoupling}
+It is tempting --- and wrong --- to conclude that expected Dice is coupling-free.
+$\Ex_Q[\Dice(Y,\Yhat)]$ is an expectation of a \emph{ratio}, a nonlinear function of
+the two linear statistics, and the joint law of that pair does depend on the
+coupling. Exhaustively, for $N=2$, $p=(\tfrac12,\tfrac12)$, $\Yhat=\{1\}$:
+$\Ex_{\mathrm{indep}}[\Dice]=5/12$, $\Ex_{Q_p}[\Dice]=1/3$, $\SDC=1/2$ --- three
+different values. Moreover the delta-method step cannot be rescued by
+concentration: among all couplings with marginals $p$, the comonotone $Q_p$
+\emph{maximizes} $\mathrm{Var}(\sum_i Y_i)$ (every covariance sits at its
+Fr\'echet--Hoeffding maximum), so $Q_p$ is the coupling under which the Dice
+denominator concentrates \emph{least}. SDC's own $<\!1\%$ relative-error bound is
+proved under conditional independence \cite[eq.~30]{sdc} and does not transport to
+$Q_p$. Under independence the bound is safe for the reason its authors give: $\sum_i
+Y_i$ concentrates, so the expectation of the ratio approaches the ratio of expectations
+at $O(1/N)$ --- a gap of $<\!0.4\%$ at the foreground masses in question. Under $Q_p$
+that step never engages \emph{at any mass}: the variance sits at its
+Fr\'echet--Hoeffding maximum by the sentence above, so the delta-method argument has
+nothing to stand on and no amount of foreground mass rescues it. We state this plainly
+because the discriminating argument does not need it.
+
+\emph{A retraction.} Earlier versions of this remark quantified the $Q_p$ gap as
+``$4.7\%$ mean / $26\%$ max, measured on synthetic maps''. \textbf{Those two numbers are
+withdrawn.} No code in this project computes them; three downstream documents quoted
+them back, two of the three having dropped the ``synthetic'' qualifier so that they read
+as if they came from the real evaluation; and they are \emph{unidentifiable} in
+principle --- across defensible synthetic families the mean spans $0.21$--$11.37\%$ and
+the max $0.38$--$97.45\%$. The number was a property of an unrecorded generator, not of
+$Q_p$, and no reconstruction of the generator could make it one. What remains above is a
+\emph{derivation} ($<\!0.4\%$, from concentration) and a \emph{proof} (no shrinkage with
+mass, from the Fr\'echet--Hoeffding maximum three lines earlier). Neither was ever a
+measurement, and we no longer describe them as one.
+\end{remark}
+
+The property that actually does the work is spatial blindness, and it is immediate.
+
+\begin{lemma}[Spatial blindness]\label{lem:perm}
+Let $\sigma$ be any permutation of the pixel indices, acting jointly on $(p,\hat y)$.
+Then $\SDC$, $\Ex_{Q_p}[\Dice]$, and the area readouts
+$\Dice(\Yhi,\Ylo)$, $\IoU(\Yhi,\Ylo)$ of \S\ref{sec:area} are all invariant under
+$\sigma$. The distance readout $\HDF(\Ylo,\Yhi)$ is not. Consequently no
+permutation-invariant functional of $(p,\hat y)$ can resolve boundary geometry.
+\end{lemma}
+\begin{proof}
+Each of $\sum_i p_i$, $\sum_i \hat y_i$, $\sum_i p_i\hat y_i$, $|\Ylo|$, $|\Yhi|$,
+and the law of $|Y^{(T)}\cap\Yhat|$ under $Q_p$ is a sum over pixels and is
+unchanged by relabelling. $\HDF$ depends on the Euclidean positions of the surface
+pixels, which $\sigma$ does not preserve. A functional invariant under all
+$\sigma$ is constant on the orbit of any $(p,\hat y)$, and that orbit contains both
+a spatially coherent mask and a scattered one with the same boundary
+\emph{cardinality} but arbitrarily different boundary \emph{geometry}.
+\end{proof}
+
+Verified numerically on a soft-boundary blob ($64\times64$, contour ramp
+$p\!\in\![0.02,0.98]$), applying one joint permutation $\sigma$ to the pixel
+indices of $(p,\hat y)$:
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+score & original & permuted & invariant? \\
+\midrule
+$\SDC$                                   & $0.890158$ & $0.890158$ & yes \\
+Band-Dice \eqref{eq:area}                & $0.713183$ & $0.713183$ & yes \\
+SAM stability \eqref{eq:area}            & $0.554223$ & $0.554223$ & yes \\
+Band-HD95 \eqref{eq:bandsym}             & $7.000$ & $1.414$ & \textbf{no} \\
+$r_2$ \eqref{eq:r2}                      & $3.803$ & $1.000$ & \textbf{no} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The three permutation-invariant scores are unchanged bit-for-bit; the two
+distance scores collapse, because scattering the pixels destroys the coherent
+contour whose displacement they measure --- while leaving every area and every
+marginal statistic exactly intact.
+
+\begin{remark}[What the lemma does and does not establish]\label{rem:permlimit}
+An independent check confirms the mechanics exactly: under a joint permutation, $\SDC$,
+$\Ex_{Q_p}[\Dice]$ and both area readouts are bit-for-bit unchanged while
+$\HDF(\Ylo,\Yhi)$ moves ($7.616 \to 3.000$ on its construction), and the overlap
+\emph{risk} $1-\mathrm{mIoU}$ is likewise unchanged ($0.18317$ both). That last fact is
+not a sting but a confirmation: the overlap risk is blind to exactly what SDC is blind
+to, which is why a spatially blind estimator suffices for it.
+
+The \emph{limitation} is in the proof's reach. It exhibits two inputs in the same
+permutation orbit --- one spatially coherent, one scattered --- with equal
+$(\SDC, \text{areas})$ and different boundary geometry. But a scattered probability map
+is not something a segmentation network emits: real inputs live on a thin manifold of
+spatially coherent maps that the orbit essentially never visits. So the lemma is a
+valid impossibility result \emph{over the full input space} $[0,1]^N\!\times\!\{0,1\}^N$,
+and it is \emph{suggestive} rather than decisive for the realistic sub-manifold. What
+makes the conclusion bite is the measurement, not the proof: on real maps SDC's
+boundary AURC is uniformly poor (\S\ref{sec:results}). We state the lemma as the reason
+to \emph{expect} that, not as a demonstration of it.
+\end{remark}
+
+\paragraph{The falsifiable prediction.} Lemma~\ref{lem:perm}, with its reach bounded as
+in Remark~\ref{rem:permlimit}, predicts, before any
+experiment: \emph{SDC should be near-optimal under overlap risk} --- an overlap
+metric is itself a permutation-invariant functional of $Y$, so a spatially blind
+estimator loses nothing essential --- \emph{and mediocre under boundary risk}, where
+a spatially blind score is structurally unable to see the quantity being predicted.
+Note what it does \emph{not} predict: it does not say SDC should \emph{beat} a
+geometric score under overlap risk, only that it should not be beaten \emph{for
+lack of geometry}. \S\ref{sec:results} confirms the prediction, including the
+finer point that our own area readout --- a permutation-invariant score by
+Lemma~\ref{lem:perm} --- tracks SDC.
+
+\begin{remark}[What we inherit from \cite{sdc}]
+The principle (confidence should estimate the expected deployment metric) and the
+regime (post-hoc, single-pass, image-level). Not the guarantees: SDC's bounds follow
+from the algebra of Dice and do not transfer to $\HDF$. Our guarantee is of a
+different kind --- exactness under a stated posterior (Prop.~\ref{prop:integral})
+plus the error decomposition \eqref{eq:decomp}.
+\end{remark}
+
+\section{The bi-level distance band}\label{sec:band}
+
+\subsection{Two thresholds}
+
+Fix $\alpha<\tfrac12$ and take $t_1=\alpha$, $t_2=1-\alpha$, $w_1=w_2=\tfrac12$.
+The nodes bracket $\gamma=\tfrac12$ and give the nested triple
+\begin{equation}\label{eq:nesting}
+\Yhi = \{p \ge 1-\alpha\} \;\subseteq\; \Yhat = \{p\ge\tfrac12\} \;\subseteq\;
+\Ylo = \{p\ge\alpha\} .
+\end{equation}
+$\Yhi$ is the conservative candidate, $\Ylo$ the aggressive one, and
+$\Ylo\setminus\Yhi$ is the \emph{probability band} --- the region the model is
+undecided about. The $M=2$ risk is
+\begin{equation}\label{eq:r2}
+r_2(x) = \tfrac12\Big[\, \HDF(\Ylo,\Yhat) + \HDF(\Yhi,\Yhat) \,\Big].
+\end{equation}
+
+\subsection{The band width, and its honest relation to $r_2$}
+
+In practice we compute a cheaper quantity: the width of the band itself, bypassing
+$\Yhat$,
+\begin{equation}\label{eq:bandsym}
+\widehat{\HDF}^{\,\mathrm{sym}}(x) = \HDF(\Ylo,\Yhi),
+\end{equation}
+two Euclidean distance transforms, $O(N)$. Directed variants read only one side:
+$\widehat{\HDF}^{\,\mathrm{out}}$ (from $\bd\Ylo$ to $\bd\Yhi$; catches fog bulges
+and detached mid-confidence blobs) and $\widehat{\HDF}^{\,\mathrm{in}}$ (the
+reverse; blind to detached blobs). The confidence is any strictly decreasing map,
+e.g.\ $C^{\mathrm{band}} = \exp(-\widehat{\HDF}^{\,\mathrm{sym}}/\sigma)$; by
+\eqref{eq:rank}, $\sigma$ affects absolute thresholds only, never the ranking.
+
+\begin{proposition}[Band width vs.\ two-point quadrature, for max-Hausdorff]\label{prop:band}
+Let $\HD$ be the \emph{max} Hausdorff distance and
+$r_2^{\HD} = \tfrac12[\HD(\bd\Ylo,\bd\Yhat)+\HD(\bd\Yhat,\bd\Yhi)]$. Then
+\begin{equation}
+\HD(\bd\Ylo,\bd\Yhi) \;\le\; 2\, r_2^{\HD}(x).
+\end{equation}
+\end{proposition}
+\begin{proof}
+$\HD$ is a metric on compact sets; apply the triangle inequality.
+\end{proof}
+
+\begin{remark}[Prop.~\ref{prop:band} motivates but does not establish the bridge]\label{rem:nobridge}
+Three caveats, stated because each is a real limitation.
+\begin{enumerate}
+\item \textbf{Wrong functional.} Everything implemented and evaluated is $\HDF$, a
+\emph{percentile} of pooled surface distances. $\HDF$ is \emph{not a metric} and
+does not obey the triangle inequality, so Prop.~\ref{prop:band} does not transfer.
+It can fail badly: on a $400\times400$ map (disk at $p=1$, thin spike at $p=0.7$,
+second thin spike at $p=0.3$, $\alpha=0.1$, nesting verified) we get
+$\HDF(\Ylo,\Yhat)=\HDF(\Yhi,\Yhat)=0$, so $2r_2^{\HDF}=0$, while the implemented
+band width is $13.41$\,px --- violated by an unbounded factor. Percentile
+truncation is not subadditive: each spike is under $5\%$ of the pooled surface in
+its pairwise comparison and is truncated away, but together they survive.
+\item \textbf{No equality condition.} We claim none. Even for max-$\HD$, equality
+requires \emph{co-location} of the extremal displacements, which fails under any
+asymmetric level-set growth; on $398$ realistic nested triples the equality
+frequency was $0/398$ (mean ratio $\HD/2r_2 = 0.665$).
+\item \textbf{No rank-equivalence.} A one-sided inequality that is tight on some
+images and slack on others \emph{permutes} the ranking; it is not benign for a pure
+rank statistic. On synthetic nested triples Kendall $\tau(\text{band}, r_2)=0.81$
+with $9.5\%$ discordant pairs.
+\end{enumerate}
+The band width is therefore best described as a posterior-\emph{spread} proxy that
+Prop.~\ref{prop:band} motivates, not as the two-point expected-loss estimate. We
+have implemented $r_2$ directly; the comparison of their rankings is the ablation that
+must settle this, it \emph{has} been run, and the bridge holds \emph{empirically} ---
+$\rho(\text{band}, r_2)\in[0.974, 0.992]$ across all eight conditions
+(\S\ref{sec:openitems}, item 2). That is a measurement, not a theorem, and it is the
+only thing connecting the deployed band to the estimator the theory derives.
+\end{remark}
+
+\subsection{The area counterpart, and what it already is}\label{sec:area}
+
+The same frame admits \emph{region} readouts. Because the sets are nested these
+collapse to area ratios:
+\begin{equation}\label{eq:area}
+\IoU(\Yhi,\Ylo) = \frac{|\Yhi|}{|\Ylo|},
+\qquad
+\Dice(\Yhi,\Ylo) = \frac{2|\Yhi|}{|\Yhi|+|\Ylo|} .
+\end{equation}
+
+\begin{remark}[The area readout is the SAM stability score]\label{rem:sam}
+$\IoU(\Yhi,\Ylo)$ is, up to reparameterization, the \emph{stability score} of
+Segment Anything \cite{sam}, which computes the IoU between masks obtained by
+thresholding the predicted logits at a high and a low value, notes in code that
+``one mask is always contained inside the other,'' and uses the result at inference
+as a per-mask confidence filter. With SAM's defaults the logit bracket maps through
+the sigmoid to probability thresholds $0.7311/0.2689$, which sum to exactly $1$ ---
+i.e.\ SAM's score \emph{is} $|\{p\ge 1-a\}|/|\{p\ge a\}|$, and our $\alpha$ is SAM's
+\texttt{threshold\_offset} reparameterized. We therefore re-label it as a published
+baseline rather than our own ablation. What remains ours is (i) the level-set
+posterior / expected-loss \emph{interpretation} of that construction, and (ii)
+replacing the area readout with a \emph{distance} readout aligned to boundary risk.
+\end{remark}
+
+\begin{remark}[The two area readouts are rank-identical in the binary case]
+For a single foreground class the sets are nested, so
+$\Dice = 2\,\IoU/(1+\IoU)$ is a strictly increasing transform of $\IoU$; by
+\eqref{eq:rank} the two give \emph{identical} AURC. They can differ only through
+the present-class mean in the multi-class case. This is why the Pet rows of
+Tables~\ref{tab:overlap}--\ref{tab:boundary} are identical for the two, and it must
+be disclosed rather than presented as two independent scores.
+\end{remark}
+
+Comparing \eqref{eq:bandsym} against \eqref{eq:area} holds the posterior, the
+thresholds, and the aggregation fixed and varies \emph{only} whether the band is
+read spatially or by area. By Lemma~\ref{lem:perm} the area form is permutation
+invariant and the distance form is not, so this is a controlled ablation of exactly
+the quantity the theory says should matter. It is the paper's core evidence. We also
+report a cruder ablation, band area over predicted perimeter (``area/perim''), a mean
+width using no distance transform.
+
+\subsection{Multi-class aggregation, conventions, cost}\label{sec:multiclass}
+
+We apply the score per foreground class and aggregate over the classes predicted
+present, $\mathcal{P}(x)$, by the mean (a $\max$ variant is also reported).
+Restricting to predicted-present classes matters: aggregating over all classes lets
+an absent class with mid-range probabilities hijack the score.
+
+\paragraph{Degenerate cases, and a bug they caused.} If $\Ylo=\varnothing$ the class
+is confidently absent and contributes nothing. If $\Ylo\ne\varnothing$ but
+$\Yhi=\varnothing$ the band has no inner anchor and the width saturates at $\diag$.
+\textbf{If no foreground class is predicted at all}, the image is a \emph{total
+detection failure} and must receive the \emph{lowest} confidence under every score.
+Because the distance scores are negated, aggregating an empty present-class list to
+$0$ would make these images the \emph{most} confident of the split. An earlier
+version of our code did exactly this; the images affected have mean $1-\mathrm{mIoU}$
+of $0.55$--$0.84$ against dataset means of $0.04$--$0.40$, and the resulting AURC
+error is large enough to invert conclusions (\S\ref{sec:results}). We now assign
+them $-\diag$, matching SDC's convention (whose $0$ is its minimum). We flag this
+because it is exactly the kind of convention that silently decides a headline.
+
+\paragraph{Cost.} One forward pass, then $2C$ thresholdings and $2C$ Euclidean
+distance transforms: $O(CN)$, milliseconds per image, no retraining, no auxiliary
+model. Note $\alpha$ \emph{does} require a calibration set (\S\ref{sec:threshold});
+we do not claim otherwise.
+
+\section{Thresholds: the estimator's weakest joint}\label{sec:threshold}
+
+A fixed $\alpha$ in probability space carries a structural risk. The condition for
+a usable band is $\Yhi\ne\varnothing$, i.e.\ $1-\alpha \le \max_i p_i$ --- a
+constraint on each \emph{image's own upper tail}, which a global constant has no
+reason to satisfy. Diffuse (zero-shot, sigmoid) maps rarely reach $0.9$, so their
+band saturates at $\diag$.
+
+\paragraph{How bad it actually is, and on which counting rule.} Degeneracy admits
+two rates, and the difference between them is the whole argument below, so we
+report both. \emph{Total} degeneracy (columns $T$) is the fraction of images whose
+band \emph{is} the image diagonal: every class the model predicts present has an
+empty conservative set, so the score carries no ranking information at all.
+\emph{Partial} degeneracy (columns $P$) is the fraction of images on which
+\emph{at least one} present class saturates: the present-class mean of
+\S\ref{sec:multiclass} is then polluted by a $-\diag$ term, and the score is
+corrupted rather than destroyed. The two coincide whenever a single class is
+predicted --- which is why they are \emph{identical} on all four binary Pet
+conditions and diverge only on VOC. Both are measured against each image's true
+native-resolution diagonal, not a proxy, and both count only saturation: the
+$0.0$--$1.1\%$ of images that floor at $-\diag$ because they detect \emph{nothing}
+(\S\ref{sec:multiclass}) are excluded from both, being a different failure.
+
+\begin{center}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{$\alpha=0.01$} & \multicolumn{2}{c}{$\alpha=0.05$}
+& \multicolumn{2}{c}{$\alpha=0.1$} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+condition & $T$ & $P$ & $T$ & $P$ & $T$ & $P$ \\
+\midrule
+clipseg-general, Pet    & \textbf{99.6\%} & 99.6\% & 37.9\% & 37.9\% & 14.7\% & 14.7\% \\
+clipseg-general, VOC    & \textbf{98.6\%} & 99.3\% & 46.3\% & 79.8\% & 17.7\% & \textbf{63.1\%} \\
+clipseg-target, Pet     & 0.3\% & 0.3\% & 0.1\% & 0.1\% & 0.0\% & 0.0\% \\
+clipseg-target, VOC     & 17.3\% & 63.6\% & 5.1\% & 47.2\% & 1.4\% & \textbf{35.9\%} \\
+deeplabv3-external, Pet & 4.6\% & 4.6\% & 1.8\% & 1.8\% & 1.1\% & 1.1\% \\
+deeplabv3-external, VOC & 18.4\% & 47.7\% & 8.4\% & 37.1\% & 5.0\% & \textbf{32.1\%} \\
+deeplabv3-target, Pet   & 0.1\% & 0.1\% & 0.0\% & 0.0\% & 0.0\% & 0.0\% \\
+deeplabv3-target, VOC   & 12.0\% & 41.3\% & 5.4\% & 31.5\% & 2.7\% & \textbf{27.1\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\emph{A note for anyone checking these against the code}, because we got it wrong
+ourselves: neither column is the mean of the \texttt{diag\_saturated@} diagnostic
+that \texttt{scripts/show\_results.py} prints. That diagnostic is a per-image
+\emph{share of present classes}, and its mean over images ($41.8\%$ on
+\texttt{clipseg-general}/VOC at $\alpha=0.1$) is a third quantity, bounded between
+$T$ and $P$ and equal to both only in the binary case. $T$ is
+$\texttt{diag\_saturated@}=1$ with a present class; $P$ is
+$\texttt{diag\_saturated@}>0$.
+
+At $\alpha=0.01$ the zero-shot CLIPSeg score is dead: $98.6$--$99.6\%$ of images
+saturate outright, and the score is $92\%$ tied ($3669$ images take only $511$
+distinct values). This, and not a smooth loss of sensitivity, is what the
+$\alpha=0.01$ column of any ablation is measuring.
+
+At the deployed $\alpha=0.1$ the two rates tell different stories, and they are
+governed by \emph{different} factors, which is why reporting only one is
+misleading. \emph{Total} degeneracy is confined to $0$--$17.7\%$ of images, and it
+tracks \textbf{how diffuse the map is}, exactly as the mechanism above predicts:
+$14.7\%$ and $17.7\%$ on zero-shot CLIPSeg, whose sigmoid maps rarely reach $0.9$,
+against $0.0$--$5.0\%$ on every other condition and $0.0$--$2.7\%$ once the model is
+fine-tuned. On $T$, then, the degeneracy really is essentially absent on the
+fine-tuned conditions. \emph{Partial}
+degeneracy tracks something else entirely --- \textbf{the number of classes} --- and
+fine-tuning does not touch it. It is $0.0$--$14.7\%$ on Pet, where it coincides with
+$T$ exactly because there is only one foreground class to saturate; but it is
+$27.1$--$63.1\%$ on \emph{all four} VOC conditions, fine-tuned ones included
+($35.9\%$ on \texttt{clipseg-target}/VOC, $27.1\%$ on \texttt{deeplabv3-target}/VOC,
+against total rates of $1.4\%$ and $2.7\%$). With $C=21$ the present-class mean
+almost always has some weak class in it, however well trained the model is.
+
+\emph{An earlier version of this paragraph read: ``the degeneracy is confined to
+$0$--$17.7\%$ of images, and it is essentially absent on the fine-tuned
+conditions.''} Both clauses are true --- of $T$. Neither is true of $P$, which we had
+not computed. The sentence was therefore correct as written and wrong as read, and
+it under-reported the failure by a factor of up to $26$ on the cell that matters most
+(\texttt{clipseg-target}/VOC: $1.4\%$ against $35.9\%$). We flag it because the
+smaller number is the one that supported our own argument, and Remark~\ref{rem:retraction}
+is where it did the damage.
+
+\begin{remark}[A retraction, and a partial retraction of the retraction]\label{rem:retraction}
+An earlier draft of this section reported saturation rates of $27$--$67\%$ at
+$\alpha=0.1$ and argued that our reported results therefore \emph{understate} the
+method, with the largest gains to come on VOC. The rates were measured with a
+width-$>200$\,px proxy rather than against each image's own diagonal, and we
+retracted them as an over-count. \textbf{That retraction was half right, and we
+correct it here rather than leave the convenient version standing.}
+
+What was right: the proxy is not a measurement of $T$. Against each image's true
+diagonal, total degeneracy at $\alpha=0.1$ is $1.4$--$17.7\%$ on VOC, not
+$27$--$67\%$, and the claim that the method's headline is being suppressed by
+wholesale band collapse does not survive.
+
+What was wrong: we described the proxy as over-counting and moved on, when in fact
+the $27$--$67\%$ band is a close match to a real quantity we had simply not
+computed --- the \emph{partial} rate $P$, which is $27.1$--$63.1\%$ across the four
+VOC conditions. A band wider than $200$\,px is not evidence that the band \emph{is}
+the diagonal, but it is decent evidence that a $-\diag$ term has entered the mean.
+The proxy was measuring the right phenomenon with the wrong estimator, and we
+retracted the phenomenon along with the estimator.
+
+The inference the retraction drew must therefore be redone, because it rested on
+the smaller number. We had written: \texttt{clipseg-target}/VOC, one of the two
+cells where the band \emph{loses} to SDC under overlap risk, is only $1.4\%$
+saturated, \emph{so that loss cannot be a threshold artifact}. The premise is
+correct and the inference does not follow --- at $P = 35.9\%$ that cell is not
+obviously clean, and ``far too small'' is not an argument we can still make.
+
+The conclusion survives, but it needs a different argument, and we must first concede
+what the observational pattern cannot do. Ranked by $P$, the four VOC conditions are
+$63.1$, $35.9$, $32.1$, $27.1\%$ --- and the two that lose to SDC are exactly the two
+highest. Degeneracy and the nesting leak are \emph{collinear} across our conditions,
+because CLIPSeg-on-VOC is worst at both. No cross-condition correlation can separate
+them, and we do not claim one does.
+
+What separates them is an \textbf{intervention}. The repair
+\eqref{eq:mband} intersects the conservative set with the class's own prediction. It
+targets the leak, and it \emph{provably cannot touch degeneracy}: if
+$\{p_c \ge 1-\alpha\}$ is empty then so is its intersection with $\Yhat_c$, so a
+saturated class stays saturated and its width stays $\diag$. We verify this rather
+than assert it --- band and \eqref{eq:mband} are bit-identical on every saturated
+image of all eight conditions. Yet the repair closes $42$--$77\%$ of the band's AURC
+gap to SDC on precisely the two cells at issue (\S\ref{sec:results}). A
+threshold-degeneracy explanation predicts that a leak-only intervention does
+\emph{nothing}; it does most of the work. That is the discriminating evidence, and
+it is the argument the retraction should have made --- not an appeal to a rate being
+small.
+\end{remark}
+
+Saturated images do not, at $\alpha=0.1$, form one tied block: they collapse onto
+$-\diag$, which varies with image size ($171$--$2596$\,px on Pet). Within the
+block they are therefore ordered \emph{by image size}, and
+$\rho(\diag, \text{true risk}) \approx 0.05$ --- i.e.\ ordered essentially at
+random. That is the defect: not ties, but noise.
+
+\paragraph{The estimand should be trimmed, and $\alpha$ is part of it.} By
+Remark~\ref{rem:atom}, $H_x(t)$ saturates at $\diag$ as $t\to 1$ and blows up as
+$t\to 0$ ($Y_t\to$ the whole image). The untrimmed
+$\int_0^1 \HDF(Y_t,\Yhat)\,dt$ is dominated by degenerate level sets that nobody
+would call plausible segmentations. The honest estimand is therefore the
+\emph{trimmed} one,
+\begin{equation}\label{eq:trimmed}
+r_\alpha(x) = \Ex\big[\,L(Y_T,\Yhat)\;\big|\; T\in(\alpha,1-\alpha)\,\big],
+\end{equation}
+which makes $\alpha$ a \emph{definitional} significance level (``what counts as
+plausible''), not a nuisance hyperparameter. The cost must be stated: the trimmed
+posterior's marginals are the winsorized
+$\mathrm{clip}\big((p_i-\alpha)/(1-2\alpha),\,0,\,1\big)$, so
+Remark~\ref{rem:classical}(i) holds only in the trimmed sense.
+
+\paragraph{The integrand's own order statistics are the exact nodes.} $H_x(t)$ is
+\emph{piecewise constant} in $t$, jumping only where $t$ crosses one of the image's
+own probability values. Hence, exactly,
+\begin{equation}\label{eq:orderstat}
+\int_0^1 H_x(t)\,dt \;=\; \sum_{k=1}^{m} \big(v_k - v_{k-1}\big)\, H_x\big(Y_{v_k}\big)
+\;+\; \big(1 - v_m\big)\cdot \diag,
+\end{equation}
+where $v_1 < \cdots < v_m$ are the distinct probability values, $v_0 := 0$. The
+indexing is the whole content of the identity and is easy to get wrong: since
+$Y_t = \{i : p_i \ge t\}$, the level set is \emph{constant} for
+$t \in (v_{k-1}, v_k]$ and equal to $Y_{v_k}$ there, so each level carries the gap
+\emph{below} it, not above. The final term is the atom $Q_p$ places on the empty mask
+(Remark~\ref{rem:atom}).
+
+The \emph{exact} quadrature nodes are therefore the image's own order statistics,
+weighted by their gaps, plus an atom at the empty mask; and the constants
+$\alpha, 1-\alpha$ are a two-point approximation to this. Adapting \emph{nodes} per
+image is legitimate --- we still estimate the same
+functional for every image, so the cross-image ranking survives and only quadrature
+error (a) falls. Normalizing the \emph{score} per image would not be: it would divide
+out the very signal we rank by. And the weights must remain the gaps: equal weights on
+quantile nodes silently swaps the posterior for one whose marginals are the image's
+own empirical CDF $F_x(p_i)$, breaking Remark~\ref{rem:classical}(i).
+
+\paragraph{A negative result: rank-anchoring the conservative threshold fails.}
+Equation~\eqref{eq:orderstat} suggests an obvious repair --- replace the constant
+conservative threshold with an order statistic of the class's own probabilities, so
+that $\Yhi\ne\varnothing$ \emph{by construction}:
+\begin{equation}\label{eq:rankanchor}
+t_{\mathrm{hi}} \;=\; \min\!\Big(1-\alpha,\; \mathrm{P}_{95}\big(\{p_i : i \in \Yhat_c\}\big)\Big).
+\end{equation}
+It has the apparently decisive property that where the model is confident it returns
+$1-\alpha$ and the score is \emph{bit-for-bit} the constant-threshold one, so it
+looks like a strict information gain on the degenerate images and a no-op elsewhere.
+We implemented it, and it does remove the saturation (tie fraction $0.90\to0.04$ on
+a controlled synthetic population). \textbf{It also makes the ranking worse, in every
+regime.} Kendall $\tau$ against the ground-truth risk falls by $0.10$--$0.15$ and
+AURC rises --- under the boundary estimand \emph{and} under a convention-free
+$\int_0^1 (1-\Dice)\,dt$, so this is not an artifact of the $\diag$ convention.
+
+The reason is worth stating, because it is a trap the framework sets for itself. A
+percentile of the \emph{in-mask probability values} is, by definition, an \emph{area}
+quantile of the mask: $\{p \ge \mathrm{P}_{95}(p|_{\Yhat_c})\} \cap \Yhat_c$ is the
+top-$5\%$-of-the-mask-by-area core (measured $|\Yhi|/|\Yhat_c|$: median $0.055$). So
+\eqref{eq:rankanchor} is not an anchor in probability at all --- it is the
+fixed-\emph{area} rule, and the band then reads the distance from the skirt to a
+core of pinned relative area, whose inner term is pure object geometry. That is the
+shape-statistic collapse the whole design exists to avoid, arriving by the back door.
+It additionally breaks the nesting \eqref{eq:nesting} on normalized multi-class maps
+(a softmax argmax winner need only clear $1/C$, so $t_{\mathrm{hi}}$ can fall below
+$\tfrac12$ and $\Yhi\not\subseteq\Yhat_c$), where it can invert the score outright.
+
+We report \eqref{eq:rankanchor} as an ablation, not a method.
+
+\paragraph{A second negative result: importance sampling by the probability histogram
+fails too, and for a reason that unifies both failures.} \eqref{eq:orderstat} also
+suggests placing the nodes at the quantiles of the image's own probability
+\emph{histogram} and weighting them by the gaps they span --- textbook importance
+sampling, and, unlike \eqref{eq:rankanchor}, provably estimand-preserving, since the
+gap weights are exactly the ones that leave $\int_0^1 H_x$ invariant. We implemented
+it. \textbf{It is worse than the equispaced midpoint rule at every $M<16$}: on a
+smoothed random field, $|r_M - \int_0^1 H_x|$ is $19.5$ vs $1.1$ at $M=2$ and $5.6$ vs
+$1.4$ at $M=8$.
+
+The mechanism is the point, and it is Observation~\ref{obs:vshape}. $H_x$ is
+empirically V-shaped, with a \emph{minimum} near $m_c$ --- and, for a binary map with
+\emph{no pixel tied at exactly} $\tfrac12$, $Y_{1/2} = \Yhat$ and $H_x(\tfrac12)=0$
+exactly (Prop.~\ref{prop:floor}(i)). It then rises toward \emph{both} tails on the maps
+we measured (one binary map: $H_x = 0.0$ at $t=\tfrac12$, $19.0$ at $t=0.25$, $78.7$ at
+$t=0.98$), though neither unimodality nor $H_x(1)=\diag$ is guaranteed in general
+(Remark~\ref{rem:vshapefails}, Prop.~\ref{prop:floor}(iii)). \emph{The integral's mass
+lives in the tails; the neighbourhood of the minimum contributes almost nothing.} But the
+probability \emph{values} concentrate near the vertex --- that is what makes it the
+vertex. Placing nodes at their quantiles therefore puts them precisely where the
+integrand is smallest: for the map above, the $M=2$ quantile nodes land at $0.359$ and
+$0.597$, hugging the minimum, while the midpoint rule's $0.25$ and $0.75$ sit where the
+mass is.
+
+This is the same error as \eqref{eq:rankanchor}, which also pulls the conservative
+node \emph{toward} the probability mass. Both failures share one lesson:
+
+\begin{quote}
+\emph{The correct importance density is $\propto |H_x(t)|$, which is tail-heavy. One
+should oversample \textbf{away} from where the probability mass sits, not toward it.
+Every distribution-aware node rule we tried does the opposite.}
+\end{quote}
+
+It also retro-justifies the constant threshold's nodes $(\alpha, 1-\alpha) = (0.1,
+0.9)$: they are in the tails, where $H_x$ is large. That was not by design, but it was
+not luck either --- it is the only region that carries signal.
+
+\subsection{Deriving nodes from the integrand --- and why the derivation does not
+settle them}\label{sec:derivednodes}
+
+One can try to go further than ``take the nodes from a quadrature rule'' and derive
+them from the shape of $H_x$. We set out that derivation, and then show --- twice ---
+that it does not license the nodes it produces: minimizing the Koksma bound does not
+minimize the error (Remark~\ref{rem:minimaxfallacy}), and the ``tuning buys nothing''
+result holds on one synthetic generator and fails on a second. \emph{Node placement is
+settled empirically (\S\ref{sec:openitems}), not here.} An earlier version of this
+subsection was titled ``the nodes \emph{are} derivable, and tuning cannot beat them'';
+both halves of that are retracted below.
+
+Two facts about $H_x$ \emph{are} provable, and one regularity is only empirical. The
+distinction matters, and we have already got it wrong once.
+
+\begin{proposition}[The tightest enclosing level set, and a floor for it]\label{prop:floor}
+Write $m_c := \min\{\, p_{ci} : i \in \Yhat_c \,\}$, the smallest probability the map
+attains inside its own prediction. Then
+\begin{enumerate}
+\item $Y_t \supseteq \Yhat_c \iff t \le m_c$, so $Y_{m_c}$ is the \emph{tightest} level
+set containing the prediction. Note the two sets are defined by inequalities of
+\emph{different strictness}: the argmax breaks ties toward the lowest class index, so
+$\Yhat_c$ excludes a pixel where $p_c$ merely ties the leader, while
+$Y_t = \{i : p_{ci} \ge t\}$ includes it. In the binary case this means
+$\Yhat = \{p > \tfrac12\}$ \emph{strictly}, and $Y_{1/2} = \Yhat$ --- hence
+$H_x(\tfrac12)=0$ --- \textbf{only if no pixel attains exactly $\tfrac12$}. On a map
+of $121$ tied pixels we measure $|\Yhat| = 9$ against $|Y_{1/2}| = 121$ and
+$H_x(\tfrac12) = 5.66$, not $0$;
+\item $m_c \ge \phi$, the \textbf{argmax floor}, where
+$\phi = 1/C$ for a normalized (softmax) map --- a winner is the largest of $C$ numbers
+summing to $1$ --- and $\phi = \tfrac12$ for a binary map and for CLIPSeg's
+$\mathrm{bg} = 1 - \max_c p_c$, where a foreground class wins only if $p_c > 1-p_c$;
+\item $H_x(1) = L(\varnothing,\Yhat_c) = \diag$ from \eqref{eq:bounded} --- \emph{but
+only when $\max_i p_{ci} < 1$.} A confident softmax saturates to exactly $1$ in
+floating point, and then $Y_1 = \{p_c \ge 1\}$ is \emph{non-empty} and $H_x(1)$ is not
+the diagonal at all: on a map with a saturated core we measure $H_x(1) = 0.000$ against
+$\diag = 28.28$. The atom of Remark~\ref{rem:atom} degrades gracefully --- its mass
+$1-\max_i p_{ci}$ simply vanishes --- but the endpoint value does not, and any argument
+that assumes $H_x(1)=\diag$ (we had one, and have withdrawn it) is unsound on
+saturating maps.
+\end{enumerate}
+\end{proposition}
+
+\begin{observation}[$H_x$ is empirically V-shaped, with its vertex near $m_c$]\label{obs:vshape}
+On realistic maps $H_x$ falls then rises, with a minimum near $t = m_c$. Measured
+monotonicity violations: $0\%$ across binary, softmax ($C=5,21$) and CLIPSeg-style
+maps. \textbf{This is an empirical regularity, not a theorem}, and
+Remark~\ref{rem:vshapefails} gives counterexamples.
+\end{observation}
+
+\begin{center}
+\small
+\begin{tabular}{lcccc}
+\toprule
+construction & floor $\phi$ & $m_c$ (min in-mask) & measured $t^\star$ & better predictor \\
+\midrule
+binary                & $0.500$ & $0.500$ & $0.500$ & (tie, exact) \\
+softmax $C=5$         & $0.200$ & $0.206$ & $0.223$ & $m_c$ \\
+softmax $C=21$ (VOC)  & $0.048$ & $0.055$ & $0.060$ & $m_c$ \\
+CLIPSeg-style $C=21$  & $0.500$ & $0.533$ & $0.550$ & $m_c$ ($3\times$ closer) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}[Where we were wrong, twice, and what an independent check caught]\label{rem:vshapefails}
+An earlier draft asserted $H_x(\tfrac12)=0$ unconditionally (true only for $C=2$: under
+a $C$-way argmax a class can win with $p_c$ well below $\tfrac12$, so
+$\{p_c\ge\tfrac12\}$ is a strict \emph{subset} of $\Yhat_c$ --- $140$ pixels against
+$298$ on a $C{=}5$ map, giving $H_x(\tfrac12)=2.83$). A second draft then asserted that
+the vertex \emph{is} the argmax floor $\phi$. An independent adversarial check refuted
+that too, and the refutation is sharp:
+\begin{enumerate}
+\item \textbf{$\phi$ is a lower bound on $m_c$, not the vertex.} On a $3$-way softmax
+whose winner never descends below $0.40$, $H_x(1/3) = 5.66$ while $H_x(0.35)=0$: the
+floor is not attained, so it is not where the minimum sits. \emph{We had the evidence
+and rationalized it away} --- our measured $t^\star$ sat consistently \emph{above}
+$\phi$ ($0.060$ vs $0.048$; $0.222$ vs $0.200$), which we explained as ``trimming
+higher matches better'' rather than as the floor simply not being the vertex.
+\item \textbf{$H_x(t^\star)=0 \iff C=2$ is false in both directions.} A $C{=}3$ map with
+$Y_{1/3} = \Yhat_c$ gives $H_x(1/3)=0$.
+\item \textbf{Unimodality is not guaranteed.} $H_x$ can fall, rise, and fall again: on a
+map whose prediction is a single pixel, $H_x = 27.3,\,4.0,\,19.8,\,0.0$ at
+$t = 0.01,\,0.10,\,0.30,\,0.45$.
+\item \textbf{$H_x = 0$ does not imply $Y_t = \Yhat_c$.} $\HDF$ is a $95$th percentile,
+so a one-pixel disagreement is truncated away. This is the same non-metric behaviour
+that breaks Prop.~\ref{prop:band} (Remark~\ref{rem:nobridge}); it recurs wherever we
+treat $\HDF$ as if it measured set equality.
+\end{enumerate}
+The \emph{geometric} observation behind Remark~\ref{rem:straddle} survives all of this:
+on a $21$-way softmax the vertex sits near $0.06$, so nodes at $(0.1,0.9)$ or
+$(0.25,0.75)$ do both sit on the same side of it. What does \emph{not} survive is the
+\emph{inference} we drew from it. Remark~\ref{rem:straddle} conjectured that this
+non-straddling explains our largest empirical result, and that conjecture is now
+refuted twice over --- see the remark itself, which we have rewritten as the refutation.
+The observation is real; the explanation it was made to carry is withdrawn. And there is
+in any case \emph{no closed form} for $t^\star$ --- $m_c$ is the best cheap estimate we
+have, and it is an estimate.
+\end{remark}
+
+Split at the vertex and each half is (empirically) monotone, hence of bounded
+variation. For a BV integrand the composite midpoint rule is \emph{minimax}-optimal: it
+attains the minimal star-discrepancy $D^\star = 1/(2M)$ in one dimension, hence the
+smallest \emph{worst-case} Koksma bound \eqref{eq:koksma}. At $M=2$ that suggests one
+node at the midpoint of each half:
+\begin{equation}\label{eq:derivednodes}
+\boxed{\; t_1 = \tfrac{1}{2}\hat{t}, \qquad t_2 = \tfrac{1}{2}\big(\hat{t} + 1\big),
+\qquad \hat{t} := m_c \;}
+\end{equation}
+with weights equal to the subinterval widths, so only the node \emph{placement}
+adapts and the estimand $\int_0^1 H_x$ is untouched. This reduces to $(0.25, 0.75)$
+exactly when $m_c = \tfrac12$ (binary). It carries \emph{no tuned parameter}, but
+$\hat{t} = m_c$ is an \emph{estimate} of the vertex, not the vertex
+(Remark~\ref{rem:vshapefails}), so we call the rule derived-but-approximate and test
+it rather than assert it. Note Gauss--Legendre is \emph{not} the right rule here despite
+being the textbook choice: its optimality assumes polynomial smoothness, and $H_x$ has
+a kink at its vertex. On a V-shaped $H_x \propto |2t-1|$ the midpoint rule is exact
+while Gauss--Legendre overestimates by $15.5\%$; measured on real binary maps, midpoint
+errs by $18.4\%$ against Gauss--Legendre's $20.8\%$.
+
+\begin{remark}[A hypothesis of ours, refuted twice --- the explanandum stands, the
+explanation does not]\label{rem:straddle}
+\emph{We state this as we believed it, then refute it, because the refutation is the
+content. The explanandum is not in doubt: the $5.6$--$17.6\%$ reproduces exactly on
+clean data (\S\ref{sec:quadrature}). What dies is our explanation of it.}
+
+\textbf{The hypothesis.} On a $21$-way softmax the vertex sits at $t^\star\approx0.05$.
+The deployed band's nodes $(0.1, 0.9)$ and the binary-derived $(0.25, 0.75)$ therefore
+put \emph{both} nodes on the \emph{same side} of it: the quadrature never straddles the
+minimum, and the entire left branch of the V goes unsampled. That is exactly the regime
+in which dense $M{=}32$ beats $M{=}2$ by $5.6$--$17.6\%$ --- on VOC, and only on VOC
+(\S\ref{sec:quadrature}) --- while the ladder is flat on binary Pet, where $(0.25,0.75)$
+straddles correctly. The reading would be that the dense rule wins on multi-class not
+because $32$ nodes are needed, but because $2$ badly-placed ones sample only half the
+integrand.
+
+\textbf{First refutation: the gain is largest exactly where the mechanism is switched
+off.} The mechanism can only operate where the band fails to straddle the vertex, and
+that is a property of the \emph{map}, not of the dataset. By Prop.~\ref{prop:floor}(ii)
+only the two genuine $21$-way softmax conditions have a low floor
+($\phi = 1/21 = 0.048$); the two CLIPSeg-VOC conditions set
+$\mathrm{bg} = 1-\max_c p_c$, which forces $\phi = \tfrac12$, so their vertex sits above
+$\tfrac12$ and the band's $(0.1,0.9)$ \emph{already straddles it}. (Confirmed per
+condition: the $5$th percentile of $\max_c p_c$ dips below $\tfrac12$ on exactly those
+two softmax conditions --- $0.359$ and $0.309$ --- and never on the other six, where it
+is $\ge 0.501$.) So the hypothesis makes a sharp prediction about \emph{which} VOC cells
+should gain, and it gets it backwards:
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+condition & $\phi$ & band straddles? & band $\to M{=}32$ gain (\% of band AURC, $95\%$ CI) \\
+\midrule
+\texttt{clipseg-general}, VOC    & $\tfrac12$  & \textbf{yes} & $\mathbf{+17.6}$ \; $[15.0,\ 19.9]$ \\
+\texttt{clipseg-target}, VOC     & $\tfrac12$  & \textbf{yes} & $\mathbf{+14.7}$ \; $[12.3,\ 17.2]$ \\
+\texttt{deeplabv3-external}, VOC & $0.048$ & no  & $+6.9$ \; $[1.9,\ 11.4]$ \\
+\texttt{deeplabv3-target}, VOC   & $0.048$ & no  & $+5.6$ \; $[1.3,\ 10.0]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The two cells where straddling \emph{provably cannot operate} gain two to three times as
+much as the two where it could, and the confidence intervals \textbf{do not overlap}.
+This is not a null result; it is the wrong sign. Note also what this does to the ``only
+on VOC'' framing that made the hypothesis attractive: ``VOC vs Pet'' and ``low floor vs
+$\phi=\tfrac12$'' are different partitions of the eight conditions, and we had been
+reading a result that follows the first as though it followed the second.
+
+\textbf{Second refutation: the discriminating experiment fails.} \texttt{vtx2} ---
+\eqref{eq:derivednodes} at $\hat t = m_c$, which straddles the vertex \emph{by
+construction} --- was built to test precisely this, and it \textbf{loses}
+(\S\ref{sec:openitems}, item 4): $4/8$ against the deployed band, worst of the three
+rules compared, and on the only two conditions where the mechanism can operate it is
+\emph{worse than the band it was meant to repair}.
+
+\emph{Caveat, stated because it bounds the refutation.} \texttt{vtx2} is not a pure
+straddle toggle: it also moves the upper node to $\approx 0.53$ --- off the right tail,
+where \S\ref{sec:threshold} shows the integral's mass lives --- and reweights to
+$\approx(0.055, 0.945)$. So what this second argument refutes is that
+\eqref{eq:derivednodes}'s straddle explains the ladder, \emph{not} that no straddling
+rule whatever could help. The first argument needs no such caveat, which is why we lead
+with it.
+
+\textbf{What replaces it.} \S\ref{sec:quadrature} decomposes the $5.6$--$17.6\%$ into
+legs that move one thing each, and the answer is not node placement on three of the four
+cells --- nor, on the largest of them, node count.
+\end{remark}
+
+\begin{remark}[Minimax-optimal is not optimal, and we leaned on the difference]\label{rem:minimaxfallacy}
+The step from ``the midpoint rule minimizes the worst-case bound'' to ``the midpoint
+rule is the right node set'' is a \textbf{non-sequitur}, and an independent adversarial
+check produced the counterexample. On a step integrand with $\int_0^1 H = 1.5$:
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+node set & star-discrepancy $D^\star$ & Koksma bound $V\!\cdot\!D^\star$ & \textbf{actual error} \\
+\midrule
+midpoint $(0.25, 0.75)$ & $\mathbf{0.25}$ (minimal) & $\mathbf{1.5}$ (minimal) & $0.5$ \\
+a re-tuned pair         & $0.35$ & $2.1$ & $\mathbf{0.0}$ (exact) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A node set with a \emph{strictly worse} bound achieves a \emph{strictly better} error.
+Minimizing a worst-case bound says nothing about the error on the integrand one
+actually has. \textbf{This is the second time the same fallacy appears in this
+section}: the $\sqrt{V_L/V_R}$ allocation below also provably minimizes the Koksma
+bound and provably fails to reduce the error.
+
+The same check also computes $D^\star$ for the vertex-aware nodes
+\eqref{eq:derivednodes} --- $0.400$ at $\hat t = 0.20$ and $0.475$ at $\hat t = 0.05$,
+both \emph{worse} than the midpoint's $0.25$ --- so by the minimax criterion those nodes
+are inferior. \emph{We previously offered this as a second instance of the two criteria
+disagreeing}, on the grounds that the vertex-aware nodes nevertheless measured
+\emph{better} on multi-class maps. \textbf{That half is retracted.} On the real
+multi-class conditions they measure \emph{worse}: \texttt{vtx2} loses $4/8$ to the band
+it was built to replace and $6/8$ head-to-head against plain $(0.25,0.75)$
+(\S\ref{sec:openitems}, item 4). On this integrand the two criteria happen to agree, and
+the minimax criterion happens to be right.
+
+That agreement is a coincidence and rescues nothing above. The step integrand remains a
+\emph{proof} that a strictly worse bound can achieve a strictly better error, and one
+family of integrands on which the bound's ordering turns out correct does not repair an
+inference that is invalid in general. Minimizing a worst-case bound tells you about the
+worst case; it does not tell you which node set to use on the integrand you have.
+
+\emph{We therefore withdraw any claim that node placement is settled by theory.} What
+theory gives is the $O(1/M)$ rate \eqref{eq:koksma}, and that is all. Where to put a
+finite number of nodes is an empirical question, and \S\ref{sec:openitems} treats it as
+one.
+\end{remark}
+
+\paragraph{On one synthetic family, tuning bought nothing --- and on another it bought
+a great deal.} We grid-searched the \emph{oracle} $\alpha$ --- tuned on the very maps
+it is scored on, hence an upper bound on what any tuning procedure could achieve ---
+against the exact integral:
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+rule (\textbf{binary maps}, $t^\star = \tfrac12$) & free parameters & mean error & nodes \\
+\midrule
+\textbf{midpoint $M{=}2$ (derived)} & \textbf{0} & \textbf{16.1\%} & $0.25, 0.75$ \\
+symmetric 2-point, \emph{oracle} $\alpha$ & 1 & $16.1\%$ & $0.25, 0.75$ \\
+asymmetric 2-point, \emph{oracle} & 2 & $16.0\%$ & $0.20, 0.75$ \\
+asymmetric + free weights, \emph{oracle} & 3 & $12.1\%$ & $0.20, 0.85$ \\
+\midrule
+\textbf{midpoint $M{=}4$ (derived)} & \textbf{0} & \textbf{6.3\%} & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{This table does not generalize, and we report it with its refutation
+attached.} It is measured on \emph{one} synthetic family of binary maps. A second
+family --- differing only in how the probability maps were generated (value spread
+$\mathrm{sd}=0.065$ against $0.200$) --- puts the oracle at $(0.50, 0.78)$ with $14.4\%$
+while $(0.25,0.75)$ gives $41.0\%$. \emph{Two synthetic generators, two different
+answers about the optimal nodes.} The optimum depends on the distribution of
+probability \emph{values}, which no theory here pins down and for which we have no
+validated generator. We therefore do not claim a settled node placement, and the real
+probability maps must decide it (\S\ref{sec:openitems}).
+
+Within the one family above:
+\begin{enumerate}
+\item \textbf{The oracle's $\alpha$ coincided with the midpoint node.} Grid search
+recovered $0.25/0.75$ and matched its error to the digit. \emph{This is a coincidence
+of that generator, not a theorem} --- Remark~\ref{rem:minimaxfallacy} shows the minimax
+argument cannot license it, and the second generator contradicts it. We had written it
+up as ``tuning buys nothing''; that was wrong.
+\item \textbf{Breaking the symmetry $t_{\mathrm{lo}}+t_{\mathrm{hi}}=1$ is not worth
+it.} A second free parameter buys $0.1$ points ($16.1\to16.0$). We had argued from the
+asymmetry of $H_x$ (its right tail is heavier, because the empty level set saturates
+at $\diag$) that an asymmetric rule should help; it does not. The $M=2$ error is
+dominated by the V's curvature, not by its asymmetry. Only freeing the \emph{weights}
+helps ($\to 12.1\%$), and even that is beaten outright by the zero-parameter $M=4$.
+
+\emph{Note the symmetry that \eqref{eq:derivednodes} \emph{does} break, and for a
+reason: on a multi-class softmax $m_c$ sits far below $\tfrac12$ (measured $0.055$ on a
+$21$-way map), so the derived nodes are strongly asymmetric ($\approx 0.028, 0.528$ at
+$C=21$). The finding above is that asymmetry chosen by \emph{tuning} is worthless;
+asymmetry \emph{derived from $m_c$} --- an \emph{estimate} of the vertex, not the argmax
+floor $\phi$, which is only a lower bound on $m_c$ (Prop.~\ref{prop:floor}(ii),
+Remark~\ref{rem:vshapefails}) --- is a different proposition, and it was the one
+\S\ref{sec:openitems} set out to test. \emph{It has since been tested, and it is worthless
+too}: the derived asymmetric nodes lose to the symmetric $(0.25,0.75)$ they were meant to
+improve on, $6/8$ head-to-head on the real conditions (\S\ref{sec:openitems}, item 4). So
+the honest generalization of this table is not ``tuned asymmetry is worthless while
+derived asymmetry is untested'' but simply \emph{asymmetry has not helped us, however we
+chose it}. An earlier version of this note said ``the vertex is at
+$1/C$'' and quoted nodes $(0.024, 0.524)$ computed from $\phi = 1/21$; that is the
+retracted floor rule, and the figures were a fossil of it.}
+\item \textbf{Add nodes, do not tune them.} The zero-parameter $M=4$ rule ($6.3\%$)
+halves the error of the three-parameter oracle at $M=2$ ($12.1\%$). Nodes cost a
+distance transform; hyperparameters cost a validation split, a tuning protocol, and a
+reviewer's trust.
+\end{enumerate}
+
+\begin{remark}[A derivation of ours that did \emph{not} survive]
+Koksma applied per half gives $\varepsilon_L \le V_L/2M_L$ and
+$\varepsilon_R \le V_R/2M_R$, so minimizing the total error bound under
+$M_L + M_R = M$ prescribes the allocation $M_L/M_R = \sqrt{V_L/V_R}$ --- and both
+variations are free or nearly so ($V_R = \diag$ a priori; $V_L = \HDF(\text{image},
+\Yhat)$, one EDT). Measured $V_L/V_R$ has median $0.243$, so the rule sends $33\%$ of
+the nodes to the low-threshold half. \emph{It does not help}: against uniform
+allocation at equal $M$ it wins twice, ties twice and loses once, with margins under
+one point. Minimizing a worst-case bound is not the same as minimizing the error, and
+Koksma's is loose here. We report it because the derivation looks compelling and is
+wrong, which is the third time in this section that a principled-looking adaptive
+threshold rule has failed empirically.
+\end{remark}
+
+\paragraph{Why the band cannot inherit any of this.} The above prescribes nodes for
+$r_M$, the quadrature. It says nothing about the band, and cannot: \emph{the band
+width is not a quadrature, so its $\alpha$ is not a node.} The band is a surrogate
+(Remark~\ref{rem:nobridge}); its $\alpha$ is a trimming level with no theoretical
+home, which is exactly why the empirically optimal $\alpha$ for the band scatters over
+$0.01$--$0.3$ with no pattern while the optimal node for $r_2$ sits immovably at
+$0.25$.
+
+Deploy $r_M$ instead of the band, and the problem dissolves: the nodes are
+\emph{prescribed by the quadrature rule}, and there is \textbf{no free
+hyperparameter at all} --- Gauss--Legendre gives $t = \tfrac12 \mp \tfrac{1}{2\sqrt3}
+= 0.2113, 0.7887$ at $M=2$; the midpoint rule gives $(m-\tfrac12)/M$. And it is not a
+sacrifice: the zero-hyperparameter $r_2$ \emph{beats the band with an oracle-tuned}
+$\alpha$ on the CLIPSeg cells (VOC, penalized boundary: $153.0$ vs $178.8$; and
+$91.0$ vs $98.9$) and ties elsewhere.
+
+\begin{remark}[Deploying $r_M$ closes the paper's one theoretical gap]
+Remark~\ref{rem:nobridge} is the only place where our theory does not reach our
+practice: $\HDF$ is a percentile, not a metric, so no inequality connects the band
+width to the $r_2$ it stands in for, and the bridge rests on a measured
+$\rho\in[0.974,0.992]$. \emph{If we deploy $r_2$, there is nothing to bridge} --- the
+deployed score \emph{is} the estimator the theory derives. The chain becomes
+\begin{equation*}
+\underbrace{C^\star_L = -\Ex[L]}_{\text{definition}}
+\;\to\;
+\underbrace{\textstyle\int_0^1 L(Y_t,\Yhat)\,dt}_{\text{exact under } Q_p}
+\;\to\;
+\underbrace{r_M,\ \text{nodes from the rule}}_{O(1/M) \text{ by Koksma}}
+\;\to\;
+\underbrace{M=2}_{\text{deployable}} ,
+\end{equation*}
+with no step tuned and no step unproved. We recommend it --- and, since the first draft
+of this remark, the recommendation has stopped costing anything: at the band's \emph{own}
+nodes $(0.1,0.9)$, $r_2$ ranks strictly better than the band on all eight conditions
+under all three risks, $24/24$ (\S\ref{sec:openitems}, item 2). Closing the theoretical
+gap and improving the score turn out to be the same edit.
+\end{remark}
+
+\paragraph{Selecting $\alpha$ label-free.} Three rules, all computable on the
+\emph{unlabelled} test set, preserving the no-tuning-data property:
+\begin{enumerate}
+\item \textbf{Degeneracy budget.} Choose the smallest $\alpha$ with
+$\hat\Prb(\Yhi=\varnothing)\le\delta$ (say $5\%$). Directly targets the mechanism
+above; on clipseg-general it forces $\alpha \gg 0.1$.
+\item \textbf{Pooled quantile rule.} Fix $1-\alpha$ at a quantile of the model's
+\emph{pooled} foreground-probability distribution over the unlabelled split, rather
+than at a fixed probability. This adapts to diffuse vs.\ sharp models while keeping
+$\alpha$ \emph{constant across images} --- which is what distinguishes it from the
+failed per-image rule \eqref{eq:rankanchor}: a global threshold cannot encode any
+individual image's shape.
+\item \textbf{Conformal calibration.} Calibrate $\alpha$ so that
+$\Prb(\Yhi \subseteq Y^* \subseteq \Ylo) \ge 1-\delta$. Nested level sets are the
+native object of Conformal Risk Control \cite{crc}, which gives $\alpha$ a
+distribution-free meaning and turns the band into a genuine confidence region for
+the boundary. This needs labels once, and is the most principled option.
+\end{enumerate}
+
+\begin{remark}[Temperature is the same knob]
+A monotone recalibration of $p$ leaves the argmax and every $p$-ranking unchanged,
+so it is a no-op for aMSP-style baselines --- but it \emph{moves the level sets} and
+therefore changes our band. For this score, temperature scaling and $\alpha$
+selection are the same degree of freedom. This is both a confound to control and a
+point of difference from the aggregation baselines.
+\end{remark}
+
+\section{Experiments}\label{sec:experiments}
+
+\subsection{Protocol}
+
+\paragraph{Conditions and data.} A $2\times2$ design over model family and
+adaptation, stressing scores across sharply and diffusely calibrated maps: CLIPSeg
+(ViT-B/16) zero-shot and decoder-fine-tuned; DeepLabV3-ResNet50 with the COCO
+checkpoint and fine-tuned end to end. Datasets: Oxford-IIIT Pet (binary,
+$3{,}669$ test images) and PASCAL VOC 2012 ($21$ classes, $1{,}449$ val images).
+Probability maps are bilinearly upsampled to native resolution, so distances are in
+original-image pixels. This gives the \textbf{eight} condition $\times$ dataset
+cells of Tables~\ref{tab:overlap}--\ref{tab:boundary}; all counts below are out of
+$8$.
+
+\paragraph{Baselines ($16$).} Mean / 5th-percentile / worst-patch maximum softmax
+probability, mean margin, Shannon entropy (global and foreground-restricted),
+low-confidence fraction, tail-mean uncertainty \cite{values}, MMMC
+\cite{holder}, DOCTOR's collision probability \cite{doctor}, Generalized Entropy
+\cite{gen}, boundary and interior entropy \cite{metaseg,zenk}, Boundary Uncertainty
+Concentration \cite{buc}, Soft Dice Confidence \cite{sdc}, and the SAM stability
+score \cite{sam} (Remark~\ref{rem:sam}). We additionally evaluate a \emph{combined}
+score, the rank-average of the distance band and SDC.
+
+\emph{The combined score is \textbf{transductive}, and we mark it wherever it appears.}
+Its two rank transforms are taken across the evaluation split, so its value --- and, for
+a small fraction of pairs, its \emph{ordering} --- depends on which other images are
+present, and scored one image at a time it is constant. It is therefore \emph{not} a
+per-image functional $g(x)$ and falls outside the post-hoc, image-level,
+\emph{single-pass} regime this paper defines in \S\ref{sec:setup}. It leaks no ground
+truth, so its AURC is not inflated; but it \textbf{cannot be deployed as written}, and
+no recommendation should be read from it. The deployable version freezes the two
+empirical CDFs on a held-out split; we have not measured that. The code marks it
+(\texttt{TRANSDUCTIVE\_SCORES} in \texttt{scripts/analyze\_selective.py}) and so, from
+here on, do we.
+
+\paragraph{Metric.} AURC, with \emph{random} and \emph{oracle} bracketing every
+achievable score. Significance: a paired image bootstrap ($1000$ resamples) of the
+band against SDC.
+
+\subsection{Results}\label{sec:results}
+
+\begin{table}[t]
+\centering
+\small
+\caption{AURC under \textbf{overlap risk} ($1-\mathrm{mIoU}$), lower is better;
+best in bold. Band-HD95 is \eqref{eq:bandsym}; Band-Dice and SAM-stab are the area
+readouts \eqref{eq:area} (Remark~\ref{rem:sam}); bi-level scores at $\alpha=0.1$,
+symmetric, present-class mean. Detection failures are ranked least-confident
+(\S\ref{sec:multiclass}). \textbf{Combined is \emph{transductive}} --- its ranks are
+taken across the split, so it is not a per-image score and is not deployable as written
+(\S\ref{sec:experiments}).}
+\label{tab:overlap}
+\begin{tabular}{lccccccccc}
+\toprule
+Condition & Band-HD95 & Band-Dice & SAM-stab & SDC & Combined & aMSP & aNE & BUC & Oracle \\
+\midrule
+clipseg-general, Pet     & 0.0176 & 0.0191 & 0.0191 & 0.0204 & \textbf{0.0171} & 0.0178 & 0.0192 & 0.0179 & 0.0057 \\
+clipseg-general, VOC     & 0.2920 & 0.2882 & 0.2910 & \textbf{0.2375} & 0.2444 & 0.3321 & 0.3314 & 0.3263 & 0.1940 \\
+clipseg-target, Pet      & \textbf{0.0047} & 0.0126 & 0.0126 & 0.0126 & 0.0059 & 0.0076 & 0.0072 & 0.0049 & 0.0013 \\
+clipseg-target, VOC      & 0.1777 & 0.1781 & 0.1807 & 0.1627 & \textbf{0.1601} & 0.2236 & 0.2260 & 0.2202 & 0.1285 \\
+deeplabv3-external, Pet  & \textbf{0.0118} & 0.0179 & 0.0179 & 0.0176 & 0.0124 & 0.0211 & 0.0197 & 0.0131 & 0.0036 \\
+deeplabv3-external, VOC  & 0.1018 & 0.1072 & 0.1091 & 0.1072 & \textbf{0.0993} & 0.1523 & 0.1451 & 0.1327 & 0.0670 \\
+deeplabv3-target, Pet    & 0.0060 & 0.0145 & 0.0145 & 0.0140 & 0.0072 & 0.0082 & 0.0074 & \textbf{0.0054} & 0.0016 \\
+deeplabv3-target, VOC    & 0.0912 & 0.0949 & 0.0962 & 0.0950 & \textbf{0.0885} & 0.1340 & 0.1297 & 0.1185 & 0.0617 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{AURC under \textbf{boundary risk} ($\HDF^{\mathrm{drop}}$, pixels), lower
+is better. BdEnt = boundary entropy. Both spatially aware baselines (BUC, BdEnt) are
+included because both beat the band in one cell. \textbf{Combined is
+\emph{transductive}} and not deployable as written (\S\ref{sec:experiments}).}
+\label{tab:boundary}
+\begin{tabular}{lccccccccc}
+\toprule
+Condition & Band-HD95 & Band-Dice & SAM-stab & SDC & Combined & aMSP & BUC & BdEnt & Oracle \\
+\midrule
+clipseg-general, Pet     & 9.068 & 10.015 & 10.015 & 9.387 & 8.749 & 9.373 & 9.567 & \textbf{8.540} & 2.771 \\
+clipseg-general, VOC     & 26.068 & 27.131 & 27.143 & 26.947 & \textbf{25.093} & 31.703 & 31.547 & 39.846 & 12.728 \\
+clipseg-target, Pet      & \textbf{2.012} & 3.416 & 3.416 & 3.362 & 2.212 & 2.555 & 2.117 & 2.309 & 0.487 \\
+clipseg-target, VOC      & 17.597 & 17.774 & 17.610 & 18.530 & \textbf{17.543} & 22.857 & 22.697 & 22.101 & 9.022 \\
+deeplabv3-external, Pet  & \textbf{5.387} & 7.257 & 7.257 & 7.235 & 5.492 & 7.929 & 6.874 & 6.887 & 1.771 \\
+deeplabv3-external, VOC  & 13.479 & 14.388 & 14.311 & 14.592 & \textbf{13.471} & 19.366 & 17.909 & 16.538 & 7.293 \\
+deeplabv3-target, Pet    & 2.537 & 4.152 & 4.152 & 4.081 & 2.717 & 2.996 & \textbf{2.409} & 3.175 & 0.673 \\
+deeplabv3-target, VOC    & \textbf{13.244} & 15.070 & 14.902 & 15.298 & 13.624 & 18.631 & 17.280 & 15.209 & 7.098 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{AURC under the \textbf{penalized boundary risk} $\HDF^{\mathrm{pen}}$
+(detection failures charged the image diagonal, so every risk is evaluated on the
+same image set), lower is better. Compare Table~\ref{tab:boundary}: the
+distance-vs-area ablation is \emph{unchanged} ($8/8$), but the band's win over SDC
+falls from $8/8$ to $6/8$, losing exactly the two CLIPSeg-VOC cells --- the same two
+it loses under overlap risk. \textbf{Combined is \emph{transductive}} and not deployable
+as written (\S\ref{sec:experiments}).
+\emph{An earlier version of this table carried a warning that its
+\texttt{clipseg-target}/VOC row was stale, disagreed with every other report of the
+same cell in this paper, and must not be cited until all three tables were
+regenerated from a single post-fix evaluation. The regeneration has happened. The
+warning was right --- that row was populated from a different run, and five of the
+eight rows moved --- and its prediction was also right: the disagreement flipped no
+cell, and both the $6/8$ count and the $8/8$ distance-vs-area count stand exactly as
+they were reported under embargo. Every row here is now the single clean evaluation,
+and the cell agrees with the \eqref{eq:mband} table and the $M$-ladder at band
+$101.6$, SDC $87.5$.}}
+\label{tab:penalized}
+\begin{tabular}{lccccccccc}
+\toprule
+Condition & Band-HD95 & Band-Dice & SAM-stab & SDC & Combined & aMSP & BUC & BdEnt & Oracle \\
+\midrule
+clipseg-general, Pet     & \textbf{9.62} & 11.41 & 11.41 & 11.55 & 9.63 & 11.13 & 11.02 & 17.26 & 2.82 \\
+clipseg-general, VOC     & 182.91 & 185.03 & 187.30 & \textbf{135.67} & 145.59 & 209.74 & 203.44 & 197.26 & 102.15 \\
+clipseg-target, Pet      & \textbf{2.31} & 7.50 & 7.50 & 7.48 & 3.19 & 4.59 & 2.71 & 2.35 & 0.50 \\
+clipseg-target, VOC      & 101.65 & 104.71 & 106.97 & \textbf{87.45} & 87.46 & 135.89 & 131.51 & 117.62 & 62.82 \\
+deeplabv3-external, Pet  & \textbf{6.69} & 10.13 & 10.13 & 9.85 & 7.10 & 15.50 & 8.22 & 17.32 & 1.84 \\
+deeplabv3-external, VOC  & 47.88 & 52.72 & 54.39 & 50.56 & \textbf{47.07} & 90.90 & 68.52 & 89.84 & 25.27 \\
+deeplabv3-target, Pet    & 3.11 & 7.77 & 7.77 & 7.30 & 3.60 & 5.10 & \textbf{3.06} & 3.63 & 0.69 \\
+deeplabv3-target, VOC    & 46.38 & 51.42 & 52.72 & 50.32 & \textbf{46.22} & 81.48 & 63.39 & 79.31 & 25.45 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Finding 1 (core): the distance readout dominates its own area readout ---
+$8/8$ under \emph{both} boundary conventions, and $7/8$ under overlap risk too.} Among
+the readouts of the \emph{same} band
+--- which share posterior, thresholds and aggregation, and differ only in whether
+they are permutation invariant (Lemma~\ref{lem:perm}) --- the distance form wins
+boundary risk in \textbf{$8/8$} cells under $\HDF^{\mathrm{drop}}$
+(Table~\ref{tab:boundary}) \emph{and} $8/8$ under $\HDF^{\mathrm{pen}}$
+(Table~\ref{tab:penalized}). It also wins \emph{overlap} risk in $7/8$ of the cells of
+Table~\ref{tab:overlap}, losing only \texttt{clipseg-general}/VOC (and winning
+\texttt{clipseg-target}/VOC by only $0.2\%$, so read that cell as a coin flip). Spatial
+information helps most when the risk is spatial, and does not hurt when it is not.
+\emph{An earlier version of this paragraph claimed ``an area form wins overlap risk in
+$5/8$'' --- contradicted by our own Table~\ref{tab:overlap}, in which the area readout
+wins exactly one cell. It was a leftover of a superseded analysis, and the corrected
+count is the stronger result.} This is the cleanest test of the
+thesis because the comparison is controlled, and it is the one result in the paper
+that is invariant to every convention we vary --- including the two that
+\S\ref{sec:results} shows can flip the SDC comparison. The distance transform also
+beats its own perimeter-normalized proxy $8/8$ under \emph{every} risk, by a median
+of $1.17\times$ AURC under $\HDF^{\mathrm{drop}}$ (max $1.39\times$) and
+$1.24\times$ under both $\HDF^{\mathrm{pen}}$ and overlap (max $2.08\times$) --- the
+geometry, not merely the band's size, carries the signal.
+
+\paragraph{Finding 2: the band beats SDC $6/8$ under \emph{both} risks, and fails on
+the \emph{same two cells} in both --- so this is a condition effect, not a risk
+effect.} Under overlap risk the band beats SDC in $6/8$. Under the boundary risk it
+beats SDC $8/8$ with the $\HDF^{\mathrm{drop}}$ convention
+(Table~\ref{tab:boundary}) but only \textbf{$6/8$} once detection failures are
+charged rather than deleted (Table~\ref{tab:penalized}) --- \emph{the $8/8$ headline
+does not survive the honest convention, and we report it degraded.} In every case
+the two losses are the same two cells: \texttt{clipseg-general}/VOC and
+\texttt{clipseg-target}/VOC.
+
+That coincidence is the finding. A metric-alignment story cannot explain why a
+score fails on the same conditions under \emph{both} an overlap and a boundary risk.
+A condition-level story can, and Finding 4 gives it.
+
+Two of the paper's own remedies each recover part of the gap, and neither is a
+threshold fix: restoring the nesting \eqref{eq:mband} closes $42$--$77\%$ of it
+(Finding 4), and dense quadrature (\S\ref{sec:quadrature}) takes back
+\texttt{clipseg-target}/VOC outright, lifting the count to $\mathbf{7/8}$. An earlier
+draft withheld that second result while the ladder that measured it was audited for the
+aggregation defect of Remark~\ref{rem:mladdercontam}; the recomputation has landed, the
+defect never touched the ladder, and we state it affirmatively. The single cell that
+survives everything is
+\texttt{clipseg-general}/VOC ---
+zero-shot CLIPSeg on the multi-class benchmark, where the detection-failure rate
+($67\%$) and the nesting leak ($7.0\%$) are both at their worst.
+
+\paragraph{Finding 3 (why the band fails where it fails): it cannot see detection
+failures, and CLIPSeg-on-VOC is made of them.} The penalized risk charges each
+hallucinated or wholly-missed class the image diagonal. How often that fires, and
+what it does to the risk, differs by an order of magnitude across conditions:
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+condition & images with a one-sided class & $\HDF^{\mathrm{pen}} / \HDF^{\mathrm{drop}}$ & band vs.\ SDC \\
+\midrule
+Pet (all four conditions) & $0.2$--$0.4\%$ & $1.18$--$1.28\times$ & win \\
+\texttt{deeplabv3}, VOC   & $31$--$32\%$ & $3.9$--$4.1\times$ & win \\
+\texttt{clipseg}, VOC     & $\mathbf{54}$--$\mathbf{67\%}$ & $\mathbf{5.8}$--$\mathbf{6.3\times}$ & \textbf{lose} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+On CLIPSeg-VOC a majority of images contain a class that is present on only one
+side, so the penalized boundary risk there is dominated by \emph{detection} error,
+not by boundary geometry. The band is a contour-displacement statistic: it measures
+how far the boundary might move, and is structurally unable to say whether a class
+is \emph{there at all}. SDC, which references the predicted mask's probability mass,
+degrades more gracefully. This is the ``it measures blur, not error'' limitation of
+\S\ref{sec:limitations}, made quantitative --- and it locates the defect precisely,
+in the probability map's class structure rather than in the choice of metric.
+
+\paragraph{Finding 4 (mechanism, confirmed): the band's precondition is a
+\emph{normalized} probability map, and CLIPSeg violates it.} The bi-level
+construction assumes the nesting \eqref{eq:nesting}, in particular
+$\Yhi = \{p_c \ge 1-\alpha\} \subseteq \Yhat_c$. This is not a technicality --- it is
+what makes the band a reading of \emph{that class's} boundary uncertainty. We
+measured how often it fails, with a label-free diagnostic (the share of
+conservative-set pixels lying outside their own class's prediction):
+
+\begin{center}
+\small
+\begin{tabular}{llcccc}
+\toprule
+condition & map & leak @ $\alpha{=}0.05$ & @ $0.1$ & @ $0.2$ & band vs.\ SDC \\
+\midrule
+\texttt{clipseg-general}, VOC   & sigmoid & $2.2\%$ & $7.0\%$ & $15.2\%$ & \textbf{lose} \\
+\texttt{clipseg-target}, VOC    & sigmoid & $2.7\%$ & $4.3\%$ & $6.7\%$  & \textbf{lose} \\
+\texttt{deeplabv3-external}, VOC& softmax & $\mathbf{0.0\%}$ & $\mathbf{0.0\%}$ & $\mathbf{0.0\%}$ & win \\
+\texttt{deeplabv3-target}, VOC  & softmax & $\mathbf{0.0\%}$ & $\mathbf{0.0\%}$ & $\mathbf{0.0\%}$ & win \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The nesting is violated on \emph{exactly} the two conditions where the band loses,
+and is \emph{exactly} zero on the two where it wins. The mechanism is structural.
+CLIPSeg scores VOC with $20$ \emph{independent per-prompt sigmoids} and sets
+background to $1-\max_c p_c$, so semantically overlapping prompts (cat/dog,
+cow/horse/sheep --- the classic VOC confusions) co-fire: two prompts both clear
+$1-\alpha$ while only one wins the argmax, and the loser's conservative set escapes
+its own prediction. A normalized softmax \emph{cannot} do this --- two classes cannot
+both exceed $1-\alpha \ge 0.8$ on the simplex --- which is why the softmax leak is
+identically zero, and why the leak grows with $\alpha$ as $1-\alpha$ falls toward
+$\tfrac12$.
+
+The failure mode is worse than a broken invariant. When the leaked pixels lie in
+\emph{both} level sets, $\Ylo$ and $\Yhi$ coincide there and the band \emph{vanishes}
+--- the score reports maximal confidence on precisely the images where two classes
+are fighting. On a synthetic co-firing map the plain band reads $0.00$ (perfectly
+confident) where the mask-intersected band reads $18.38$\,px.
+
+\emph{This is a precondition on the method, and we state it as one: the bi-level band
+requires a normalized (softmax) or binary probability map. On per-prompt sigmoid maps
+--- CLIPSeg, and open-vocabulary segmenters generally --- it degrades, and the
+diagnostic above says by how much, without ground truth.}
+
+\paragraph{The repair, and what it does \emph{not} repair.} The diagnosis prescribes
+its own fix: intersect the conservative set with the class's prediction,
+\begin{equation}\label{eq:mband}
+\Yhi \;:=\; \{p_c \ge 1-\alpha\} \;\cap\; \Yhat_c ,
+\end{equation}
+which restores \eqref{eq:nesting} by construction. It is a \emph{provable no-op}
+wherever the leak is zero --- on a normalized map the conservative set already lies
+inside the prediction --- so it cannot cost anything on softmax or binary maps, and we
+confirm this to machine precision ($47.876 \to 47.876$ on \texttt{deeplabv3-external}).
+On the sigmoid conditions it closes $42$--$77\%$ of the band's AURC gap to SDC:
+
+\begin{center}
+\small
+\begin{tabular}{lcccc}
+\toprule
+condition (risk) & band & band + \eqref{eq:mband} & SDC & gap closed \\
+\midrule
+\texttt{clipseg-general}, VOC (overlap)  & $0.292$ & $0.269$ & $0.238$ & $42\%$ \\
+\texttt{clipseg-target},  VOC (overlap)  & $0.178$ & $0.167$ & $0.163$ & $69\%$ \\
+\texttt{clipseg-general}, VOC (boundary) & $182.9$ & $163.3$ & $135.7$ & $42\%$ \\
+\texttt{clipseg-target},  VOC (boundary) & $101.6$ & $90.7$  & $87.5$  & $\mathbf{77\%}$ \\
+\texttt{deeplabv3}, VOC (both)           & \multicolumn{2}{c}{\emph{identical (no-op)}} & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Because \eqref{eq:mband} is free where it does nothing and strictly better where it
+does something, it dominates, and \emph{we recommend it as the deployed form of the
+band on any non-normalized map}. To keep every number in this paper comparable to a
+single, fixed score, however, the tables above and below report the
+\textbf{unrepaired} band \eqref{eq:bandsym} --- the code's \texttt{DEFAULT\_BAND} ---
+with \eqref{eq:mband} reported alongside it in this table and shipped as a separate
+score (\texttt{neg\_mband\_width\_*}) rather than folded into the headline. Nothing
+turns on the choice: \textbf{it does not flip a single cell}, and the band still loses
+$2/8$ to SDC either way. The residual gap is the \emph{other}
+mechanism --- detection-failure blindness --- and that one is not an implementation
+flaw to be repaired but an intrinsic limit of the score class. A
+contour-displacement statistic cannot be made to see whether a class exists. The two
+mechanisms are separable, and only one of them is ours to fix.
+
+\emph{We initially attributed the CLIPSeg-VOC losses to the band degeneracy of
+\S\ref{sec:threshold}, and dismissed that explanation on the grounds that the
+saturation rates there --- $17.7\%$ and $1.4\%$ --- were far too small to matter.
+The rates are right, but the dismissal was not: those are rates of \emph{total}
+degeneracy, and the rate that actually pollutes the score is the partial one, which
+is $63.1\%$ and $35.9\%$ on the same two cells. ``Far too small'' is not available
+to us, and the observational pattern cannot rescue it either --- ranked by partial
+degeneracy the four VOC conditions are $63.1$, $35.9$, $32.1$, $27.1\%$, and the two
+that lose are the two highest, so degeneracy and the leak are \textbf{collinear}
+across our conditions. What decides between them is the \textbf{intervention}:
+\eqref{eq:mband} repairs the leak while provably leaving saturation untouched (an
+empty conservative set has an empty intersection; band and \eqref{eq:mband} are
+bit-identical on every saturated image), and it closes $42$--$77\%$ of the gap. A
+degeneracy explanation predicts that a leak-only repair does nothing
+(Remark~\ref{rem:retraction}).}
+
+\emph{We record a correction to our own earlier analysis.} A previous version
+reported that SDC \emph{beat} the band under overlap risk on all four VOC cells and
+presented this as the ``risk-alignment split'' the theory predicted. That was an
+artifact of the aggregation bug in \S\ref{sec:multiclass}: total detection failures
+were being ranked as the band's \emph{most} confident images. With the convention
+corrected, band-vs-SDC under overlap goes from $2/8$ to $6/8$ and the split
+disappears. The corrected result is the \emph{stronger} one, and Lemma~\ref{lem:perm}
+never predicted a split in that direction --- it predicts only that SDC should not
+lose \emph{for lack of geometry} under overlap risk, not that it should win. The
+earlier framing was a post-hoc rationalization of a bug, and we flag it rather than
+quietly restate it.
+
+\paragraph{Finding 4: the area readout tracks SDC, as Lemma~\ref{lem:perm} predicts
+--- except where it does not.} Band-Dice and SDC agree to within $3.5\%$ relative
+AURC on most cells (e.g.\ $0.1072$ vs $0.1072$), consistent with both being
+permutation-invariant functionals. They diverge on the zero-shot CLIPSeg conditions
+(VOC: $0.2882$ vs $0.2375$; per-image Spearman $0.44$). They are different
+functionals --- Band-Dice is a two-quantile area ratio with no reference to $\Yhat$,
+SDC is a dense statistic that has one --- so we report the agreement as an empirical
+observation, not as a prediction of the theory.
+
+\paragraph{Finding 5 (negative): the spatially aware baselines are competitive.}
+BUC \cite{buc} beats the band under boundary risk on fine-tuned DeepLabV3/Pet
+($2.409$ vs $2.537$), and boundary entropy \cite{metaseg} beats it on
+clipseg-general/Pet ($8.540$ vs $9.068$). BUC also beats \emph{SDC} under boundary
+risk on three of the four Pet cells, losing only on clipseg-general/Pet ($9.567$ vs
+$9.387$). \emph{We previously wrote ``on all four''; that was wrong on our own
+Table~\ref{tab:boundary}, and it overstated a result that is already against us.}
+Our earlier claim that ``SDC is the only genuinely
+competitive external baseline'' was false by our own data. This is not damaging to
+the thesis --- it is evidence \emph{for} it: the baselines that compete under
+boundary risk are exactly the two that are not permutation invariant. The honest
+statement is that against \emph{spatially blind} baselines the band wins $8/8$ under
+boundary risk, and against spatially aware ones it wins $6/8$.
+
+\paragraph{Finding 6: fusing the two signals is the best all-rounder --- but the fusion
+we measured is \emph{not deployable}.} The rank-average of band and SDC gives the lowest
+AURC in $4/8$ cells under overlap, $3/8$ under $\HDF^{\mathrm{drop}}$ and $2/8$ under
+$\HDF^{\mathrm{pen}}$. \emph{An earlier version reported $4/8$ under boundary risk,
+which its own Table~\ref{tab:boundary} contradicts; and the count degrades under the
+honest penalized convention, like every other count in \S\ref{sec:results}.} The two
+are aligned to
+different risk geometries and are complementary, and that much is a real finding about
+the \emph{signals}. It is \textbf{not} a recommendation of \emph{this score}: as
+\S\ref{sec:experiments} states, the combined score is \textbf{transductive} --- its
+ranks are taken across the split, so it is not a per-image functional and is outside our
+own single-pass regime. Read Finding 6 as evidence that the two signals are
+complementary, and as a call to measure the deployable, frozen-CDF fusion --- which we
+have not done.
+
+\subsection{How many thresholds? The $M$-ablation overturns our own argument}\label{sec:quadrature}
+
+\S\ref{sec:band} argued that $M=2$ suffices, on the grounds that AURC depends only on
+the ranking \eqref{eq:rank} and that under the scale family $H_x(t)\approx a_x h(t)$
+a two-point rule and the dense integral induce the \emph{same} order. That argument
+is correct where its premise holds, and \textbf{its premise fails on multi-class
+data}.
+
+\paragraph{The quadrature error is provably $O(1/M)$.} $H_x(t)=L(Y_t,\Yhat)$ is of
+bounded variation --- it is piecewise constant, jumping only where $t$ crosses one of
+the image's own probability values, and is bounded by \eqref{eq:bounded}. Koksma's
+inequality then bounds term (a) of \eqref{eq:decomp} for the $M$-point midpoint rule:
+\begin{equation}\label{eq:koksma}
+\Big| r_M(x) - \int_0^1 H_x(t)\,dt \Big| \;\le\; \frac{V(H_x)}{2M},
+\end{equation}
+with $V$ the total variation. So the quadrature \emph{provably} converges to
+$\Ex_{Q_p}[L]$. What no amount of $M$ can touch is term (b): $Q_p$ is a modelling
+choice, and a probability map does not determine a joint law
+(Remark~\ref{rem:classical}).
+
+\begin{remark}[\textbf{The audit that demanded these numbers back, and the recomputation
+that vindicated them}]\label{rem:mladdercontam}
+An audit found a real aggregation defect in the ladder below \emph{after} it was
+measured, and the defect pointed the same way as the result. We withheld every number in
+this subsection and said so in print. They have since been recomputed on clean data.
+\emph{They reproduce to the digit}, and the embargo is lifted: every AURC in the ladder
+below is bit-identical between the pre-fix run and the clean regeneration. We keep the
+whole episode on the page: a withheld number that comes back unchanged is evidence about
+the process, not an embarrassment to be quietly deleted. (Two cells of the table below
+have since had their last printed digit corrected --- $155.9$ and $45.9$, previously
+typeset as $156.0$ and $46.0$ --- because the original table double-rounded them. That
+is a typesetting fix, not a movement in the numbers, and the same fix was applied to
+four cells of Table~\ref{tab:boundary}.)
+
+\textbf{The defect was real.} A class can \emph{win the argmax} while its aggressive set
+$\{p_c \ge \alpha\}$ is empty --- a $C$-way softmax winner needs only
+$p_c \ge \phi = 1/C = 0.048$ on VOC, below $\alpha = 0.1$ --- i.e.\ it can hallucinate a
+whole object at $p \approx 0.05$. The aggregation \emph{silently dropped} such a class
+instead of saturating it at the diagonal, so on one image the deployed band scored
+$-5.10$ where the bounded convention \eqref{eq:bounded} demands $-47.76$: a hallucinated
+class was worth $42$\,px of free confidence. It is fixed and pinned by regression tests.
+
+\textbf{The feared confound would have been lethal, and was correctly identified.} The
+rules of the ladder do not all fire the same way. The argmax floor $0.048$ sits \emph{below} the
+lowest nodes of \texttt{mid16} ($0.031$) and \texttt{mid32} ($0.016$) but \emph{above}
+those of \texttt{gl2} ($0.211$), \texttt{mid4} ($0.125$) and \texttt{mid8} ($0.062$). So
+the dense rules could see those classes and the cheap ones could not, and the ladder
+would have been comparing rules computed over \emph{different sets of classes on the same
+image}: the dense rule's advantage would be an artifact --- not integrating better,
+merely the only rule looking. That confound is exactly confounded with
+Remark~\ref{rem:straddle}'s explanation, and it was the right reason to refuse to cite
+the table.
+
+\textbf{It never materialized.} The fix landed after the affected evaluation, which
+leaves a natural experiment: the pre-fix score dump and the clean regeneration can be
+diffed score by score. Over all $221$ scores common to the two, the ones that moved at
+all are \emph{exactly} $26$ on \texttt{deeplabv3-external}/VOC and $26$ on
+\texttt{deeplabv3-target}/VOC --- \textbf{zero on the other six conditions} --- and
+\textbf{every one of them is at $\alpha = 0.3$}. Three facts account for that, and each
+is checkable:
+\begin{enumerate}
+\item \textbf{It could only ever fire on two of the eight conditions.} The defect needs
+$\phi$ below the lowest threshold, and only \texttt{deeplabv3-external}/VOC and
+\texttt{deeplabv3-target}/VOC are a genuine $21$-way softmax ($\phi = 0.048$). The four
+Pet conditions are binary, and
+both CLIPSeg-VOC conditions set $\mathrm{bg} = 1-\max_c p_c$; all six therefore have
+$\phi = \tfrac12$ (Prop.~\ref{prop:floor}(ii)), which no threshold in the grid reaches.
+\item \textbf{It never bit at the deployed $\alpha = 0.1$.} On those two conditions, no
+present class had a maximum probability in $[0.048, 0.1)$ --- the window in which a class
+wins the argmax yet has an empty aggressive set. The defect had to reach $\alpha = 0.3$
+before any class fell into it, and every headline in this paper is at $\alpha = 0.1$.
+\item \textbf{The ladder itself was already clean.} Every $r_M$ score's AURC delta across
+the fix is exactly $0.0$ --- every condition, every $M$. The rules were never compared
+over different class sets, because there was never a dropped class to differ over.
+\end{enumerate}
+
+\textbf{Verdict: the table below stands as measured.} The audit was right to demand the
+recomputation --- none of the above was knowable in advance, and the confound it named
+was real and would have been fatal --- and the recomputation was right to hand the
+numbers back unchanged. \emph{The ``do not cite'' was correct to issue and is now
+lifted.} (The distance-vs-area result never depended on any of this: both readouts share
+the aggregation.) What the episode did leave behind is a scoping fact we did not have
+before, and which does real work in Remark~\ref{rem:straddle}: only $2$ of our $8$
+conditions have $\phi < \tfrac12$.
+\end{remark}
+
+\paragraph{Empirically, the dense rule beats the deployed band by $5.6$--$17.6\%$ on
+multi-class --- but it is not the node count that buys it.} AURC
+under the penalized boundary risk:
+
+\begin{center}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+condition & band ($M{=}2$) & $M{=}2$ & $M{=}4$ & $M{=}8$ & $M{=}16$ & $M{=}32$ \\
+\midrule
+\texttt{clipseg-general}, VOC   & $182.9$ & $153.0$ & $155.6$ & $155.9$ & $151.8$ & $\mathbf{150.8}$ \\
+\texttt{clipseg-target}, VOC    & $101.6$ & $91.0$  & $89.0$  & $88.3$  & $87.3$  & $\mathbf{86.7}$ \\
+\texttt{deeplabv3-external}, VOC& $47.9$  & $48.0$  & $47.3$  & $45.9$  & $45.0$  & $\mathbf{44.6}$ \\
+\texttt{deeplabv3-target}, VOC  & $46.4$  & $47.6$  & $45.7$  & $45.9$  & $45.2$  & $\mathbf{43.8}$ \\
+\midrule
+Pet (all four)                  & \multicolumn{6}{c}{\emph{flat: spread $2.2$--$9.6$ within condition; $M{=}2$ wins $2/4$, $M{=}16$ wins $2/4$}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The dense rule wins $4/4$ multi-class cells, by $5.6$--$17.6\%$, and is flat on the
+binary ones. The scale-family premise evidently holds for a single foreground class
+and fails once several classes contribute to the present-class mean --- which is
+exactly when $H_x$ can change shape, not just scale, from image to image.
+
+\paragraph{What the $5.6$--$17.6\%$ actually decomposes into --- and it is not node
+count.} The figure reproduces exactly on clean data ($17.56$, $14.67$, $6.90$, $5.63\%$,
+all four bootstrap CIs excluding zero). What it does not do is measure what we said it
+measured. Its baseline is the \emph{deployed band}, and the band is \textbf{not} the
+$M{=}2$ rung of this ladder: moving from the band to $M{=}32$ changes \emph{three} things
+at once.
+\begin{enumerate}
+\item \textbf{Readout.} The band width $\HDF(\Ylo,\Yhi)$ \eqref{eq:bandsym} becomes the
+quadrature $\tfrac12[\HDF(\Ylo,\Yhat)+\HDF(\Yhi,\Yhat)]$ \eqref{eq:r2}. A different
+functional, not a different number of nodes (Remark~\ref{rem:nobridge}).
+\item \textbf{Placement.} The nodes $(0.1, 0.9)$ become the rule's own.
+\item \textbf{Count.} $2$ becomes $32$.
+\end{enumerate}
+Only the third is ``more nodes''. Separating them needs an $M{=}2$ rung sharing the
+band's nodes \emph{exactly}, and there is one: $r_2$ at $(\alpha, 1-\alpha) = (0.1,
+0.9)$, which differs from the band only in the readout (\S\ref{sec:openitems}, item 2).
+Inserting it splits the total into three legs that each move one thing ($10$k paired
+image bootstrap, as \% of band AURC; $*$ marks a CI excluding zero; the legs sum to the
+total):
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & READOUT & PLACEMENT & COUNT \\
+condition & band $\to r_2@0.1$ & $r_2@0.1 \to$ \texttt{gl2} & \texttt{gl2} $\to M{=}32$ \\
+\midrule
+\texttt{clipseg-general}, VOC    & $+7.07^*$ & $\mathbf{+9.26^*}$ & $+1.23$ \\
+\texttt{clipseg-target}, VOC     & $+9.23^*$ & $+1.24$ & $+4.20^*$ \\
+\texttt{deeplabv3-external}, VOC & $+0.27$ & $-0.48$ & $\mathbf{+7.10^*}$ \\
+\texttt{deeplabv3-target}, VOC   & $+1.09$ & $-3.71$ & $\mathbf{+8.24^*}$ \\
+\midrule
+\texttt{clipseg-general}, Pet    & $+3.23^*$ & $+9.57^*$ & $\mathbf{-10.45^*}$ \\
+\texttt{clipseg-target}, Pet     & $+2.32^*$ & $+2.33$ & $\mathbf{-4.35}$ \\
+\texttt{deeplabv3-external}, Pet & $+1.93$ & $-0.79$ & $+5.34$ \\
+\texttt{deeplabv3-target}, Pet   & $+2.23$ & $-3.91$ & $+3.08$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{The COUNT leg is significantly positive $3\times$, significantly \emph{negative}
+$1\times$, and null $4\times$} (the second negative cell, \texttt{clipseg-target}/Pet at
+$-4.35\%$, is borderline: its bootstrap CI upper bound sits just above zero across seeds).
+On \texttt{clipseg-general}/VOC --- the \emph{top} of the
+$5.6$--$17.6\%$ range, the cell the headline is carried by --- the node-count component
+is $+1.23$ $[-0.77, +3.40]$, indistinguishable from zero. \emph{So ``more nodes help'' is
+not what that range shows}, and the paragraph heading this subsection carried for several
+drafts was wrong.
+
+The honest reading is that the range is a \textbf{mixture} of two unrelated stories that
+happen to land in the same interval. On DeepLabV3-VOC the gain is essentially all COUNT,
+with READOUT and PLACEMENT null or negative. On CLIPSeg-VOC it is essentially all READOUT
+$+$ PLACEMENT, with COUNT contributing nothing on the larger of the two. And on Pet,
+which we reported as ``flat'', the ladder is not flat but \emph{cancelling}: a positive
+READOUT and PLACEMENT against a negative COUNT (significantly so on
+\texttt{clipseg-general}/Pet). Three cells' worth of
+``denser quadrature integrates better'' and one cell's worth of ``the deployed nodes are
+misplaced'' were being read off a single averaged range. The one leg that is positive on
+all eight conditions --- and significant on four --- is READOUT, which costs nothing
+(\S\ref{sec:openitems}, item 2).
+
+\emph{The methodological trap, recorded because we walked into it.} The obvious
+decomposition is the two-leg \texttt{band} $\to$ \texttt{gl2} $\to$ $M{=}32$, reading the
+first leg as ``readout'' since \texttt{gl2} is the ladder's own $M{=}2$ rung. \textbf{It
+is not identified.} \texttt{gl2}'s nodes are $(0.211, 0.789)$ and the band's are $(0.1,
+0.9)$, so that leg moves the readout \emph{and} the placement --- and the resulting
+attribution flips sign with the choice of rung on all four DeepLabV3 conditions. The
+$M{=}2$ rung must be $r_2@0.1$ or the decomposition means nothing. We note this because
+the error is exactly the one this subsection accuses the $5.6$--$17.6\%$ figure of: a
+comparison that moves more than one thing and is then read as though it moved one. A
+decomposition must move one thing at a time --- including the decomposition that accuses
+someone else of not doing so.
+
+\paragraph{The dense estimator recovers a cell the band loses.} Against SDC, the
+dense rule wins $\mathbf{7/8}$ under \emph{both} risks, where the $M=2$ band wins
+$6/8$: it takes back \texttt{clipseg-target}/VOC on overlap ($0.161$ vs SDC's
+$0.163$; paired bootstrap $0.84$) and on the penalized boundary risk ($86.7$ vs
+$87.5$; bootstrap $0.69$ --- directional, not significant). The one cell that
+survives all of it is \texttt{clipseg-general}/VOC, the condition where \emph{both}
+pathologies of \S\ref{sec:results} are worst ($67\%$ detection failures, $7.0\%$
+nesting leak).
+
+\begin{remark}[The degenerate tail is an asset, not the liability we called it]
+\S\ref{sec:threshold} argues that the untrimmed $\int_0^1 \HDF(Y_t,\Yhat)\,dt$ is
+dominated by degenerate level sets and that the estimand must be trimmed. The dense
+rule's nodes $(m-\tfrac12)/32$ span $(0.016, 0.984)$ --- essentially untrimmed, tails
+included --- and it \emph{wins}. Remark~\ref{rem:atom} identifies what the tail
+contributes: an explicit $(1-\max_i p_i)\cdot\diag$ term, i.e.\ a max-softmax signal.
+We framed that as a contaminant. It is better read as a \emph{second, free channel of
+information}, fused into the score by the integral itself: measured
+$\rho(\text{dense},\ \text{aMSP}) = 0.54$--$0.75$, correlated but far from degenerate.
+The trimming argument should be weakened accordingly: trimming fixes the $M=2$
+\emph{estimator}'s saturation, but it is not a property the \emph{estimand} needs.
+\end{remark}
+
+\paragraph{Cost.} $M=32$ costs $32$ distance transforms per present class against the
+band's $2$ --- a $16\times$ constant, still $O(MCN)$ and still milliseconds per image,
+with no retraining and no second forward pass. For a multi-class deployment the
+trade is clearly worth taking; for a binary one it is not.
+
+\subsection{Open items --- experiments that must be run}\label{sec:openitems}
+
+We list these because the paper's conclusions are conditional on them.
+
+\begin{enumerate}
+\item \textbf{The penalized boundary risk --- \emph{run, and it degraded the
+headline}.} Both conventions are now reported (Tables~\ref{tab:boundary}
+and~\ref{tab:penalized}). The band's $8/8$ win over SDC under
+$\HDF^{\mathrm{drop}}$ falls to $6/8$ under $\HDF^{\mathrm{pen}}$. The
+distance-vs-area ablation is unaffected ($8/8$ under both). This item is closed;
+Findings 2--3 carry the result.
+
+\item \textbf{The surrogate ablation ($r_2$ vs.\ band width) --- \emph{run; the bridge
+holds, and the estimator the theory derives is also the better one, $24/24$}.}
+Remark~\ref{rem:nobridge} shows Prop.~\ref{prop:band} cannot bridge
+$\HDF(\Ylo,\Yhi)$ to $r_2$, because $\HDF$ is a percentile and not a metric. The
+empirical bridge nevertheless holds: the rank correlation between the deployed band
+width and the $r_2$ it stands in for is
+\begin{equation}
+\rho(\text{band},\, r_2) \in [0.974,\ 0.992] \quad\text{across all eight conditions.}
+\end{equation}
+So the band width is, in practice, the two-point quadrature estimator the theory
+derives --- established by measurement, not by the broken inequality. This is the
+honest form of the claim, and it closes the gap Remark~\ref{rem:nobridge} opens.
+
+\emph{The bridge, however, is not the interesting half of this ablation. The head-to-head
+is.} At \emph{matched} nodes $(\alpha, 1-\alpha) = (0.1, 0.9)$, \textbf{$r_2$
+\eqref{eq:r2} beats the deployed band width \eqref{eq:bandsym} on every condition under
+every risk: $8/8$ under overlap, $8/8$ under $\HDF^{\mathrm{drop}}$, $8/8$ under
+$\HDF^{\mathrm{pen}}$ --- $24/24$.} This is as controlled as the distance-vs-area
+ablation and for the same reason: same $\alpha$, same two thresholds, same pooled
+bidirectional $\HDF$, same present-class mean, same $-\diag$ floors. \emph{The only thing
+that differs is the functional} --- $\HDF(\Ylo,\Yhi)$ against
+$\tfrac12[\HDF(\Ylo,\Yhat) + \HDF(\Yhi,\Yhat)]$ --- so the ranking difference is
+attributable to the estimator alone. It is free: no extra node, no extra distance
+transform, no new tuned parameter.
+
+\emph{The honest bound on it.} $24/24$ is a count of \emph{signs}, not of significances,
+and the three risks are not three independent tests --- they share the same images.
+Against a $10$k paired image bootstrap under the penalized boundary risk, the margin's CI
+excludes zero on the \emph{four} CLIPSeg conditions ($+7.07$, $+9.23$, $+3.23$,
+$+2.32\%$ of band AURC) and not on the four DeepLabV3 ones ($+0.27$, $+1.09$, $+1.93$,
+$+2.23\%$), which are positive but null. So: $8/8$ in sign, $4/8$ significant.
+
+This also closes the paper's one theory--practice gap, and more cleanly than the measured
+$\rho$ does. Remark~\ref{rem:nobridge} exists because $\HDF$ is a percentile and no
+inequality connects the band to the $r_2$ it stands in for. \emph{Deploy $r_2$ and there
+is nothing to bridge} --- and we now know that deploying it costs nothing and ranks
+strictly better. The band width earned its place by being cheap to compute and easy to
+draw; on this evidence it has no other claim.
+
+\emph{The same measurement condemns the rank-anchored ablation
+\eqref{eq:rankanchor}}: against the dense $M=32$ reference, the rank-anchored band
+scores \emph{below} the constant-threshold band in $6/8$ conditions and the
+rank-anchored $r_2$ below $r_2$ in $8/8$. It is a worse estimator of the level-set
+risk on real data, not merely on the synthetic populations of
+\S\ref{sec:threshold}.
+
+\item \textbf{The quadrature ablation ($M$) --- \emph{run, audited, recomputed,
+unchanged}.} See \S\ref{sec:quadrature} and Remark~\ref{rem:mladdercontam}. The ladder
+was measured; an audit then found an aggregation defect that dropped a hallucinated class
+instead of saturating it, and identified a mechanism by which it could have fired on
+exactly the dense rules and not the cheap ones, making the ladder a comparison of rules
+over different sets of classes on the same image. Every number was withheld. \emph{The
+recomputation has landed and the ladder reproduces to the digit.} The defect moved $52$
+scores in total --- all on the two genuine $21$-way softmax conditions, all at
+$\alpha = 0.3$, none in the ladder and none at the deployed $\alpha = 0.1$. The results
+therefore stand as reported: denser quadrature is decisively better on the multi-class
+benchmark and flat on the binary one, and the dense estimator recovers
+\texttt{clipseg-target}/VOC from SDC, taking the count to $7/8$ where the $M=2$ band
+manages $6/8$. \emph{What the recomputation did not do is rescue our explanation of the
+$5.6$--$17.6\%$}: \S\ref{sec:quadrature} decomposes it and finds the node-count leg
+indistinguishable from zero at the top of the range. This item is \textbf{closed}. The
+explanation is not, and item 4 is where it died.
+
+\item \textbf{Vertex-aware nodes on multi-class (\S\ref{sec:derivednodes}) --- \emph{run.
+They lose. The fourth adaptive node rule in this paper to fail.}}
+Observation~\ref{obs:vshape} places the vertex near $m_c$, the smallest probability
+inside the prediction --- measured at $m_c = 0.055$ for a $21$-way softmax (against
+$t^\star = 0.060$), and at $\tfrac12$ for binary. \eqref{eq:derivednodes} then prescribes
+nodes $\approx (0.028, 0.528)$ on VOC --- nowhere near the deployed $(0.1, 0.9)$ or the
+binary-derived $(0.25, 0.75)$, both of which put \emph{both} nodes on the same side of
+the vertex and never straddle it. We billed this as the open question that mattered most,
+and predicted that if Remark~\ref{rem:straddle} were right, vertex-aware $M=2$ should
+recover most of what dense $M=32$ buys on VOC at $1/16$ of the cost.
+
+\emph{It has now been run on the real conditions, and the prediction fails.} Against the
+deployed band under the penalized boundary risk:
+
+\begin{center}
+\small
+\begin{tabular}{lc}
+\toprule
+$M=2$ rule & beats the deployed band \\
+\midrule
+dense $M{=}32$ (reference)                          & $\mathbf{8/8}$ \\
+\texttt{mid2}, nodes $(0.25, 0.75)$                 & $6/8$ \\
+\texttt{vtx2}, vertex-aware \eqref{eq:derivednodes} & $\mathbf{4/8}$ --- \emph{worst of the three} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\texttt{mid2} --- the fixed, unadaptive rule \texttt{vtx2} was designed to improve on ---
+beats it $6/8$ head-to-head. And on the only two conditions where the vertex-aware rule
+has anything to repair (\texttt{deeplabv3-external}/VOC and \texttt{deeplabv3-target}/VOC,
+the only two whose band fails to straddle the vertex; see Remark~\ref{rem:straddle}),
+it is \emph{worse than
+the band it was meant to repair}: $49.35$ against $47.88$, and $48.46$ against $46.38$.
+It fails hardest exactly where it was supposed to win.
+
+This is the \textbf{fourth} principled-looking adaptive node rule here to be derived,
+look compelling, and fail on measurement --- after rank-anchoring \eqref{eq:rankanchor},
+histogram importance sampling, and the $\sqrt{V_L/V_R}$ allocation. Three of the four
+have the common mechanism \S\ref{sec:threshold} identifies: they move nodes \emph{toward}
+where the probability values sit, and the integral's mass is in the tails.
+\texttt{vtx2} is at least consistent with it --- it puts $94.5\%$ of the weight on a node
+at $\approx 0.53$ and abandons the right tail --- but we have not isolated that mechanism
+here and do not claim it. What we claim is the count: four for four. \emph{That $m_c$ is
+an estimate of the vertex and not the vertex (Remark~\ref{rem:vshapefails}) is no longer
+the binding objection; the rule was tested, and lost.}
+
+The consequence for the paper is the \emph{opposite} of the warning we issued here.
+Earlier drafts said: ``until this is run, our $M=2$ results should be read as using
+demonstrably mis-placed nodes on the multi-class benchmark.'' \textbf{That warning is
+withdrawn.} On real multi-class data $(0.1, 0.9)$ beats the nodes our own integrand
+analysis prescribes. The rule is also measured against the exact integral in
+\texttt{scripts/vertex\_nodes.py} --- which, until an audit caught it, measured the
+\emph{retracted} floor rule ($\phi = 1/C$) rather than \eqref{eq:derivednodes}'s
+$\hat t = m_c$, and now measures both so the difference stays visible. This item is
+\textbf{closed, negatively}.
+
+\item \textbf{Threshold selection (\S\ref{sec:threshold}) --- half closed, and the
+half that matters is still open.} \emph{The grid extension this item demanded has
+been run.} The evaluation now sweeps
+$\alpha\in\{0.01,0.05,0.1,0.15,0.2,0.3\}$ on all eight conditions, and the sweep is
+\textbf{bracketed}: mean gap-closure is no longer rising at the grid edge but turns
+over at $\alpha=0.2$ under all three risks ($0.723$ at $0.2$ against $0.719$ at
+$0.3$ under overlap; $0.683$ against $0.680$ under $\HDF^{\mathrm{drop}}$; $0.692$
+against $0.684$ under $\HDF^{\mathrm{pen}}$). The band-beats-SDC counts across the
+grid:
+
+\begin{center}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+risk & $0.01$ & $0.05$ & $0.1$ & $0.15$ & $0.2$ & $0.3$ \\
+\midrule
+overlap                & $4/8$ & $5/8$ & $6/8$ & $6/8$ & $6/8$ & $6/8$ \\
+$\HDF^{\mathrm{drop}}$ & $5/8$ & $6/8$ & $\mathbf{8/8}$ & $\mathbf{8/8}$ & $\mathbf{8/8}$ & $7/8$ \\
+$\HDF^{\mathrm{pen}}$  & $4/8$ & $6/8$ & $6/8$ & $6/8$ & $6/8$ & $6/8$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{The core admission is unchanged and we restate it rather than retire it:
+$\alpha=0.1$ was chosen on the test set, and the headline is \emph{not} robust to
+it.} At $\alpha=0.05$ the band-beats-SDC count under $\HDF^{\mathrm{drop}}$ falls
+from $8/8$ to $6/8$ --- a one-step move on the grid costs the headline two cells.
+Bracketing the optimum does not make the selection honest; it only means we now know
+that the value we picked is not even the sweep's argmax, which is $\alpha=0.2$ on
+mean gap-closure under every risk. Nor is the enclosure uniform: per condition the
+argmax still lands on a grid edge in four of eight cells ($\alpha=0.3$ three times,
+$\alpha=0.01$ once, under each risk). What remains required is the part that was
+always the point: select $\alpha$ on a validation split carved from the
+\emph{training} data, not from the test set. Until that is done, treat $\alpha$ as
+tuned.
+\end{enumerate}
+
+\section{Related work}
+
+\paragraph{Selective prediction.} Thresholding a fixed network's confidence remains
+the dominant baseline \cite{selectivenet}; well-tuned thresholds often match
+training-time methods \cite{feng}; MSP is strong \cite{jaeger}. Calibration is not
+abstention \cite{zhu}, which is why we report AURC and keep ECE separate.
+
+\paragraph{Uncertainty and aggregation in segmentation.} ValUES \cite{values} names
+score aggregation as a neglected component; that gap has since been addressed by
+Guarino et al.\ \cite{guarino}, who propose spatially aware aggregators and
+benchmark them for failure detection, and by Zenk et al.\ \cite{zenk}, whose
+headline finding is likewise about confidence aggregation. We state our position
+precisely against them: every such aggregator operates in \emph{probability units}
+on a per-pixel uncertainty map; ours is derived from the deployment metric and
+returns a value in \emph{pixels}. Learned failure predictors --- ConfidNet
+\cite{confidnet}, ObsNet \cite{obsnet}, FSNet \cite{fsnet} --- need internal features
+and extra training, outside the post-hoc single-pass regime.
+
+\paragraph{Metric-aligned confidence.} SDC \cite{sdc} is the direct predecessor;
+\S\ref{sec:theory} places it inside our framework and delimits it.
+
+\paragraph{Random sets and uncertain contours.} The level-set posterior is the
+classical coverage-function random set \cite{goodman,molchanov}; the insight that
+independent per-pixel sampling destroys contour geometry is established in the
+uncertain-isocontour literature \cite{poethkow,bolin}. We import these rather than
+claim them (Remark~\ref{rem:classical}).
+
+\paragraph{Distance transforms and nested masks.} Distance transforms of probability
+maps are used at \emph{training} time to reduce Hausdorff distance \cite{karimi}
+(which gives three such estimators), at inference to build conformal inner/outer sets
+\cite{davenport,mossina}, and to evaluate uncertainty maps \cite{buc}. What is new
+here is the distance transform \emph{between two level sets of the same probability
+map}, as a scalar, ground-truth-free, image-level confidence. The nested inner/outer
+band is itself a first-class object in the conformal literature
+\cite{crc,davenport,mossina}: that line \emph{calibrates} the band to guarantee a
+property of the set; we \emph{measure its width} and use it to rank images for
+abstention. Same object, different use --- and \S\ref{sec:threshold} argues the two
+should be combined.
+
+\section{Limitations}\label{sec:limitations}
+
+\paragraph{It measures blur, not error.} The band is wide when the model is unsure
+and narrow when it is sure. A confidently wrong prediction --- a sharp mask in the
+wrong place --- gets a narrow band and high confidence. This is shared by all
+post-hoc probability-map scores and is why term (b) of \eqref{eq:decomp} cannot be
+driven to zero by computation on $p$ alone.
+
+\paragraph{The posterior is a modelling choice.} Nested level sets model ambiguity as
+contour dilation and erosion. Real ambiguity also includes topological disagreement,
+which the comonotone coupling does not generate.
+
+\paragraph{The threshold is unresolved.} \S\ref{sec:threshold} is a diagnosis, not
+yet a validated fix.
+
+\paragraph{Scope.} Natural-image benchmarks only, two architectures, no medical data
+and no OOD split --- while the motivation is medical and human-in-the-loop, and SDC
+was validated on six medical tasks with OOD. This is the largest gap between our
+claims and our evidence.
+
+\begin{thebibliography}{99}
+\small
+\bibitem{sdc} Borges, B. L. C., Pacheco, B. M., \& Silva, D. \emph{Soft Dice
+Confidence: A Near-Optimal Confidence Estimator for Selective Prediction in Semantic
+Segmentation}. arXiv:2402.10665.
+\bibitem{sam} Kirillov, A., et al. \emph{Segment Anything}. ICCV 2023.
+\bibitem{values} Kahl, K., et al. \emph{ValUES: A Framework for Systematic Validation
+of Uncertainty Estimation in Semantic Segmentation}. ICLR 2024 (oral).
+arXiv:2401.08501.
+\bibitem{guarino} Guarino, A., Winklmayr, L., Franzen, D., et al. \emph{Better than
+Average: Spatially-Aware Aggregation of Segmentation Uncertainty Improves Downstream
+Performance}. CVPR 2026.
+\bibitem{crc} Angelopoulos, A. N., et al. \emph{Conformal Risk Control}. ICLR 2024.
+arXiv:2208.02814.
+\bibitem{zenk} Zenk, M., et al. \emph{Comparative Benchmarking of Failure Detection
+Methods in Medical Image Segmentation: Unveiling the Role of Confidence Aggregation}.
+Medical Image Analysis 2025. arXiv:2406.03323.
+\bibitem{zhu} Zhu, F., et al. \emph{Rethinking Confidence Calibration for Failure
+Prediction}. ECCV 2022.
+\bibitem{selectivenet} Geifman, Y., \& El-Yaniv, R. \emph{SelectiveNet}. ICML 2019.
+\bibitem{feng} Feng, L., Ahmed, M. O., Hajimirsadeghi, H., \& Abdi, A. \emph{Towards
+Better Selective Classification}. ICLR 2023. arXiv:2206.09034.
+\bibitem{jaeger} Jaeger, P. F., et al. \emph{A Call to Reflect on Evaluation
+Practices for Failure Detection in Image Classification}. ICLR 2023.
+\bibitem{confidnet} Corbi\`ere, C., et al. \emph{Addressing Failure Prediction by
+Learning Model Confidence}. NeurIPS 2019.
+\bibitem{obsnet} Besnier, V., et al. \emph{Triggering Failures (ObsNet)}. ICCV 2021.
+\bibitem{fsnet} Rahman, Q. M., et al. \emph{FSNet}. IEEE RA-L 2022.
+\bibitem{karimi} Karimi, D., \& Salcudean, S. E. \emph{Reducing the Hausdorff
+Distance in Medical Image Segmentation with Convolutional Neural Networks}. IEEE TMI
+39(2):499--513, 2020.
+\bibitem{gen} Liu, X., et al. \emph{GEN: Pushing the Limits of Softmax-Based OOD
+Detection}. CVPR 2023.
+\bibitem{doctor} Granese, F., et al. \emph{DOCTOR: A Simple Method for Detecting
+Misclassification Errors}. NeurIPS 2021.
+\bibitem{metaseg} Rottmann, M., et al. \emph{Prediction Error Meta Classification in
+Semantic Segmentation (MetaSeg)}. IJCNN 2020.
+\bibitem{holder} Holder, C. J., \& Shafique, M. \emph{Efficient Uncertainty
+Estimation in Semantic Segmentation via Distillation}. ICCVW 2021. (MMMC.)
+\bibitem{buc} Zeevi, T., et al. \emph{Spatially-Aware Evaluation of Segmentation
+Uncertainty}. UNCV @ CVPR 2025.
+\bibitem{goodman} Goodman, I. R. \emph{Fuzzy sets as equivalence classes of random
+sets}. 1982.
+\bibitem{molchanov} Molchanov, I. \emph{Theory of Random Sets}. Springer, 2nd ed.,
+2017.
+\bibitem{poethkow} P\"othkow, K., Weber, B., \& Hege, H.-C. \emph{Probabilistic
+Marching Cubes}. EuroVis 2011.
+\bibitem{bolin} Bolin, D., \& Lindgren, F. \emph{Excursion and contour uncertainty
+regions for latent Gaussian models}. JRSS-B 77(1):85--106, 2015.
+\bibitem{davenport} Davenport, S., et al. \emph{Conformal prediction sets for
+segmentation}. arXiv:2410.03406.
+\bibitem{mossina} Mossina, L., \& Friedrich, C. \emph{Conformal morphological
+prediction sets for segmentation}. MICCAI 2025.
+\end{thebibliography}
+
+\end{document}

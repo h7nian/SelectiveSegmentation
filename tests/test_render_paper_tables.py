@@ -263,14 +263,18 @@ def test_complete_render_has_declared_artifacts_and_main_orientation():
         "Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K" in main
     )
     assert "Dataset & Model condition" not in main
-    assert main.count(r"\multicolumn{6}{l}{\textit{") == len(RISKS)
-    assert main.count("\nSDC &") == 3
-    assert main.count("\nDice-M32 &") == 2
-    assert main.count("\nnHD-M32 &") == 3
-    assert main.count("\nnHD95-M32 &") == 2
-    for omitted in (
+    # Two model-panel headings plus three symmetric risk headings per panel.
+    assert main.count(r"\multicolumn{6}{l}{\textit{") == 2 + 2 * len(RISKS)
+    for method in (
+        "SDC",
         "Mean max probability",
         "Negative entropy",
+        "Dice-M32",
+        "nHD-M32",
+        "nHD95-M32",
+    ):
+        assert main.count(f"\n{method} &") == 2 * len(RISKS)
+    for omitted in (
         "QFR-Entropy",
         "PLM-10/PLA-10-Entropy",
         "MMMC-Entropy",
@@ -283,9 +287,11 @@ def test_complete_render_has_declared_artifacts_and_main_orientation():
     assert r"\bestresult{" in main
     assert "Dark blue" in main
     assert "raw/Holm-transformed" not in main
-    assert "CLIP-T:" in main and "DL-T:" in main
-    assert r"\resizebox{\textwidth}{!}" in main
-    assert r"\begin{tabular*}" not in main
+    assert "CLIPSeg target (CLIP-T)" in main
+    assert "DeepLabV3 target (DL-T)" in main
+    assert "CLIP-T:" not in main and "DL-T:" not in main
+    assert r"\resizebox{\textwidth}{!}" not in main
+    assert main.count(r"\begin{tabular*}") == 2
     assert "significant" not in main.lower()
     assert "significance" not in main.lower()
 
