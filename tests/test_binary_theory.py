@@ -535,6 +535,36 @@ def test_fixed_action_dice_empty_branch_and_independence_nonordering():
     assert independent_kappa[0] != pytest.approx(levelset_kappa[0])
 
 
+@pytest.mark.parametrize("seed", range(4))
+def test_sdc_deviation_is_controlled_by_count_dispersion(seed):
+    rng = np.random.default_rng(seed)
+    pixel_count = 4
+    masks = np.arange(1 << pixel_count)
+    distribution = rng.dirichlet(np.ones(masks.size))
+
+    for action in range(1, 1 << pixel_count):
+        action_size = action.bit_count()
+        overlap = np.asarray([(mask & action).bit_count() for mask in masks])
+        outside = np.asarray([(mask & ~action).bit_count() for mask in masks])
+        denominator = action_size + overlap + outside
+        losses = 1 - 2 * overlap / denominator
+        mean_overlap = float(np.dot(distribution, overlap))
+        mean_outside = float(np.dot(distribution, outside))
+        sdc = 2 * mean_overlap / (action_size + mean_overlap + mean_outside)
+        variance_overlap = float(
+            np.dot(distribution, (overlap - mean_overlap) ** 2)
+        )
+        variance_outside = float(
+            np.dot(distribution, (outside - mean_outside) ** 2)
+        )
+        bound = (
+            2 * math.sqrt(variance_overlap) / action_size
+            + math.sqrt(variance_outside) / (2 * action_size)
+        )
+        discrepancy = abs(float(np.dot(distribution, losses)) - (1 - sdc))
+        assert discrepancy <= bound + 1e-12
+
+
 @pytest.mark.parametrize("seed", range(5))
 def test_exact_dice_matches_piecewise_threshold_integration_with_ties(seed):
     rng = np.random.default_rng(seed)

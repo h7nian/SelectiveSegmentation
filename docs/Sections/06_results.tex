@@ -56,6 +56,13 @@ support explanation at a higher inference budget.
 An action-two-block Dice posterior passes its frozen 8/10 directional gate, but
 mean/median AURC\(\times100\) gains are only .0195/.0020 and its rank correlation
 with Dice-M32 is at least .99936; count decoupling does not remove the redundancy.
+A separately predeclared component--grid ladder reaches only 6/10 wins over
+two-block for every component variant, so none passes its gate. Action-aligned
+components beat their equal-cardinality grids in 9/10 conditions, but by only
+.0635/.0446 mean/median AURC\(\times100\); proposal variants are less consistent,
+and no component construction beats SDC or foreground entropy in more than
+6/10 conditions. Spatial grouping can change the count law, but does not yield
+a robust Dice-ranking advantage.
 The higher-budget three-checkpoint Ensemble-Q fails its Dice gate: LevelSet-Q is
 lower in 9/10 conditions and its mean advantage is 2.763 AURC\(\times100\).
 LevelSet-Q nHD is lower in all ten, by 3.820 on average; raw checkpoint

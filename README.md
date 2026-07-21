@@ -147,13 +147,13 @@ The active runtime-ladder lock follows the current module layout. The exact
 historical lock used by the published runtime result is retained beside that
 result as `results/runtime_ladder_v2.lock.json`.
 
-The current mechanism evidence motivates a deeper Dice-specific design:
-shared-threshold level sets represent globally comonotone boundary motion and
-work especially well for boundary losses; a Dice-oriented posterior should
-instead couple pixels within candidate regions while allowing regions to
-switch independently. The count/block and ensemble studies measure how much
-that structured regional coupling improves over entropy, SDC, and the
-shared-threshold construction without changing the deployed mask.
+The Dice mechanism studies keep the deployed mask and every pixel marginal
+fixed. For a fixed action, Dice depends only on overlap and outside counts, so
+spatial partitions matter only through the induced two-dimensional count law;
+its deviation from SDC is controlled by count dispersion. The predeclared
+component--grid ladder does not show a stable
+advantage over two-block, SDC, or foreground entropy; it is retained as a
+negative mechanism result rather than a selected method.
 
 ## Analysis and paper artifacts
 
@@ -162,6 +162,8 @@ The main strict analysis and table renderer are:
 ```bash
 python -m scripts.analyze.main --help
 python -m scripts.render.paper --help
+python -m scripts.analyze.counts --mode partition --help
+python -m scripts.render.counts --mode partition --help
 ```
 
 Raw JSON stores AURC in its natural scale. Manuscript tables multiply AURC and

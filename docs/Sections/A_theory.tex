@@ -781,6 +781,43 @@ space.  The empty-action branch remains the empty-event probability in
 Equation~\eqref{app:eq:dice-empty-action}.
 \end{proof}
 
+\begin{corollary}[SDC deviation is controlled by count dispersion]
+\label{app:cor:sdc-count-dispersion}
+Let $A\neq\varnothing$, $m=|A|$, and let $Q$ be any mask law with
+pixel marginals $p_i=\Prb_Q(i\in Y)$. Then
+\begin{equation*}
+  \left|
+    \Ex_Q L^{\Dice}(Y,A)-[1-\SDC(p,A)]
+  \right|
+  \leq
+  \frac{2}{m}\sqrt{\Var_Q Z_A}
+  +\frac{1}{2m}\sqrt{\Var_Q W_A}.
+\end{equation*}
+If the pixels are independent Bernoulli variables, the two variances on the
+right are respectively
+$\sum_{i\in A}p_i(1-p_i)$ and
+$\sum_{i\notin A}p_i(1-p_i)$.
+\end{corollary}
+
+\begin{proof}
+Marginal agreement gives
+\begin{equation*}
+  (\Ex_Q Z_A,\Ex_Q W_A)
+  =\left(\sum_{i\in A}p_i,\sum_{i\notin A}p_i\right),
+  \qquad
+  g_A(\Ex_Q Z_A,\Ex_Q W_A)=1-\SDC(p,A).
+\end{equation*}
+The coordinate bounds in the preceding proof and the triangle inequality give
+\begin{equation*}
+  \left|\Ex_Q g_A(Z_A,W_A)-g_A(\Ex_QZ_A,\Ex_QW_A)\right|
+  \leq
+  \frac{2}{m}\Ex_Q|Z_A-\Ex_QZ_A|
+  +\frac{1}{2m}\Ex_Q|W_A-\Ex_QW_A|.
+\end{equation*}
+Cauchy--Schwarz yields the displayed variance bound. Under independent
+Bernoulli pixels, variances add.
+\end{proof}
+
 This pushforward suggests a coupling ladder that leaves all pixel marginals
 unchanged.  Let $\mathcal B$ be a partition of $\Omega$, draw independent
 $U_b\sim\operatorname{Unif}(0,1)$ for $b\in\mathcal B$, and set

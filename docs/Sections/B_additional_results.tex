@@ -67,6 +67,22 @@ or scheduler records are distributed to reviewers.
   and their control recomputations pass the dedicated analyzer.
 }
 
+\IfFileExists{Tables/dice_partition_ladder.tex}{%
+  \subsection{Spatial-partition Dice coupling}
+
+  \input{Tables/dice_partition_ladder.tex}
+  No component variant passes the frozen two-part directional gate. The table
+  reports all proposal thresholds and their matched-grid controls; none was
+  selected using these test results. Across the 80 condition--variant cells,
+  the median/maximum four-repeat AURC\(\times100\) range is .068/.623; the
+  minimum/median repeat-to-mean score Spearman correlation is .915/.994. The
+  gate uses each four-repeat mean, and this Monte Carlo study remains secondary.
+}{%
+  \paragraph{Dice partition rendering guard.}
+  The component--grid table appears only after all 80 declared artifacts and
+  their fixed-action controls pass the dedicated analyzer.
+}
+
 \IfFileExists{Tables/ensemble_posterior.tex}{%
   \subsection{Fixed-action three-checkpoint posterior test}
 

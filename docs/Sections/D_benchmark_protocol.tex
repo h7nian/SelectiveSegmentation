@@ -176,7 +176,14 @@ results, requires a lower Dice-risk AURC in at least seven conditions and a
 negative macro-average difference.  Passing this gate licenses only the claim
 that coupling can matter: practical importance additionally requires a
 non-negligible AURC and ranking change.  Connected-component partitions remain
-a secondary mechanism study and are not selected using test AURC.
+a secondary mechanism study and are not selected using test AURC. The frozen
+follow-up reports action components and proposal components at thresholds
+.05, .10, and .20, each beside a deterministic grid with exactly the same
+number of blocks. Every variant uses 256 antithetic draws at each of four repeat
+seeds, with common random numbers within each component--grid pair. Its stricter
+gate requires a component
+variant to beat both two-block and its matched grid in at least 7/10 conditions,
+with both macro-average differences negative; all thresholds are reported.
 
 \subsection{Loss, numerical, and inference conventions}
 
