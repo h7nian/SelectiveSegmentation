@@ -9,11 +9,14 @@ gong2023thyroid}, using official splits except for a fixed SHA-256 Kvasir split.
 Each dataset has \textsc{CLIPSeg-General}, \textsc{CLIPSeg-Target}, and
 \textsc{DeepLabV3-Target}; Pet also has a released
 \textsc{DeepLabV3-External} cat/dog model, giving sixteen conditions. Target
-models use one fixed 40-epoch schedule and seed 0; no test label selects a
-checkpoint or hyperparameter. Every score within a condition receives the same
-frozen native-resolution map and action. Headline counts use the ten target
-conditions; the other six are fixed stress controls. Empty references remain,
-and Appendix~\ref{app:benchmark-protocol} specifies all cohorts and training.
+models in the primary analysis use one fixed 40-epoch protocol and seed 0. A
+separate descriptive checkpoint extension repeats that protocol at seeds 1 and
+2 only for the ten target conditions; it neither replaces nor selects among the
+primary checkpoints. No test label selects a checkpoint or hyperparameter.
+Every score within a condition receives the same frozen native-resolution map
+and action. Headline counts use the ten target conditions; the other six are
+fixed stress controls. Empty references remain, and
+Appendix~\ref{app:benchmark-protocol} specifies all cohorts and training.
 
 \subsection{One action, three geometric losses}
 
@@ -64,5 +67,8 @@ Displayed raw AURC, gaps/regrets, and contrasts are multiplied by \(100\); nAURC
 and all computations are unscaled. Each fixed contrast receives a pointwise 95\%
 interval from 10,000 paired image-bootstrap resamples \citep{efron1993}. We
 report all 64 rows without converting bootstrap confidence curves into
-null-calibrated \(p\)-values or simultaneous claims. The empirical hindsight
-oracle orders realized losses and is distinct from \(C_L^\star\).
+null-calibrated \(p\)-values or simultaneous claims. For target conditions,
+these primary intervals condition on the seed-0 fitted checkpoint; seeds 1--2
+are summarized across checkpoints and are never pooled into that image
+bootstrap. The empirical hindsight oracle orders realized losses and is
+distinct from \(C_L^\star\).

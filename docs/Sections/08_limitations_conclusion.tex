@@ -28,17 +28,23 @@ The boundary surface, pixel spacing, diagonal normalization, percentile pooling,
 and empty-mask penalty are substantive deployment choices. Our experiment uses
 native pixel coordinates and one fixed convention; physical-distance or
 application-specific costs could induce another ranking. Empirically, the design
-covers five binary datasets, two model families, and one training seed. The
-locked \(\gamma\in\{.3,.5,.7\}\) sensitivity preserves the main
+covers five binary datasets and two model families. Seed 0 remains the primary
+target-model analysis; seeds 1--2 repeat the same protocol only for the ten
+target conditions as a descriptive checkpoint extension. Three seeds are
+insufficient to characterize training randomness reliably or to support formal
+seed-level inference. The locked
+\(\gamma\in\{.3,.5,.7\}\) sensitivity preserves the main
 region-to-worst-boundary direction but triggers the predeclared locked warning
 rule for the worst-to-robust-boundary comparison; conclusions involving nHD versus
-nHD95 therefore depend on the deployed action threshold. Its
-paired bootstrap captures held-out image variation for fixed fitted checkpoints,
-not optimization, site-shift, or multi-rater uncertainty. Release-level patient,
-video, or eye identifiers are unavailable for some cohorts, so the intervals are
-not patient-clustered and may understate repeated-subject dependence. Finally,
-all methods use one probability map: ensembles, internal features, learned
-failure detectors, multiclass actions, and absolute risk calibration remain outside scope.
+nHD95 therefore depend on the deployed action threshold. The seed-0 paired
+bootstrap captures held-out image variation conditional on a fixed checkpoint,
+not optimization, training-sample, site-shift, or multi-rater uncertainty; the
+extra checkpoints do not turn it into a training-randomness interval. Release-level
+patient, video, or eye identifiers are unavailable for some cohorts, so the
+intervals are not patient-clustered and may understate repeated-subject
+dependence. Finally, all methods use one probability map: ensembles, internal
+features, learned failure detectors, multiclass actions, and absolute risk
+calibration remain outside scope.
 Appendix~\ref{app:limitations} expands these constraints.
 
 \paragraph{Conclusion.}

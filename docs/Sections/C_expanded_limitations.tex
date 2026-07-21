@@ -44,10 +44,15 @@ Our paired comparisons deliberately condition on each fixed probability map and
 therefore isolate confidence ranking, not segmentation-model accuracy. The paired
 image bootstrap quantifies held-out image variation for a fixed fitted
 checkpoint; its percentile intervals are pointwise and do not carry a
-simultaneous family-wise-error guarantee. With one fixed training seed they also do not include
-optimization or training-sample variability. Repeated training runs and external-site validation would be
-needed for that broader claim. Moreover, model conditions reuse the same held-out
-images within each dataset; condition-specific rows are paired evaluations, not
-independent images. Release-level patient, video, or eye identifiers are not
-available uniformly across the five cohorts, so the intervals should not be read
-as patient-clustered evidence.
+simultaneous family-wise-error guarantee. The primary target-model analysis and
+its bootstrap intervals condition on seed 0. A separate extension repeats the
+same protocol at seeds 1 and 2 only for the ten target conditions and summarizes
+checkpoint-level variation descriptively; three seeds neither estimate the full
+distribution of training randomness nor add optimization or training-sample
+variation to the primary intervals. Repeated training runs at larger scale and
+external-site validation would be needed for that broader claim. Moreover, model
+conditions reuse the same held-out images within each dataset;
+condition-specific rows are paired evaluations, not independent images.
+Release-level patient, video, or eye identifiers are not available uniformly
+across the five cohorts, so the intervals should not be read as patient-clustered
+evidence.

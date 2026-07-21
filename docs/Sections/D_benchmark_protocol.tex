@@ -65,13 +65,14 @@ weight decay \(10^{-4}\), and batch size 16. The Pet-only
 \textsc{DeepLabV3-External} condition maps the released cat and dog
 probabilities to foreground.
 
-Both target-adapted schedules use the per-step multiplier
-\((1-s/S)^{0.9}\), gradient clipping at 1, and seed 0. Augmentation applies a
-shared random scale in \([0.5,2]\), a model-resolution crop with padded pixels
-excluded from loss, and a horizontal flip with probability \(0.5\). We retain
-the final epoch under this fixed schedule. Frozen manifests record the
-checkpoint, source, cohort, configuration, package, and device hashes or
-identifiers.
+In the primary campaign, both target-adapted schedules use the per-step
+multiplier \((1-s/S)^{0.9}\), gradient clipping at 1, and seed 0. The target-only
+descriptive extension changes the seed to 1 or 2 and nothing else in the
+training protocol. Augmentation applies a shared random scale in \([0.5,2]\), a
+model-resolution crop with padded pixels excluded from loss, and a horizontal
+flip with probability \(0.5\). We retain the final epoch under this fixed
+schedule. Frozen manifests record the checkpoint, source, cohort,
+configuration, package, and device hashes or identifiers.
 
 \subsection{Single-map entropy comparators}
 
