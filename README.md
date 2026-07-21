@@ -259,12 +259,12 @@ python -m selectseg.scientific_inputs build-root \
   --output "$SCIENCE_DIR/root.lock.json"
 ```
 
-Every builder is atomic and no-overwrite. Before authorizing submission,
-replace the value below with the independently recorded digest and run the
-authoritative full-byte audit:
+Every builder is atomic and no-overwrite. The independently recorded digest
+below is the release seal; run the authoritative full-byte audit before
+authorizing submission:
 
 ```bash
-SELSEG_SCIENCE_LOCK_SHA256=REPLACE_WITH_64_HEX_DIGEST
+SELSEG_SCIENCE_LOCK_SHA256=17d30fc18b496c7062acfcec9a09ec8bd6f796339d132bd99f9a6cffad5b2cf0
 python -m selectseg.scientific_inputs verify \
   --lock configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json \
   --expected-sha256 "$SELSEG_SCIENCE_LOCK_SHA256" \
