@@ -730,7 +730,24 @@ python -m scripts.publish_binary_seed_extension \
 Finally, export the portable seed analysis and its write-last provenance
 guard. Supply exactly the seven downstream receipts and all 20 explicit
 diagnostic summaries; never substitute directory discovery or private locks in
-the public artifact:
+the public artifact. First let the read-only collector validate the fixed
+diagnose receipt, its 20 unique submitted job IDs, the locked cell/artifact
+bindings, and all descriptor payloads. It inspects only the 20 exact
+artifact-ID directories derived from the downstream lock. The NUL-delimited
+mode produces quoted-array-safe arguments without writing an intermediate
+private path list:
+
+```bash
+readarray -d '' -t seed_diagnostic_args < <(
+  python -m scripts.collect_binary_seed_diagnostics \
+    --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
+    --expected-downstream-lock-sha256 <downstream-lock-sha256> \
+    --diagnose-receipt outputs/binary_seed_campaign/diagnose-submissions.jsonl \
+    --format argv0
+)
+```
+
+Then pass that exact validated closure directly to the exporter:
 
 ```bash
 python -m scripts.export_binary_seed_provenance \
@@ -754,9 +771,7 @@ python -m scripts.export_binary_seed_provenance \
   --phase-receipt assemble outputs/binary_seed_campaign/assemble-submissions.jsonl \
   --phase-receipt analyze outputs/binary_seed_campaign/analyze-submissions.jsonl \
   --phase-receipt render outputs/binary_seed_campaign/render-submissions.jsonl \
-  --diagnostic-summary <diagnostic-01.json> \
-  ... \
-  --diagnostic-summary <diagnostic-20.json> \
+  "${seed_diagnostic_args[@]}" \
   --private-scheduler-ledger outputs/binary_seed_extension_campaign/scheduler-adjustments.jsonl \
   --public-scheduler-summary outputs/public_seed/seed_scheduler_summary.json \
   --public-analysis-output outputs/public_seed/seed_robustness_analysis.json \
