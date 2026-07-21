@@ -733,6 +733,96 @@ working-posterior term is computable: for $p_i>0$,
 Relative to the comonotone $Q_p$, reciprocal-cardinality agreement and
 conditional pixel independence are not logically ordered.
 
+The fixed-action Dice target admits an even smaller, explicitly loss-sufficient
+state space.  For nonempty $A$, define
+
+\begin{equation*}
+  \Phi_A(Y):=(Z_A(Y),W_A(Y))
+  :=\bigl(|Y\cap A|,|Y\setminus A|\bigr),
+\end{equation*}
+
+so that $L^{\Dice}(Y,A)=g_A(\Phi_A(Y))$ with
+
+\begin{equation*}
+  g_A(z,w):=1-\frac{2z}{|A|+z+w}.
+\end{equation*}
+
+\begin{proposition}[Dice count-pushforward agreement]
+\label{app:prop:dice-count-pushforward}
+Let $m=|A|>0$, let $R_A=(\Phi_A)_\#R$, and equip the count space with
+\begin{equation*}
+  d_A\bigl((z,w),(z',w')\bigr)
+  :=\frac{2}{m}|z-z'|+\frac{1}{2m}|w-w'|.
+\end{equation*}
+Then, for any two mask laws $P,Q$,
+\begin{equation*}
+  \left|
+    \Ex_P L^{\Dice}(Y,A)-\Ex_Q L^{\Dice}(Y,A)
+  \right|
+  \leq W_{1,d_A}(P_A,Q_A).
+\end{equation*}
+Thus agreement of the two-dimensional overlap--outside count laws is
+sufficient; complete mask-posterior agreement and spatial alignment of masks
+with equal counts are unnecessary for this fixed action.
+\end{proposition}
+
+\begin{proof}
+On $0\leq z\leq m$ and $w\geq0$,
+\begin{equation*}
+  \left|\frac{\partial g_A}{\partial z}\right|
+  =\frac{2(m+w)}{(m+z+w)^2}\leq\frac{2}{m},
+  \qquad
+  \left|\frac{\partial g_A}{\partial w}\right|
+  =\frac{2z}{(m+z+w)^2}\leq\frac{1}{2m}.
+\end{equation*}
+Varying the two coordinates in sequence shows that $g_A$ is one-Lipschitz
+under $d_A$. Apply Lemma~\ref{app:lem:lipschitz-wasserstein} on the count
+space.  The empty-action branch remains the empty-event probability in
+Equation~\eqref{app:eq:dice-empty-action}.
+\end{proof}
+
+This pushforward suggests a coupling ladder that leaves all pixel marginals
+unchanged.  Let $\mathcal B$ be a partition of $\Omega$, draw independent
+$U_b\sim\operatorname{Unif}(0,1)$ for $b\in\mathcal B$, and set
+
+\begin{equation*}
+  Y_i^{\mathcal B}:=\mathbf 1\{p_i\geq U_{b(i)}\}.
+\end{equation*}
+
+Then $\Prb(Y_i^{\mathcal B}=1)=p_i$ for every partition.  One image-wide
+block recovers the comonotone level-set law $Q_p$; singleton blocks recover
+independent Bernoulli pixels; blocks aligned with candidate regions give an
+intermediate region-coupled law.  The parameter-free Dice-specific partition
+$\mathcal B_A=\{A,A^c\}$ gives independent thresholds to the two sufficient
+counts.  Every partition has the same
+$\Ex Z_A=\sum_{i\in A}p_i$ and
+$\Ex W_A=\sum_{i\notin A}p_i$, so SDC is invariant across this entire ladder;
+only the expected random ratio can change.  With midpoint nodes
+$t_1,\ldots,t_M$, write
+
+\begin{equation*}
+  z_j:=|\{i\in A:p_i\geq t_j\}|,
+  \qquad
+  w_k:=|\{i\notin A:p_i\geq t_k\}|.
+\end{equation*}
+
+Its deterministic product-rule confidence is
+
+\begin{equation*}
+  C^{\mathrm{2block}}_{\Dice,M}(x)
+  =-\frac{1}{M^2}\sum_{j=1}^{M}\sum_{k=1}^{M}
+    \left(1-\frac{2z_j}{|A|+z_j+w_k}\right),
+\end{equation*}
+
+with the declared Dice empty convention when the denominator is zero.  It is
+computable from two sorted count ladders in
+$O(N\log N+M^2)$ time. Under the image-wide block, $Z_A$ and $W_A$ are
+nonincreasing functions of the same uniform variable and hence have
+nonnegative covariance; under $\mathcal B_A$ they are independent. This makes
+the changed assumption explicit. It does not assert that either covariance
+structure is the true conditional count posterior, or that the two-block score
+must rank images better.
+
 \subsection{Full surface Hausdorff geometry}
 
 Fix an image $x$. Let $S_x(A)$ be the chosen digital surface of mask $A$, with

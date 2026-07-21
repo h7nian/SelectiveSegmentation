@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from scripts import render_seed_gate_table as renderer
+from scripts.render import seed_gate as renderer
 
 
 def _summary(values, *, reversal=False, seed0_majority=True):

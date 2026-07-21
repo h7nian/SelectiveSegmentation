@@ -22,9 +22,12 @@ native pixels and one convention. The design covers five binary datasets and two
 model families. The prespecified rules mark nHD versus nHD95 under nHD95 risk as
 training-sensitive and the same geometric step as threshold-sensitive. Three
 checkpoints are descriptive, while the seed-0 image bootstrap excludes training,
-site, multi-rater, and patient-cluster uncertainty. All methods use one probability
-map; ensembles, learned failure detectors, multiclass actions, and absolute risk
-calibration remain outside scope.
+site, multi-rater, and patient-cluster uncertainty. All primary methods use one
+probability map. A three-checkpoint auxiliary compares a mean-map level-set law
+with an empirical member-mask law at a higher inference budget; it is not
+evidence that either law equals the annotation posterior. Learned failure
+detectors, multiclass actions, and absolute risk calibration remain outside
+scope.
 Appendix~\ref{app:limitations} expands these constraints.
 
 \paragraph{Conclusion.}

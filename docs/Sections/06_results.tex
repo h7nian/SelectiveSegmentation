@@ -28,15 +28,9 @@ the nHD Wasserstein corollary to nHD95.
 
 \paragraph{Training-seed sensitivity.}
 The prespecified training-sensitivity rule is met only for nHD--nHD95 under
-nHD95 risk: five of ten conditions
-reverse across seeds and seed 0 disagrees with the majority in three
-(Table~\ref{tab:seed-sensitivity-main}). Their displayed values lie in
-\([-.0856,+.0236]\); the other three contrast counts are \(1/0/0\).
-We call this comparison training-sensitive, not seed-level inference.
-
-\IfFileExists{Tables/seed_sensitivity_main.tex}{%
-  \input{Tables/seed_sensitivity_main.tex}
-}{}
+nHD95 risk: five of ten conditions reverse across seeds and seed 0 disagrees
+with the majority in three; Appendix~\ref{app:additional-results} reports the
+checkpoint-level values. We call this training-sensitive, not seed inference.
 
 \paragraph{Baselines and numerical fidelity.}
 A boundary-indexed score has the lowest raw AURC in nine of ten target
@@ -46,16 +40,32 @@ Dice-Exact have \(\rho\geq.9992\), \(\tau_b\geq.9791\), and at most .363 display
 Dice-risk AURC difference. For nHD/nHD95, M32--M128 \(\rho\) is
 .973--.998/.951--.996 and the largest displayed gaps are .456/.324.
 
+\paragraph{Mechanism clues.}
+In nine target conditions other than the failed FIVES/CLIPSeg-Target cell,
+Dice-M32 and foreground entropy have score--score Spearman correlation
+.916--.960; the exceptional cell is .535. Replacing Dice-M32 by Dice-Exact
+changes its association with realized Dice safety by at most .004. By contrast,
+nHD-M32 has higher association with realized nHD safety than Dice-M32 in all ten
+target conditions, with differences .179--.432. This is consistent with Dice
+redundancy and additional spatial-extreme information in nHD indexing, but it
+does not establish that real annotation variability is nested or identify the
+cause of Dice errors. Appendix~\ref{app:additional-results} reports the complete
+diagnostic table; a fixed-action ensemble-posterior extension directly tests the
+support explanation at a higher inference budget.
+
+An action-two-block Dice posterior passes its frozen 8/10 directional gate, but
+mean/median AURC\(\times100\) gains are only .0195/.0020 and its rank correlation
+with Dice-M32 is at least .99936; count decoupling does not remove the redundancy.
+The higher-budget three-checkpoint Ensemble-Q fails its Dice gate: LevelSet-Q is
+lower in 9/10 conditions and its mean advantage is 2.763 AURC\(\times100\).
+LevelSet-Q nHD is lower in all ten, by 3.820 on average; raw checkpoint
+disagreement is therefore not an annotation-posterior substitute.
+
 \paragraph{Stress tests.}
-In the 360-cell known-posterior study, the correctly specified coupling has zero
-posterior discrepancy and M32 mean absolute error .0084--.0087; under
-misspecification, mask-law TV is near one while Dice error remains
-.0135--.0393. This shows why TV can be too blunt and motivates loss-matched
-geometry, not validation of \(Q_p\) on real data. Exact cardinality checks find
-zero support for up to 11.5\% of FIVES and 15.4\% of ISIC target references.
-Both boundary macro contrasts reverse at \(\gamma=.3\), whereas the Dice--nHD
-directions persist. Runtime spans 11.9--4628.8 ms/image for joint three-loss
-M2--M32 and 13.2--353.5 for Dice-Exact; outputs are unequal.
+Known-posterior tests show TV near one while Dice score error remains
+.0135--.0393; cardinality checks find zero support for up to 11.5\% of FIVES and
+15.4\% of ISIC references. Both boundary macro contrasts reverse at
+\(\gamma=.3\), whereas the Dice--nHD directions persist.
 
 Appendix~\ref{app:additional-results} reports all AURCs, 64 pointwise intervals,
 cross-loss panels, agreement, curves, and stress tests.

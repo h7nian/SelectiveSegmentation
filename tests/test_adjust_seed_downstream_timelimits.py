@@ -4,8 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from scripts import adjust_seed_downstream_timelimits as adjuster
-from scripts.submit_binary_simulations import PlannedJob
+from scripts.maintenance import adjust_seed_times as adjuster
+from scripts.submit.main import PlannedJob
 
 
 def _line(value):
@@ -15,8 +15,8 @@ def _line(value):
 def _planned_jobs(phase, count):
     jobs = []
     wrapper = {
-        "seed_common": "scripts/slurm/score_binary_common.sbatch",
-        "seed_score": "scripts/slurm/score_binary_simulation.sbatch",
+        "seed_common": "scripts/slurm/run.sbatch",
+        "seed_score": "scripts/slurm/run.sbatch",
     }[phase]
     for index in range(count):
         partition = ("agsmall", "amdsmall", "msismall")[index % 3]

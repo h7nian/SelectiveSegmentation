@@ -1,0 +1,63 @@
+{
+  "lock_schema_version": 1,
+  "benchmark_id": "binary-confidence-runtime-ladder-v2",
+  "spec": {
+    "path": "configs/auxiliary/binary_runtime_ladder-v2.json",
+    "sha256": "d0041744c4823eb23788ecffbe3b8b354268cc1988fd2ed15d937b9c29a3cdd2"
+  },
+  "canonical_campaign_lock": {
+    "path": "outputs/binary_campaign/campaign.lock.json",
+    "sha256": "52313eeae8b387b419d1c3066d0232bef1f9481773392d44cf1b77bc32d98323",
+    "campaign_id": "binary-midpoint-main-v1"
+  },
+  "estimator_spec": {
+    "path": "configs/estimators/midpoint-v1.json",
+    "sha256": "ec7853c8dac78c0dc02bab833fba2545c7712b2ec5cc1803cf5ae8fc14167a84"
+  },
+  "source_files": [
+    {
+      "path": "selectseg/benchmark_binary_runtime.py",
+      "sha256": "c786b9b18c89fae72236cefd88f8aa7d3507221f1138f2a4481b982b1834d4f3"
+    },
+    {
+      "path": "scripts/submit_binary_simulations.py",
+      "sha256": "b32a4592c0f7a341f7d8505897071e5426c628359fbcea0023cfabb7b91e4528"
+    },
+    {
+      "path": "selectseg/score_binary_simulation.py",
+      "sha256": "ab25b2b168a65f4b81df9923b6bbf7191e0983656427e72709b08c790d3687c8"
+    },
+    {
+      "path": "selectseg/score_binary_common.py",
+      "sha256": "a7bd22cacf0bbf578091343454c53960fd3f32e22c39beb490b1e664a2ad6e76"
+    },
+    {
+      "path": "selectseg/binary_baselines.py",
+      "sha256": "a4d9abeecc9c2c7f72c3fe81628ecc8ae0ddf2a9174a9beef39377f29dbc6461"
+    },
+    {
+      "path": "selectseg/binary_boundary.py",
+      "sha256": "d78266f5e5cdf46d16af5add8ebc8b2e5d4e676d5fcaba8615d502950dcc9785"
+    },
+    {
+      "path": "selectseg/binary_framework.py",
+      "sha256": "c8891a2756c3c17652886580448e19b0c4c79c0db1ed454d177197237feec48a"
+    },
+    {
+      "path": "selectseg/binary_artifacts.py",
+      "sha256": "b158c3637dad22893293178ed8250eda5cdf2d648d9d2ee5d56fed3c2fecd652"
+    },
+    {
+      "path": "selectseg/threshold_estimators.py",
+      "sha256": "b4856938d4db9bfd82364b29997115897f7241bf3f9c83ffc2709ae37ea936d3"
+    },
+    {
+      "path": "scripts/slurm/benchmark_binary_runtime.sbatch",
+      "sha256": "5e40cd86b0e18ef223182dd8b2ceb48943b135f8bf7905cffb09bedb9a132c7d"
+    },
+    {
+      "path": "scripts/slurm/env.sh",
+      "sha256": "f7ecd4c030172a5f47009e14f26f4dc4e02d74ed0840d328311c95094dd45fd4"
+    }
+  ]
+}

@@ -52,9 +52,9 @@ receives one scalar M, and Slurm arrays are not used. The scientific-input
 dataset components likewise use five independent jobs---one per dataset:
 
 ```bash
-python -m scripts.submit_scientific_input_components \
+python -m scripts.submit.provenance \
   --scheduler-preflight-only
-python -m scripts.submit_scientific_input_components --submit \
+python -m scripts.submit.provenance --submit \
   --receipt outputs/binary_midpoint_main_v2/scientific_inputs/dataset-build-receipt.jsonl
 ```
 
@@ -64,14 +64,14 @@ base-model, checkpoint, and environment components at
 verification is required before the execution config can bind the lock:
 
 ```bash
-SELSEG_SCIENCE_LOCK_SHA256=17d30fc18b496c7062acfcec9a09ec8bd6f796339d132bd99f9a6cffad5b2cf0
-python -m selectseg.scientific_inputs verify \
+SELSEG_SCIENCE_LOCK_SHA256=8f2e492e959fe94727bfa535a578e1ac95e2e6a45230a7091faf7512e51c8bb3
+python -m selectseg.provenance verify \
   --lock configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json \
   --expected-sha256 "$SELSEG_SCIENCE_LOCK_SHA256" --mode full
-python -m scripts.submit_binary_simulations \
+python -m scripts.submit.main \
   --config configs/binary_midpoint_main_v2.json --phase freeze \
   --scheduler-preflight-only
-python -m scripts.submit_binary_simulations \
+python -m scripts.submit.main \
   --config configs/binary_midpoint_main_v2.json --phase freeze --submit \
   --receipt outputs/binary_midpoint_main_v2/receipts/freeze.jsonl
 ```
@@ -142,7 +142,7 @@ their locked grids. Raw AURC remains unscaled in JSON; manuscript displays
 multiply AURC-derived quantities by 100.
 The anonymous analysis artifact additionally contains 30 path-free
 manifest/record pairs for the five-dataset, two-target-model, three-seed grid.
-From an extracted artifact, `python -m scripts.replay_seed_robustness`
+From an extracted artifact, `python -m scripts.maintenance.replay_seed`
 recomputes the full seed JSON and both seed tables from those per-image records
 and requires byte equality with all three released references. Original
 execution-bearing assembly manifests are not included in this replay bundle.

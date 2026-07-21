@@ -59,25 +59,46 @@ made robust? No same-named score is presumed to win.
 \subsection{Related Work}
 \label{sec:related}
 
-\paragraph{Selective prediction and segmentation confidence.}
-Selective prediction formalizes risk--coverage trade-offs
-\citep{geifman2017selective,selectivenet,feng}, while failure-detection studies
-show that evaluation loss and aggregation can alter conclusions
-\citep{jaeger,values}. Segmentation work aggregates pixel uncertainty globally,
-over predicted regions, or over patches \citep{values,zenk}; recent comparisons
-again find the best aggregation to be dataset dependent
-\citep{guarino2026aggregation}. We expose the deployment loss inside AURC rather
-than treating image-level confidence as universal.
+\paragraph{From abstention to segmentation quality control.}
+Selective prediction turns confidence into a risk--coverage decision
+\citep{geifman2017selective,selectivenet,feng}. In segmentation, however, the
+object being screened is a structured mask. Reverse Classification Accuracy
+estimates a test mask's quality by training a reverse classifier and evaluating
+it on an annotated reference set \citep{valindria2017rca}; learned quality
+predictors and uncertainty aggregators instead use validation labels, internal
+features, or spatial summaries \citep{values,zenk,guarino2026aggregation}.
+These methods can be powerful, but they change the available information or
+require a fitted quality model. Our primary comparison asks a narrower question:
+with one probability map and one deployed mask fixed, which confidence
+functional gives the safest ordering for the loss that will actually be used?
 
-\paragraph{SDC, random sets, and boundary geometry.}
+\paragraph{Sampling agreement and mask stability.}
+Monte Carlo dropout and deep ensembles obtain multiple predictive maps
+\citep{gal2016dropout,lakshminarayanan2017ensembles}. Bayesian QuickNAT then
+uses agreement across dropout masks---including their intersection-over-union---
+as a proxy for segmentation quality \citep{roy2019bayesianquicknat}. Thus,
+expected mask agreement is not itself new. Likewise, SAM filters masks using
+the IoU of two masks obtained after shifting its binarization cutoff
+\citep{kirillov2023segmentanything}. We include these ideas at their proper
+information budgets: threshold-IoU stability is a single-map comparator,
+whereas a separately labelled three-checkpoint extension treats ensemble masks
+as samples from an alternative working posterior. RCA remains outside the
+matched table because it additionally needs an annotated atlas and per-case
+reverse fitting.
+
+\paragraph{What the level-set view adds.}
 SDC aligns a single-map score with Dice by computing soft Dice between the
 probability map and deployed mask \citep{sdc}. Our Dice score instead averages
-a nonlinear mask loss under an explicit coupling: it is an expectation of a
+the nonlinear mask loss under a declared coupling: it is an expectation of a
 ratio, whereas SDC is a ratio of expectations. Random level sets are classical
 coverage-function constructions \citep{goodman,molchanov} and appear in contour
-and excursion-set analysis \citep{poethkow,bolin}. Boundary measures expose
-errors that overlap can miss \citep{karimi2020}; we use full HD and pooled HD95
-to distinguish worst-case from robust percentile boundary behavior.
+and excursion-set analysis \citep{poethkow,bolin}; boundary measures expose
+errors that overlap can miss \citep{karimi2020}. Our contribution is therefore
+not the first consistency heuristic, but a specific synthesis: a one-map
+comonotone working posterior, confidence indexed by any bounded deployment
+loss, a separation of numerical and posterior errors through AURC regret, an
+exact Dice algorithm, and a locked cross-loss experiment spanning Dice, full
+HD, and pooled HD95.
 
 \subsection{Our Contributions}
 
@@ -89,7 +110,9 @@ AURC regret. Third, we derive geometry-aware Wasserstein specializations for
 Dice and normalized full-surface HD, add a fixed-action Dice
 overlap--cardinality decomposition, clarify why pooled nHD95 has only the
 generic guarantee, and give an exact \(O(N\log N)\) level-set Dice algorithm.
-Fourth, we conduct a locked five-dataset, sixteen-condition experiment with
-seventeen single-map scores, a complete three-loss cross-evaluation, tie-aware
+Fourth, we conduct a locked five-dataset, sixteen-condition experiment with a
+complete three-loss cross-evaluation, strong single-map comparators, tie-aware
 AURC, and pointwise paired-bootstrap intervals for four fixed adjacent-geometry
-comparisons.
+comparisons. A separately labelled extension compares the one-map level-set
+posterior with a three-checkpoint empirical posterior at its higher inference
+budget.

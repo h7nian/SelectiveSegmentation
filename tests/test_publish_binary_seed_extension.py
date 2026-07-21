@@ -4,17 +4,17 @@ import json
 
 import pytest
 
-from scripts.analyze_binary import CONTRASTS, METHODS, RISKS
-from scripts.analyze_binary_seed_extension import (
+from scripts.analyze.main import CONTRASTS, METHODS, RISKS
+from scripts.analyze.seed import (
     COHORT_JOIN_FIELDS,
     _analysis_source_sha256,
     _contrast_seed_summary,
     _gate_c,
     _three_seed_summary,
 )
-from scripts.publish_binary_seed_extension import publish_seed_table
-from scripts.render_binary_seed_extension import load_analysis, render_table
-from selectseg.binary_seed_extension import _sha256
+from scripts.maintenance.publish_seed import publish_seed_table
+from scripts.render.seed import load_analysis, render_table
+from selectseg.seed.extension import _sha256
 
 
 DATASETS = ("pet", "kvasir", "fives", "isic", "tn3k")

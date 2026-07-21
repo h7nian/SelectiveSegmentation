@@ -46,8 +46,8 @@ Expansion requires:
 ## Commands (dry-run by default)
 
 ```bash
-python -m scripts.submit_synthetic_posterior --phase pilot
-python -m scripts.submit_synthetic_posterior --phase pilot --submit \
+python -m scripts.submit.synthetic --phase pilot
+python -m scripts.submit.synthetic --phase pilot --submit \
   --receipt outputs/synthetic_posterior_campaign/pilot-submissions.jsonl
 ```
 
@@ -55,12 +55,12 @@ After the 12 pilot manifests exist, aggregate them and record the analysis
 SHA-256:
 
 ```bash
-python -m scripts.analyze_synthetic_posterior \
+python -m scripts.analyze.synthetic \
   --lock configs/auxiliary/synthetic_posterior-v1.lock.json \
   --mode pilot \
   --output outputs/synthetic_posterior_analysis/pilot-analysis.json
 sha256sum outputs/synthetic_posterior_analysis/pilot-analysis.json
-python -m scripts.render_synthetic_posterior \
+python -m scripts.render.synthetic \
   --analysis outputs/synthetic_posterior_analysis/pilot-analysis.json \
   --output-dir outputs/synthetic_posterior_analysis/pilot-render
 ```
@@ -71,10 +71,10 @@ and recomputes the gate before it creates either plan. Full submission has one
 fixed append-only duplicate guard:
 
 ```bash
-python -m scripts.submit_synthetic_posterior --phase full \
+python -m scripts.submit.synthetic --phase full \
   --pilot-analysis outputs/synthetic_posterior_analysis/pilot-analysis.json \
   --expected-pilot-analysis-sha256 <pilot-analysis-sha256>
-python -m scripts.submit_synthetic_posterior --phase full \
+python -m scripts.submit.synthetic --phase full \
   --pilot-analysis outputs/synthetic_posterior_analysis/pilot-analysis.json \
   --expected-pilot-analysis-sha256 <pilot-analysis-sha256> --submit \
   --receipt outputs/synthetic_posterior_campaign/full-submissions.jsonl

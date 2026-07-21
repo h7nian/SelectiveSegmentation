@@ -9,19 +9,19 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from scripts.submit_binary_simulations import (
+from scripts.submit.main import (
     build_campaign_lock,
     load_config,
     write_campaign_lock,
 )
-from scripts.submit_gamma_sensitivity import (
+from scripts.submit.gamma import (
     DEFAULT_AUXILIARY_LOCK,
     parse_args as parse_submit_args,
     plan_gamma_sensitivity_jobs,
 )
-from selectseg.binary_artifacts import load_binary_artifact, write_binary_artifact
-from selectseg.score_binary_common import score_binary_common_sample
-from selectseg.score_binary_gamma_sensitivity import (
+from selectseg.artifacts import load_binary_artifact, write_binary_artifact
+from selectseg.pipeline.common import score_binary_common_sample
+from selectseg.studies.gamma import (
     AUXILIARY_ARTIFACT_TYPE,
     EXPECTED_CPU_PARTITIONS,
     M32_SCORE_FIELDS,
@@ -30,8 +30,8 @@ from selectseg.score_binary_gamma_sensitivity import (
     parse_args,
     run_gamma_sensitivity,
 )
-from selectseg.score_binary_simulation import score_binary_sample
-from selectseg.threshold_estimators import (
+from selectseg.pipeline.score import score_binary_sample
+from selectseg.quadrature import (
     build_threshold_rule,
     load_estimator_spec,
     sha256_file,
@@ -212,7 +212,7 @@ def test_repository_lock_expands_to_exactly_32_cpu_jobs():
     for job in jobs:
         command = list(job.command)
         assert job.phase == "gamma_sensitivity"
-        assert command.count("scripts/slurm/score_binary_gamma_sensitivity.sbatch") == 1
+        assert command.count("scripts/slurm/run.sbatch") == 1
         assert command.count("--artifact-manifest") == 1
         assert command.count("--gamma") == 1
         assert command[command.index("--partition") + 1] in EXPECTED_CPU_PARTITIONS
@@ -220,11 +220,12 @@ def test_repository_lock_expands_to_exactly_32_cpu_jobs():
         assert "--gres" not in command
         assert "--gpus" not in command
 
-    wrapper = (ROOT / "scripts/slurm/score_binary_gamma_sensitivity.sbatch").read_text()
-    assert "#SBATCH --cpus-per-task=8" in wrapper
-    assert "#SBATCH --mem=24g" in wrapper
+    wrapper = (ROOT / "scripts/slurm/run.sbatch").read_text()
+    assert all(job.command[job.command.index("--cpus-per-task") + 1] == "8" for job in jobs)
+    assert all(job.command[job.command.index("--mem") + 1] == "24g" for job in jobs)
     assert "#SBATCH --gres" not in wrapper
     assert "#SBATCH --gpus" not in wrapper
+    assert 'exec "$@"' in wrapper
 
 
 def test_one_job_streams_and_publishes_combined_m32_rows(tmp_path):

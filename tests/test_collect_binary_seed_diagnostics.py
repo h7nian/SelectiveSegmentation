@@ -8,9 +8,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from scripts import collect_binary_seed_diagnostics as collector
-from scripts.submit_binary_simulations import PlannedJob
-from selectseg.binary_seed_extension import iter_experiments
+from scripts.maintenance import collect_seed as collector
+from scripts.submit.main import PlannedJob
+from selectseg.seed.extension import iter_experiments
 
 
 @pytest.fixture

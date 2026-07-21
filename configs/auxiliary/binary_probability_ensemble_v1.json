@@ -34,7 +34,8 @@
     "common_output_root": "../outputs/binary_probability_ensemble_v1/common_scores",
     "simulation_output_root": "../outputs/binary_probability_ensemble_v1/simulations",
     "assembly_output_root": "../outputs/binary_probability_ensemble_v1/assembled",
-    "diagnostic_output_root": "../outputs/binary_probability_ensemble_v1/diagnostics"
+    "diagnostic_output_root": "../outputs/binary_probability_ensemble_v1/diagnostics",
+    "baseline_output_root": "../outputs/binary_probability_ensemble_v1/ensemble_baselines"
   },
   "conditions": [
     {"dataset": "pet", "condition": "clipseg-target", "model": "clipseg", "expected_num_samples": 3669},

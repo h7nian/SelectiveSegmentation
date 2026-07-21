@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from selectseg.binary_framework import tie_aware_expected_aurc
+from selectseg.confidence import tie_aware_expected_aurc
 
-from scripts.analyze_binary_auxiliary import (
+from scripts.analyze.auxiliary import (
     JSON_NAME,
     LATEX_NAME,
     M128_SCORE_FIELDS,

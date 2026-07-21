@@ -49,6 +49,14 @@ steps Dice--nHD under Dice/nHD risk and nHD--nHD95 under nHD/nHD95 risk; all
 nonadjacent or mismatched cells are descriptive. The M-ladder, M128 boundary
 reference, and Dice-Exact audit numerical sensitivity.
 
+A separately locked higher-budget mechanism extension averages the three target
+checkpoints into one deployed probability map, then holds its \(0.5\) action
+fixed. It compares LevelSet-Q on that mean map with Ensemble-Q, which averages
+the same deployment loss over the three checkpoint masks. Threshold-IoU
+stability, all-member IoU, mean pairwise Dice, mutual information, and member
+variance are references in this extension, not additions to the single-map
+primary table \citep{roy2019bayesianquicknat,kirillov2023segmentanything}.
+
 \subsection{Locked analysis and stress tests}
 
 Immutable manifests bind sample order, maps, labels, checkpoints, and hashes.

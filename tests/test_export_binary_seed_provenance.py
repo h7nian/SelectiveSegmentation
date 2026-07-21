@@ -11,10 +11,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from scripts import analyze_binary_seed_extension as seed_analyzer
-from scripts import export_binary_seed_provenance as exporter
-from scripts import submit_binary_seed_extension as seed_submit
-from scripts.submit_binary_simulations import PlannedJob
+from scripts.analyze import seed as seed_analyzer
+from scripts.maintenance import export_seed as exporter
+from scripts.submit import seed as seed_submit
+from scripts.submit.main import PlannedJob
 
 
 def _sha(path):
@@ -162,7 +162,7 @@ def test_future_receipt_reconstruction_uses_exact_cpu_candidate_pool(
             seed_submit.CPU_PARTITION_REQUEST
         )
         assert job.command.count(
-            "scripts/slurm/assemble_binary_simulations.sbatch"
+            "scripts/slurm/run.sbatch"
         ) == 1
         assert "--array" not in job.command
 
@@ -274,8 +274,8 @@ def complete_fixture(tmp_path, monkeypatch):
         {"path": "selectseg/train.py", "sha256": "6" * 64},
         {"path": "selectseg/data.py", "sha256": "7" * 64},
         {"path": "selectseg/models.py", "sha256": "8" * 64},
-        {"path": "selectseg/freeze_binary_maps.py", "sha256": "9" * 64},
-        {"path": "selectseg/binary_artifacts.py", "sha256": "a" * 64},
+        {"path": "selectseg/pipeline/freeze.py", "sha256": "9" * 64},
+        {"path": "selectseg/artifacts.py", "sha256": "a" * 64},
     ]
     clip_revision = "999e0328d9e10b484360c477313983f9afdd7050"
     base_model_files = [

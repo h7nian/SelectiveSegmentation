@@ -10,8 +10,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from scripts.analyze_binary import CONTRASTS, EXPECTED_CONDITIONS, ConditionData
-from scripts.analyze_gamma_sensitivity import (
+from scripts.analyze.main import CONTRASTS, EXPECTED_CONDITIONS, ConditionData
+from scripts.analyze.gamma import (
     ARTIFACT_TYPE,
     AUXILIARY_GAMMAS,
     GAMMA_INVARIANT_FIELDS,
@@ -25,7 +25,7 @@ from scripts.analyze_gamma_sensitivity import (
     validate_primary_analysis,
     write_report,
 )
-from scripts.render_gamma_sensitivity import (
+from scripts.render.gamma import (
     DEFAULT_OUTPUT_ROOT,
     OUTPUT_NAME,
     _aurc_range,
@@ -35,12 +35,12 @@ from scripts.render_gamma_sensitivity import (
     validate_analysis,
     write_output,
 )
-from selectseg.score_binary_common import (
+from selectseg.pipeline.common import (
     AUXILIARY_FIELDS,
     COMMON_SCORE_FIELDS,
     RISK_FIELDS,
 )
-from selectseg.score_binary_gamma_sensitivity import (
+from selectseg.studies.gamma import (
     AUXILIARY_ARTIFACT_TYPE,
     M32_SCORE_FIELDS,
     OUTPUT_ROW_FIELDS,
@@ -337,7 +337,7 @@ def test_primary_analysis_values_are_recomputed_and_tampering_is_rejected(tmp_pa
             observed = np.asarray([row[spec.risk] for row in data.rows])
             left = np.asarray([row[spec.left] for row in data.rows])
             right = np.asarray([row[spec.right] for row in data.rows])
-            from selectseg.binary_framework import tie_aware_expected_aurc
+            from selectseg.confidence import tie_aware_expected_aurc
 
             left_aurc = tie_aware_expected_aurc(left, observed)
             right_aurc = tie_aware_expected_aurc(right, observed)

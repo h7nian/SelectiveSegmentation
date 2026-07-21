@@ -38,6 +38,59 @@ receipts, and schema-v2 replay lock provide the additional private provenance.
 The two closures are checked separately rather than implying that private maps
 or scheduler records are distributed to reviewers.
 
+\IfFileExists{Tables/mechanism_evidence.tex}{%
+  \subsection{Descriptive clues for the posterior-support mechanism}
+
+  \input{Tables/mechanism_evidence.tex}
+}{%
+  \paragraph{Mechanism-evidence rendering guard.}
+  The score-redundancy and loss-association table appears only after all ten
+  target-condition records pass the dedicated renderer.
+}
+
+\IfFileExists{Tables/dice_count_posterior.tex}{%
+  \subsection{Marginal-preserving Dice count coupling}
+
+  \input{Tables/dice_count_posterior.tex}
+  \begin{figure}[t]
+    \centering
+    \includegraphics[width=.78\linewidth]{Figures/dice_count_posterior_forest.pdf}
+    \caption{Paired Dice-risk AURC differences for the predeclared count-posterior
+    experiment. Intervals are pointwise 95\% paired image-bootstrap intervals
+    from 10,000 resamples. Negative values favor independent thresholds inside
+    and outside the fixed action.}
+    \label{fig:dice-count-posterior}
+  \end{figure}
+}{%
+  \paragraph{Dice count-posterior rendering guard.}
+  The table and forest plot appear only after all ten locked condition outputs
+  and their control recomputations pass the dedicated analyzer.
+}
+
+\IfFileExists{Tables/ensemble_posterior.tex}{%
+  \subsection{Fixed-action three-checkpoint posterior test}
+
+  \input{Tables/ensemble_posterior.tex}
+  \begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/ensemble_posterior_forest.pdf}
+    \caption{Paired matched-risk AURC differences between the empirical
+    three-checkpoint law and the LevelSet-Q law of the mean map. Intervals are
+    pointwise 95\% paired image-bootstrap intervals from 10,000 resamples.
+    Negative values favor Ensemble-Q.}
+    \label{fig:ensemble-posterior}
+  \end{figure}
+}{%
+  \paragraph{Ensemble-posterior rendering guard.}
+  The symmetric table and forest plot appear only after all ten mean-map and
+  member-mask artifacts pass the predeclared analyzer.
+}
+
+\IfFileExists{Tables/seed_sensitivity_main.tex}{%
+  \subsection{Checkpoint-level direction reversals}
+  \input{Tables/seed_sensitivity_main.tex}
+}{}
+
 \IfFileExists{Tables/results_complete.tex}{%
   \input{Tables/results_complete.tex}
   \subsection{Complete matched and cross-loss results}

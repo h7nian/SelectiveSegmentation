@@ -7,15 +7,15 @@
   },
   "code_sources": [
     {
-      "path": "selectseg/synthetic_posterior.py",
-      "sha256": "c04696c8767c1c5ab8a62aa967baedd43bf7f1fc7317616767e3eb501561fa1f"
+      "path": "selectseg/studies/synthetic.py",
+      "sha256": "ca7eaaa13a27dd0d6b4881306dffe971a0e794c538a0ce9625440a530a10e2b2"
     },
     {
-      "path": "selectseg/binary_boundary.py",
-      "sha256": "d78266f5e5cdf46d16af5add8ebc8b2e5d4e676d5fcaba8615d502950dcc9785"
+      "path": "selectseg/geometry.py",
+      "sha256": "c918bc385504610c49eab4392c3a736d789cb154f06603e9c1f2754b588d0694"
     },
     {
-      "path": "selectseg/binary_framework.py",
+      "path": "selectseg/confidence.py",
       "sha256": "c8891a2756c3c17652886580448e19b0c4c79c0db1ed454d177197237feec48a"
     }
   ]

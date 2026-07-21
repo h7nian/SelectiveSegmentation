@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from scripts.analyze_binary import EXPECTED_CONDITIONS, ConditionData
-from scripts.analyze_matched_risk_reliability import (
+from scripts.analyze.main import EXPECTED_CONDITIONS, ConditionData
+from scripts.analyze.reliability import (
     BOOTSTRAP_RESAMPLES,
     BOOTSTRAP_SEED,
     GROUP_BINS,
@@ -21,7 +21,7 @@ from scripts.analyze_matched_risk_reliability import (
     load_inputs,
     write_report,
 )
-from scripts.render_matched_risk_reliability import (
+from scripts.render.reliability import (
     DATASET_ORDER,
     load_analysis,
     render_figures,

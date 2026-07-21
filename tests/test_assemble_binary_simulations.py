@@ -8,27 +8,27 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from scripts.analyze_binary import load_condition
-from scripts.assemble_binary_simulations import (
+from scripts.analyze.main import load_condition
+from scripts.assemble import (
     FINAL_SCORE_FIELDS,
     assemble,
 )
-from scripts.submit_binary_simulations import (
+from scripts.submit.main import (
     build_campaign_lock,
     load_config,
     plan_common_jobs,
     plan_score_jobs,
     write_campaign_lock,
 )
-from selectseg.binary_artifacts import write_binary_artifact
-from selectseg.score_binary_common import (
+from selectseg.artifacts import write_binary_artifact
+from selectseg.pipeline.common import (
     AUXILIARY_FIELDS,
     COMMON_SCORE_FIELDS,
     RISK_FIELDS,
     parse_args as parse_common_args,
     run_common,
 )
-from selectseg.score_binary_simulation import (
+from selectseg.pipeline.score import (
     parse_args as parse_simulation_args,
     run_simulation,
 )
@@ -139,7 +139,7 @@ def _write_artifact(tmp_path):
 def _run_planned(job, wrapper, parser, runner):
     command = list(job.command)
     index = command.index(wrapper)
-    return runner(parser(command[index + 1 :]))
+    return runner(parser(command[index + 4 :]))
 
 
 def _campaign(tmp_path):
@@ -150,7 +150,7 @@ def _campaign(tmp_path):
     lock_path, _ = write_campaign_lock(lock, tmp_path / "campaign.lock.json")
     _, common_manifest = _run_planned(
         plan_common_jobs(config, lock_path)[0],
-        "scripts/slurm/score_binary_common.sbatch",
+        "scripts/slurm/run.sbatch",
         parse_common_args,
         run_common,
     )
@@ -158,7 +158,7 @@ def _campaign(tmp_path):
     for job in plan_score_jobs(config, lock_path):
         _, manifest = _run_planned(
             job,
-            "scripts/slurm/score_binary_simulation.sbatch",
+            "scripts/slurm/run.sbatch",
             parse_simulation_args,
             run_simulation,
         )

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.merge_binary_auxiliary import (
+from scripts.maintenance.merge_auxiliary import (
     ADDED_SCORE_FIELDS,
     AUXILIARY_SCORE_FIELDS,
     CANONICAL_SCORE_FIELDS,
@@ -108,7 +108,7 @@ def _write_run(root, *, auxiliary=False, condition="clipseg-target"):
         "command": [
             "python",
             "-m",
-            "selectseg.binary_eval",
+            "selectseg.evaluate",
             *(["--batch-size", "8"] if auxiliary else []),
         ],
     }

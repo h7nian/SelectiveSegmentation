@@ -156,11 +156,27 @@ is selected by test AURC.
 Monte Carlo dropout, test-time augmentation, and deep ensembles produce multiple
 maps and therefore change both information and inference cost. Learned failure
 predictors additionally use internal features and a labeled fitting set. These
-are valuable but answer a different-budget question; we exclude them from the
-matched primary table and treat them only as extensions discussed in the
-limitations. This isolates the paper's question: given one fixed probability
-map, does changing only the image-level confidence functional improve selective
-ranking?
+are valuable but answer a different-budget question and are excluded from the
+matched primary table. A separately labelled extension uses three independently
+trained target checkpoints in two ways: their arithmetic-mean map defines one
+fixed action and a LevelSet-Q score, while their three hard masks define an
+empirical Ensemble-Q score against that same action. This isolates posterior
+support within the higher budget; it does not turn three checkpoints into the
+true annotation posterior. The primary table retains the narrower question:
+given one fixed probability map, does changing only the image-level confidence
+functional improve selective ranking?
+
+The parameter-free Dice coupling diagnostic keeps the seed-0 map, deployed
+action \(A\), and every pixel marginal fixed, and changes only their dependence.
+Its two independent shared thresholds act on \(A\) and \(A^c\), respectively;
+the resulting product midpoint rule uses \(M=32\) nodes on each axis. We compare
+this action-two-block posterior with the one-threshold LevelSet-Q posterior in
+all ten target conditions.  The directional gate, fixed before reading the
+results, requires a lower Dice-risk AURC in at least seven conditions and a
+negative macro-average difference.  Passing this gate licenses only the claim
+that coupling can matter: practical importance additionally requires a
+non-negligible AURC and ranking change.  Connected-component partitions remain
+a secondary mechanism study and are not selected using test AURC.
 
 \subsection{Loss, numerical, and inference conventions}
 

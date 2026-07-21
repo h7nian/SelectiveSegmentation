@@ -5,44 +5,38 @@
     {
       "kind": "regular",
       "path": "scripts/slurm/env.sh",
-      "sha256": "82fa8fb6dac4fc2d02416137f12dc924342e272a65aeee376739e8d33a486a04",
-      "size_bytes": 858
+      "sha256": "c2b145489f61cd34fd15ea7aac39e42fe3f9247e29c97a9673f142b72dece668",
+      "size_bytes": 1304
     },
     {
       "kind": "regular",
-      "path": "scripts/slurm/freeze_binary_maps.sbatch",
-      "sha256": "fae6f27b0c9b531e6d8c71be6d44a1e8dde12d7982231a10e420043c6c870fb3",
-      "size_bytes": 858
+      "path": "scripts/slurm/run.sbatch",
+      "sha256": "12b6614bb89296ced3e08c8a005c3786a0050b1c80d0fa33b9beb95e18fe3ba9",
+      "size_bytes": 175
     },
     {
       "kind": "regular",
-      "path": "scripts/submit_binary_simulations.py",
-      "sha256": "d2e962cd2c05b04ffc7e6cdd1252d0e14b01e131546b43ba1b4cc5b4872de83b",
-      "size_bytes": 113212
+      "path": "scripts/submit/main.py",
+      "sha256": "65c686463da1a6003221730580c60c07bbb7f5a8afcee97bfabc44c3988b5b4d",
+      "size_bytes": 114664
     },
     {
       "kind": "regular",
       "path": "selectseg/__init__.py",
-      "sha256": "666a38c71d854e403e06a0f03325c9423e5e2cad28b8db3b58bf4f732f66adf1",
-      "size_bytes": 308
+      "sha256": "e06114c98e59ce7d3d22350d3d229ff7428acfc5dc802a15fdd86a4729be350a",
+      "size_bytes": 299
     },
     {
       "kind": "regular",
-      "path": "selectseg/binary_artifacts.py",
+      "path": "selectseg/artifacts.py",
       "sha256": "fb7b1abd547c998c346af3a431e5fe5c8e333a82690ebb9cae5ecf5ad2ea52ec",
       "size_bytes": 33638
     },
     {
       "kind": "regular",
       "path": "selectseg/data.py",
-      "sha256": "1347efb99cda368ddf22b38943efaa9a6f70c6759a0f5dcc27336b815c0bd6bd",
-      "size_bytes": 24623
-    },
-    {
-      "kind": "regular",
-      "path": "selectseg/freeze_binary_maps.py",
-      "sha256": "d93c704adc95f67691291ca13591e92246be351e8b579af70b1af5b57c33ab53",
-      "size_bytes": 14780
+      "sha256": "a7403aac2389c8340382cc010175d5a1fad945efee5bdcff83442095ffcf88c9",
+      "size_bytes": 24595
     },
     {
       "kind": "regular",
@@ -52,7 +46,13 @@
     },
     {
       "kind": "regular",
-      "path": "selectseg/scientific_inputs.py",
+      "path": "selectseg/pipeline/freeze.py",
+      "sha256": "9fd84da3698cae4f7fb05e5dbdb52180eba272ba905c635a9c38bf19ea6cde9b",
+      "size_bytes": 14714
+    },
+    {
+      "kind": "regular",
+      "path": "selectseg/provenance.py",
       "sha256": "d2282a1001381bb5cc83ad38e540e1503abb6f1714bd12e3352fc65186adf66f",
       "size_bytes": 71930
     }

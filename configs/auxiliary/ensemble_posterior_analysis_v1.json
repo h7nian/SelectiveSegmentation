@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "analysis_id": "ensemble-posterior-mechanism-v1",
+  "status": "predeclared-before-reading-ensemble-baseline-outputs",
+  "conditions": {
+    "datasets": ["pet", "kvasir", "fives", "isic", "tn3k"],
+    "models": ["clipseg-target", "deeplabv3-target"],
+    "count": 10
+  },
+  "fixed_action": "arithmetic-mean probability >= 0.5",
+  "posterior_constructions": {
+    "level_set": "32 uniform midpoint thresholds of the arithmetic-mean probability",
+    "ensemble_samples": "three member masks, each thresholded at 0.5"
+  },
+  "primary_comparisons": [
+    {
+      "risk": "dice",
+      "left": "confidence_ensemble_q_dice",
+      "right": "confidence_dice_m32",
+      "estimand": "left AURC minus right AURC"
+    },
+    {
+      "risk": "nhd",
+      "left": "confidence_ensemble_q_nhd",
+      "right": "confidence_nhd_m32",
+      "estimand": "left AURC minus right AURC"
+    },
+    {
+      "risk": "nhd95",
+      "left": "confidence_ensemble_q_nhd95",
+      "right": "confidence_nhd95_m32",
+      "estimand": "left AURC minus right AURC"
+    }
+  ],
+  "reference_scores": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_threshold_iou_stability",
+    "confidence_ensemble_all_iou",
+    "confidence_ensemble_pairwise_dice",
+    "confidence_ensemble_negative_mutual_information",
+    "confidence_ensemble_negative_probability_variance"
+  ],
+  "reporting": {
+    "aurc_scale": 100,
+    "tie_policy": "uniform random ordering within exact score ties",
+    "condition_outputs": ["aurc", "spearman", "kendall_tau_b"],
+    "summary_outputs": [
+      "ten-condition mean and median paired AURC difference",
+      "number of conditions favoring each posterior",
+      "pointwise paired-image bootstrap interval within each condition"
+    ],
+    "bootstrap_resamples": 10000,
+    "no_test_selected_score_or_hyperparameter": true
+  },
+  "interpretation_gates": {
+    "ensemble_supports_dice_expressivity_hypothesis": {
+      "required_condition_wins": 7,
+      "required_mean_aurc_difference_direction": "negative"
+    },
+    "level_set_remains_preferred_for_nhd": {
+      "required_condition_wins": 7,
+      "winner": "level_set"
+    },
+    "inconclusive": "all other patterns; report without changing datasets or selecting a posterior"
+  },
+  "scope": {
+    "primary_paper_results_unchanged": true,
+    "ensemble_analysis_is_higher_budget_auxiliary": true,
+    "three_members_do_not_identify_the_true_label_posterior": true
+  }
+}

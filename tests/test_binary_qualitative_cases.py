@@ -8,8 +8,8 @@ import json
 import numpy as np
 import pytest
 
-from scripts import render_binary_qualitative_cases as qualitative_renderer
-from scripts.render_binary_qualitative_cases import (
+from scripts.render import qualitative as qualitative_renderer
+from scripts.render.qualitative import (
     ARTIFACT_TYPE as RENDER_ARTIFACT_TYPE,
     CELL_SIZE,
     HEADER_HEIGHT,
@@ -20,7 +20,7 @@ from scripts.render_binary_qualitative_cases import (
     load_selected_arrays,
     publish_manuscript_package,
 )
-from scripts.select_binary_qualitative_cases import (
+from scripts.select_cases import (
     ARTIFACT_TYPE as SELECTION_ARTIFACT_TYPE,
     CASE_ORDER,
     DATASET_ORDER,
@@ -30,7 +30,7 @@ from scripts.select_binary_qualitative_cases import (
     validate_selection_id,
     write_selection,
 )
-from selectseg.binary_artifacts import load_binary_artifact, write_binary_artifact
+from selectseg.artifacts import load_binary_artifact, write_binary_artifact
 
 
 def _row(

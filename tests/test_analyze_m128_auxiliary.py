@@ -9,8 +9,8 @@ from pathlib import Path
 
 import pytest
 
-from scripts.analyze_binary import EXPECTED_CONDITIONS, ConditionData
-from scripts.analyze_m128_auxiliary import (
+from scripts.analyze.main import EXPECTED_CONDITIONS, ConditionData
+from scripts.analyze.m128 import (
     ARTIFACT_TYPE,
     COMPARISONS,
     SCHEMA_VERSION,
@@ -20,7 +20,7 @@ from scripts.analyze_m128_auxiliary import (
     load_m128_condition,
     write_report,
 )
-from scripts.render_m128_auxiliary import (
+from scripts.render.m128 import (
     DEFAULT_OUTPUT_DIR,
     OUTPUT_NAME,
     _aurc_format,
@@ -30,7 +30,7 @@ from scripts.render_m128_auxiliary import (
     validate_analysis,
     write_output,
 )
-from selectseg.score_binary_m128_auxiliary import (
+from selectseg.studies.m128 import (
     AUXILIARY_ARTIFACT_TYPE,
     M128_SCORE_FIELDS,
 )

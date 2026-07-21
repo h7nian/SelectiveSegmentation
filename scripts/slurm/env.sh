@@ -10,9 +10,9 @@ export TMPDIR="$SELECTSEG_TMPDIR"
 
 module load python3/3.12.4_anaconda2024.06-1_libmamba
 
-# A standalone clone owns its environment directly.  The development workspace
-# keeps the publishable clone in ``github/`` and shares the parent environment;
-# support both layouts explicitly and fail closed everywhere else.
+# A standalone clone normally owns its environment directly.  A workspace may
+# instead share the environment in its parent; support both layouts and fail
+# closed everywhere else.
 if [[ -f "$REPO_ROOT/.venv/bin/activate" ]]; then
   SELECTSEG_VENV="$REPO_ROOT/.venv"
 elif [[ -f "$REPO_ROOT/../.venv/bin/activate" ]]; then

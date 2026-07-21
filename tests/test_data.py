@@ -1,7 +1,7 @@
 """Tests for the focused binary dataset wrappers and transforms.
 
 Synthetic-input tests always run; tests touching downloaded releases skip
-until ``scripts/download_binary_assets.py`` has been run.
+until ``scripts/download.py`` has been run.
 """
 
 import hashlib
@@ -28,14 +28,14 @@ DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
 
 requires_pet = pytest.mark.skipif(
     not (DATA_ROOT / "oxford-iiit-pet" / "annotations" / "trainval.txt").exists(),
-    reason="Oxford-IIIT Pet not downloaded; run scripts/download_binary_assets.py",
+    reason="Oxford-IIIT Pet not downloaded; run scripts/download.py",
 )
 
 requires_isic = pytest.mark.skipif(
     not (
         DATA_ROOT / "ISIC2018" / "ISIC2018_Task1-2_Training_Input"
     ).is_dir(),
-    reason="ISIC 2018 not downloaded; run scripts/download_binary_assets.py",
+    reason="ISIC 2018 not downloaded; run scripts/download.py",
 )
 
 requires_tn3k = pytest.mark.skipif(
@@ -47,7 +47,7 @@ requires_tn3k = pytest.mark.skipif(
         / "tn3k"
         / "trainval-image"
     ).is_dir(),
-    reason="TN3K not downloaded; run scripts/download_binary_assets.py",
+    reason="TN3K not downloaded; run scripts/download.py",
 )
 
 

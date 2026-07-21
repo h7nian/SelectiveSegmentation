@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "analysis_id": "dice-partition-ladder-v1",
+  "status": "predeclared-before-computing-component-or-grid-scores",
+  "parent_contract": {
+    "path": "configs/auxiliary/dice_coupling_analysis_v1.json",
+    "sha256": "a45f48c7dbba931dc3da803a036509e496bc86bd999a01e48dde645514ab0bf4"
+  },
+  "paths": {
+    "workspace_root": "..",
+    "campaign_lock": "../outputs/binary_midpoint_main_v2/campaign.lock.json",
+    "output_root": "../outputs/dice_partition_ladder_v1"
+  },
+  "scheduler": {
+    "cpu_partition_candidates": ["amdsmall", "agsmall", "msismall", "saffo-2tb"]
+  },
+  "conditions": {
+    "datasets": ["pet", "kvasir", "fives", "isic", "tn3k"],
+    "models": ["clipseg-target", "deeplabv3-target"],
+    "count": 10,
+    "source": "locked seed-0 probability maps"
+  },
+  "fixed_action": "probability >= 0.5",
+  "variants": [
+    {"coupling": "action_components", "proposal_threshold": null},
+    {"coupling": "action_grid", "proposal_threshold": null},
+    {"coupling": "proposal_components", "proposal_threshold": 0.05},
+    {"coupling": "proposal_grid", "proposal_threshold": 0.05},
+    {"coupling": "proposal_components", "proposal_threshold": 0.10},
+    {"coupling": "proposal_grid", "proposal_threshold": 0.10},
+    {"coupling": "proposal_components", "proposal_threshold": 0.20},
+    {"coupling": "proposal_grid", "proposal_threshold": 0.20}
+  ],
+  "numerics": {
+    "monte_carlo_draws": 256,
+    "monte_carlo_repeats": 4,
+    "connectivity": 4,
+    "master_seed": 20260721,
+    "antithetic_uniforms": true,
+    "common_random_numbers_within_each_component_grid_pair": true
+  },
+  "reporting": {
+    "risk": "dice",
+    "aurc_scale": 100,
+    "comparators": [
+      "confidence_dice_m32",
+      "confidence_dice_action_two_block_m32",
+      "confidence_sdc",
+      "confidence_foreground_entropy"
+    ],
+    "bootstrap_resamples": 10000,
+    "tie_policy": "uniform random ordering within exact score ties"
+  },
+  "interpretation_gate": {
+    "component_claim_requires": [
+      "component coupling improves over action two-block in at least 7 of 10 conditions",
+      "component coupling improves over its matched-grid control in at least 7 of 10 conditions",
+      "both macro-average AURC differences are negative",
+      "rank changes are practically non-negligible"
+    ],
+    "proposal_thresholds_are_all_reported": true,
+    "no_test_selection": true
+  }
+}

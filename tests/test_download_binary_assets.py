@@ -4,7 +4,7 @@ import os
 import sys
 from types import ModuleType
 
-from scripts import download_binary_assets as assets
+from scripts import download as assets
 
 
 def test_model_download_pins_both_clipseg_components(monkeypatch, tmp_path):

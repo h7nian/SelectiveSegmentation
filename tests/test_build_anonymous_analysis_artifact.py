@@ -11,7 +11,7 @@ from pathlib import Path, PurePosixPath
 
 import pytest
 
-from scripts import build_anonymous_analysis_artifact as artifact
+from scripts.maintenance import build_release as artifact
 
 
 WORKSPACE_ROOT = Path(__file__).resolve().parents[1]
@@ -65,9 +65,7 @@ def _public_gate_analysis(source_analysis_sha256):
         "gate_c": {
             "fired": True,
             "direction_reversal_counts": {artifact.SEED_GATE_CONTRAST: 5},
-            "contrasts_with_at_least_three_reversals": [
-                artifact.SEED_GATE_CONTRAST
-            ],
+            "contrasts_with_at_least_three_reversals": [artifact.SEED_GATE_CONTRAST],
             "seed0_not_majority_cells": [
                 {
                     "condition": condition,
@@ -135,7 +133,9 @@ def portable_seed_inputs(monkeypatch):
 
     def verify_replay(lock_payload, read_payload):
         assert lock_payload
-        assert read_payload("results/seed_records/seed-0/fives/clipseg-target/627922c22aa3aa21/records.jsonl")
+        assert read_payload(
+            "results/seed_records/seed-0/fives/clipseg-target/627922c22aa3aa21/records.jsonl"
+        )
         return {}, {
             "verified": True,
             "condition_count": 30,
@@ -202,9 +202,9 @@ def test_repeated_builds_are_identical_verified_and_importable(
     assert "match the released\nreference byte for byte" in readme
     assert "five reversal cells" in readme
     for module in (
-        "scripts.analyze_binary",
-        "scripts.render_paper_tables",
-        "scripts.replay_seed_robustness",
+        "scripts.analyze.main",
+        "scripts.render.paper",
+        "scripts.maintenance.replay_seed",
     ):
         result = subprocess.run(
             [sys.executable, "-m", module, "--help"],
@@ -302,7 +302,7 @@ def test_member_allowlist_has_exact_canonical_cardinalities():
         "docs/Tables/seed_sensitivity_main.tex",
         "results/seed_replay.lock.json",
         "results/seed_replay.complete.json",
-        "scripts/replay_seed_robustness.py",
+        "scripts/maintenance/replay_seed.py",
     } <= seed_sources
     seed_destinations = {
         item.destination
@@ -317,7 +317,7 @@ def test_member_allowlist_has_exact_canonical_cardinalities():
         "tables/seed_sensitivity_main.tex",
         "results/seed_replay.lock.json",
         "results/seed_replay.complete.json",
-        "scripts/replay_seed_robustness.py",
+        "scripts/maintenance/replay_seed.py",
     } <= seed_destinations
     assert not any(
         any(marker in path.lower() for marker in ("receipt", "checkpoint"))

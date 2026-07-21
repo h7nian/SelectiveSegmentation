@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "analysis_id": "dice-coupling-mechanism-v1",
+  "status": "predeclared-before-computing-coupling-ladder-scores",
+  "paths": {
+    "workspace_root": "..",
+    "campaign_lock": "../outputs/binary_midpoint_main_v2/campaign.lock.json",
+    "output_root": "../outputs/dice_count_posterior_v1"
+  },
+  "scheduler": {
+    "cpu_partition_candidates": ["amdsmall", "agsmall", "msismall", "saffo-2tb"]
+  },
+  "conditions": {
+    "datasets": ["pet", "kvasir", "fives", "isic", "tn3k"],
+    "models": ["clipseg-target", "deeplabv3-target"],
+    "count": 10,
+    "source": "locked seed-0 single probability maps"
+  },
+  "fixed_action": "probability >= 0.5",
+  "common_marginals": "every construction satisfies Pr(Y_i=1)=p_i before numerical approximation",
+  "couplings": {
+    "global_level_set": {
+      "partition": "one image-wide block",
+      "evaluation": "32 midpoint thresholds"
+    },
+    "action_two_block": {
+      "partition": "deployed action and its complement",
+      "evaluation": "deterministic 32 by 32 midpoint product rule",
+      "role": "primary Dice-specific alternative"
+    },
+    "action_components": {
+      "partition": "four-connected components of the action and its complement",
+      "evaluation": "fixed-seed Monte Carlo with antithetic uniforms",
+      "role": "secondary"
+    },
+    "proposal_components": {
+      "partition": "four-connected components of probability >= 0.10 plus complement",
+      "evaluation": "fixed-seed Monte Carlo with antithetic uniforms",
+      "sensitivity_thresholds": [0.05, 0.20],
+      "role": "secondary; thresholds are all reported and never selected on test AURC"
+    },
+    "spatial_grid_control": {
+      "partition": "deterministic grid matched as closely as possible to the object-aligned block count",
+      "evaluation": "same Monte Carlo uniforms and budget as component coupling",
+      "role": "negative control"
+    },
+    "independent_pixel_control": {
+      "partition": "one block per pixel",
+      "evaluation": "fixed-seed Monte Carlo with antithetic uniforms",
+      "role": "coupling endpoint control"
+    }
+  },
+  "numerics": {
+    "midpoint_m": 32,
+    "monte_carlo_draws": 256,
+    "monte_carlo_repeats": 4,
+    "connectivity": 4,
+    "master_seed": 20260721
+  },
+  "primary_comparison": {
+    "risk": "dice",
+    "left": "confidence_dice_action_two_block",
+    "right": "confidence_dice_m32",
+    "estimand": "left AURC minus right AURC",
+    "support_gate": {
+      "required_condition_wins": 7,
+      "required_mean_aurc_difference_direction": "negative"
+    }
+  },
+  "secondary_reporting": {
+    "aurc_scale": 100,
+    "risks": ["dice"],
+    "comparators": ["confidence_sdc", "confidence_foreground_entropy"],
+    "condition_outputs": ["aurc", "spearman", "kendall_tau_b", "score_correlation", "runtime"],
+    "coupling_diagnostics": ["number_of_blocks", "largest_block_fraction", "monte_carlo_repeat_standard_deviation"]
+  },
+  "interpretation_limits": [
+    "Dice is permutation-invariant; connectivity is an empirical posterior assumption, not a property implied by Dice.",
+    "Single-label test data compare selective ranking but do not identify the true conditional mask posterior.",
+    "Proposal thresholds and Monte Carlo repeats cannot be selected by test performance.",
+    "No dataset, model, or condition may be replaced after results are read."
+  ]
+}

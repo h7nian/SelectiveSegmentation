@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from scripts.analyze_binary import METHODS, RISKS
-from scripts.analyze_working_risk_diagnostics import (
+from scripts.analyze.main import METHODS, RISKS
+from scripts.analyze.working_risk import (
     ARTIFACT_TYPE,
     _correlation,
     analyze,

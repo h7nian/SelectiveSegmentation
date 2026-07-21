@@ -1,11 +1,11 @@
-"""Contract and rendering tests for scripts/render_paper_tables.py."""
+"""Contract and rendering tests for scripts/render/paper.py."""
 
 import copy
 import json
 
 import pytest
 
-from scripts.render_paper_tables import (
+from scripts.render.paper import (
     COMPLETION_MARKER,
     CONTRASTS,
     CONTROL_CONDITIONS,

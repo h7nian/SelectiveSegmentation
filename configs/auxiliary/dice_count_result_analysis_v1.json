@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "analysis_id": "dice-count-result-analysis-v1",
+  "status": "predeclared-before-reading-dice-count-posterior-outputs",
+  "score_contract": {
+    "path": "configs/auxiliary/dice_coupling_analysis_v1.json",
+    "sha256": "a45f48c7dbba931dc3da803a036509e496bc86bd999a01e48dde645514ab0bf4"
+  },
+  "conditions": {
+    "datasets": ["pet", "kvasir", "fives", "isic", "tn3k"],
+    "models": ["clipseg-target", "deeplabv3-target"],
+    "count": 10
+  },
+  "fixed_action": "locked seed-0 probability >= 0.5",
+  "primary_comparison": {
+    "risk": "risk_dice",
+    "left": "confidence_dice_action_two_block_m32",
+    "right": "confidence_dice_m32",
+    "estimand": "left AURC minus right AURC"
+  },
+  "reference_scores": [
+    "confidence_sdc",
+    "confidence_foreground_entropy",
+    "confidence_dice_exact"
+  ],
+  "reporting": {
+    "aurc_scale": 100,
+    "tie_policy": "uniform random ordering within exact score ties",
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 20260721,
+    "condition_outputs": ["aurc", "spearman", "kendall_tau_b", "paired_bootstrap_interval"],
+    "mechanism_outputs": [
+      "shared count covariance",
+      "two-block minus shared score",
+      "second-order coupling correction",
+      "runtime"
+    ]
+  },
+  "interpretation_gate": {
+    "required_condition_wins": 7,
+    "required_mean_aurc_difference_direction": "negative",
+    "failure_interpretation": "the two-count factorization is not supported as a better fixed single-map Dice posterior; do not select a component partition on these results"
+  },
+  "scope": {
+    "primary_paper_results_unchanged": true,
+    "component_couplings_remain_secondary_until_separately_run": true,
+    "test_results_do_not_select_datasets_models_or_hyperparameters": true
+  }
+}

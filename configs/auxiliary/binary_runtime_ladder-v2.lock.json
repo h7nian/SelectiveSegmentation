@@ -16,48 +16,48 @@
   },
   "source_files": [
     {
-      "path": "selectseg/benchmark_binary_runtime.py",
-      "sha256": "c786b9b18c89fae72236cefd88f8aa7d3507221f1138f2a4481b982b1834d4f3"
+      "path": "selectseg/studies/runtime.py",
+      "sha256": "67ae782867c0b8dc8c08d4c94f18f5c5caab9f13fdbed2a421ca71f111a02766"
     },
     {
-      "path": "scripts/submit_binary_simulations.py",
-      "sha256": "b32a4592c0f7a341f7d8505897071e5426c628359fbcea0023cfabb7b91e4528"
+      "path": "scripts/submit/main.py",
+      "sha256": "65c686463da1a6003221730580c60c07bbb7f5a8afcee97bfabc44c3988b5b4d"
     },
     {
-      "path": "selectseg/score_binary_simulation.py",
-      "sha256": "ab25b2b168a65f4b81df9923b6bbf7191e0983656427e72709b08c790d3687c8"
+      "path": "selectseg/pipeline/score.py",
+      "sha256": "a703151a52decb26dd5bc19a0003f606d6b62dde4e1696a5d549f4c8d41bf3db"
     },
     {
-      "path": "selectseg/score_binary_common.py",
-      "sha256": "a7bd22cacf0bbf578091343454c53960fd3f32e22c39beb490b1e664a2ad6e76"
+      "path": "selectseg/pipeline/common.py",
+      "sha256": "da9958585c0e68efcc1cfb056e3054695948ef8c9b9d7a261e199cbe7b2deebf"
     },
     {
-      "path": "selectseg/binary_baselines.py",
+      "path": "selectseg/baselines.py",
       "sha256": "a4d9abeecc9c2c7f72c3fe81628ecc8ae0ddf2a9174a9beef39377f29dbc6461"
     },
     {
-      "path": "selectseg/binary_boundary.py",
-      "sha256": "d78266f5e5cdf46d16af5add8ebc8b2e5d4e676d5fcaba8615d502950dcc9785"
+      "path": "selectseg/geometry.py",
+      "sha256": "c918bc385504610c49eab4392c3a736d789cb154f06603e9c1f2754b588d0694"
     },
     {
-      "path": "selectseg/binary_framework.py",
+      "path": "selectseg/confidence.py",
       "sha256": "c8891a2756c3c17652886580448e19b0c4c79c0db1ed454d177197237feec48a"
     },
     {
-      "path": "selectseg/binary_artifacts.py",
-      "sha256": "b158c3637dad22893293178ed8250eda5cdf2d648d9d2ee5d56fed3c2fecd652"
+      "path": "selectseg/artifacts.py",
+      "sha256": "fb7b1abd547c998c346af3a431e5fe5c8e333a82690ebb9cae5ecf5ad2ea52ec"
     },
     {
-      "path": "selectseg/threshold_estimators.py",
+      "path": "selectseg/quadrature.py",
       "sha256": "b4856938d4db9bfd82364b29997115897f7241bf3f9c83ffc2709ae37ea936d3"
     },
     {
-      "path": "scripts/slurm/benchmark_binary_runtime.sbatch",
-      "sha256": "5e40cd86b0e18ef223182dd8b2ceb48943b135f8bf7905cffb09bedb9a132c7d"
+      "path": "scripts/slurm/run.sbatch",
+      "sha256": "12b6614bb89296ced3e08c8a005c3786a0050b1c80d0fa33b9beb95e18fe3ba9"
     },
     {
       "path": "scripts/slurm/env.sh",
-      "sha256": "f7ecd4c030172a5f47009e14f26f4dc4e02d74ed0840d328311c95094dd45fd4"
+      "sha256": "c2b145489f61cd34fd15ea7aac39e42fe3f9247e29c97a9673f142b72dece668"
     }
   ]
 }

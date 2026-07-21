@@ -7,8 +7,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from scripts.analyze_binary import METHODS
-from scripts.plot_risk_coverage import (
+from scripts.analyze.main import METHODS
+from scripts.plot import (
     ASSEMBLY_ARTIFACT_TYPE,
     RISK_SPECS,
     condition_all_indexed_curves,
@@ -20,7 +20,7 @@ from scripts.plot_risk_coverage import (
     render_conditions,
     tie_aware_risk_coverage_curve,
 )
-from selectseg.binary_framework import tie_aware_expected_aurc
+from selectseg.confidence import tie_aware_expected_aurc
 
 
 def _sha256(path):

@@ -4,8 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from scripts import finalize_seed_scheduler_ledger as ledger
-from scripts.submit_binary_simulations import PlannedJob
+from scripts.maintenance import finalize_seed as ledger
+from scripts.submit.main import PlannedJob
 
 
 def _line(value):
@@ -382,7 +382,7 @@ def test_checkpoint_gate_rejects_terminal_failure_closure(tmp_path, monkeypatch)
 
 
 def test_checkpoint_cli_runs_complete_closure_gate_before_lock_write(monkeypatch):
-    from scripts import submit_binary_seed_extension as submit
+    from scripts.submit import seed as submit
 
     binding = {"sha256": "a" * 64, "spec": {"paths": {"checkpoint_lock": "x"}}}
     jobs = tuple(

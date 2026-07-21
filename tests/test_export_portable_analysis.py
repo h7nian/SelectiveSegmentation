@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from scripts.export_portable_analysis import export_analysis
+from scripts.maintenance.export_analysis import export_analysis
 
 
 def _root(tmp_path):

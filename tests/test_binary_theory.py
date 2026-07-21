@@ -7,8 +7,8 @@ import numpy as np
 import pytest
 from scipy.optimize import linprog
 
-from selectseg.binary_baselines import exact_levelset_dice_confidence
-from selectseg.binary_framework import foreground_dice_loss
+from selectseg.baselines import exact_levelset_dice_confidence
+from selectseg.confidence import foreground_dice_loss
 
 
 def _piecewise_integral(values, widths):

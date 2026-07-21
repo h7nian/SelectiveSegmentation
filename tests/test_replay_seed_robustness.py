@@ -9,8 +9,8 @@ from pathlib import Path
 
 import pytest
 
-from scripts.build_anonymous_analysis_artifact import scan_anonymous_bytes
-from scripts.replay_seed_robustness import (
+from scripts.maintenance.build_release import scan_anonymous_bytes
+from scripts.maintenance.replay_seed import (
     ReplayValidationError,
     load_replay_lock,
     replay_release,

@@ -6,9 +6,9 @@ from copy import deepcopy
 import numpy as np
 import pytest
 
-import scripts.analyze_binary_diagnostics as diagnostic_analysis
-from scripts.analyze_binary import EXPECTED_CONDITIONS
-from scripts.analyze_binary_diagnostics import (
+import scripts.analyze.diagnostics as diagnostic_analysis
+from scripts.analyze.main import EXPECTED_CONDITIONS
+from scripts.analyze.diagnostics import (
     ANALYSIS_ARTIFACT_TYPE,
     JSON_NAME,
     METRIC_KEYS,
@@ -19,14 +19,14 @@ from scripts.analyze_binary_diagnostics import (
     validate_analysis,
     write_outputs,
 )
-from scripts.submit_binary_simulations import (
+from scripts.submit.main import (
     Config,
     EXPECTED_PROTOCOL,
     build_campaign_lock,
     write_campaign_lock,
 )
-from selectseg.binary_artifacts import sha256_file, write_binary_artifact
-from selectseg.binary_diagnostics import parse_args, run_diagnostics
+from selectseg.artifacts import sha256_file, write_binary_artifact
+from selectseg.studies.diagnostics import parse_args, run_diagnostics
 
 
 def _estimator(path):

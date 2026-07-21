@@ -8,8 +8,8 @@ import json
 
 import pytest
 
-from scripts.analyze_binary import EXPECTED_CONDITIONS
-from scripts.analyze_working_risk_diagnostics import (
+from scripts.analyze.main import EXPECTED_CONDITIONS
+from scripts.analyze.working_risk import (
     AGREEMENT_SCORES,
     ARTIFACT_TYPE,
     COVERAGES,
@@ -17,7 +17,7 @@ from scripts.analyze_working_risk_diagnostics import (
     SCHEMA_VERSION,
     TARGET_CONDITIONS,
 )
-from scripts.render_working_risk_diagnostics import (
+from scripts.render.working_risk import (
     ORDERED_TARGET_CONDITIONS,
     OUTPUT_NAME,
     load_diagnostics,

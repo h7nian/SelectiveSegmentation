@@ -42,7 +42,7 @@
     },
     "source": {
       "path": "configs/scientific_inputs/binary-midpoint-main-v2/source.json",
-      "sha256": "826285bbeebaffb04009a44e77360e0fe2387878cecb5219267212ba6bddc4a1"
+      "sha256": "389593d46a56824f65c9f7cb97fe3444f478c5e6f9e2b1c4bef5e39872e82756"
     }
   },
   "science_config": {

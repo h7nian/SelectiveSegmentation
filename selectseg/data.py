@@ -526,7 +526,7 @@ class ISICSegmentation(_StrictPairedBinarySegmentation):
     """ISIC 2018 Task 1 lesion masks with the official train/test split."""
 
     _DATASET_NAME = "ISIC"
-    _DOWNLOAD_HINT = "run scripts/download_binary_assets.py --datasets isic"
+    _DOWNLOAD_HINT = "run scripts/download.py --datasets isic"
     _MASK_STEM_SUFFIX = "_segmentation"
 
     def _split_directories(self, root, split):
@@ -542,7 +542,7 @@ class TN3KSegmentation(_StrictPairedBinarySegmentation):
     """TN3K thyroid-nodule masks with the official trainval/test split."""
 
     _DATASET_NAME = "TN3K"
-    _DOWNLOAD_HINT = "run scripts/download_binary_assets.py --datasets tn3k"
+    _DOWNLOAD_HINT = "run scripts/download.py --datasets tn3k"
 
     def _split_directories(self, root, split):
         release_split = "trainval" if split == "train" else "test"

@@ -1,9 +1,11 @@
 """Tests for the model wrappers on random tensors (no dataset needed).
 
 Requires the pretrained checkpoints cached by
-``scripts/download_binary_assets.py``.
+``scripts/download.py``.
 """
 
+import gc
+import os
 from pathlib import Path
 
 import pytest
@@ -15,12 +17,21 @@ from selectseg.models import build_model
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 pytestmark = pytest.mark.skipif(
-    not (REPO_ROOT / "data" / "cache" / "huggingface").exists()
+    os.environ.get("SELECTSEG_RUN_MODEL_TESTS") != "1"
+    or not (REPO_ROOT / "data" / "cache" / "huggingface").exists()
     or not (REPO_ROOT / "data" / "cache" / "torch").exists(),
-    reason="model caches missing; run scripts/download_binary_assets.py",
+    reason="set SELECTSEG_RUN_MODEL_TESTS=1 after caching models",
 )
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+@pytest.fixture(autouse=True)
+def release_model_memory():
+    yield
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 
 @pytest.mark.parametrize(

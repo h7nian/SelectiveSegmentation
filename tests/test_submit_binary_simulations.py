@@ -13,8 +13,8 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from scripts import submit_binary_simulations
-from scripts.submit_binary_simulations import (
+from scripts.submit import main as submit_binary_simulations
+from scripts.submit.main import (
     build_campaign_lock,
     canonical_runtime_receipt_path,
     execute_configured_plan,
@@ -30,14 +30,14 @@ from scripts.submit_binary_simulations import (
     reconcile_configured_plan,
     write_campaign_lock,
 )
-from scripts.assemble_binary_simulations import FINAL_SCORE_FIELDS, assemble
-from scripts.analyze_binary import load_condition
-from selectseg.binary_artifacts import write_binary_artifact
-from selectseg.score_binary_common import (
+from scripts.assemble import FINAL_SCORE_FIELDS, assemble
+from scripts.analyze.main import load_condition
+from selectseg.artifacts import write_binary_artifact
+from selectseg.pipeline.common import (
     parse_args as parse_common_args,
     run_common,
 )
-from selectseg.score_binary_simulation import (
+from selectseg.pipeline.score import (
     parse_args as parse_score_args,
     run_simulation,
 )
@@ -144,7 +144,7 @@ def _execute_candidate_runtime(
     )
 
 
-def _write_artifact(tmp_path, *, scientific_input=None):
+def _write_artifact(tmp_path, *, scientific_input=None, checkpoint=None):
     sample_ids = ["image-0", "image-1"]
     probability = np.linspace(0.05, 0.95, 12 * 12, dtype=np.float32).reshape(12, 12)
     truth = (probability >= 0.55).astype(np.uint8)
@@ -156,7 +156,7 @@ def _write_artifact(tmp_path, *, scientific_input=None):
         split="test",
         class_index=1,
         class_name="foreground",
-        checkpoint=None,
+        checkpoint=checkpoint,
         base_model={"name": "clipseg", "source": "synthetic"},
         source_sha256="a" * 64,
         environment={
@@ -264,7 +264,7 @@ def test_freeze_and_score_plans_are_one_job_per_cartesian_row(tmp_path):
 
     freeze_jobs = plan_freeze_jobs(config)
     assert len(freeze_jobs) == 1
-    assert freeze_jobs[0].command.count("scripts/slurm/freeze_binary_maps.sbatch") == 1
+    assert freeze_jobs[0].command.count("scripts/slurm/run.sbatch") == 1
     freeze_command = list(freeze_jobs[0].command)
     assert freeze_command[freeze_command.index("--expected-num-samples") + 1] == "2"
     assert freeze_command[freeze_command.index("--partition") + 1] == (
@@ -277,7 +277,7 @@ def test_freeze_and_score_plans_are_one_job_per_cartesian_row(tmp_path):
     assert len(common_jobs) == 1
     common_command = list(common_jobs[0].command)
     assert common_jobs[0].phase == "common"
-    assert common_command.count("scripts/slurm/score_binary_common.sbatch") == 1
+    assert common_command.count("scripts/slurm/run.sbatch") == 1
     assert common_command[common_command.index("--partition") + 1] == "agsmall"
     assert common_command[common_command.index("--account") + 1] == "ssafo"
     assert "--m" not in common_command
@@ -291,7 +291,7 @@ def test_freeze_and_score_plans_are_one_job_per_cartesian_row(tmp_path):
     for job in jobs:
         command = list(job.command)
         assert "--array" not in command
-        assert command.count("scripts/slurm/score_binary_simulation.sbatch") == 1
+        assert command.count("scripts/slurm/run.sbatch") == 1
         assert command.count("--partition") == 1
         assert command.count("--account") == 1
         assert command.count("--m") == 1
@@ -314,7 +314,7 @@ def test_freeze_and_score_plans_are_one_job_per_cartesian_row(tmp_path):
     assert diagnostic_jobs[0].phase == "diagnose"
     assert diagnostic_jobs[0].key == ("pet", "clipseg-general", "agsmall")
     assert "--array" not in diagnostic
-    assert diagnostic.count("scripts/slurm/diagnose_binary_artifact.sbatch") == 1
+    assert diagnostic.count("scripts/slurm/run.sbatch") == 1
     assert diagnostic[diagnostic.index("--partition") + 1] == "agsmall"
     assert diagnostic[diagnostic.index("--account") + 1] == "ssafo"
     assert diagnostic[diagnostic.index("--artifact-manifest") + 1] == str(
@@ -364,7 +364,7 @@ def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_p
     for job in freeze_jobs:
         command = list(job.command)
         assert command[command.index("--partition") + 1] == gpu_request
-        assert command.count("scripts/slurm/freeze_binary_maps.sbatch") == 1
+        assert command.count("scripts/slurm/run.sbatch") == 1
         assert "--array" not in command
         assert not any(token.startswith("--array=") for token in command)
 
@@ -392,19 +392,19 @@ def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_p
         == cpu_requests[0]
     )
     assert all(
-        job.command.count("scripts/slurm/score_binary_simulation.sbatch") == 1
+        job.command.count("scripts/slurm/run.sbatch") == 1
         for job in score_jobs
     )
 
     common_command = list(common_jobs[0].command)
-    common_wrapper = common_command.index("scripts/slurm/score_binary_common.sbatch")
+    common_wrapper = common_command.index("scripts/slurm/run.sbatch")
     _, common_manifest = run_common(
-        parse_common_args(common_command[common_wrapper + 1 :])
+        parse_common_args(common_command[common_wrapper + 4 :])
     )
     for job in score_jobs:
         command = list(job.command)
-        score_wrapper = command.index("scripts/slurm/score_binary_simulation.sbatch")
-        run_simulation(parse_score_args(command[score_wrapper + 1 :]))
+        score_wrapper = command.index("scripts/slurm/run.sbatch")
+        run_simulation(parse_score_args(command[score_wrapper + 4 :]))
     assemble_jobs = plan_assemble_jobs(config, lock_path)
     assert len(assemble_jobs) == 1
     assemble_command = list(assemble_jobs[0].command)
@@ -412,7 +412,7 @@ def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_p
         cpu_requests[0]
     )
     assert (
-        assemble_command.count("scripts/slurm/assemble_binary_simulations.sbatch") == 1
+        assemble_command.count("scripts/slurm/run.sbatch") == 1
     )
     assert assemble_command[assemble_command.index("--common") + 1] == str(
         common_manifest
@@ -502,7 +502,7 @@ def test_scientific_locked_submit_preflights_then_receipts_without_duplicates(
 def test_scientific_campaign_lock_propagates_condition_roots(
     tmp_path, monkeypatch
 ):
-    from selectseg import scientific_inputs
+    from selectseg import provenance
 
     config = _write_locked_candidate_config(tmp_path)
     science = _fake_scientific_plan(config)
@@ -511,7 +511,7 @@ def test_scientific_campaign_lock_propagates_condition_roots(
         "_scientific_plan_binding",
         lambda candidate, *, mode: science,
     )
-    identity = scientific_inputs.condition_input_identity(
+    identity = provenance.condition_input_identity(
         science[2],
         dataset="pet",
         model="clipseg",
@@ -533,7 +533,7 @@ def test_scientific_campaign_lock_propagates_condition_roots(
 
     lock_path, _ = write_campaign_lock(lock, tmp_path / "scientific-campaign.lock")
     monkeypatch.setattr(
-        scientific_inputs,
+        provenance,
         "load_root_lock",
         lambda path, *, expected_sha256: science[2],
     )
@@ -682,7 +682,7 @@ def test_execute_plan_is_dry_run_by_default_and_submits_each_job_separately(
     assert execute_plan(jobs, runner=runner) == ()
     assert calls == []
     output = capsys.readouterr().out
-    assert output.count("scripts/slurm/score_binary_simulation.sbatch") == 3
+    assert output.count("scripts/slurm/run.sbatch") == 3
     assert "planned_jobs=3 submitted_jobs=0" in output
 
     receipt = tmp_path / "score-submissions.jsonl"
@@ -916,7 +916,7 @@ def test_schema_v2_runtime_rejects_every_slurm_array_spelling(
     config = _write_candidate_config(tmp_path)
     job = plan_freeze_jobs(config)[0]
     command = list(job.command)
-    wrapper_index = command.index("scripts/slurm/freeze_binary_maps.sbatch")
+    wrapper_index = command.index("scripts/slurm/run.sbatch")
     command[wrapper_index:wrapper_index] = array_tokens
     array_job = submit_binary_simulations.PlannedJob(
         phase=job.phase,
@@ -941,14 +941,7 @@ def test_array_guard_does_not_parse_wrapper_argument_values(tmp_path):
 
 def test_canonical_sbatch_wrappers_have_no_active_array_directive():
     repository = Path(__file__).resolve().parents[1]
-    wrappers = (
-        "scripts/slurm/freeze_binary_maps.sbatch",
-        "scripts/slurm/score_binary_common.sbatch",
-        "scripts/slurm/score_binary_simulation.sbatch",
-        "scripts/slurm/assemble_binary_simulations.sbatch",
-        "scripts/slurm/diagnose_binary_artifact.sbatch",
-        "scripts/slurm/build_scientific_dataset.sbatch",
-    )
+    wrappers = ("scripts/slurm/run.sbatch",)
     directive = re.compile(
         r"^\s*#SBATCH\s+(?:--array(?:=|\s)|-a(?:=|\d|\s))"
     )
@@ -1684,9 +1677,45 @@ def test_lock_creation_requires_explicit_complete_artifacts_and_immutable_payloa
     payload.write_bytes(payload.read_bytes() + b"tamper")
     jobs = plan_score_jobs(config, lock_path)
     command = list(jobs[0].command)
-    wrapper_index = command.index("scripts/slurm/score_binary_simulation.sbatch")
+    wrapper_index = command.index("scripts/slurm/run.sbatch")
     with pytest.raises(ValueError, match="SHA-256 mismatch"):
-        run_simulation(parse_score_args(command[wrapper_index + 1 :]))
+        run_simulation(parse_score_args(command[wrapper_index + 4 :]))
+
+
+def test_campaign_lock_binds_checkpoint_content_not_portable_path_spelling(tmp_path):
+    checkpoint = tmp_path / "campaign-checkpoint.lock"
+    checkpoint.write_bytes(b"immutable checkpoint identity\n")
+    checkpoint_sha = _sha256(checkpoint)
+    config = _write_config(tmp_path)
+    config.data["conditions"][0]["checkpoint"] = str(checkpoint)
+
+    artifact = _write_artifact(
+        tmp_path,
+        checkpoint={
+            "path": "portable-provenance-name.lock",
+            "sha256": checkpoint_sha,
+            "size_bytes": checkpoint.stat().st_size,
+        },
+    )
+    lock = build_campaign_lock(config, [artifact])
+    assert lock["artifacts"][0]["checkpoint_sha256"] == checkpoint_sha
+
+
+def test_campaign_lock_rejects_checkpoint_content_mismatch(tmp_path):
+    checkpoint = tmp_path / "campaign-checkpoint.lock"
+    checkpoint.write_bytes(b"immutable checkpoint identity\n")
+    config = _write_config(tmp_path)
+    config.data["conditions"][0]["checkpoint"] = str(checkpoint)
+    artifact = _write_artifact(
+        tmp_path,
+        checkpoint={
+            "path": "portable-provenance-name.lock",
+            "sha256": "0" * 64,
+            "size_bytes": checkpoint.stat().st_size,
+        },
+    )
+    with pytest.raises(ValueError, match="checkpoint SHA-256 mismatch"):
+        build_campaign_lock(config, [artifact])
 
 
 def test_score_plan_rejects_a_truncated_or_retargeted_campaign_lock(tmp_path):
@@ -1765,7 +1794,7 @@ def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
     }
     assert set(v2.data["paths"].values()).isdisjoint(v1.data["paths"].values())
 
-    from selectseg.scientific_inputs import load_root_lock
+    from selectseg.provenance import load_root_lock
 
     science = v2.data["scientific_input_lock"]
     science_path = repository / science["path"]
@@ -1782,7 +1811,7 @@ def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
     for index, job in enumerate(freeze_jobs):
         command = list(job.command)
         assert command[command.index("--partition") + 1] == gpu_requests[index % 2]
-        assert command.count("scripts/slurm/freeze_binary_maps.sbatch") == 1
+        assert command.count("scripts/slurm/run.sbatch") == 1
         assert "--array" not in command
         assert not any(token.startswith("--array=") for token in command)
 
@@ -1847,7 +1876,7 @@ def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
     }
     assert len(score_identities) == len(score_jobs)
     assert all(
-        job.command.count("scripts/slurm/score_binary_simulation.sbatch") == 1
+        job.command.count("scripts/slurm/run.sbatch") == 1
         for job in score_jobs
     )
 
@@ -1857,9 +1886,9 @@ def test_repository_module_clis_work_without_an_editable_install():
     environment = os.environ.copy()
     environment.pop("PYTHONPATH", None)
     for module in (
-        "selectseg.score_binary_common",
-        "scripts.submit_binary_simulations",
-        "scripts.assemble_binary_simulations",
+        "selectseg.pipeline.common",
+        "scripts.submit.main",
+        "scripts.assemble",
     ):
         result = subprocess.run(
             [sys.executable, "-m", module, "--help"],
@@ -1876,16 +1905,16 @@ def test_actual_scorer_shards_assemble_without_repeating_inference(tmp_path):
     config, _, lock_path, _ = _locked_campaign(tmp_path)
     common_job = plan_common_jobs(config, lock_path)[0]
     common_command = list(common_job.command)
-    common_wrapper = common_command.index("scripts/slurm/score_binary_common.sbatch")
+    common_wrapper = common_command.index("scripts/slurm/run.sbatch")
     _, common_manifest = run_common(
-        parse_common_args(common_command[common_wrapper + 1 :])
+        parse_common_args(common_command[common_wrapper + 4 :])
     )
     partials = []
     for job in plan_score_jobs(config, lock_path):
         command = list(job.command)
-        wrapper_index = command.index("scripts/slurm/score_binary_simulation.sbatch")
+        wrapper_index = command.index("scripts/slurm/run.sbatch")
         _, manifest_path = run_simulation(
-            parse_score_args(command[wrapper_index + 1 :])
+            parse_score_args(command[wrapper_index + 4 :])
         )
         partials.append(manifest_path)
 
@@ -1896,7 +1925,7 @@ def test_actual_scorer_shards_assemble_without_repeating_inference(tmp_path):
     assert assembly_job.phase == "assemble"
     assert assembly_job.key == ("pet", "clipseg-general", "agsmall")
     assert "--array" not in command
-    assert command.count("scripts/slurm/assemble_binary_simulations.sbatch") == 1
+    assert command.count("scripts/slurm/run.sbatch") == 1
     assert command[command.index("--partition") + 1] == "agsmall"
     assert command[command.index("--account") + 1] == "ssafo"
     assert command[command.index("--campaign-lock") + 1] == str(lock_path)

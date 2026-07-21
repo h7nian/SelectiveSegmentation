@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts import submit_scientific_input_components as submit
+from scripts.submit import provenance as submit
 
 
 def test_plan_is_one_dataset_per_cpu_candidate_job(tmp_path):
@@ -11,7 +11,7 @@ def test_plan_is_one_dataset_per_cpu_candidate_job(tmp_path):
     assert len({job.key for job in jobs}) == 5
     for job in jobs:
         command = list(job.command)
-        assert command.count("scripts/slurm/build_scientific_dataset.sbatch") == 1
+        assert command.count("scripts/slurm/run.sbatch") == 1
         assert command[command.index("--partition") + 1] == (
             "amdsmall,agsmall,msismall,saffo-2tb"
         )
@@ -55,9 +55,10 @@ def test_preflight_changes_only_parsable_flag(tmp_path, monkeypatch):
 def test_wrapper_has_no_hardcoded_partition_and_one_dataset_argument():
     wrapper = (
         Path(__file__).resolve().parents[1]
-        / "scripts/slurm/build_scientific_dataset.sbatch"
+        / "scripts/slurm/run.sbatch"
     ).read_text()
     assert "#SBATCH --partition" not in wrapper
-    assert "DATASET=$1" in wrapper
-    assert "build-dataset" in wrapper
-    assert "--dataset \"$DATASET\"" in wrapper
+    assert 'exec "$@"' in wrapper
+    jobs = submit.plan_jobs(Path("unused-output"))
+    assert all("build-dataset" in job.command for job in jobs)
+    assert all(job.command.count("--dataset") == 1 for job in jobs)

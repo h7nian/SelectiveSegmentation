@@ -1,4 +1,4 @@
-"""Strict I/O, statistics, and artifacts of scripts/analyze_binary.py."""
+"""Strict I/O, statistics, and artifacts of scripts/analyze/main.py."""
 
 import csv
 import hashlib
@@ -10,9 +10,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from selectseg.binary_framework import tie_aware_expected_aurc
+from selectseg.confidence import tie_aware_expected_aurc
 
-from scripts.analyze_binary import (
+from scripts.analyze.main import (
     CONTRASTS,
     CSV_NAME,
     EXPECTED_CONDITIONS,

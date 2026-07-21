@@ -12,24 +12,11 @@ dist/
 data/
 checkpoints/
 output/
-outputs/*
-!outputs/binary_campaign/
-outputs/binary_campaign/*
-!outputs/binary_campaign/campaign.lock.json
-!outputs/binary_artifacts/
-outputs/binary_artifacts/**
-!outputs/binary_artifacts/**/
-!outputs/binary_artifacts/**/manifest.json
-!outputs/binary_train/
-outputs/binary_train/**
-!outputs/binary_train/**/
-!outputs/binary_train/**/train_config.json
+outputs/
 wandb/
 
-# Local repository mirrors and audit workspaces
-github/
+# Local Overleaf checkout and scratch workspaces
 overleaf/
-overleaf_project/
 scratch*
 tmp/
 figures/

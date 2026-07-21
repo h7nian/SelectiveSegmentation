@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.export_public_provenance import (
+from scripts.maintenance.export_provenance import (
     BaseModelSpec,
     PHASES,
     build_public_provenance,
@@ -149,7 +149,7 @@ def _fixture(tmp_path):
     analysis_path = _write_json(tmp_path / "private" / "analysis.json", analysis)
     diagnostics = {
         "schema_version": 1,
-        "artifact_type": "selectseg.binary_diagnostics_analysis",
+        "artifact_type": "selectseg.diagnostics_analysis",
         "campaign": {
             "campaign_id": "unit-public-v1",
             "lock_path": "/home/alice/private/campaign.lock.json",
