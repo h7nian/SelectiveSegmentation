@@ -1,18 +1,20 @@
 \begin{abstract}
-Selective segmentation must decide both what mask to deploy and which predictions
-to accept. We index confidence by the deployment loss: the ideal score is the
-negative conditional risk of the fixed mask. Pixel marginals do not identify this
-risk for nonlinear mask losses, so we state a shared-threshold level-set law as a
-\emph{working posterior}; it turns expected structured loss into a one-dimensional
-integral. We separate quadrature error from posterior discrepancy and carry score
-error through to selective-risk and AURC regret. Dice and normalized Hausdorff
-(nHD) instantiate the same Lipschitz--Wasserstein principle under Jaccard and
-surface geometries; nonmetric nHD95 remains a robust bounded-loss extension, and
-an exact Dice algorithm removes quadrature error. On five binary datasets and 16
-fixed model--dataset conditions, a complete \(3\times3\) score--risk design finds
-that nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten target conditions,
-whereas Dice-M32 lowers Dice-risk AURC in eight. Across three checkpoints,
-nHD versus nHD95 under nHD95 risk reverses direction in five target conditions,
-with seed 0 outside the majority direction in three. Separately, fixed-threshold
-sensitivity reverses both boundary macro contrasts at \(\gamma=.3\).
+Selective segmentation should reject masks that are unsafe under the deployment
+loss. Boundary failures make this dependence visible: regional overlap can remain
+high despite a dangerously displaced surface. We define confidence as the
+negative conditional risk of the fixed deployed mask. Because pixel marginals do
+not identify nonlinear mask risk, we declare a shared-threshold level-set law as
+a \emph{working posterior}. Its nested candidates represent coherent boundary
+motion and turn expected loss into a one-dimensional integral. We separate
+quadrature from posterior error and propagate both to selective-risk and AURC
+regret. Normalized full Hausdorff loss (nHD) is the flagship instance: its surface
+geometry gives a constant-one Wasserstein posterior bound. Nonmetric nHD95 is a
+robust bounded-loss extension; Dice is a regional contrast whose exact algorithm
+and count-dispersion bound explain SDC's strength. On five binary datasets and 16
+frozen conditions, nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten
+target conditions, with every pointwise interval excluding zero; a
+boundary-indexed score is best among the displayed methods in nine. The
+nHD--nHD95 ordering is smaller and sensitive to checkpoint and deployment
+threshold. Thus confidence needs both a target loss and a working-posterior
+geometry matched to how that loss measures error.
 \end{abstract}

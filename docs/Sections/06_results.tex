@@ -1,78 +1,51 @@
 \section{Results}
 \label{sec:results}
 
-Geometry can change the safest ordering; matched scores need not win. We report
-AURC-derived scalars \(\times100\) (not nAURC); negative contrasts favor the left.
+The clearest gain occurs when posterior and loss share boundary geometry. Values
+are AURC \(\times100\); lower is better.
 
 \IfFileExists{Tables/results_complete.tex}{%
   \IfFileExists{Tables/main_results.tex}{%
     \input{Tables/main_results.tex}
-  }{%
-    \paragraph{Rendering guard.} The final analysis is incomplete.
-  }
-}{%
-  \paragraph{Rendering guard.} The final analysis is incomplete.
-}
+  }{\paragraph{Rendering guard.} The final analysis is incomplete.}
+}{\paragraph{Rendering guard.} The final analysis is incomplete.}
 
-\paragraph{Region overlap to worst-case boundary.}
-nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten target conditions,
-with all ten pointwise intervals excluding zero. Under Dice risk, Dice-M32 is
-lower in eight, but only three intervals exclude zero. The strongest separation
-is therefore worst-boundary risk, not a symmetric same-name advantage.
+\paragraph{Worst-boundary risk.}
+nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten target conditions;
+all ten pointwise intervals exclude zero. A boundary-indexed score is lowest
+among the six displayed methods in nine conditions, with SDC on
+FIVES/CLIPSeg-Target the exception. nHD-M32 also has higher association with
+realized nHD safety than Dice-M32 in all ten, with Spearman differences
+.179--.432. The level-set score thus carries spatial-extreme information absent
+from its regional counterpart.
 
-\paragraph{Worst-case to robust boundary.}
-nHD-M32 is lower than nHD95-M32 in nine target conditions under nHD risk;
-nHD95-M32 is lower in eight under nHD95 risk. Only four and two matched-direction
-intervals exclude zero. The smaller, condition-dependent gains do not transfer
-the nHD Wasserstein corollary to nHD95.
+\paragraph{Robust boundary risk.}
+nHD-M32 is lower than nHD95-M32 in nine conditions under nHD risk; nHD95-M32 is
+lower in eight under nHD95 risk. Only four and two matched-direction intervals
+exclude zero. The latter comparison is checkpoint-sensitive: five conditions
+reverse across seeds and seed 0 disagrees with the majority in three. Both
+boundary macro contrasts also reverse at action threshold \(\gamma=.3\). nHD95
+is therefore a useful but condition-sensitive robust endpoint, not a guaranteed
+improvement over nHD.
 
-\paragraph{Training-seed sensitivity.}
-The prespecified training-sensitivity rule is met only for nHD--nHD95 under
-nHD95 risk: five of ten conditions reverse across seeds and seed 0 disagrees
-with the majority in three; Appendix~\ref{app:additional-results} reports the
-checkpoint-level values. We call this training-sensitive, not seed inference.
+\paragraph{Regional contrast.}
+Dice-M32 is lower than nHD-M32 in eight conditions under Dice risk, but only
+three intervals exclude zero; SDC and foreground entropy remain competitive.
+Outside FIVES/CLIPSeg-Target, Dice-M32 and foreground entropy correlate
+.916--.960. Dice-M32 and Dice-Exact have \(\rho\geq.9992\),
+\(\tau_b\geq.9791\), and at most .363 displayed AURC difference, so numerical
+integration is not the limiting issue.
 
-\paragraph{Baselines and numerical fidelity.}
-A boundary-indexed score has the lowest raw AURC in nine of ten target
-conditions under each boundary risk; SDC on FIVES/CLIPSeg-Target is the
-exception. SDC and foreground entropy remain competitive for Dice. Dice-M32 and
-Dice-Exact have \(\rho\geq.9992\), \(\tau_b\geq.9791\), and at most .363 displayed
-Dice-risk AURC difference. For nHD/nHD95, M32--M128 \(\rho\) is
-.973--.998/.951--.996 and the largest displayed gaps are .456/.324.
+Neither richer single-map coupling nor checkpoint disagreement supplies a new
+Dice winner. Two-block gains are only .0195/.0020 mean/median; no component-grid
+variant passes its fixed gate or beats SDC or foreground entropy in more than
+6/10 conditions. Three-checkpoint Ensemble-Q also loses to LevelSet-Q in 9/10.
+These negative ablations support the count-law explanation.
 
-\paragraph{Mechanism clues.}
-In nine target conditions other than the failed FIVES/CLIPSeg-Target cell,
-Dice-M32 and foreground entropy have score--score Spearman correlation
-.916--.960; the exceptional cell is .535. Replacing Dice-M32 by Dice-Exact
-changes its association with realized Dice safety by at most .004. By contrast,
-nHD-M32 has higher association with realized nHD safety than Dice-M32 in all ten
-target conditions, with differences .179--.432. This is consistent with Dice
-redundancy and additional spatial-extreme information in nHD indexing, but it
-does not establish that real annotation variability is nested or identify the
-cause of Dice errors. Appendix~\ref{app:additional-results} reports the complete
-diagnostic table; a fixed-action ensemble-posterior extension directly tests the
-support explanation at a higher inference budget.
-
-An action-two-block Dice posterior passes its frozen 8/10 directional gate, but
-mean/median AURC\(\times100\) gains are only .0195/.0020 and its rank correlation
-with Dice-M32 is at least .99936; count decoupling does not remove the redundancy.
-A separately predeclared component--grid ladder reaches only 6/10 wins over
-two-block for every component variant, so none passes its gate. Action-aligned
-components beat their equal-cardinality grids in 9/10 conditions, but by only
-.0635/.0446 mean/median AURC\(\times100\); proposal variants are less consistent,
-and no component construction beats SDC or foreground entropy in more than
-6/10 conditions. Spatial grouping can change the count law, but does not yield
-a robust Dice-ranking advantage.
-The higher-budget three-checkpoint Ensemble-Q fails its Dice gate: LevelSet-Q is
-lower in 9/10 conditions and its mean advantage is 2.763 AURC\(\times100\).
-LevelSet-Q nHD is lower in all ten, by 3.820 on average; raw checkpoint
-disagreement is therefore not an annotation-posterior substitute.
-
-\paragraph{Stress tests.}
-Known-posterior tests show TV near one while Dice score error remains
-.0135--.0393; cardinality checks find zero support for up to 11.5\% of FIVES and
-15.4\% of ISIC references. Both boundary macro contrasts reverse at
-\(\gamma=.3\), whereas the Dice--nHD directions persist.
-
-Appendix~\ref{app:additional-results} reports all AURCs, 64 pointwise intervals,
-cross-loss panels, agreement, curves, and stress tests.
+\paragraph{Diagnostics.}
+nHD/nHD95 M32--M128 Spearman agreement is .973--.998/.951--.996. Known-posterior
+tests show TV near one with Dice score error only .0135--.0393, while support
+checks find incompatible references on up to 11.5\% of FIVES and 15.4\% of
+ISIC. The nHD ranking result is strong, but one annotation per image cannot
+validate a nested conditional posterior. Appendix~\ref{app:additional-results}
+reports all AURCs, intervals, ablations, curves, and stress tests.

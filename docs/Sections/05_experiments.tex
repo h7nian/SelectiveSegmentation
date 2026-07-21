@@ -1,88 +1,63 @@
 \section{Experimental protocol}
 \label{sec:experiments}
 
-\subsection{Five datasets, sixteen frozen conditions}
-
+\paragraph{Frozen conditions.}
 We evaluate Oxford-IIIT Pet, Kvasir-SEG, FIVES, ISIC 2018, and TN3K
 \citep{parkhi2012cats,jha2020kvasir,jin2022fives,codella2019isic,
-gong2023thyroid}, using official splits except for a fixed SHA-256 Kvasir split.
-Each dataset has \textsc{CLIPSeg-General}, \textsc{CLIPSeg-Target}, and
-\textsc{DeepLabV3-Target}; Pet also has a released
-\textsc{DeepLabV3-External} cat/dog model, giving sixteen conditions. Target
-models in the primary analysis use one fixed 40-epoch protocol and seed 0. A
-separate descriptive checkpoint extension repeats that protocol at seeds 1 and
-2 only for the ten target conditions; it neither replaces nor selects among the
-primary checkpoints. No test label selects a checkpoint or hyperparameter.
-Every score within a condition receives the same frozen native-resolution map
-and action. Headline counts use the ten target conditions; the other six are
-fixed stress controls. Empty references remain, and
-Appendix~\ref{app:benchmark-protocol} specifies all cohorts and training.
+gong2023thyroid}. Each has \textsc{CLIPSeg-General},
+\textsc{CLIPSeg-Target}, and \textsc{DeepLabV3-Target}; Pet also has a released
+\textsc{DeepLabV3-External} model, giving sixteen conditions. Headline counts
+use the ten target conditions trained for 40 epochs at seed 0. Seeds 1--2 form a
+separate descriptive extension and never select a checkpoint. Every method in a
+condition receives the same native-resolution map and action. Empty references
+remain. Appendix~\ref{app:benchmark-protocol} fixes splits, training, cohorts,
+and provenance.
 
-\subsection{One action, three geometric losses}
-
-The action is fixed once as \(\Yhat=\{i:p_i\geq0.5\}\); integration thresholds
-change only candidate masks. Besides \(L_{\Dice}=1-\Dice\), let \(D(A,B)\)
-pool both directed nearest distances between inner digital surfaces. On an
-\(H\times W\) native grid with \(D_x=\sqrt{H^2+W^2}\),
+\paragraph{One action and three losses.}
+We fix \(\Yhat=\{i:p_i\geq0.5\}\). Integration thresholds change candidates,
+not this action. Besides \(1-\Dice\), let \(D(A,B)\) pool both directed nearest
+distances between inner digital surfaces. For image diagonal
+\(D_x=\sqrt{H^2+W^2}\),
 \begin{equation*}
   L_{\mathrm{nHD},x}=\frac{\max D(A,B)}{D_x},\qquad
   L_{\mathrm{nHD95},x}=\frac{Q_{0.95}(D(A,B))}{D_x}.
 \end{equation*}
-Empty--empty costs zero and a one-sided empty pair costs one. The appendix fixes
-surface, spacing, pooling, resizing, and raw-pixel descriptive variants.
+Empty--empty costs zero and a one-sided empty pair costs one. nHD is the
+flagship worst-surface endpoint; nHD95 suppresses its extreme five-percent tail;
+Dice is the regional contrast.
 
-\subsection{Scores and comparisons}
-
-For each loss we compute
+\paragraph{Scores and comparisons.}
+For each loss,
 \begin{equation*}
   C_{L,M}=-\frac1M\sum_{m=1}^M
   L\!\left(\{i:p_i\geq(m-1/2)/M\},\Yhat\right),
-  \qquad M\in\{2,8,32\},
+  \qquad M\in\{2,8,32\}.
 \end{equation*}
-with the three M32 scores primary and Dice-Exact as the probability-knot oracle.
-Seven fixed single-map references---SDC, mean maximum probability, mean negative
-entropy, QFR-Entropy, PLM/PLA-10-Entropy, MMMC-Entropy, and foreground
-entropy---give seventeen scores \citep{sdc,guarino2026aggregation,
-holder2021uncertainty}. The three primary indexed scores form a complete
-\(3\times3\) score--risk matrix. Four prespecified primary contrasts compare the adjacent
-steps Dice--nHD under Dice/nHD risk and nHD--nHD95 under nHD/nHD95 risk; all
-nonadjacent or mismatched cells are descriptive. The M-ladder, M128 boundary
-reference, and Dice-Exact audit numerical sensitivity.
+The M32 scores are primary and Dice-Exact is the knot oracle. Seven single-map
+references---SDC, mean maximum probability, mean negative entropy, QFR-Entropy,
+PLM/PLA-10-Entropy, MMMC-Entropy, and foreground entropy---give seventeen scores
+\citep{sdc,guarino2026aggregation,holder2021uncertainty}. The complete
+\(3\times3\) matrix is reported. The main contrast is nHD-M32 versus Dice-M32
+under nHD risk; three fixed contrasts complete adjacent comparisons under Dice,
+nHD, and nHD95 risk. All other cells are descriptive. M2/M8/M32, M128, and
+Dice-Exact audit numerical sensitivity.
 
-A separately locked higher-budget mechanism extension averages the three target
-checkpoints into one deployed probability map, then holds its \(0.5\) action
-fixed. It compares LevelSet-Q on that mean map with Ensemble-Q, which averages
-the same deployment loss over the three checkpoint masks. Threshold-IoU
-stability, all-member IoU, mean pairwise Dice, mutual information, and member
-variance are references in this extension, not additions to the single-map
-primary table \citep{roy2019bayesianquicknat,kirillov2023segmentanything}.
+A higher-budget extension fixes the action of the three-checkpoint mean map and
+compares its LevelSet-Q with the empirical law of checkpoint masks. Threshold-IoU,
+member IoU/Dice, mutual information, and variance remain extension baselines
+\citep{roy2019bayesianquicknat,kirillov2023segmentanything}.
 
-\subsection{Locked analysis and stress tests}
+\paragraph{Locked analysis.}
+Hashed manifests bind maps, labels, checkpoints, sample order, and each
+one-task-per-job shard. Separate fixed studies examine posterior support,
+known-posterior coupling, and action thresholds \(\gamma\in\{.3,.7\}\). Before
+inspection, we declared a comparison sensitive when its macro sign changed or
+at least three target conditions reversed; the primary \(\gamma=.5\), seed-0
+analysis never changes.
 
-Immutable manifests bind sample order, maps, labels, checkpoints, and hashes.
-One-task-per-job stages freeze each condition, score each
-\((\text{condition},M)\) shard, and reject mismatched assemblies. Separate locked
-diagnostics examine marginals, action quality, accepted-set agreement, and exact
-\(Q_p\) cardinality implications; one label per image can expose incompatibility
-but cannot validate a conditional posterior. A 360-cell known-posterior study
-separates numerical from coupling error, while a fixed
-\(\gamma\in\{.3,.7\}\) analysis tests action sensitivity without tuning the
-primary \(\gamma=.5\) action. Before inspecting either auxiliary, we declared a
-comparison threshold-sensitive if its target-condition macro contrast changed
-sign at \(\gamma=.3\) or .7, or if at least three target conditions reversed
-relative to \(\gamma=.5\). We declared a comparison training-sensitive if seed 0
-disagreed with the three-checkpoint majority in any target condition, or if at
-least three conditions reversed across checkpoints. The primary
-\(\gamma=.5\) action and seed-0 checkpoints remain fixed regardless.
-Appendix~\ref{app:benchmark-protocol} gives the complete designs and rules.
-
-We use tie-aware empirical AURC, exactly averaging uniform order within ties.
-Displayed raw AURC, gaps/regrets, and contrasts are multiplied by \(100\); nAURC
-and all computations are unscaled. Each fixed contrast receives a pointwise 95\%
-interval from 10,000 paired image-bootstrap resamples \citep{efron1993}. We
-report all 64 rows without converting bootstrap confidence curves into
-null-calibrated \(p\)-values or simultaneous claims. For target conditions,
-these primary intervals condition on the seed-0 fitted checkpoint; seeds 1--2
-are summarized across checkpoints and are never pooled into that image
-bootstrap. The empirical hindsight oracle orders realized losses and is
-distinct from \(C_L^\star\).
+We use exact tie-aware AURC. Displayed AURCs and contrasts are multiplied by
+100; nAURC and computation remain unscaled. Each of 64 fixed condition-level
+contrasts receives a pointwise 95\% interval from 10,000 paired image-bootstrap
+resamples \citep{efron1993}. These are neither simultaneous tests nor inference
+over training randomness. The hindsight oracle orders realized losses and is
+not \(C_L^\star\).

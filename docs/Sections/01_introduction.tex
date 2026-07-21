@@ -1,119 +1,80 @@
 \section{Introduction}
 \label{sec:introduction}
 
-A binary segmenter used with human oversight must answer two questions. First,
-what mask will it deploy? Second, when should that mask be trusted? The second
-question has no metric-free answer. A contour can cover nearly the right region
-while placing one component far away, or have one extreme boundary error while
-the rest of its surface is accurate. Dice, full Hausdorff distance (HD), and
-HD95 tell these three stories differently: region overlap, worst boundary
-displacement, and boundary displacement after discounting the most extreme
-tail. A confidence score that ranks one story well need not rank the others.
+A segmentation can cover almost the right region yet place one component far
+from the anatomy. When difficult cases may be deferred to a human, confidence
+should detect the failure that actually governs deployment. Dice, full
+Hausdorff distance (HD), and HD95 encode different harms; no uncertainty average
+specifies which one deserves rejection.
 
-We therefore index confidence by the loss that matters after deployment. For a
-fixed action \(\Yhat(x)\) and loss \(L\), the ideal confidence is negative
-conditional risk,
+For a fixed deployed mask \(\Yhat(x)\) and loss \(L\), we therefore target
 \[
   C_L^\star(x)=-\Ex[L(Y,\Yhat(x))\mid X=x].
 \]
-This definition is simple; computing it is not. A model probability map supplies
-pixelwise scores intended to estimate foreground marginals, but even exact true
-pixelwise marginals would not identify the joint label law on which nonlinear
-mask losses depend.
+The target changes with both the loss and action. Yet even exact pixelwise
+foreground marginals do not identify the joint mask law required by nonlinear
+region and boundary losses.
 
-Our construction makes the missing law visible. Given a foreground map \(p\),
-draw one shared threshold \(T\sim\operatorname{Unif}(0,1)\) and set
-\(Y_T=\{i:p_i\geq T\}\). The resulting nested random masks preserve \(p\) as
-their coverage function and turn working-posterior risk into the one-dimensional
-integral \(\int_0^1L(Y_t,\Yhat)\,dt\)
-\citep{goodman,molchanov}. Midpoint quadrature gives one estimator for any
-bounded mask loss; for Dice, the integral also has an exact finite level-set
-algorithm. This is a declared \emph{working posterior}, not a claim that the
-true annotation law is nested.
+We make one missing law explicit. Given a foreground map \(p\), draw a shared
+threshold \(T\sim\operatorname{Unif}(0,1)\) and set
+\(Y_T=\{i:p_i\geq T\}\). The nested candidates preserve \(p\) as their coverage
+function \citep{goodman,molchanov} and sweeping the level produces coordinated
+surface motion. Working-posterior risk becomes
+\(\int_0^1L(Y_t,\Yhat)\,dt\). This is a tractable model, not a claim that the
+unknown annotation posterior is nested.
 
-That distinction drives the theory. Score error separates into numerical
-integration error and loss-specific posterior discrepancy, and population score
-error in turn controls selective-risk and AURC regret. A general
-Lipschitz--Wasserstein principle then gives geometry-aware sufficient conditions.
-Dice and normalized penalized full-surface HD instantiate the same template, but
-under different ground geometries---Jaccard distance for regional overlap and
-surface Hausdorff distance for worst-case boundary error. These assumptions have
-the same form, not the same numerical content, and neither generally implies the
-other. Pooled nHD95 is a useful robust percentile extension in the bounded-loss
-framework, but it is nonmetric and does not inherit the HD-specific Wasserstein
-corollary.
+Normalized penalized full-surface HD (nHD) is the cleanest instance. Its ground
+cost is normalized surface-Hausdorff distance, so the reverse triangle inequality
+turns posterior agreement in that geometry into score agreement. We then carry
+score approximation error through selective risk to AURC regret. Pooled nHD95
+provides a robust practical contrast but is nonmetric and does not inherit that
+corollary. Dice supplies a regional contrast: for a fixed action, posterior Dice
+depends on two counts, explaining why the coupling-invariant SDC ratio can be
+difficult to improve from one map.
 
-The empirical study follows the same progression:
-\[
-  \text{Dice (region)}\quad\longrightarrow\quad
-  \text{nHD (worst boundary)}\quad\longrightarrow\quad
-  \text{nHD95 (robust boundary tail)}.
-\]
-Across five native-binary datasets and sixteen fixed model--dataset conditions,
-we hold each probability map and deployed mask fixed, then evaluate the complete
-\(3\times3\) matrix of confidence loss and evaluation loss. The study asks two
-adjacent questions: does the preferred ranking change from region to worst-case
-boundary risk, and does it change again when the most extreme boundary tail is
-made robust? No same-named score is presumed to win.
+We freeze every probability map and action, then change only confidence and
+evaluation loss. The primary question is whether boundary-aligned confidence
+improves selection under worst-boundary risk. We next compare full and robust
+boundary loss, then use Dice to expose where the shared-threshold coupling is
+less informative. Five datasets, two model families, sixteen conditions, and a
+complete \(3\times3\) score--risk design separate these questions.
 
 \subsection{Related Work}
 \label{sec:related}
 
-\paragraph{From abstention to segmentation quality control.}
-Selective prediction turns confidence into a risk--coverage decision
-\citep{geifman2017selective,selectivenet,feng}. In segmentation, however, the
-object being screened is a structured mask. Reverse Classification Accuracy
-estimates a test mask's quality by training a reverse classifier and evaluating
-it on an annotated reference set \citep{valindria2017rca}; learned quality
-predictors and uncertainty aggregators instead use validation labels, internal
-features, or spatial summaries \citep{values,zenk,guarino2026aggregation}.
-These methods can be powerful, but they change the available information or
-require a fitted quality model. Our primary comparison asks a narrower question:
-with one probability map and one deployed mask fixed, which confidence
-functional gives the safest ordering for the loss that will actually be used?
+\paragraph{Selective segmentation quality.}
+Selective prediction evaluates confidence through risk--coverage
+\citep{geifman2017selective,selectivenet,feng}. Segmentation quality control has
+used reverse fitting, learned predictors, and spatial uncertainty summaries
+\citep{valindria2017rca,values,zenk,guarino2026aggregation}. These approaches
+may use atlases, validation labels, or learned features. We isolate the narrower
+one-map setting, where the probability map and deployed mask are fixed.
 
-\paragraph{Sampling agreement and mask stability.}
-Monte Carlo dropout and deep ensembles obtain multiple predictive maps
-\citep{gal2016dropout,lakshminarayanan2017ensembles}. Bayesian QuickNAT then
-uses agreement across dropout masks---including their intersection-over-union---
-as a proxy for segmentation quality \citep{roy2019bayesianquicknat}. Thus,
-expected mask agreement is not itself new. Likewise, SAM filters masks using
-the IoU of two masks obtained after shifting its binarization cutoff
-\citep{kirillov2023segmentanything}. We include these ideas at their proper
-information budgets: threshold-IoU stability is a single-map comparator,
-whereas a separately labelled three-checkpoint extension treats ensemble masks
-as samples from an alternative working posterior. RCA remains outside the
-matched table because it additionally needs an annotated atlas and per-case
-reverse fitting.
+\paragraph{Boundary geometry and mask sampling.}
+Surface metrics expose errors that overlap can hide \citep{karimi2020}. Random
+level sets are classical coverage-function constructions
+\citep{goodman,molchanov} used in contour uncertainty
+\citep{poethkow,bolin}. Dropout and ensembles instead provide multiple maps
+\citep{gal2016dropout,lakshminarayanan2017ensembles}; agreement has been used by
+Bayesian QuickNAT, while SAM compares masks after shifting its cutoff
+\citep{roy2019bayesianquicknat,kirillov2023segmentanything}. We compare these
+ideas at declared information budgets and never equate model disagreement with
+annotation variability.
 
-\paragraph{What the level-set view adds.}
-SDC aligns a single-map score with Dice by computing soft Dice between the
-probability map and deployed mask \citep{sdc}. Our Dice score instead averages
-the nonlinear mask loss under a declared coupling: it is an expectation of a
-ratio, whereas SDC is a ratio of expectations. Random level sets are classical
-coverage-function constructions \citep{goodman,molchanov} and appear in contour
-and excursion-set analysis \citep{poethkow,bolin}; boundary measures expose
-errors that overlap can miss \citep{karimi2020}. Our contribution is therefore
-not the first consistency heuristic, but a specific synthesis: a one-map
-comonotone working posterior, confidence indexed by any bounded deployment
-loss, a separation of numerical and posterior errors through AURC regret, an
-exact Dice algorithm, and a locked cross-loss experiment spanning Dice, full
-HD, and pooled HD95.
+\paragraph{Dice confidence.}
+SDC computes soft Dice between \(p\) and \(\Yhat\) \citep{sdc}. Level-set Dice
+is an expectation of a ratio under an explicit coupling; SDC is a ratio of
+expectations. Our count analysis and coupling ablations explain their empirical
+proximity and make Dice a diagnostic contrast rather than the premise of the
+framework.
 
 \subsection{Our Contributions}
 
-We make four contributions. First, we define loss-indexed confidence and AURC
-for a fixed deployed mask, then construct a common level-set estimator for any
-bounded measurable segmentation loss. Second, we connect quadrature and
-posterior discrepancy to population score error, selective-risk regret, and
-AURC regret. Third, we derive geometry-aware Wasserstein specializations for
-Dice and normalized full-surface HD, add a fixed-action Dice
-overlap--cardinality decomposition and a count-dispersion bound explaining
-SDC's strength, clarify why pooled nHD95 has only the generic guarantee, and
-give an exact \(O(N\log N)\) level-set Dice algorithm.
-Fourth, we conduct a locked five-dataset, sixteen-condition experiment with a
-complete three-loss cross-evaluation, strong single-map comparators, tie-aware
-AURC, and pointwise paired-bootstrap intervals for four fixed adjacent-geometry
-comparisons. A separately labelled extension compares the one-map level-set
-posterior with a three-checkpoint empirical posterior at its higher inference
-budget.
+We contribute: (i) loss-indexed confidence and a shared-threshold estimator for
+any bounded segmentation loss; (ii) an nHD flagship specialization linking
+coherent boundary motion to a constant-one surface-Wasserstein bound; (iii) a
+complete error chain from quadrature and posterior discrepancy to AURC regret,
+with nHD95 and Dice specializations, Exact Dice, and an SDC count-dispersion
+bound; and (iv) a locked five-dataset study with full cross-loss evaluation,
+single-map baselines, paired uncertainty, action and checkpoint stress tests,
+and separately labelled higher-budget posterior diagnostics.

@@ -36,6 +36,10 @@ not evidence that \(p_i\) equals the true marginal or that true labels are
 comonotone. The working posterior is attractive because it generates coherent,
 nested candidates cheaply; it can be inaccurate when ambiguity changes topology,
 moves components independently, or is poorly represented by the probability map.
+Geometrically, the shared scalar makes uncertain surfaces move together through
+the probability landscape. This makes \(Q_p\) especially natural as a tractable
+boundary-motion model; it is not asserted to be equally well matched to every
+regional loss.
 Figure~\ref{fig:framework} summarizes how the working posterior enters the
 selective pipeline without changing the deployed action.
 
@@ -43,10 +47,10 @@ selective pipeline without changing the deployed action.
   \centering
   \includegraphics[width=\linewidth]{Figures/loss_indexed_framework.pdf}
   \caption{Loss-indexed confidence from one probability map. The deployment rule
-  fixes \(\Yhat\) once. Uniform midpoint thresholds generate nested candidate
-  masks, each candidate is compared with that same action under the chosen loss,
-  and their weighted risk becomes the confidence used for loss-indexed AURC.
-  Changing \(L\) changes the ranking target, not the accepted mask.}
+  fixes \(\Yhat\) once. Shared thresholds sweep coherent nested boundaries;
+  every candidate is compared with the same action under the deployment loss.
+  The weighted risk determines the selective ordering. Changing \(L\) changes
+  the ranking target, not the deployed mask.}
   \label{fig:framework}
 \end{figure}
 

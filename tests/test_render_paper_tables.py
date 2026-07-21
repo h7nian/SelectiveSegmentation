@@ -16,6 +16,7 @@ from scripts.render.paper import (
     RISKS,
     TARGET_CONDITIONS,
     _is_best,
+    _method_label,
     load_analysis,
     main,
     render_tables,
@@ -265,15 +266,15 @@ def test_complete_render_has_declared_artifacts_and_main_orientation():
     assert "Dataset & Model condition" not in main
     # Two model-panel headings plus three symmetric risk headings per panel.
     assert main.count(r"\multicolumn{6}{l}{\textit{") == 2 + 2 * len(RISKS)
-    for method in (
-        "SDC",
-        "Mean max probability",
-        "Negative entropy",
-        "Dice-M32",
-        "nHD-M32",
-        "nHD95-M32",
+    for method_field in (
+        "confidence_sdc",
+        "confidence_mean_max_probability",
+        "confidence_negative_entropy",
+        "confidence_dice_m32",
+        "confidence_nhd_m32",
+        "confidence_nhd95_m32",
     ):
-        assert main.count(f"\n{method} &") == 2 * len(RISKS)
+        assert main.count(f"\n{_method_label(method_field)} &") == 2 * len(RISKS)
     for omitted in (
         "QFR-Entropy",
         "PLM-10/PLA-10-Entropy",
@@ -314,8 +315,8 @@ def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
     assert r"\resizebox" not in target
     assert target.count(r"{\scriptsize") == len(RISKS)
     assert r"\shortstack{" not in target
-    for label in METHODS.values():
-        assert target.count(f"\n{label} &") == 2 * len(RISKS)
+    for method_field in METHODS:
+        assert target.count(f"\n{_method_label(method_field)} &") == 2 * len(RISKS)
     for panel_label in (
         "CLIPSeg target (CLIP-T)",
         "DeepLabV3 target (DL-T)",
@@ -333,8 +334,8 @@ def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
     assert r"\resizebox" not in control
     assert control.count(r"{\scriptsize") == len(RISKS)
     assert r"\shortstack{" not in control
-    for label in METHODS.values():
-        assert control.count(f"\n{label} &") == 2 * len(RISKS)
+    for method_field in METHODS:
+        assert control.count(f"\n{_method_label(method_field)} &") == 2 * len(RISKS)
     for panel_label in (
         "CLIPSeg general (CLIP-G)",
         "DeepLabV3 external (DL-E)",
@@ -353,8 +354,12 @@ def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
     assert r"\resizebox" not in cross
     assert cross.count(r"{\scriptsize") == 1
     assert r"\shortstack{" not in cross
-    for method in ("Dice-M32", "nHD-M32", "nHD95-M32"):
-        assert cross.count(f"\n{method} &") == 4 * len(RISKS)
+    for method_field in (
+        "confidence_dice_m32",
+        "confidence_nhd_m32",
+        "confidence_nhd95_m32",
+    ):
+        assert cross.count(f"\n{_method_label(method_field)} &") == 4 * len(RISKS)
     for panel_label in (
         "CLIPSeg general (CLIP-G)",
         "CLIPSeg target (CLIP-T)",
@@ -379,13 +384,15 @@ def test_quadrature_table_includes_exact_and_all_declared_midpoint_rules():
     assert r"\resizebox" not in primary
     assert r"\resizebox{\textwidth}{!}" in fidelity
     assert r"\shortstack{" not in primary
-    assert primary.count("\nDice-Exact &") == 2
+    assert primary.count(f"\n{_method_label('confidence_dice_exact')} &") == 2
     for count in (2, 8, 32):
-        assert primary.count(f"\nDice-M{count} &") == 2
-        assert table.count(f"\nDice-M{count} / ") == 6
+        method_field = f"confidence_dice_m{count}"
+        assert primary.count(f"\n{_method_label(method_field)} &") == 2
+        assert table.count(f"\n{_method_label(method_field)} / ") == 6
     for prefix in ("nHD", "nHD95"):
         for count in (2, 8, 32):
-            assert primary.count(f"\n{prefix}-M{count} &") == 2
+            method_field = f"confidence_{prefix.lower()}_m{count}"
+            assert primary.count(f"\n{_method_label(method_field)} &") == 2
     for panel_label in (
         "CLIPSeg target (CLIP-T)",
         "DeepLabV3 target (DL-T)",
@@ -437,7 +444,10 @@ def test_full_contrast_table_reports_four_contrasts_and_all_64_conditions():
     assert r"\label{tab:statistical-tests-extension}" in table
     assert table.count(r"\shortstack{") == len(CONTRASTS) * 5
     for spec in CONTRASTS:
-        row = f"{METHODS[spec.left]} $-$ {METHODS[spec.right]} / {RISKS[spec.risk]}"
+        row = (
+            f"{_method_label(spec.left)} $-$ {_method_label(spec.right)} / "
+            f"{RISKS[spec.risk]}"
+        )
         assert table.count(f"\n{row} &") == 2
     assert "pointwise 95\\% paired" in table
     assert "Holm" not in table

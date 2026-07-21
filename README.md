@@ -1,21 +1,23 @@
 # Selective Segmentation
 
 Reference implementation and manuscript source for **Loss-Indexed Confidence for
-Selective Binary Segmentation**.
+Selective Segmentation**.
 
 The central idea is simple: confidence should predict the loss that matters at
-deployment. Given a deployed hard mask \(\widehat Y\), a probability map \(p\),
-and a segmentation loss \(L\), the code constructs a declared working posterior
-over candidate masks and estimates
+deployment, using a working posterior whose mask geometry matches that loss.
+Given a deployed hard mask \(\widehat Y\), a probability map \(p\), and a
+segmentation loss \(L\), the code constructs a declared posterior over candidate
+masks and estimates
 
 \[
 C_L(x)=-\mathbb E_{Q_p}\!\left[L(Y,\widehat Y(x))\right].
 \]
 
-The current paper studies Dice, normalized Hausdorff distance (nHD), and
-normalized HD95 (nHD95). Dice and nHD instantiate the same
-Lipschitz--Wasserstein theory under different mask geometries; nHD95 is the
-robust percentile-based extension covered by the general bounded-loss theory.
+The flagship instance is normalized full Hausdorff distance (nHD): shared
+thresholds trace coherent nested boundary motion, and surface-Hausdorff geometry
+gives a constant-one Wasserstein posterior bound. Normalized HD95 is the robust,
+nonmetric boundary extension. Dice is retained as a regional contrast whose
+count-law analysis explains why SDC remains competitive.
 
 ## Repository layout
 

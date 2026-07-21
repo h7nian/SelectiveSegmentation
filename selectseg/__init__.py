@@ -1,4 +1,4 @@
-"""Loss-indexed confidence for selective binary segmentation.
+"""Loss-indexed confidence for selective segmentation.
 
 The focused pipeline lives in :mod:`selectseg.confidence` and
 :mod:`selectseg.evaluate`.  The older multiclass/band implementation is

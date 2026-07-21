@@ -1,0 +1,85 @@
+\section{Hausdorff geometry and two contrasts}
+\label{sec:theory}
+
+\paragraph{Flagship instance: full surface Hausdorff.}
+Let \(d_{H,x}\) be the full Hausdorff distance between inner digital surfaces,
+normalized by the image diagonal and extended with zero empty--empty cost and
+unit one-sided-empty cost. It is a metric on the resulting surface-set space
+and a pseudometric on filled masks. The deployment loss is
+\(L_x^{\mathrm{nHD}}(A,B)=d_{H,x}(A,B)\in[0,1]\). The reverse triangle
+inequality gives
+\begin{equation*}
+  |L_x^{\mathrm{nHD}}(Y,A)-L_x^{\mathrm{nHD}}(Y',A)|
+  \leq d_{H,x}(Y,Y'),
+\end{equation*}
+and the general transport lemma in Appendix~\ref{app:theory} therefore yields
+\begin{equation*}
+  \Delta_{L^{\mathrm{nHD}},\Yhat}(x)
+  \leq W_{1,d_{H,x}}(P_x,Q_{p(x)})
+  \leq \TV(P_x,Q_{p(x)}).
+\end{equation*}
+This is the main geometry-aware guarantee. Under \(Q_p\), one scalar level moves
+the candidate surface coherently through the probability landscape; under nHD,
+the loss records the most displaced point of that surface. The construction and
+loss are thus aligned at the level of boundary motion. Combining this display
+with Section~\ref{sec:framework} controls nHD score error and then nHD AURC
+regret.
+
+\paragraph{Robust extension: pooled nHD95.}
+Replacing the maximum pooled surface distance by its 95th percentile suppresses
+a small extreme tail. The resulting normalized penalized nHD95 loss remains in
+\([0,1]\), so the threshold integral, total-error decomposition, scalar loss-law
+transport bound, and AURC theorem all apply. It is not a mask metric, however:
+percentile losses can jump when the fraction of distant surface points crosses
+five percent and need not satisfy a triangle inequality. Consequently nHD95 is
+a practical robust extension of the boundary experiment, not a corollary of the
+constant-one nHD Wasserstein theorem. Appendix~\ref{app:theory} gives an explicit
+quantile-jump construction.
+
+\paragraph{Regional contrast: Dice.}
+For binary masks, define
+\begin{equation*}
+  \Dice(A,B)=\frac{2|A\cap B|}{|A|+|B|},
+\end{equation*}
+with \(\Dice(\varnothing,\varnothing)=1\) and Dice zero when exactly one mask
+is empty. The loss \(L_{\Dice}=1-\Dice\) lies in \([0,1]\). For Jaccard
+distance \(d_J\), Appendix~\ref{app:theory} proves
+\begin{equation*}
+  \Delta_{L_{\Dice},\Yhat}(x)
+  \leq\min\{\TV(P_x,Q_{p(x)}),2W_{1,d_J}(P_x,Q_{p(x)})\}.
+\end{equation*}
+Thus Dice and nHD instantiate the same Lipschitz--Wasserstein template under
+different, noninterchangeable mask geometries. Dice does not, however, make the
+comonotone level-set coupling uniquely natural in the way coordinated surface
+motion motivates it for nHD.
+
+Equation~\eqref{eq:quad} estimates expected Dice under \(Q_p\). Because level
+sets change only at probability knots, sorting tied groups gives the exact
+integral in \(O(N\log N)\) time. The algorithm in Appendix~\ref{app:theory}
+removes Dice quadrature error; midpoint integration remains the common estimator
+used for controlled cross-loss comparison.
+
+\paragraph{Why SDC remains strong for Dice.}
+When its denominator is positive, SDC is
+\begin{equation}
+  \SDC(p,\Yhat)
+  =\frac{2\sum_i p_i\hat y_i}{\sum_i p_i+\sum_i\hat y_i},
+  \qquad \hat y_i=\mathbf 1\{i\in\Yhat\}.
+  \label{eq:sdc}
+\end{equation}
+For any mask law \(Q\) with marginals \(\Ex_QY_i=p_i\), let
+\(N(Y)=2\sum_iY_i\hat y_i\) and
+\(D(Y)=\sum_iY_i+\sum_i\hat y_i\). Then
+\(\SDC=\Ex_QN/\Ex_QD\), whereas posterior Dice is \(\Ex_Q[N/D]\); they are
+not generally equal. For a nonempty action of size \(m\), however,
+\begin{equation*}
+  \left|\Ex_Q L_{\Dice}(Y,\Yhat)-[1-\SDC(p,\Yhat)]\right|
+  \leq \frac{2}{m}\sqrt{\Var_Q |Y\cap\Yhat|}
+       +\frac{1}{2m}\sqrt{\Var_Q |Y\setminus\Yhat|}.
+\end{equation*}
+SDC is therefore the count-mean plug-in approximation: spatial coupling affects
+posterior Dice only through the induced overlap/outside-count law, and its
+deviation from SDC is controlled by count dispersion. Published SDC theory
+connects the ratio to a product-Bernoulli target under exact marginals and
+conditional pixel independence \citep{sdc}; our level-set score is exact under
+the different, comonotone \(Q_p\). Neither assumption dominates the other.

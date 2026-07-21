@@ -23,9 +23,9 @@ EXPECTED_RESAMPLES = 10_000
 EXPECTED_CONFIDENCE_LEVEL = 0.95
 
 RISKS = {
-    "risk_dice": "Dice risk",
     "risk_nhd": "Normalized penalized Hausdorff risk",
     "risk_nhd95": "Normalized penalized HD95 risk",
+    "risk_dice": "Dice risk",
 }
 METHODS = {
     "confidence_sdc": "SDC",
@@ -46,10 +46,17 @@ METHODS = {
     "confidence_nhd95_m8": "nHD95-M8",
     "confidence_nhd95_m32": "nHD95-M32",
 }
+PROPOSED_METHODS = frozenset(
+    method
+    for method in METHODS
+    if method.startswith(
+        ("confidence_dice_", "confidence_nhd_", "confidence_nhd95_")
+    )
+)
 MAIN_METHODS = (
-    "confidence_dice_m32",
     "confidence_nhd_m32",
     "confidence_nhd95_m32",
+    "confidence_dice_m32",
     "confidence_sdc",
     "confidence_mean_max_probability",
     "confidence_negative_entropy",
@@ -83,6 +90,13 @@ DICE_QUADRATURE_METHODS = {
     "confidence_dice_m32": 32,
 }
 DICE_EXACT_REFERENCE = "confidence_dice_exact"
+
+
+def _method_label(method_field):
+    """Bold proposed loss-indexed methods without encoding result rank."""
+
+    label = METHODS[method_field]
+    return rf"\textbf{{{label}}}" if method_field in PROPOSED_METHODS else label
 
 
 @dataclass(frozen=True)
@@ -1206,7 +1220,8 @@ def _baseline_table(conditions, *, header):
         header.rstrip(),
         r"\begin{table*}[t]",
         r"\centering",
-        r"\caption{Primary target-adapted results. Methods are rows and datasets "
+        r"\caption{Primary target-adapted results, led by the two boundary risks. "
+        r"Methods are rows and datasets "
         r"are columns, with separate CLIP-T and DL-T panels. Every risk block uses "
         r"the same six confidence methods and reports raw AURC $\times100$. The "
         r"complete 17-score panels are in the appendix. Lower is better. Dark blue "
@@ -1240,14 +1255,17 @@ def _baseline_table(conditions, *, header):
                     )
                     for _, condition in groups
                 ]
-                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+                lines.append(" & ".join([_method_label(method_field), *cells]) + r" \\")
         lines.extend(_condition_panel_end())
     lines.extend([r"}", r"\end{table*}", ""])
     return lines
 
 
 def _contrast_label(spec):
-    return f"{METHODS[spec.left]} $-$ {METHODS[spec.right]} / {RISKS[spec.risk]}"
+    return (
+        f"{_method_label(spec.left)} $-$ {_method_label(spec.right)} / "
+        f"{RISKS[spec.risk]}"
+    )
 
 
 def _comparison_cell(group, spec):
@@ -1324,7 +1342,7 @@ def _complete_results_table(conditions, *, header, declared, label, caption_pref
                     )
                     for _, condition in groups
                 ]
-                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+                lines.append(" & ".join([_method_label(method_field), *cells]) + r" \\")
             lines.extend(_condition_panel_end())
         lines.extend([r"}", r"\end{table*}", ""])
     return "\n".join(lines)
@@ -1394,7 +1412,7 @@ def render_cross_loss_results(conditions, *, header):
                     )
                     for _, condition in groups
                 ]
-                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+                lines.append(" & ".join([_method_label(method_field), *cells]) + r" \\")
         lines.extend(_condition_panel_end())
     lines.extend([r"}", r"\end{table*}", ""])
     return "\n".join(lines)
@@ -1444,7 +1462,7 @@ def render_quadrature_ablation(conditions, *, header):
                     )
                     for _, condition in groups
                 ]
-                lines.append(" & ".join([METHODS[method_field], *cells]) + r" \\")
+                lines.append(" & ".join([_method_label(method_field), *cells]) + r" \\")
         lines.extend(_condition_panel_end())
     lines.extend([r"}", r"\end{table*}", ""])
     if all("numerical_validation" in condition for condition in conditions):
@@ -1507,7 +1525,7 @@ def render_quadrature_ablation(conditions, *, header):
                     )
                     for _, group in fidelity_groups
                 ]
-                row = f"{METHODS[method_field]} / {statistic}"
+                row = f"{_method_label(method_field)} / {statistic}"
                 lines.append(" & ".join([row, *cells]) + r" \\")
         lines.extend(_table_end())
     return "\n".join(lines)

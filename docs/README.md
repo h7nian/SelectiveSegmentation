@@ -16,9 +16,10 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 If `latexmk` is available, the equivalent one-line command is
 `latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex`.
 
-The tables are not hand-entered. The companion code repository instantiates
-the framework with Dice, normalized penalized full Hausdorff distance (nHD),
-and normalized penalized HD95 (nHD95). Each schema-v2 assembled row contains
+The tables are not hand-entered. The companion code repository uses normalized
+penalized full Hausdorff distance (nHD) as the flagship instance, normalized
+penalized HD95 (nHD95) as its robust nonmetric extension, and Dice as a regional
+contrast. Each schema-v2 assembled row contains
 all three risks, the three loss-indexed midpoint ladders at `M=2,8,32`, common
 baselines, and the Exact Dice level-set oracle. The strict analysis JSON also
 uses schema v2.

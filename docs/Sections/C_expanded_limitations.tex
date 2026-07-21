@@ -12,7 +12,7 @@ separate marginal calibration error from dependence-model error.
 Dice is naturally bounded, but surface distances require an explicit empty-mask
 rule. Assigning a one-sided empty comparison the image diagonal, a fixed cap, or an
 application-specific cost produces different losses and can change the ranking. Our
-normalized penalized HD95 is one fixed choice. The published SDC baseline's
+normalized penalized full HD and HD95 are two fixed choices. The published SDC baseline's
 empty--empty Dice value also differs from ours, so its theoretical approximation
 guarantee does not automatically cover empty deployed masks under our loss.
 Dropping undefined cases would change the target population and is not equivalent.

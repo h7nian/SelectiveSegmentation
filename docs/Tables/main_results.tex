@@ -3,7 +3,7 @@
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Primary target-adapted results. Methods are rows and datasets are columns, with separate CLIP-T and DL-T panels. Every risk block uses the same six confidence methods and reports raw AURC $\times100$. The complete 17-score panels are in the appendix. Lower is better. Dark blue marks every exactly lowest unrounded AURC among the six displayed methods within each model, dataset, and risk block.}
+\caption{Primary target-adapted results, led by the two boundary risks. Methods are rows and datasets are columns, with separate CLIP-T and DL-T panels. Every risk block uses the same six confidence methods and reports raw AURC $\times100$. The complete 17-score panels are in the appendix. Lower is better. Dark blue marks every exactly lowest unrounded AURC among the six displayed methods within each model, dataset, and risk block.}
 \label{tab:main-results}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
@@ -12,29 +12,29 @@
 \midrule
 Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
-\multicolumn{6}{l}{\textit{Dice risk}} \\
-Dice-M32 & \bestresult{3.316} & 9.077 & 87.310 & \bestresult{7.176} & 16.153 \\
-nHD-M32 & 3.549 & 10.335 & 86.094 & 8.640 & 16.366 \\
-nHD95-M32 & 3.609 & 10.000 & 84.290 & 8.368 & 16.022 \\
-SDC & 3.321 & \bestresult{8.923} & \bestresult{82.200} & 7.301 & \bestresult{15.566} \\
-Mean max probability & 4.411 & 20.117 & 86.475 & 9.538 & 28.826 \\
-Negative entropy & 4.391 & 17.024 & 85.293 & 9.402 & 27.389 \\
-\midrule
 \multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
-Dice-M32 & 5.140 & 12.863 & 48.988 & 5.009 & 9.577 \\
-nHD-M32 & \bestresult{4.569} & \bestresult{10.172} & 40.553 & \bestresult{3.386} & \bestresult{7.259} \\
-nHD95-M32 & 4.602 & 10.689 & 34.303 & 3.432 & 7.345 \\
+\textbf{nHD-M32} & \bestresult{4.569} & \bestresult{10.172} & 40.553 & \bestresult{3.386} & \bestresult{7.259} \\
+\textbf{nHD95-M32} & 4.602 & 10.689 & 34.303 & 3.432 & 7.345 \\
+\textbf{Dice-M32} & 5.140 & 12.863 & 48.988 & 5.009 & 9.577 \\
 SDC & 5.158 & 12.893 & \bestresult{31.255} & 5.216 & 8.306 \\
 Mean max probability & 4.867 & 15.393 & 35.811 & 3.501 & 12.872 \\
 Negative entropy & 4.841 & 13.189 & 33.518 & 3.488 & 11.221 \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
-Dice-M32 & 2.891 & 5.369 & 42.459 & 3.477 & 7.929 \\
-nHD-M32 & 2.580 & 4.408 & 33.650 & 2.500 & 5.905 \\
-nHD95-M32 & \bestresult{2.506} & \bestresult{4.319} & 26.305 & \bestresult{2.498} & \bestresult{5.891} \\
+\textbf{nHD-M32} & 2.580 & 4.408 & 33.650 & 2.500 & 5.905 \\
+\textbf{nHD95-M32} & \bestresult{2.506} & \bestresult{4.319} & 26.305 & \bestresult{2.498} & \bestresult{5.891} \\
+\textbf{Dice-M32} & 2.891 & 5.369 & 42.459 & 3.477 & 7.929 \\
 SDC & 2.900 & 4.919 & \bestresult{22.591} & 3.637 & 6.583 \\
 Mean max probability & 2.835 & 10.364 & 27.435 & 2.597 & 11.825 \\
 Negative entropy & 2.814 & 7.881 & 24.993 & 2.588 & 10.123 \\
+\midrule
+\multicolumn{6}{l}{\textit{Dice risk}} \\
+\textbf{nHD-M32} & 3.549 & 10.335 & 86.094 & 8.640 & 16.366 \\
+\textbf{nHD95-M32} & 3.609 & 10.000 & 84.290 & 8.368 & 16.022 \\
+\textbf{Dice-M32} & \bestresult{3.316} & 9.077 & 87.310 & \bestresult{7.176} & 16.153 \\
+SDC & 3.321 & \bestresult{8.923} & \bestresult{82.200} & 7.301 & \bestresult{15.566} \\
+Mean max probability & 4.411 & 20.117 & 86.475 & 9.538 & 28.826 \\
+Negative entropy & 4.391 & 17.024 & 85.293 & 9.402 & 27.389 \\
 \bottomrule
 \end{tabular*}
 \par\smallskip
@@ -44,29 +44,29 @@ Negative entropy & 2.814 & 7.881 & 24.993 & 2.588 & 10.123 \\
 \midrule
 Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
-\multicolumn{6}{l}{\textit{Dice risk}} \\
-Dice-M32 & \bestresult{3.241} & 5.234 & 41.102 & \bestresult{6.354} & 8.792 \\
-nHD-M32 & 3.514 & 5.604 & 40.635 & 7.533 & 9.547 \\
-nHD95-M32 & 3.523 & 5.463 & \bestresult{40.426} & 7.310 & 9.250 \\
-SDC & 3.248 & \bestresult{5.165} & 41.345 & 6.615 & \bestresult{7.922} \\
-Mean max probability & 4.089 & 9.014 & 46.286 & 8.626 & 17.574 \\
-Negative entropy & 4.050 & 7.747 & 45.228 & 8.539 & 16.245 \\
-\midrule
 \multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
-Dice-M32 & 5.294 & 10.475 & 10.530 & 4.637 & 5.479 \\
-nHD-M32 & \bestresult{4.234} & \bestresult{7.036} & \bestresult{9.202} & \bestresult{3.414} & \bestresult{3.818} \\
-nHD95-M32 & 4.376 & 7.528 & 10.090 & 3.470 & 3.818 \\
+\textbf{nHD-M32} & \bestresult{4.234} & \bestresult{7.036} & \bestresult{9.202} & \bestresult{3.414} & \bestresult{3.818} \\
+\textbf{nHD95-M32} & 4.376 & 7.528 & 10.090 & 3.470 & 3.818 \\
+\textbf{Dice-M32} & 5.294 & 10.475 & 10.530 & 4.637 & 5.479 \\
 SDC & 5.302 & 10.656 & 10.385 & 4.893 & 4.475 \\
 Mean max probability & 4.966 & 8.967 & 13.359 & 3.828 & 8.329 \\
 Negative entropy & 4.880 & 7.921 & 12.771 & 3.766 & 7.156 \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
-Dice-M32 & 3.007 & 3.033 & 4.585 & 3.191 & 4.544 \\
-nHD-M32 & 2.416 & \bestresult{2.366} & \bestresult{3.875} & 2.527 & 3.160 \\
-nHD95-M32 & \bestresult{2.393} & 2.389 & 4.289 & \bestresult{2.503} & \bestresult{3.095} \\
+\textbf{nHD-M32} & 2.416 & \bestresult{2.366} & \bestresult{3.875} & 2.527 & 3.160 \\
+\textbf{nHD95-M32} & \bestresult{2.393} & 2.389 & 4.289 & \bestresult{2.503} & \bestresult{3.095} \\
+\textbf{Dice-M32} & 3.007 & 3.033 & 4.585 & 3.191 & 4.544 \\
 SDC & 3.013 & 2.995 & 4.460 & 3.398 & 3.505 \\
 Mean max probability & 2.907 & 4.357 & 6.953 & 2.856 & 7.720 \\
 Negative entropy & 2.835 & 3.287 & 6.373 & 2.809 & 6.541 \\
+\midrule
+\multicolumn{6}{l}{\textit{Dice risk}} \\
+\textbf{nHD-M32} & 3.514 & 5.604 & 40.635 & 7.533 & 9.547 \\
+\textbf{nHD95-M32} & 3.523 & 5.463 & \bestresult{40.426} & 7.310 & 9.250 \\
+\textbf{Dice-M32} & \bestresult{3.241} & 5.234 & 41.102 & \bestresult{6.354} & 8.792 \\
+SDC & 3.248 & \bestresult{5.165} & 41.345 & 6.615 & \bestresult{7.922} \\
+Mean max probability & 4.089 & 9.014 & 46.286 & 8.626 & 17.574 \\
+Negative entropy & 4.050 & 7.747 & 45.228 & 8.539 & 16.245 \\
 \bottomrule
 \end{tabular*}
 }
