@@ -48,6 +48,7 @@ from scripts.finalize_seed_scheduler_ledger import (
 )
 from scripts.render_binary_seed_extension import render_table
 from scripts.submit_binary_seed_extension import (
+    CPU_PARTITION_REQUEST,
     DOWNSTREAM_RECEIPT_NAMES,
     TRAIN_RECEIPT,
     _expected_receipt_path,
@@ -56,7 +57,6 @@ from scripts.submit_binary_seed_extension import (
     plan_training_jobs,
 )
 from scripts.submit_binary_simulations import (
-    DEFAULT_CPU_PARTITIONS,
     GPU_ACCOUNT,
     PlannedJob,
     _expected_score_manifests,
@@ -694,7 +694,6 @@ def _expected_assemble_jobs(downstream_binding):
         lock_sha = campaign_binding["campaign_lock_sha256"]
         lock = campaign_binding["campaign"]
         assembly_lock = load_assembly_lock(lock_path)
-        partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
         for artifact_index, artifact in enumerate(lock["artifacts"]):
             common, simulations = _expected_score_manifests(
                 config, lock_path, lock_sha, lock, artifact
@@ -702,7 +701,7 @@ def _expected_assemble_jobs(downstream_binding):
             dataset, condition, _, _, _ = prepare_assembly(
                 assembly_lock, common, simulations
             )
-            partition = partitions[artifact_index % len(partitions)]
+            partition = CPU_PARTITION_REQUEST
             command = [
                 "sbatch",
                 "--parsable",
@@ -740,7 +739,7 @@ def _expected_analysis_job(
         Path(downstream_binding["binding"]["spec"]["paths"]["analysis_root"])
         / "analysis.json"
     )
-    partition = "agsmall"
+    partition = CPU_PARTITION_REQUEST
     return (
         PlannedJob(
             phase="seed_analyze",
@@ -772,7 +771,7 @@ def _expected_analysis_job(
 
 def _expected_render_job(downstream_binding, *, seed_analysis, seed_analysis_sha256):
     analysis_path = Path(seed_analysis)
-    partition = "agsmall"
+    partition = CPU_PARTITION_REQUEST
     return (
         PlannedJob(
             phase="seed_render",

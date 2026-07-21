@@ -6,44 +6,24 @@
 The level-set law is one coupling compatible with a probability map, not a
 posterior identified by calibrated marginals. Exact Dice removes its numerical
 integration error, and larger \(M\) reduces midpoint error for the other losses,
-but neither operation removes posterior discrepancy. The score-error theorem
-therefore controls population AURC regret only to the extent that its discrepancy
-term is small; it neither guarantees pairwise rank recovery nor says that a
-matched score must win empirically.
-Exact cardinality diagnostics expose direct support incompatibilities---most
-clearly on FIVES and ISIC---but pooled PIT and bias summaries remain
-finite-sample evidence, and one label per image cannot turn favorable
-diagnostics into validation of \(Q_p\).
+but neither removes posterior discrepancy. Hence the AURC-regret bound neither
+guarantees close-pair ranking nor a matched-score win. Cardinality diagnostics
+expose support incompatibilities on FIVES and ISIC, but one label per image
+cannot validate \(Q_p\).
 
 Dice and normalized full HD share a Lipschitz--Wasserstein proof template, but
-their Jaccard and surface-Hausdorff agreement conditions express different
-geometries and are not interchangeable. Surface HD is naturally a metric on the
-extracted digital surfaces and, conservatively, a pseudometric on masks. Pooled
-nHD95 is nonmetric: percentile and surface-multiplicity jumps prevent it from
-inheriting the HD corollary without stronger regularity assumptions. It remains
-covered by the generic bounded-loss, scalar loss-pushforward,
-posterior-discrepancy, and AURC theory.
+their Jaccard and surface-Hausdorff conditions are not interchangeable. Pooled
+nHD95 is nonmetric and does not inherit the HD corollary; it remains covered by
+the bounded-loss, posterior-discrepancy, and AURC theory.
 
 The boundary surface, pixel spacing, diagonal normalization, percentile pooling,
 and empty-mask penalty are substantive deployment choices. Our experiment uses
-native pixel coordinates and one fixed convention; physical-distance or
-application-specific costs could induce another ranking. Empirically, the design
-covers five binary datasets and two model families. Seed 0 remains the primary
-target-model analysis; seeds 1--2 repeat the same protocol only for the ten
-target conditions as a descriptive checkpoint extension. Three seeds are
-insufficient to characterize training randomness reliably or to support formal
-seed-level inference. The locked
-\(\gamma\in\{.3,.5,.7\}\) sensitivity preserves the main
-region-to-worst-boundary direction but triggers the predeclared locked warning
-rule for the worst-to-robust-boundary comparison; conclusions involving nHD versus
-nHD95 therefore depend on the deployed action threshold. The seed-0 paired
-bootstrap captures held-out image variation conditional on a fixed checkpoint,
-not optimization, training-sample, site-shift, or multi-rater uncertainty; the
-extra checkpoints do not turn it into a training-randomness interval. Release-level
-patient, video, or eye identifiers are unavailable for some cohorts, so the
-intervals are not patient-clustered and may understate repeated-subject
-dependence. Finally, all methods use one probability map: ensembles, internal
-features, learned failure detectors, multiclass actions, and absolute risk
+native pixels and one convention. The design covers five binary datasets and two
+model families. Gate C marks nHD versus nHD95 under nHD95 risk as training-sensitive,
+and the action warning marks the same geometric step threshold-sensitive. Three
+checkpoints are descriptive, while the seed-0 image bootstrap excludes training,
+site, multi-rater, and patient-cluster uncertainty. All methods use one probability
+map; ensembles, learned failure detectors, multiclass actions, and absolute risk
 calibration remain outside scope.
 Appendix~\ref{app:limitations} expands these constraints.
 
@@ -52,9 +32,7 @@ Appendix~\ref{app:limitations} expands these constraints.
 Selective segmentation begins with a practical choice: which failure matters
 when a mask is accepted? Loss indexing turns that choice into an explicit
 confidence target. The shared-threshold working posterior makes the otherwise
-hidden joint assumption inspectable, the theory traces its error to selective
-risk and AURC, and the three-loss design follows a coherent geometric path from
-region overlap to worst-case and robust boundary error. The framework offers a
-common way to construct and compare these rankings; it deliberately does not
-promise that one geometry, posterior approximation, or same-named score is best
-for every deployment.
+hidden joint assumption inspectable; the theory traces its error to selective
+risk and AURC; and the losses move from overlap to worst-case and robust boundary
+error. The framework compares these rankings without promising one universal
+geometry or score.

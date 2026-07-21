@@ -1325,7 +1325,9 @@ def render_quadrature_ablation(conditions, *, header):
         r"raw AURCs $\times100$ separately. Lower AURC is better as a ranking outcome, but a "
         r"coarser rule can win accidentally; numerical fidelity is judged against "
         r"Dice-Exact below and against the high-resolution boundary reference in "
-        r"the auxiliary study. AURC need not improve monotonically with $M$.}",
+        r"the auxiliary study. AURC need not improve monotonically with $M$. "
+        r"Dark blue marks every exactly lowest unrounded AURC within each condition "
+        r"and risk block.}",
         r"\label{tab:quadrature-ablation}",
         r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
         r"\resizebox{\textwidth}{!}{%",
@@ -1346,7 +1348,6 @@ def render_quadrature_ablation(conditions, *, header):
                     method_field,
                     candidates,
                     normalized=False,
-                    highlight_best=False,
                 )
                 for _, group in groups
             ]
@@ -1362,8 +1363,7 @@ def render_quadrature_ablation(conditions, *, header):
                 r"\centering",
                 r"\caption{Per-image Dice midpoint fidelity to Dice-Exact on "
                 r"target-adapted conditions. For each statistic, cells give "
-                r"CLIP-T/DL-T in that order (a retained prefix identifies a lone "
-                r"condition in incomplete drafts). Error rows summarize "
+                r"CLIP-T/DL-T in that order. Error rows summarize "
                 r"$|C_{\mathrm{Dice},M}-C_{\mathrm{Dice},\mathrm{Exact}}|$; "
                 r"rank rows give Spearman $\rho$ and Kendall $\tau_b$. Exact "
                 r"floating-point equality is omitted because continuous knot and "

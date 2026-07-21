@@ -13,6 +13,7 @@ from scripts.render_paper_tables import (
     METHODS,
     OUTPUT_NAMES,
     RISKS,
+    TARGET_CONDITIONS,
     _is_best,
     load_analysis,
     main,
@@ -331,9 +332,12 @@ def test_quadrature_table_includes_exact_and_all_declared_midpoint_rules():
             assert table.count(f"\n{prefix}-M{count} &") == 1
     assert table.count(r"\shortstack{") == (4 + 3 + 3) * 5
     assert "exact level-set oracle" in table
-    assert r"\bestresult{" not in table
+    assert table.count(r"\bestresult{") == len(RISKS) * len(TARGET_CONDITIONS)
+    assert "Dark blue" in table
+    assert "lowest unrounded AURC" in table
     assert "AURC need not improve monotonically" in table
     assert r"\label{tab:dice-quadrature-fidelity}" in table
+    assert "incomplete drafts" not in table
     for statistic in (
         "Mean abs. error",
         "Median abs. error",

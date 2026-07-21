@@ -26,6 +26,62 @@ def _json_bytes(value):
     return (json.dumps(value, sort_keys=True) + "\n").encode("utf-8")
 
 
+def _public_gate_analysis(source_analysis_sha256):
+    summaries = {
+        ("clipseg-target", "isic"): ([0.00002, 0.00020, -0.00011], True),
+        ("clipseg-target", "tn3k"): ([0.00014, -0.00037, -0.00036], False),
+        ("deeplabv3-target", "kvasir"): ([-0.00023, -0.00047, 0.00016], True),
+        ("deeplabv3-target", "isic"): ([0.00024, -0.00001, -0.00004], False),
+        ("deeplabv3-target", "pet"): ([0.00024, -0.00067, -0.00086], False),
+    }
+    cells = []
+    for condition in artifact.SEED_GATE_CONDITIONS:
+        for dataset in artifact.SEED_GATE_DATASETS:
+            values, seed0_majority = summaries.get(
+                (condition, dataset), ([0.001, 0.002, 0.003], True)
+            )
+            cells.append(
+                {
+                    "dataset": dataset,
+                    "condition": condition,
+                    "summary": {
+                        "contrasts": {
+                            artifact.SEED_GATE_CONTRAST: {
+                                "values": {
+                                    str(seed): value
+                                    for seed, value in enumerate(values)
+                                },
+                                "direction_reversal": (condition, dataset)
+                                in artifact.EXPECTED_SEED_GATE_REVERSAL_CELLS,
+                                "seed0_is_majority_direction": seed0_majority,
+                            }
+                        }
+                    },
+                }
+            )
+    return {
+        "provenance": {"source_analysis_sha256": source_analysis_sha256},
+        "cells": cells,
+        "gate_c": {
+            "fired": True,
+            "direction_reversal_counts": {artifact.SEED_GATE_CONTRAST: 5},
+            "contrasts_with_at_least_three_reversals": [
+                artifact.SEED_GATE_CONTRAST
+            ],
+            "seed0_not_majority_cells": [
+                {
+                    "condition": condition,
+                    "dataset": dataset,
+                    "contrast": artifact.SEED_GATE_CONTRAST,
+                }
+                for condition, dataset in sorted(
+                    artifact.EXPECTED_SEED_GATE_DAGGER_CELLS
+                )
+            ],
+        },
+    }
+
+
 @pytest.fixture
 def portable_seed_inputs(monkeypatch):
     source_analysis_sha256 = "a" * 64
@@ -34,15 +90,16 @@ def portable_seed_inputs(monkeypatch):
         f"% Source analysis.json SHA-256: {source_analysis_sha256}\n"
         "seed robustness table\n"
     ).encode("utf-8")
+    public_analysis = _public_gate_analysis(source_analysis_sha256)
+    gate_table = artifact._render_seed_gate_table(public_analysis)
     payloads = {
-        artifact.PUBLIC_SEED_ANALYSIS_SOURCE: _json_bytes(
-            {"provenance": {"source_analysis_sha256": source_analysis_sha256}}
-        ),
+        artifact.PUBLIC_SEED_ANALYSIS_SOURCE: _json_bytes(public_analysis),
         artifact.PUBLIC_SEED_SCHEDULER_SOURCE: _json_bytes({"status": "complete"}),
         artifact.PUBLIC_SEED_PROVENANCE_SOURCE: _json_bytes(
             {"analysis": {"table_sha256": hashlib.sha256(table).hexdigest()}}
         ),
         artifact.PUBLIC_SEED_TABLE_SOURCE: table,
+        artifact.PUBLIC_SEED_GATE_TABLE_SOURCE: gate_table,
     }
     original_reader = artifact._read_regular_source
 
@@ -81,7 +138,7 @@ def portable_seed_inputs(monkeypatch):
 def test_repeated_builds_are_identical_verified_and_importable(
     tmp_path, monkeypatch, portable_seed_inputs
 ):
-    _, validator_calls = portable_seed_inputs
+    payloads, validator_calls = portable_seed_inputs
     first = tmp_path / "first.tar.gz"
     second = tmp_path / "second.tar.gz"
     artifact.build_anonymous_analysis_artifact(REPO_ROOT, first)
@@ -89,13 +146,13 @@ def test_repeated_builds_are_identical_verified_and_importable(
 
     assert first.read_bytes() == second.read_bytes()
     expected_names = artifact.expected_archive_member_names()
-    assert len(artifact.RELEASE_FILES) == 50
-    assert len(expected_names) == 53
+    assert len(artifact.RELEASE_FILES) == 51
+    assert len(expected_names) == 54
 
     report = artifact.verify_archive(first)
     assert report == {
         "archive_sha256": hashlib.sha256(first.read_bytes()).hexdigest(),
-        "member_count": 53,
+        "member_count": 54,
         "root": artifact.ARCHIVE_ROOT,
         "verified": True,
     }
@@ -115,6 +172,13 @@ def test_repeated_builds_are_identical_verified_and_importable(
         archive.extractall(extracted, filter="data")
 
     unpacked_root = extracted / artifact.ARCHIVE_ROOT
+    assert (
+        unpacked_root / "tables" / "seed_sensitivity_main.tex"
+    ).read_bytes() == payloads[artifact.PUBLIC_SEED_GATE_TABLE_SOURCE]
+    readme = (unpacked_root / "README.md").read_text(encoding="utf-8")
+    assert "independently rebuilds the compact table byte-for-byte" in readme
+    assert "five reversal cells" in readme
+    assert "seed-0 minority-direction markers" in readme
     for module in ("scripts.analyze_binary", "scripts.render_paper_tables"):
         result = subprocess.run(
             [sys.executable, "-m", module, "--help"],
@@ -190,22 +254,25 @@ def test_member_allowlist_has_exact_canonical_cardinalities():
     assert roles.count("seed-scheduler-summary") == 1
     assert roles.count("seed-provenance") == 1
     assert roles.count("seed-table") == 1
+    assert roles.count("seed-gate-table") == 1
 
     sources = [item.source for item in artifact.RELEASE_FILES]
     destinations = [item.destination for item in artifact.RELEASE_FILES]
-    assert len(sources) == len(set(sources)) == 50
-    assert len(destinations) == len(set(destinations)) == 50
-    assert set(sources[-4:]) == {
+    assert len(sources) == len(set(sources)) == 51
+    assert len(destinations) == len(set(destinations)) == 51
+    assert set(sources[-5:]) == {
         "results/seed_robustness_analysis.json",
         "results/seed_scheduler_summary.json",
         "results/seed_provenance.json",
         "docs/Tables/seed_robustness.tex",
+        "docs/Tables/seed_sensitivity_main.tex",
     }
-    assert set(destinations[-4:]) == {
+    assert set(destinations[-5:]) == {
         "results/seed_robustness_analysis.json",
         "results/seed_scheduler_summary.json",
         "results/seed_provenance.json",
         "tables/seed_robustness.tex",
+        "tables/seed_sensitivity_main.tex",
     }
     assert not any(
         any(marker in path.lower() for marker in ("receipt", "checkpoint"))
@@ -226,6 +293,7 @@ def test_member_allowlist_has_exact_canonical_cardinalities():
         artifact.PUBLIC_SEED_SCHEDULER_SOURCE,
         artifact.PUBLIC_SEED_PROVENANCE_SOURCE,
         artifact.PUBLIC_SEED_TABLE_SOURCE,
+        artifact.PUBLIC_SEED_GATE_TABLE_SOURCE,
     ),
 )
 def test_every_public_seed_member_is_mandatory(
@@ -267,6 +335,39 @@ def test_seed_table_is_bound_to_public_provenance_and_source_comment(
         artifact.ArtifactValidationError, match="source-analysis SHA-256 comment"
     ):
         artifact._validate_public_seed_closure(wrong_comment)
+
+
+def test_compact_gate_table_is_rebuilt_byte_exactly_from_public_analysis(
+    portable_seed_inputs,
+):
+    payloads, _ = portable_seed_inputs
+    artifact._validate_public_seed_closure(dict(payloads))
+
+    changed = dict(payloads)
+    changed[artifact.PUBLIC_SEED_GATE_TABLE_SOURCE] += b"tampered\n"
+    with pytest.raises(
+        artifact.ArtifactValidationError, match="byte-exact public-analysis rebuild"
+    ):
+        artifact._validate_public_seed_closure(changed)
+
+    analysis = json.loads(payloads[artifact.PUBLIC_SEED_ANALYSIS_SOURCE])
+    rebuilt = artifact._render_seed_gate_table(analysis)
+    assert rebuilt == payloads[artifact.PUBLIC_SEED_GATE_TABLE_SOURCE]
+    assert rebuilt.count(rb"\bigl(") == 5
+    assert rebuilt.count(rb"^{\dagger}") == 3
+    assert rebuilt.count(b"--") == 5
+    assert b"Oxford Pet & Kvasir-SEG & FIVES & ISIC & TN3K" in rebuilt
+
+
+def test_compact_gate_table_rejects_a_different_observed_gate():
+    analysis = _public_gate_analysis("a" * 64)
+    analysis["cells"][0]["summary"]["contrasts"][artifact.SEED_GATE_CONTRAST][
+        "direction_reversal"
+    ] = True
+    with pytest.raises(
+        artifact.ArtifactValidationError, match="fixed compact Gate-C result"
+    ):
+        artifact._render_seed_gate_table(analysis)
 
 
 def test_seed_validation_resolves_a_symlinked_temporary_prefix(

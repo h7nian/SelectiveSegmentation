@@ -3,8 +3,9 @@
 The release is deliberately smaller than the full project.  It contains only
 the code and immutable data needed to reproduce the locked selective-risk
 analysis and its seven canonical table artifacts, plus the portable seed
-robustness verification bundle.  Every input and archive destination is
-explicitly allowlisted below; no filesystem discovery is used.
+robustness verification bundle and its compact Gate-C table.  Every input and
+archive destination is explicitly allowlisted below; no filesystem discovery
+is used.
 
 The builder is fail closed: it validates the analysis/campaign/assembly hash
 closure, rejects symlinked inputs and privacy markers, verifies the completed
@@ -36,8 +37,8 @@ ARCHIVE_ROOT = "selective-segmentation-analysis-artifact-v4"
 ARCHIVE_MTIME = 0
 ARCHIVE_FILE_MODE = 0o644
 EXPECTED_CONDITION_COUNT = 16
-EXPECTED_RELEASE_FILE_COUNT = 50
-EXPECTED_ARCHIVE_MEMBER_COUNT = 53
+EXPECTED_RELEASE_FILE_COUNT = 51
+EXPECTED_ARCHIVE_MEMBER_COUNT = 54
 
 # The builder consumes the byte-exact public-mirror layout.  This makes the
 # same command usable in a clean public clone and prevents the anonymous
@@ -49,6 +50,38 @@ PUBLIC_SEED_ANALYSIS_SOURCE = "results/seed_robustness_analysis.json"
 PUBLIC_SEED_SCHEDULER_SOURCE = "results/seed_scheduler_summary.json"
 PUBLIC_SEED_PROVENANCE_SOURCE = "results/seed_provenance.json"
 PUBLIC_SEED_TABLE_SOURCE = "docs/Tables/seed_robustness.tex"
+PUBLIC_SEED_GATE_TABLE_SOURCE = "docs/Tables/seed_sensitivity_main.tex"
+
+SEED_GATE_CONTRAST = "nhd_vs_nhd95_under_nhd95"
+SEED_GATE_DATASETS = ("pet", "kvasir", "fives", "isic", "tn3k")
+SEED_GATE_DATASET_LABELS = {
+    "pet": "Oxford Pet",
+    "kvasir": "Kvasir-SEG",
+    "fives": "FIVES",
+    "isic": "ISIC",
+    "tn3k": "TN3K",
+}
+SEED_GATE_CONDITIONS = ("clipseg-target", "deeplabv3-target")
+SEED_GATE_CONDITION_LABELS = {
+    "clipseg-target": "CLIP-T",
+    "deeplabv3-target": "DL-T",
+}
+EXPECTED_SEED_GATE_REVERSAL_CELLS = frozenset(
+    {
+        ("clipseg-target", "isic"),
+        ("clipseg-target", "tn3k"),
+        ("deeplabv3-target", "kvasir"),
+        ("deeplabv3-target", "isic"),
+        ("deeplabv3-target", "pet"),
+    }
+)
+EXPECTED_SEED_GATE_DAGGER_CELLS = frozenset(
+    {
+        ("clipseg-target", "tn3k"),
+        ("deeplabv3-target", "isic"),
+        ("deeplabv3-target", "pet"),
+    }
+)
 
 CANONICAL_TABLE_NAMES = (
     "main_results.tex",
@@ -148,6 +181,11 @@ _PUBLIC_SEED_FILES = (
         "tables/seed_robustness.tex",
         "seed-table",
     ),
+    ReleaseFile(
+        PUBLIC_SEED_GATE_TABLE_SOURCE,
+        "tables/seed_sensitivity_main.tex",
+        "seed-gate-table",
+    ),
 )
 
 # The only repository files eligible for inclusion.  Generated metadata below
@@ -171,9 +209,10 @@ ANONYMOUS_README = """# Core analysis reproduction artifact
 
 This anonymous artifact contains the fixed 16-condition records, their
 manifests, the immutable campaign lock, the analysis and table source code,
-the seven canonical tables, and the four-file public seed-robustness bundle.
-It does not contain model weights, raw images, training data, per-job scheduler
-records, submission receipts, checkpoint bytes, or author identities.
+the seven canonical tables, the four-file public seed-robustness bundle, and
+the compact Gate-C table used in the main text.  It does not contain model
+weights, raw images, training data, per-job scheduler records, submission
+receipts, checkpoint bytes, or author identities.
 
 Use Python 3.12.4 and install the pinned analysis dependencies:
 
@@ -206,10 +245,15 @@ done
 
 The seed bundle consists of `results/seed_robustness_analysis.json`,
 `results/seed_scheduler_summary.json`, `results/seed_provenance.json`, and
-`tables/seed_robustness.tex`.  These files support verification-level review:
-the verifier checks their strict schemas, cross-file bindings, and table
-hashes.  They do not include the per-image seed records or probability maps
-needed to recompute the seed analysis from individual examples.
+`tables/seed_robustness.tex`; `tables/seed_sensitivity_main.tex` is its compact
+main-text derivative.  These files support verification-level review: the
+verifier checks their strict schemas and cross-file bindings, verifies the full
+table hash, and independently rebuilds the compact table byte-for-byte from the
+validated public analysis.  That rebuild checks the five reversal cells, three
+seed-0 minority-direction markers, and the displayed `100 x AURC` scale.  The
+infrastructure-coupled renderer is deliberately outside this anonymous minimal
+bundle.  The bundle does not include the per-image seed records or probability
+maps needed to recompute the seed analysis from individual examples.
 
 `MANIFEST.sha256` authenticates every other archive member.  Verification can
 also be performed before extraction with the artifact builder's `verify`
@@ -383,6 +427,7 @@ def _validate_allowlist_contract() -> None:
         "seed-scheduler-summary",
         "seed-provenance",
         "seed-table",
+        "seed-gate-table",
     ):
         raise ArtifactValidationError("public seed release allowlist is incomplete")
 
@@ -587,6 +632,153 @@ def _validate_canonical_closure(files: dict[str, bytes]) -> None:
             )
 
 
+def _render_seed_gate_table(analysis: dict) -> bytes:
+    """Independently rebuild the fixed compact Gate-C table from public data."""
+
+    try:
+        source_sha256 = analysis["provenance"]["source_analysis_sha256"]
+        cells = analysis["cells"]
+        gate = analysis["gate_c"]
+    except (KeyError, TypeError) as error:
+        raise ArtifactValidationError(
+            "public seed analysis cannot drive the compact Gate-C table"
+        ) from error
+    if not isinstance(source_sha256, str) or not re.fullmatch(
+        r"[0-9a-f]{64}", source_sha256
+    ):
+        raise ArtifactValidationError(
+            "public seed analysis has an invalid source-analysis digest"
+        )
+
+    by_key = {}
+    try:
+        for cell in cells:
+            key = (cell["dataset"], cell["condition"])
+            if key in by_key:
+                raise ArtifactValidationError(
+                    "public seed analysis repeats a compact-table cell"
+                )
+            by_key[key] = cell
+    except (KeyError, TypeError) as error:
+        raise ArtifactValidationError(
+            "public seed analysis has an invalid compact-table grid"
+        ) from error
+    expected_grid = {
+        (dataset, condition)
+        for condition in SEED_GATE_CONDITIONS
+        for dataset in SEED_GATE_DATASETS
+    }
+    if set(by_key) != expected_grid:
+        raise ArtifactValidationError(
+            "public seed analysis has an incomplete compact-table grid"
+        )
+
+    reversal_cells = set()
+    dagger_cells = set()
+    try:
+        for condition in SEED_GATE_CONDITIONS:
+            for dataset in SEED_GATE_DATASETS:
+                summary = by_key[(dataset, condition)]["summary"]["contrasts"][
+                    SEED_GATE_CONTRAST
+                ]
+                if summary["direction_reversal"]:
+                    reversal_cells.add((condition, dataset))
+                    if not summary["seed0_is_majority_direction"]:
+                        dagger_cells.add((condition, dataset))
+        listed_nonmajority = {
+            (entry["condition"], entry["dataset"], entry["contrast"])
+            for entry in gate["seed0_not_majority_cells"]
+        }
+    except (KeyError, TypeError) as error:
+        raise ArtifactValidationError(
+            "public seed analysis lacks a compact Gate-C statistic"
+        ) from error
+    expected_nonmajority = {
+        (condition, dataset, SEED_GATE_CONTRAST)
+        for condition, dataset in EXPECTED_SEED_GATE_DAGGER_CELLS
+    }
+    if (
+        gate.get("fired") is not True
+        or gate.get("direction_reversal_counts", {}).get(SEED_GATE_CONTRAST) != 5
+        or gate.get("contrasts_with_at_least_three_reversals")
+        != [SEED_GATE_CONTRAST]
+        or reversal_cells != EXPECTED_SEED_GATE_REVERSAL_CELLS
+        or dagger_cells != EXPECTED_SEED_GATE_DAGGER_CELLS
+        or listed_nonmajority != expected_nonmajority
+    ):
+        raise ArtifactValidationError(
+            "public seed analysis differs from the fixed compact Gate-C result"
+        )
+
+    def contrast_cell(summary, *, dagger):
+        try:
+            values = summary["values"]
+            displayed = "/".join(
+                f"{100 * float(values[str(seed)]):+.3f}" for seed in (0, 1, 2)
+            )
+        except (KeyError, TypeError, ValueError) as error:
+            raise ArtifactValidationError(
+                "public seed analysis has invalid compact-table values"
+            ) from error
+        marker = r"^{\dagger}" if dagger else ""
+        return rf"$\bigl({displayed}\bigr){marker}$"
+
+    lines = [
+        "% AUTO-GENERATED by scripts/render_seed_gate_table.py; DO NOT EDIT.",
+        f"% Source seed analysis SHA-256: {source_sha256}",
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\caption{Checkpoint-level direction reversals for nHD versus nHD95 under "
+        r"nHD95 risk. Each populated cell reports "
+        r"$100\!\times\![\operatorname{AURC}(C_{\mathrm{nHD}})-"
+        r"\operatorname{AURC}(C_{\mathrm{nHD95}})]$ for seeds 0/1/2; negative "
+        r"values favor nHD. Only the five cells that reverse direction are shown; "
+        r"all other cells are dashes. $\dagger$ marks the three cells for which "
+        r"seed 0 disagrees with the majority direction. These are descriptive "
+        r"results from three independently trained checkpoints, not seed-level "
+        r"inference.}",
+        r"\label{tab:seed-sensitivity-main}",
+        r"\scriptsize",
+        r"\setlength{\tabcolsep}{4pt}",
+        r"\resizebox{\textwidth}{!}{%",
+        r"\begin{tabular}{lccccc}",
+        r"\toprule",
+        "Model & "
+        + " & ".join(SEED_GATE_DATASET_LABELS[item] for item in SEED_GATE_DATASETS)
+        + r" \\",
+        r"\midrule",
+    ]
+    for condition in SEED_GATE_CONDITIONS:
+        rendered_cells = []
+        for dataset in SEED_GATE_DATASETS:
+            key = (condition, dataset)
+            if key not in reversal_cells:
+                rendered_cells.append(r"--")
+                continue
+            summary = by_key[(dataset, condition)]["summary"]["contrasts"][
+                SEED_GATE_CONTRAST
+            ]
+            rendered_cells.append(
+                contrast_cell(summary, dagger=key in dagger_cells)
+            )
+        lines.append(
+            " & ".join(
+                [SEED_GATE_CONDITION_LABELS[condition], *rendered_cells]
+            )
+            + r" \\"
+        )
+    lines.extend(
+        [
+            r"\bottomrule",
+            r"\end{tabular}%",
+            r"}",
+            r"\end{table*}",
+            "",
+        ]
+    )
+    return "\n".join(lines).encode("utf-8")
+
+
 def _validate_public_seed_closure(files: dict[str, bytes]) -> None:
     """Validate the mandatory portable seed bundle and its rendered table."""
 
@@ -636,6 +828,12 @@ def _validate_public_seed_closure(files: dict[str, bytes]) -> None:
         raise ArtifactValidationError(
             "seed robustness table must contain exactly one matching source-analysis "
             "SHA-256 comment"
+        )
+
+    expected_gate_table = _render_seed_gate_table(release["analysis"])
+    if files[PUBLIC_SEED_GATE_TABLE_SOURCE] != expected_gate_table:
+        raise ArtifactValidationError(
+            "compact Gate-C table is not the byte-exact public-analysis rebuild"
         )
 
 

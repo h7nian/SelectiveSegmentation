@@ -1,10 +1,8 @@
 \section{Results}
 \label{sec:results}
 
-The theory allows geometry to change the safest ordering; it does not promise
-that a matched score always wins. We follow the two fixed adjacent steps below.
-Displayed AURC-derived scalars are multiplied by \(100\), whereas nAURC is not;
-for \(\Delta=\AURC(\text{left})-\AURC(\text{right})\), negative favors the left.
+Geometry can change the safest ordering; matched scores need not win. We report
+AURC-derived scalars \(\times100\) (not nAURC); negative contrasts favor the left.
 
 \IfFileExists{Tables/results_complete.tex}{%
   \IfFileExists{Tables/main_results.tex}{%
@@ -18,45 +16,45 @@ for \(\Delta=\AURC(\text{left})-\AURC(\text{right})\), negative favors the left.
 
 \paragraph{Region overlap to worst-case boundary.}
 nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten target conditions,
-with every pointwise paired-bootstrap interval excluding zero. Under Dice risk,
-Dice-M32 is lower in eight, but only three corresponding intervals exclude
-zero. The strongest separation is therefore worst-boundary risk, not a
-symmetric same-name advantage.
+with all ten pointwise intervals excluding zero. Under Dice risk, Dice-M32 is
+lower in eight, but only three intervals exclude zero. The strongest separation
+is therefore worst-boundary risk, not a symmetric same-name advantage.
 
 \paragraph{Worst-case to robust boundary.}
 nHD-M32 is lower than nHD95-M32 in nine target conditions under nHD risk;
 nHD95-M32 is lower in eight under nHD95 risk. Only four and two matched-direction
-intervals, respectively, exclude zero. Replacing a maximum by a percentile does
-change rankings, but the gains are smaller, condition dependent, and do not
-transfer the nHD Wasserstein corollary to nHD95.
+intervals exclude zero. The smaller, condition-dependent gains do not transfer
+the nHD Wasserstein corollary to nHD95.
+
+\paragraph{Training-seed sensitivity.}
+Gate C fires only for nHD--nHD95 under nHD95 risk: five of ten conditions
+reverse across seeds and seed 0 disagrees with the majority in three
+(Table~\ref{tab:seed-sensitivity-main}). Their displayed values lie in
+\([-.0856,+.0236]\); the other three contrast counts are \(1/0/0\).
+We call the gated comparison training-sensitive, not seed-level inference.
+
+\IfFileExists{Tables/seed_sensitivity_main.tex}{%
+  \input{Tables/seed_sensitivity_main.tex}
+}{}
 
 \paragraph{Baselines and numerical fidelity.}
 A boundary-indexed score has the lowest raw AURC in nine of ten target
 conditions under each boundary risk; SDC on FIVES/CLIPSeg-Target is the
-exception. SDC and foreground entropy remain competitive for Dice, so the
-framework supplies loss-specific candidates rather than a universal winner.
-Dice-M32 and Dice-Exact have \(\rho\geq.9992\), \(\tau_b\geq.9791\), and at most
-.370 displayed Dice-risk AURC difference, without changing either
-region--boundary directional count. For nHD/nHD95, M32--M128 Spearman \(\rho\) is
-.973--.998/.951--.996 and the largest displayed matched-risk gaps are .456/.324;
-M32 is adequate for the common-budget comparison but not numerically exact.
+exception. SDC and foreground entropy remain competitive for Dice. Dice-M32 and
+Dice-Exact have \(\rho\geq.9992\), \(\tau_b\geq.9791\), and at most .370 displayed
+Dice-risk AURC difference. For nHD/nHD95, M32--M128 \(\rho\) is
+.973--.998/.951--.996 and the largest displayed gaps are .456/.324.
 
 \paragraph{Stress tests.}
 In the 360-cell known-posterior study, the correctly specified coupling has zero
 posterior discrepancy and M32 mean absolute error .0084--.0087; under
 misspecification, mask-law TV is near one while Dice error remains
 .0135--.0393. This shows why TV can be too blunt and motivates loss-matched
-geometry, without validating \(Q_p\) on real data. Exact cardinality checks find
+geometry, not validation of \(Q_p\) on real data. Exact cardinality checks find
 zero support for up to 11.5\% of FIVES and 15.4\% of ISIC target references.
-The action-sensitivity warning also fires: both boundary macro contrasts reverse
-at \(\gamma=.3\), while the two Dice--nHD macro directions persist. Thus the
-region-to-worst-boundary result is more stable than the worst-to-robust step.
-Finally, the balanced runtime ladder gives 11.9--468.6, 32.3--1261.4, and
-102.3--4628.8 ms/image for joint three-loss M2, M8, and M32, versus
-13.2--353.5 for Dice-Exact alone; these hardware measurements compare unequal
-outputs.
+Both boundary macro contrasts reverse at \(\gamma=.3\), whereas the Dice--nHD
+directions persist. Runtime spans 11.9--4628.8 ms/image for joint three-loss
+M2--M32 and 13.2--353.5 for Dice-Exact; outputs are unequal.
 
-Appendix~\ref{app:additional-results} reports complete AURCs, all 64 intervals,
-cross-loss panels, rank and accepted-set agreement, risk--coverage curves,
-M128, cardinality, gamma, runtime, and known-posterior results. The intervals
-are pointwise, condition on one fitted checkpoint, and are not simultaneous.
+Appendix~\ref{app:additional-results} reports all AURCs, 64 pointwise intervals,
+cross-loss panels, agreement, curves, and stress tests.

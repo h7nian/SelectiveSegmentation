@@ -1,0 +1,35 @@
+{
+  "artifact_type": "selectseg.public_seed_scheduler_summary",
+  "auxiliary_id": "binary-target-seed-extension-v1",
+  "bindings": {
+    "private_ledger_sha256": "c1406b057558a08d6e79c0c4854ba757f455101c054aa3059ca4aa43e47ff27f",
+    "spec_lock_sha256": "3fb7b721a4b54e467383c03b03168166a1d2e9f197d3a26eade0161df931deed",
+    "terminal_event_id": "787fc6ecc94138f732ee3c72a322ba1edf8fdc2a90469dbe391205d017e3584c",
+    "train_submission_receipt_sha256": "74b7c300cf9b68ef82b909bf10e99a66adb3308699c56be4df1e377423dfe9d8",
+    "training_record_set_sha256": "fa7e58b2b8977e72df2cc46bc83c5c5aa3ea48edd650a69e6c03c653bb73dbed"
+  },
+  "duration_seconds": {
+    "maximum_seconds": 3155,
+    "median_seconds": 857.5,
+    "minimum_seconds": 148,
+    "total_seconds": 26955
+  },
+  "expected_jobs": 20,
+  "failed_jobs": 0,
+  "state_counts": [
+    {
+      "count": 20,
+      "state": "COMPLETED"
+    }
+  ],
+  "status": "complete",
+  "successful_jobs": 20,
+  "summary_schema_version": 1,
+  "terminal_jobs": 20,
+  "timelimit_seconds": {
+    "maximum_seconds": 86400,
+    "median_seconds": 46800.0,
+    "minimum_seconds": 7200,
+    "total_seconds": 936000
+  }
+}

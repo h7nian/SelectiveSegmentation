@@ -56,6 +56,16 @@ DOWNSTREAM_RECEIPT_NAMES = {
     "render": "render-submissions.jsonl",
 }
 
+# Slurm accepts a comma-delimited partition request and may canonicalize its
+# display before dispatching the one job to the eligible partition expected to
+# start earliest.  The order below is fixed serialization for receipt bytes,
+# not a queue-priority claim.
+# This policy is deliberately limited to phases whose receipts do not yet
+# exist.  The completed v1 train/freeze and common/score/diagnose receipts
+# retain their original single-partition commands byte-for-byte.
+CPU_PARTITION_CANDIDATES = ("saffo-2tb", "agsmall", "amdsmall", "msismall")
+CPU_PARTITION_REQUEST = ",".join(CPU_PARTITION_CANDIDATES)
+
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
@@ -299,6 +309,32 @@ def _retag_job(job, *, training_seed, phase):
     )
 
 
+def _with_cpu_partition_candidates(job):
+    """Retarget one unsubmitted CPU job without changing its experiment.
+
+    The partition is operational metadata, but it is part of the private
+    receipt identity.  Therefore this helper is used only while constructing
+    future assembly/analyze/render plans, never to reconstruct the already
+    submitted common, score, or diagnose plans.
+    """
+
+    command = list(job.command)
+    if command.count("--partition") != 1:
+        raise RuntimeError("candidate-partition job needs one --partition flag")
+    partition_index = command.index("--partition") + 1
+    original_partition = command[partition_index]
+    if not isinstance(original_partition, str) or not original_partition:
+        raise RuntimeError("candidate-partition job has an invalid partition")
+    if not job.key or job.key[-1] != original_partition:
+        raise RuntimeError("job key and command partition are inconsistent")
+    command[partition_index] = CPU_PARTITION_REQUEST
+    return PlannedJob(
+        phase=job.phase,
+        key=(*job.key[:-1], CPU_PARTITION_REQUEST),
+        command=tuple(command),
+    )
+
+
 def plan_downstream_jobs(downstream_binding, phase):
     """Reuse canonical planners and return the exact seed-aware CPU wave."""
 
@@ -324,7 +360,7 @@ def plan_downstream_jobs(downstream_binding, phase):
             )
         else:
             canonical_jobs = planners[phase](config, lock_path)
-        jobs.extend(
+        seed_jobs = tuple(
             _retag_job(
                 job,
                 training_seed=seed,
@@ -332,6 +368,11 @@ def plan_downstream_jobs(downstream_binding, phase):
             )
             for job in canonical_jobs
         )
+        if phase == "assemble":
+            seed_jobs = tuple(
+                _with_cpu_partition_candidates(job) for job in seed_jobs
+            )
+        jobs.extend(seed_jobs)
     expected = {"common": 20, "score": 60, "assemble": 20, "diagnose": 20}[phase]
     if len(jobs) != expected or len({(job.phase, job.key) for job in jobs}) != expected:
         raise RuntimeError(
@@ -425,6 +466,16 @@ def _validate_downstream_job_isolation(jobs, *, phase):
                 raise RuntimeError(
                     f"seed {phase} job must contain {count} occurrence(s) of {flag}"
                 )
+        partition = command[command.index("--partition") + 1]
+        if phase == "assemble":
+            if partition != CPU_PARTITION_REQUEST:
+                raise RuntimeError(
+                    "seed assembly jobs must request the exact CPU candidate pool"
+                )
+        elif partition == CPU_PARTITION_REQUEST:
+            raise RuntimeError(
+                f"submitted seed {phase} receipts must retain their legacy partition"
+            )
 
 
 def _expected_receipt_path(binding, phase):
@@ -475,8 +526,7 @@ def plan_analysis_job(
     )
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"seed analysis output already exists: {output}")
-    partitions = ("agsmall", "amdsmall", "msismall")
-    partition = partitions[0]
+    partition = CPU_PARTITION_REQUEST
     command = (
         "sbatch",
         "--parsable",
@@ -541,7 +591,7 @@ def plan_render_job(
     output = analysis_path.with_name("seed_robustness.tex")
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"seed robustness table already exists: {output}")
-    partition = "agsmall"
+    partition = CPU_PARTITION_REQUEST
     command = (
         "sbatch",
         "--parsable",
@@ -591,6 +641,35 @@ def _scheduler_preflight(jobs):
             raise RuntimeError(
                 f"Slurm preflight failed for {partition}; no jobs submitted: {message}"
             )
+
+
+def _cpu_candidate_preflight(jobs):
+    """Check the exact multi-partition request before a future CPU wave."""
+
+    jobs = tuple(jobs)
+    if not jobs:
+        raise RuntimeError("CPU candidate preflight received an empty plan")
+    for job in jobs:
+        command = job.command
+        if command.count("--partition") != 1:
+            raise RuntimeError("CPU candidate job needs one --partition flag")
+        if command[command.index("--partition") + 1] != CPU_PARTITION_REQUEST:
+            raise RuntimeError("CPU candidate job has the wrong partition pool")
+    command = list(jobs[0].command)
+    command.remove("--parsable")
+    command.insert(1, "--test-only")
+    completed = subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if completed.returncode != 0:
+        message = (completed.stderr or completed.stdout).strip()
+        raise RuntimeError(
+            "Slurm preflight failed for the CPU candidate pool; "
+            f"no jobs submitted: {message}"
+        )
 
 
 def main(argv=None):
@@ -776,6 +855,8 @@ def main(argv=None):
                 for partition in ("saffo-a100", "apollo_agate")
             )
         )
+    elif args.phase in {"assemble", "analyze", "render"}:
+        print(f"partition_candidates={CPU_PARTITION_REQUEST}")
     _validate_receipt_argument(
         binding,
         phase=args.phase,
@@ -784,6 +865,8 @@ def main(argv=None):
     )
     if args.submit and args.phase in {"train", "freeze"}:
         _scheduler_preflight(jobs)
+    if args.submit and args.phase in {"assemble", "analyze", "render"}:
+        _cpu_candidate_preflight(jobs)
     return execute_plan(jobs, submit=args.submit, receipt_path=args.receipt)
 
 

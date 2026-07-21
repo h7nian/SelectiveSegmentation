@@ -3,7 +3,7 @@
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Matched-loss quadrature ablation on target-adapted conditions. Dice-Exact is the exact level-set oracle; $M=2,8,32$ are midpoint rules. Methods are rows, datasets are columns, and cells retain CLIP-T and DL-T raw AURCs $\times100$ separately. Lower AURC is better as a ranking outcome, but a coarser rule can win accidentally; numerical fidelity is judged against Dice-Exact below and against the high-resolution boundary reference in the auxiliary study. AURC need not improve monotonically with $M$.}
+\caption{Matched-loss quadrature ablation on target-adapted conditions. Dice-Exact is the exact level-set oracle; $M=2,8,32$ are midpoint rules. Methods are rows, datasets are columns, and cells retain CLIP-T and DL-T raw AURCs $\times100$ separately. Lower AURC is better as a ranking outcome, but a coarser rule can win accidentally; numerical fidelity is judged against Dice-Exact below and against the high-resolution boundary reference in the auxiliary study. AURC need not improve monotonically with $M$. Dark blue marks every exactly lowest unrounded AURC within each condition and risk block.}
 \label{tab:quadrature-ablation}
 {\scriptsize\setlength{\tabcolsep}{3pt}%
 \resizebox{\textwidth}{!}{%
@@ -12,20 +12,20 @@
 Estimator & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K \\
 \midrule
 \multicolumn{6}{l}{\textit{Dice risk}} \\
-Dice-Exact & \shortstack{CLIP-T: 3.314\\DL-T: 3.236} & \shortstack{CLIP-T: 9.085\\DL-T: 5.244} & \shortstack{CLIP-T: 87.311\\DL-T: 41.107} & \shortstack{CLIP-T: 7.182\\DL-T: 6.370} & \shortstack{CLIP-T: 16.137\\DL-T: 8.429} \\
-Dice-M2 & \shortstack{CLIP-T: 3.338\\DL-T: 3.298} & \shortstack{CLIP-T: 13.732\\DL-T: 8.043} & \shortstack{CLIP-T: 87.126\\DL-T: 41.000} & \shortstack{CLIP-T: 7.262\\DL-T: 6.642} & \shortstack{CLIP-T: 17.234\\DL-T: 11.311} \\
-Dice-M8 & \shortstack{CLIP-T: 3.317\\DL-T: 3.260} & \shortstack{CLIP-T: 9.258\\DL-T: 5.254} & \shortstack{CLIP-T: 87.317\\DL-T: 41.105} & \shortstack{CLIP-T: 7.171\\DL-T: 6.427} & \shortstack{CLIP-T: 15.927\\DL-T: 9.036} \\
-Dice-M32 & \shortstack{CLIP-T: 3.316\\DL-T: 3.241} & \shortstack{CLIP-T: 9.077\\DL-T: 5.234} & \shortstack{CLIP-T: 87.310\\DL-T: 41.102} & \shortstack{CLIP-T: 7.176\\DL-T: 6.354} & \shortstack{CLIP-T: 16.153\\DL-T: 8.792} \\
+Dice-Exact & \shortstack{CLIP-T: \bestresult{3.314}\\DL-T: \bestresult{3.236}} & \shortstack{CLIP-T: 9.085\\DL-T: 5.244} & \shortstack{CLIP-T: 87.311\\DL-T: 41.107} & \shortstack{CLIP-T: 7.182\\DL-T: 6.370} & \shortstack{CLIP-T: 16.137\\DL-T: \bestresult{8.429}} \\
+Dice-M2 & \shortstack{CLIP-T: 3.338\\DL-T: 3.298} & \shortstack{CLIP-T: 13.732\\DL-T: 8.043} & \shortstack{CLIP-T: \bestresult{87.126}\\DL-T: \bestresult{41.000}} & \shortstack{CLIP-T: 7.262\\DL-T: 6.642} & \shortstack{CLIP-T: 17.234\\DL-T: 11.311} \\
+Dice-M8 & \shortstack{CLIP-T: 3.317\\DL-T: 3.260} & \shortstack{CLIP-T: 9.258\\DL-T: 5.254} & \shortstack{CLIP-T: 87.317\\DL-T: 41.105} & \shortstack{CLIP-T: \bestresult{7.171}\\DL-T: 6.427} & \shortstack{CLIP-T: \bestresult{15.927}\\DL-T: 9.036} \\
+Dice-M32 & \shortstack{CLIP-T: 3.316\\DL-T: 3.241} & \shortstack{CLIP-T: \bestresult{9.077}\\DL-T: \bestresult{5.234}} & \shortstack{CLIP-T: 87.310\\DL-T: 41.102} & \shortstack{CLIP-T: 7.176\\DL-T: \bestresult{6.354}} & \shortstack{CLIP-T: 16.153\\DL-T: 8.792} \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized Hausdorff risk}} \\
-nHD-M2 & \shortstack{CLIP-T: 4.446\\DL-T: 4.472} & \shortstack{CLIP-T: 14.831\\DL-T: 9.827} & \shortstack{CLIP-T: 33.632\\DL-T: 9.005} & \shortstack{CLIP-T: 3.443\\DL-T: 3.353} & \shortstack{CLIP-T: 8.706\\DL-T: 7.323} \\
-nHD-M8 & \shortstack{CLIP-T: 4.785\\DL-T: 4.305} & \shortstack{CLIP-T: 10.088\\DL-T: 7.135} & \shortstack{CLIP-T: 39.608\\DL-T: 9.124} & \shortstack{CLIP-T: 3.428\\DL-T: 3.391} & \shortstack{CLIP-T: 7.102\\DL-T: 4.731} \\
-nHD-M32 & \shortstack{CLIP-T: 4.569\\DL-T: 4.234} & \shortstack{CLIP-T: 10.172\\DL-T: 7.036} & \shortstack{CLIP-T: 40.553\\DL-T: 9.202} & \shortstack{CLIP-T: 3.386\\DL-T: 3.414} & \shortstack{CLIP-T: 7.259\\DL-T: 3.818} \\
+nHD-M2 & \shortstack{CLIP-T: \bestresult{4.446}\\DL-T: 4.472} & \shortstack{CLIP-T: 14.831\\DL-T: 9.827} & \shortstack{CLIP-T: \bestresult{33.632}\\DL-T: \bestresult{9.005}} & \shortstack{CLIP-T: 3.443\\DL-T: \bestresult{3.353}} & \shortstack{CLIP-T: 8.706\\DL-T: 7.323} \\
+nHD-M8 & \shortstack{CLIP-T: 4.785\\DL-T: 4.305} & \shortstack{CLIP-T: \bestresult{10.088}\\DL-T: 7.135} & \shortstack{CLIP-T: 39.608\\DL-T: 9.124} & \shortstack{CLIP-T: 3.428\\DL-T: 3.391} & \shortstack{CLIP-T: \bestresult{7.102}\\DL-T: 4.731} \\
+nHD-M32 & \shortstack{CLIP-T: 4.569\\DL-T: \bestresult{4.234}} & \shortstack{CLIP-T: 10.172\\DL-T: \bestresult{7.036}} & \shortstack{CLIP-T: 40.553\\DL-T: 9.202} & \shortstack{CLIP-T: \bestresult{3.386}\\DL-T: 3.414} & \shortstack{CLIP-T: 7.259\\DL-T: \bestresult{3.818}} \\
 \midrule
 \multicolumn{6}{l}{\textit{Normalized penalized HD95 risk}} \\
-nHD95-M2 & \shortstack{CLIP-T: 2.564\\DL-T: 2.525} & \shortstack{CLIP-T: 9.469\\DL-T: 5.505} & \shortstack{CLIP-T: 25.753\\DL-T: 4.293} & \shortstack{CLIP-T: 2.489\\DL-T: 2.567} & \shortstack{CLIP-T: 7.480\\DL-T: 6.682} \\
-nHD95-M8 & \shortstack{CLIP-T: 2.526\\DL-T: 2.481} & \shortstack{CLIP-T: 4.545\\DL-T: 2.445} & \shortstack{CLIP-T: 27.250\\DL-T: 4.121} & \shortstack{CLIP-T: 2.505\\DL-T: 2.473} & \shortstack{CLIP-T: 5.747\\DL-T: 4.063} \\
-nHD95-M32 & \shortstack{CLIP-T: 2.506\\DL-T: 2.393} & \shortstack{CLIP-T: 4.319\\DL-T: 2.389} & \shortstack{CLIP-T: 26.305\\DL-T: 4.289} & \shortstack{CLIP-T: 2.498\\DL-T: 2.503} & \shortstack{CLIP-T: 5.891\\DL-T: 3.095} \\
+nHD95-M2 & \shortstack{CLIP-T: 2.564\\DL-T: 2.525} & \shortstack{CLIP-T: 9.469\\DL-T: 5.505} & \shortstack{CLIP-T: \bestresult{25.753}\\DL-T: 4.293} & \shortstack{CLIP-T: \bestresult{2.489}\\DL-T: 2.567} & \shortstack{CLIP-T: 7.480\\DL-T: 6.682} \\
+nHD95-M8 & \shortstack{CLIP-T: 2.526\\DL-T: 2.481} & \shortstack{CLIP-T: 4.545\\DL-T: 2.445} & \shortstack{CLIP-T: 27.250\\DL-T: \bestresult{4.121}} & \shortstack{CLIP-T: 2.505\\DL-T: \bestresult{2.473}} & \shortstack{CLIP-T: \bestresult{5.747}\\DL-T: 4.063} \\
+nHD95-M32 & \shortstack{CLIP-T: \bestresult{2.506}\\DL-T: \bestresult{2.393}} & \shortstack{CLIP-T: \bestresult{4.319}\\DL-T: \bestresult{2.389}} & \shortstack{CLIP-T: 26.305\\DL-T: 4.289} & \shortstack{CLIP-T: 2.498\\DL-T: 2.503} & \shortstack{CLIP-T: 5.891\\DL-T: \bestresult{3.095}} \\
 \bottomrule
 \end{tabular}
 }
@@ -39,7 +39,7 @@ nHD95-M32 & \shortstack{CLIP-T: 2.506\\DL-T: 2.393} & \shortstack{CLIP-T: 4.319\
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Per-image Dice midpoint fidelity to Dice-Exact on target-adapted conditions. For each statistic, cells give CLIP-T/DL-T in that order (a retained prefix identifies a lone condition in incomplete drafts). Error rows summarize $|C_{\mathrm{Dice},M}-C_{\mathrm{Dice},\mathrm{Exact}}|$; rank rows give Spearman $\rho$ and Kendall $\tau_b$. Exact floating-point equality is omitted because continuous knot and midpoint sums are not expected to coincide bit-for-bit. These diagnostics are descriptive and do not enter the four fixed contrasts.}
+\caption{Per-image Dice midpoint fidelity to Dice-Exact on target-adapted conditions. For each statistic, cells give CLIP-T/DL-T in that order. Error rows summarize $|C_{\mathrm{Dice},M}-C_{\mathrm{Dice},\mathrm{Exact}}|$; rank rows give Spearman $\rho$ and Kendall $\tau_b$. Exact floating-point equality is omitted because continuous knot and midpoint sums are not expected to coincide bit-for-bit. These diagnostics are descriptive and do not enter the four fixed contrasts.}
 \label{tab:dice-quadrature-fidelity}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
 \resizebox{\textwidth}{!}{%

@@ -204,6 +204,44 @@ def test_training_plan_is_one_explicit_gpu_job_per_experiment():
         assert command[command.index("--gres") + 1] == "gpu:a100:1"
         assert command.count("--training-seed") == 1
         assert command.count("scripts/slurm/train_binary_seed_extension.sbatch") == 1
+        assert submit.CPU_PARTITION_REQUEST not in command
+
+
+def test_future_cpu_candidate_pool_is_canonical_and_one_job_stays_one_job():
+    assert submit.CPU_PARTITION_CANDIDATES == (
+        "saffo-2tb",
+        "agsmall",
+        "amdsmall",
+        "msismall",
+    )
+    assert submit.CPU_PARTITION_REQUEST == (
+        "saffo-2tb,agsmall,amdsmall,msismall"
+    )
+    original = submit.PlannedJob(
+        phase="seed_assemble",
+        key=(1, "pet", "clipseg-target", "agsmall"),
+        command=(
+            "sbatch",
+            "--parsable",
+            "--job-name",
+            "one-experiment",
+            "--partition",
+            "agsmall",
+            "wrapper.sbatch",
+        ),
+    )
+
+    planned = submit._with_cpu_partition_candidates(original)
+
+    assert planned.phase == original.phase
+    assert planned.key[:-1] == original.key[:-1]
+    assert planned.key[-1] == submit.CPU_PARTITION_REQUEST
+    assert planned.command[planned.command.index("--partition") + 1] == (
+        submit.CPU_PARTITION_REQUEST
+    )
+    assert planned.command.count("wrapper.sbatch") == 1
+    assert "--array" not in planned.command
+    assert original.key[-1] == "agsmall"
 
 
 def test_dry_run_prints_exactly_twenty_and_never_calls_scheduler(monkeypatch, capsys):
@@ -308,6 +346,7 @@ def test_freeze_plan_is_gated_and_has_twenty_independent_jobs(tmp_path):
         assert command.count("--checkpoint-lock") == 1
         assert command.count("--expected-checkpoint-lock-sha256") == 1
         assert command.count("scripts/slurm/freeze_binary_seed_extension.sbatch") == 1
+        assert submit.CPU_PARTITION_REQUEST not in command
 
     with pytest.raises(FileNotFoundError, match="gated"):
         submit.main(
@@ -546,6 +585,47 @@ def test_scheduler_preflight_checks_both_profiles_and_fails_closed(monkeypatch):
         submit._scheduler_preflight(jobs)
 
 
+def test_cpu_candidate_preflight_checks_combined_request_and_fails_closed(
+    monkeypatch,
+):
+    job = submit._with_cpu_partition_candidates(
+        submit.PlannedJob(
+            phase="seed_assemble",
+            key=(1, "pet", "clipseg-target", "agsmall"),
+            command=(
+                "sbatch",
+                "--parsable",
+                "--job-name",
+                "one-experiment",
+                "--partition",
+                "agsmall",
+                "wrapper.sbatch",
+            ),
+        )
+    )
+    calls = []
+
+    def accepted(command, **kwargs):
+        calls.append(command)
+        return subprocess.CompletedProcess(command, 0, "accepted", "")
+
+    monkeypatch.setattr(submit.subprocess, "run", accepted)
+    submit._cpu_candidate_preflight((job,))
+    assert len(calls) == 1
+    assert "--test-only" in calls[0]
+    assert "--parsable" not in calls[0]
+    assert calls[0][calls[0].index("--partition") + 1] == (
+        submit.CPU_PARTITION_REQUEST
+    )
+
+    def rejected(command, **kwargs):
+        return subprocess.CompletedProcess(command, 1, "", "not eligible")
+
+    monkeypatch.setattr(submit.subprocess, "run", rejected)
+    with pytest.raises(RuntimeError, match="no jobs submitted"):
+        submit._cpu_candidate_preflight((job,))
+
+
 def test_wrappers_defer_gpu_profile_to_submitter_and_disable_requeue():
     for name in (
         "train_binary_seed_extension.sbatch",
@@ -732,6 +812,9 @@ def test_seed_downstream_commands_are_singular_and_receipts_are_fixed(
         )
         for job in jobs:
             command = job.command
+            assert command[command.index("--partition") + 1] != (
+                submit.CPU_PARTITION_REQUEST
+            )
             assert command.count("--artifact-manifest") == 1
             assert command.count("--expected-artifact-manifest-sha256") == 1
             assert command.count("--output-root") == 1
@@ -805,6 +888,10 @@ def test_analysis_and_render_are_singleton_jobs_bound_to_fixed_outputs(
         == 1
     )
     assert analysis_command.count("--output") == 1
+    assert analysis_jobs[0].key[-1] == submit.CPU_PARTITION_REQUEST
+    assert analysis_command[analysis_command.index("--partition") + 1] == (
+        submit.CPU_PARTITION_REQUEST
+    )
     assert (
         analysis_command[analysis_command.index("--output") + 1]
         == (
@@ -837,6 +924,10 @@ def test_analysis_and_render_are_singleton_jobs_bound_to_fixed_outputs(
     render_command = render_jobs[0].command
     assert (
         render_command.count("scripts/slurm/render_binary_seed_extension.sbatch") == 1
+    )
+    assert render_jobs[0].key[-1] == submit.CPU_PARTITION_REQUEST
+    assert render_command[render_command.index("--partition") + 1] == (
+        submit.CPU_PARTITION_REQUEST
     )
     assert render_command[render_command.index("--output") + 1] == (
         expected_analysis.with_name("seed_robustness.tex").as_posix()

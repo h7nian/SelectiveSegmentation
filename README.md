@@ -603,8 +603,10 @@ python -m scripts.render_binary_runtime \
 
 Training-seed robustness is isolated from the seed-0 campaign. The locked
 extension contains exactly five datasets by two target architectures by seeds
-1 and 2, hence 20 one-GPU training jobs balanced across `saffo-a100` and
-`apollo_agate`:
+1 and 2, hence 20 one-GPU training jobs. This completed v1 extension balanced
+the jobs across single `saffo-a100` and `apollo_agate` assignments because
+those exact requests, runtime partitions, records, and receipts are already
+immutable:
 
 ```bash
 python -m scripts.submit_binary_seed_extension --phase train
@@ -616,6 +618,13 @@ Always reuse that append-only training receipt: it is the duplicate-submission
 guard for the twenty jobs already bound to this extension. The checkpoint and
 downstream locks intentionally follow the immutable path recorded inside the
 spec lock under `outputs/binary_seed_campaign/`.
+
+Do not rewrite the completed v1 train or freeze commands to a comma-delimited
+partition request: doing so would invalidate the exact receipt and scheduler
+closure. A new seed campaign must use a new v2 spec/lock and request the fixed
+GPU candidate list `saffo-a100,apollo_agate` for every train and freeze job,
+matching the already multi-partition canonical seed-0 freeze policy. This is a
+forward migration rule, not a retrospective change to v1 evidence.
 
 After all 20 jobs are terminal, first apply the reviewed post-training record
 validator hardening and run its focused tests. This ordering makes the stronger
@@ -679,6 +688,17 @@ independent job; arrays are never used. `common`, `score`, and `diagnose` are
 separate waves and may overlap, but assembly must wait until all common and
 score outputs validate:
 
+The three already submitted CPU waves retain the single-partition commands in
+their immutable receipts. In contrast, every not-yet-submitted seed assembly,
+analysis, and render job requests the exact candidate list
+`saffo-2tb,agsmall,amdsmall,msismall`. This order is the canonical receipt
+serialization, not a priority declaration: Slurm may normalize the displayed
+list and dispatches the one experiment to the eligible partition it expects
+to start earliest. It does not create four jobs.
+Immediately before submission, the planner runs `sbatch --test-only` on the
+combined request and aborts the whole wave before touching its receipt if the
+candidate pool is ineligible.
+
 The already submitted common and score waves have one deliberately narrow
 scheduler-only maintenance path. Their original wrappers requested 12 hours,
 whereas the completed canonical campaign used at most 1,018 seconds for a
@@ -718,6 +738,11 @@ python -m scripts.submit_binary_seed_extension --phase assemble \
   --receipt outputs/binary_seed_campaign/assemble-submissions.jsonl
 ```
 
+The dry run prints
+`partition_candidates=saffo-2tb,agsmall,amdsmall,msismall`. The 20 printed
+commands still contain exactly one strict assembler invocation and therefore
+preserve one condition per Slurm job.
+
 After all 20 assemblies finish, the analysis planner revalidates all 30
 seed-0/1/2 assemblies and the locked seed-0 point estimates before submitting
 its single job. Use the SHA-256 of the canonical seed-0 analysis, and retain
@@ -732,6 +757,9 @@ python -m scripts.submit_binary_seed_extension --phase analyze \
   --receipt outputs/binary_seed_campaign/analyze-submissions.jsonl
 ```
 
+This singleton job uses the same four-partition candidate request; its fixed
+receipt records the exact comma-delimited command selected before submission.
+
 The completed analysis is fixed at
 `outputs/binary_seed_analysis/analysis.json`. Hash it, then submit the one-job
 renderer with its own append-only receipt:
@@ -744,6 +772,10 @@ python -m scripts.submit_binary_seed_extension --phase render \
   --expected-seed-analysis-sha256 <seed-analysis-sha256> --submit \
   --receipt outputs/binary_seed_campaign/render-submissions.jsonl
 ```
+
+The renderer is likewise one job with the same candidate pool. Analysis and
+render remain sequential because the latter is hash-bound to the completed
+analysis bytes.
 
 The renderer writes `outputs/binary_seed_analysis/seed_robustness.tex` and
 prints its SHA-256. Publication is a separate local, non-Slurm gate. It checks
@@ -954,11 +986,13 @@ done
 
 The deterministic builder publishes the byte-exact core needed for the
 16-record analysis and seven canonical tables together with the mandatory
-four-file portable seed release: the public seed analysis, aggregate scheduler
-summary, provenance guard, and `seed_robustness.tex`. The strict seed-release
-loader validates the three JSON schemas and their cross-file joins; the table
-must match both the provenance table hash and its source-analysis hash comment.
-The 50 source files produce exactly 53 archive members. Git history, external
+five-file portable seed release: the public seed analysis, aggregate scheduler
+summary, provenance guard, full `seed_robustness.tex`, and compact Gate-C table.
+The strict seed-release loader validates the three JSON schemas and their
+cross-file joins; the full table must match its provenance hash and source
+comment, while the compact table is independently rebuilt from the public seed
+analysis. The 51 source files produce exactly 54 archive members. Git history,
+external
 URLs, identities, private paths, raw job identifiers, checkpoint bytes, NPZ
 payloads, and submission-receipt contents remain excluded by explicit
 allowlists and fail-closed scans. From this orchestration workspace use:
@@ -977,7 +1011,7 @@ v3 artifact, and the builder refuses to overwrite either an existing v4 or any
 other existing destination. The 16-condition core remains analysis
 reproducible from its included per-image records. The seed addition is
 verification-level: its public schemas, cross-file hashes, scheduler closure,
-and rendered table can be checked, but its per-image analysis cannot be rerun
+and rendered tables can be checked, but its per-image analysis cannot be rerun
 because seed records, probability maps, receipts, and checkpoints are not in
 the archive. The artifact therefore makes no claim that training or inference
 can be rerun without the external datasets and model assets. During anonymous

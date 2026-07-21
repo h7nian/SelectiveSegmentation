@@ -13,6 +13,7 @@ import pytest
 
 from scripts import analyze_binary_seed_extension as seed_analyzer
 from scripts import export_binary_seed_provenance as exporter
+from scripts import submit_binary_seed_extension as seed_submit
 from scripts.submit_binary_simulations import PlannedJob
 
 
@@ -100,6 +101,86 @@ def _jobs(phase, count):
             )
         )
     return tuple(jobs)
+
+
+def test_future_receipt_reconstruction_uses_exact_cpu_candidate_pool(
+    tmp_path, monkeypatch
+):
+    campaigns = []
+    for training_seed in (1, 2):
+        artifacts = [
+            {"dataset": f"dataset-{index}", "condition": f"condition-{index}"}
+            for index in range(10)
+        ]
+        campaigns.append(
+            {
+                "training_seed": training_seed,
+                "config": SimpleNamespace(data={"cpu_partitions": ["legacy"]}),
+                "campaign_lock_path": tmp_path / f"seed-{training_seed}.json",
+                "campaign_lock_sha256": f"{training_seed:064x}",
+                "campaign": {
+                    "artifacts": artifacts,
+                    "paths": {"assembly_output_root": "assembled"},
+                },
+            }
+        )
+    downstream = {
+        "path": tmp_path / "downstream.lock.json",
+        "sha256": "d" * 64,
+        "binding": {"spec": {"paths": {"analysis_root": "analysis"}}},
+        "campaigns": tuple(campaigns),
+    }
+    monkeypatch.setattr(exporter, "load_assembly_lock", lambda path: object())
+    monkeypatch.setattr(
+        exporter,
+        "_expected_score_manifests",
+        lambda *args: (tmp_path / "common.json", (tmp_path / "score.json",)),
+    )
+    # Preserve each artifact identity while avoiding filesystem dependencies.
+    artifact_iter = iter(
+        (artifact["dataset"], artifact["condition"])
+        for campaign in campaigns
+        for artifact in campaign["campaign"]["artifacts"]
+    )
+
+    def prepare(lock, common, simulations):
+        dataset, condition = next(artifact_iter)
+        return dataset, condition, "run-id", None, None
+
+    monkeypatch.setattr(exporter, "prepare_assembly", prepare)
+
+    jobs = exporter._expected_assemble_jobs(downstream)
+    assert len(jobs) == 20
+    science_keys = {
+        exporter._canonical_json(exporter._science_key("assemble", job))
+        for job in jobs
+    }
+    assert len(science_keys) == 20
+    for job in jobs:
+        assert job.key[-1] == seed_submit.CPU_PARTITION_REQUEST
+        assert job.command[job.command.index("--partition") + 1] == (
+            seed_submit.CPU_PARTITION_REQUEST
+        )
+        assert job.command.count(
+            "scripts/slurm/assemble_binary_simulations.sbatch"
+        ) == 1
+        assert "--array" not in job.command
+
+    analysis = exporter._expected_analysis_job(
+        downstream,
+        canonical_analysis="canonical.json",
+        expected_canonical_analysis_sha256="a" * 64,
+    )[0]
+    render = exporter._expected_render_job(
+        downstream,
+        seed_analysis="analysis/analysis.json",
+        seed_analysis_sha256="b" * 64,
+    )[0]
+    for job in (analysis, render):
+        assert job.key[-1] == seed_submit.CPU_PARTITION_REQUEST
+        assert job.command[job.command.index("--partition") + 1] == (
+            seed_submit.CPU_PARTITION_REQUEST
+        )
 
 
 def _scheduler_event(spec_sha, receipt_sha, record_set_sha, private_sha):
