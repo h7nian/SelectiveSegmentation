@@ -1,14 +1,14 @@
 \section{Expanded Limitations}
 \label{app:limitations}
 
-\paragraph{The working posterior is not identified by a probability map.}
+\noindent\textbf{The working posterior is not identified by a probability map.}
 The shared-threshold construction selects one coupling from many with the same pixel
 marginals. Marginal calibration, even if exact, does not identify expected nonlinear
 geometric loss. Repeated annotations or another source of label variability would be
 needed to validate this coupling directly; one reference mask per image cannot
 separate marginal calibration error from dependence-model error.
 
-\paragraph{The loss convention is substantive.}
+\noindent\textbf{The loss convention is substantive.}
 Dice is naturally bounded, but surface distances require an explicit empty-mask
 rule. Assigning a one-sided empty comparison the image diagonal, a fixed cap, or an
 application-specific cost produces different losses and can change the ranking. Our
@@ -17,7 +17,7 @@ empty--empty Dice value also differs from ours, so its theoretical approximation
 guarantee does not automatically cover empty deployed masks under our loss.
 Dropping undefined cases would change the target population and is not equivalent.
 
-\paragraph{Quadrature control is not posterior control.}
+\noindent\textbf{Quadrature control is not posterior control.}
 Equation~\eqref{eq:decomp} separates numerical and posterior terms but does not make
 the latter small by assertion, and the variation constant can be loose. The
 population \(L^1\) bound yields the AURC-regret envelope in
@@ -27,7 +27,7 @@ larger \(M\) need not improve empirical AURC monotonically. A pairwise margin is
 still needed to guarantee exact ordering; aggregate AURC control does not provide
 rank recovery for every close pair.
 
-\paragraph{Scope and information limits.}
+\noindent\textbf{Scope and information limits.}
 We focus on native binary masks and single-map, post-hoc confidence. If two cases
 produce the same \((p,\Yhat)\), every deterministic score studied here gives them
 the same confidence even when external context makes one more likely to fail.
@@ -36,7 +36,7 @@ multiclass actions, and multi-rater posterior validation are outside the present
 scope. Finally, AURC measures ranking; it does not imply that a confidence value is
 calibrated as a probability or an absolute forecast of loss.
 
-\paragraph{Empirical generality and training variability.}
+\noindent\textbf{Empirical generality and training variability.}
 Even the fixed five-native-binary-dataset design and two model families
 cannot establish that metric-aligned
 confidence will dominate across architectures, shifts, or annotation protocols.

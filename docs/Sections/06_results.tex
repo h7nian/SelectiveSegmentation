@@ -1,17 +1,17 @@
 \section{Results}
 \label{sec:results}
 
-The clearest gain occurs when posterior and loss share boundary geometry. Values
+\textbf{The clearest gain occurs when posterior and loss share boundary geometry.} Values
 are AURC \(\times100\); lower is better.
 
 \IfFileExists{Tables/results_complete.tex}{%
   \IfFileExists{Tables/main_results.tex}{%
     \input{Tables/main_results.tex}
-  }{\paragraph{Rendering guard.} The final analysis is incomplete.}
-}{\paragraph{Rendering guard.} The final analysis is incomplete.}
+  }{\noindent\textbf{Rendering guard.} The final analysis is incomplete.}
+}{\noindent\textbf{Rendering guard.} The final analysis is incomplete.}
 
-\paragraph{Worst-boundary risk.}
-nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten target conditions;
+\noindent\textbf{Worst-boundary risk.}
+nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in \textbf{all ten target conditions};
 all ten pointwise intervals exclude zero. A boundary-indexed score is lowest
 among the six displayed methods in nine conditions, with SDC on
 FIVES/CLIPSeg-Target the exception. nHD-M32 also has higher association with
@@ -19,16 +19,16 @@ realized nHD safety than Dice-M32 in all ten, with Spearman differences
 .179--.432. The level-set score thus carries spatial-extreme information absent
 from its regional counterpart.
 
-\paragraph{Robust boundary risk.}
+\noindent\textbf{Robust boundary risk.}
 nHD-M32 is lower than nHD95-M32 in nine conditions under nHD risk; nHD95-M32 is
 lower in eight under nHD95 risk. Only four and two matched-direction intervals
 exclude zero. The latter comparison is checkpoint-sensitive: five conditions
 reverse across seeds and seed 0 disagrees with the majority in three. Both
 boundary macro contrasts also reverse at action threshold \(\gamma=.3\). nHD95
-is therefore a useful but condition-sensitive robust endpoint, not a guaranteed
+is therefore a \textbf{useful but condition-sensitive robust endpoint}, not a guaranteed
 improvement over nHD.
 
-\paragraph{Regional contrast.}
+\noindent\textbf{Regional contrast.}
 Dice-M32 is lower than nHD-M32 in eight conditions under Dice risk, but only
 three intervals exclude zero; SDC and foreground entropy remain competitive.
 Outside FIVES/CLIPSeg-Target, Dice-M32 and foreground entropy correlate
@@ -40,12 +40,12 @@ Neither richer single-map coupling nor checkpoint disagreement supplies a new
 Dice winner. Two-block gains are only .0195/.0020 mean/median; no component-grid
 variant passes its fixed gate or beats SDC or foreground entropy in more than
 6/10 conditions. Three-checkpoint Ensemble-Q also loses to LevelSet-Q in 9/10.
-These negative ablations support the count-law explanation.
+These \textbf{negative ablations support the count-law explanation}.
 
-\paragraph{Diagnostics.}
+\noindent\textbf{Diagnostics.}
 nHD/nHD95 M32--M128 Spearman agreement is .973--.998/.951--.996. Known-posterior
 tests show TV near one with Dice score error only .0135--.0393, while support
 checks find incompatible references on up to 11.5\% of FIVES and 15.4\% of
-ISIC. The nHD ranking result is strong, but one annotation per image cannot
-validate a nested conditional posterior. Appendix~\ref{app:additional-results}
+ISIC. The nHD ranking result is strong, but \textbf{one annotation per image cannot
+validate a nested conditional posterior}. Appendix~\ref{app:additional-results}
 reports all AURCs, intervals, ablations, curves, and stress tests.

@@ -2,8 +2,8 @@
 \label{sec:limitations}
 \label{sec:limitations-conclusion}
 
-The shared-threshold law is a boundary-motion model, not a posterior identified
-by calibrated marginals. More quadrature nodes reduce numerical error, not
+The shared-threshold law is \textbf{a boundary-motion model, not an identified posterior}.
+More quadrature nodes reduce numerical error, not
 posterior discrepancy. The nHD theorem states a sufficient surface-geometric
 condition; one label per image cannot verify it, and observed support failures
 show where it can break.
@@ -17,13 +17,13 @@ multi-rater, patient-cluster, or training uncertainty. Learned detectors,
 calibrated annotation posteriors, multiclass actions, and absolute risk
 calibration remain future work; Appendix~\ref{app:limitations} gives details.
 
-\paragraph{Conclusion.}
+\noindent\textbf{Conclusion.}
 \label{sec:conclusion}
-Selective segmentation begins by naming the failure that should trigger
-abstention. Loss indexing supplies the target, but the working posterior must
+Selective segmentation begins by \textbf{naming the failure that should trigger
+abstention}. Loss indexing supplies the target, but the working posterior must
 also encode how that failure occurs. Shared thresholds model coherent boundary
 motion, and normalized full Hausdorff loss yields the clearest theory and
 empirical ranking. nHD95 exposes the value and sensitivity of a robust endpoint;
 Dice explains why the same coupling need not dominate count-oriented SDC.
-Confidence is not universal or metric-free: it is a declared model of how a
+\textbf{Confidence is not universal or metric-free}: it is a declared model of how a
 fixed deployed mask may be wrong.

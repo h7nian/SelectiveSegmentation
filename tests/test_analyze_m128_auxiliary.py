@@ -27,6 +27,8 @@ from scripts.render.m128 import (
     load_analysis,
     parse_args,
     render_analysis,
+    render_threshold_figure,
+    threshold_aurc_series,
     validate_analysis,
     write_output,
 )
@@ -248,6 +250,55 @@ def test_renderer_is_deterministic_complete_and_explicitly_nonexact(tmp_path):
     assert output.name == OUTPUT_NAME
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
         write_output(tex, tmp_path / "rendered")
+
+    primary = []
+    for index, row in enumerate(report["conditions"]):
+        comparisons = row["comparisons"]
+        primary.append(
+            {
+                "dataset": row["dataset"],
+                "condition": row["condition"],
+                "risks": {
+                    "risk_dice": {
+                        "methods": {
+                            f"confidence_dice_m{m}": {
+                                "aurc": 0.2 + index / 1000 + 1 / m
+                            }
+                            for m in (2, 8, 32)
+                        }
+                    },
+                    "risk_nhd": {
+                        "methods": {
+                            "confidence_nhd_m2": {"aurc": 0.3 + index / 1000},
+                            "confidence_nhd_m8": {"aurc": 0.25 + index / 1000},
+                            "confidence_nhd_m32": {
+                                "aurc": comparisons["nhd_m32_vs_m128"][
+                                    "matched_risk_aurc"
+                                ]["candidate"]
+                            },
+                        }
+                    },
+                    "risk_nhd95": {
+                        "methods": {
+                            "confidence_nhd95_m2": {"aurc": 0.28 + index / 1000},
+                            "confidence_nhd95_m8": {"aurc": 0.24 + index / 1000},
+                            "confidence_nhd95_m32": {
+                                "aurc": comparisons["nhd95_m32_vs_m128"][
+                                    "matched_risk_aurc"
+                                ]["candidate"]
+                            },
+                        }
+                    },
+                },
+            }
+        )
+    series = threshold_aurc_series(primary, by_key)
+    assert set(series) == {"Dice", "nHD", "nHD95"}
+    assert all(len(values["midpoint"]) == 4 for values in series.values())
+    figure = render_threshold_figure(primary, by_key, tmp_path / "thresholds.pdf")
+    assert figure.stat().st_size > 0
+    with pytest.raises(FileExistsError, match="refusing to overwrite"):
+        render_threshold_figure(primary, by_key, figure)
 
 
 def test_renderer_default_uses_versioned_times_100_destination():

@@ -88,6 +88,8 @@ def parse_args(argv: Sequence[str] | None = None):
         "--output-dir",
         default=DEFAULT_OUTPUT_DIR,
     )
+    parser.add_argument("--primary-analysis")
+    parser.add_argument("--figure-output")
     return parser.parse_args(argv)
 
 
@@ -408,6 +410,163 @@ def render_analysis(value: Any, *, source_hash: str) -> str:
     return "\n".join(lines)
 
 
+def threshold_aurc_series(
+    primary_conditions: Sequence[Mapping[str, Any]],
+    m128_by_key: Mapping[tuple[str, str], dict],
+) -> dict[str, dict[str, Any]]:
+    """Compute target-condition macro matched-risk AURCs across node counts."""
+    primary_by_key = {
+        (row["dataset"], row["condition"]): row for row in primary_conditions
+    }
+    if not set(ORDERED_TARGET_CONDITIONS) <= set(primary_by_key):
+        raise ValueError("primary analysis lacks target conditions for threshold plot")
+
+    specifications = {
+        "Dice": {
+            "risk": "risk_dice",
+            "methods": (
+                "confidence_dice_m2",
+                "confidence_dice_m8",
+                "confidence_dice_m32",
+            ),
+            "comparison": "dice_m128_vs_exact",
+            "reference": "exact",
+        },
+        "nHD": {
+            "risk": "risk_nhd",
+            "methods": (
+                "confidence_nhd_m2",
+                "confidence_nhd_m8",
+                "confidence_nhd_m32",
+            ),
+            "comparison": "nhd_m32_vs_m128",
+            "reference": None,
+        },
+        "nHD95": {
+            "risk": "risk_nhd95",
+            "methods": (
+                "confidence_nhd95_m2",
+                "confidence_nhd95_m8",
+                "confidence_nhd95_m32",
+            ),
+            "comparison": "nhd95_m32_vs_m128",
+            "reference": None,
+        },
+    }
+    result = {}
+    for label, specification in specifications.items():
+        risk = specification["risk"]
+        midpoint = []
+        for method in specification["methods"]:
+            values = [
+                float(primary_by_key[key]["risks"][risk]["methods"][method]["aurc"])
+                for key in ORDERED_TARGET_CONDITIONS
+            ]
+            midpoint.append(100 * math.fsum(values) / len(values))
+
+        comparisons = [
+            m128_by_key[key]["comparisons"][specification["comparison"]]
+            for key in ORDERED_TARGET_CONDITIONS
+        ]
+        if label != "Dice":
+            for key, comparison in zip(
+                ORDERED_TARGET_CONDITIONS, comparisons, strict=True
+            ):
+                primary_m32 = float(
+                    primary_by_key[key]["risks"][risk]["methods"][
+                        specification["methods"][-1]
+                    ]["aurc"]
+                )
+                candidate_m32 = float(comparison["matched_risk_aurc"]["candidate"])
+                if not math.isclose(primary_m32, candidate_m32, abs_tol=1e-14):
+                    raise ValueError("primary and M128 analyses disagree at M32")
+        m128 = (
+            100
+            * math.fsum(
+                float(
+                    comparison["matched_risk_aurc"][
+                        "candidate" if label == "Dice" else "reference"
+                    ]
+                )
+                for comparison in comparisons
+            )
+            / len(comparisons)
+        )
+        reference = None
+        if specification["reference"] == "exact":
+            reference = (
+                100
+                * math.fsum(
+                    float(comparison["matched_risk_aurc"]["reference"])
+                    for comparison in comparisons
+                )
+                / len(comparisons)
+            )
+        result[label] = {"midpoint": [*midpoint, m128], "reference": reference}
+    return result
+
+
+def render_threshold_figure(
+    primary_conditions: Sequence[Mapping[str, Any]],
+    m128_by_key: Mapping[tuple[str, str], dict],
+    output: str | os.PathLike[str],
+) -> Path:
+    """Render the locked M=2,8,32,128 matched-risk ablation."""
+    import matplotlib.pyplot as plt
+
+    destination = Path(output)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(
+            f"refusing to overwrite threshold-count figure: {destination}"
+        )
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    series = threshold_aurc_series(primary_conditions, m128_by_key)
+    nodes = (2, 8, 32, 128)
+    colors = {"Dice": "#1769aa", "nHD": "#d1495b", "nHD95": "#2a9d8f"}
+    figure, axes = plt.subplots(1, 3, figsize=(7.2, 2.65))
+    for axis, (label, values) in zip(axes, series.items(), strict=True):
+        axis.plot(
+            nodes,
+            values["midpoint"],
+            color=colors[label],
+            marker="o",
+            linewidth=1.7,
+            markersize=4.5,
+        )
+        if values["reference"] is not None:
+            axis.axhline(
+                values["reference"],
+                color="0.35",
+                linewidth=1,
+                linestyle="--",
+                label="Exact",
+            )
+            axis.legend(frameon=False, fontsize=7, loc="best")
+        axis.set_xscale("log", base=2)
+        axis.set_xticks(nodes, [str(node) for node in nodes])
+        axis.set_title(label)
+        axis.set_xlabel("Threshold nodes M")
+        axis.grid(axis="y", color="0.9", linewidth=0.7)
+    axes[0].set_ylabel(r"Macro matched-risk AURC $\times 100$")
+    figure.suptitle("Threshold-count ablation (10 target conditions)", fontsize=11)
+    figure.tight_layout()
+
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.stem}.",
+        suffix=destination.suffix,
+        dir=destination.parent,
+    )
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    try:
+        figure.savefig(temporary, bbox_inches="tight", metadata={"Creator": __name__})
+        os.link(temporary, destination)
+    finally:
+        plt.close(figure)
+        temporary.unlink(missing_ok=True)
+    return destination
+
+
 def write_output(tex: str, output_dir: str | os.PathLike[str]) -> Path:
     directory = Path(output_dir)
     destination = directory / OUTPUT_NAME
@@ -436,10 +595,21 @@ def write_output(tex: str, output_dir: str | os.PathLike[str]) -> Path:
 
 def main(argv: Sequence[str] | None = None) -> None:
     args = parse_args(argv)
+    if bool(args.primary_analysis) != bool(args.figure_output):
+        raise ValueError("--primary-analysis and --figure-output must be used together")
     analysis, source_hash = load_analysis(args.analysis)
     tex = render_analysis(analysis, source_hash=source_hash)
     destination = write_output(tex, args.output_dir)
     print(destination.as_posix())
+    if args.primary_analysis:
+        from scripts.render.paper import load_analysis as load_primary
+        from scripts.render.paper import validate_analysis as validate_primary
+
+        primary = validate_primary(load_primary(args.primary_analysis))
+        figure = render_threshold_figure(
+            primary, validate_analysis(analysis), args.figure_output
+        )
+        print(figure.as_posix())
 
 
 if __name__ == "__main__":

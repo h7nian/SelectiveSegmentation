@@ -15,7 +15,7 @@ from scripts.maintenance import finalize_seed as scheduler_ledger
 from scripts.submit import seed as submit
 from scripts.analyze.main import CONTRASTS
 from scripts.analyze.seed import _gate_c, _strict_cohort_join
-from scripts.render.seed import render_table
+from scripts.render.seed import macro_contrast_values, render_figure, render_table
 from selectseg.seed import downstream
 from selectseg.seed import extension as seedext
 from selectseg.artifacts import sample_id_sha256, write_binary_artifact
@@ -1168,7 +1168,7 @@ def test_seed_cohort_join_tolerates_one_ulp_but_rejects_changed_truth():
         _strict_cohort_join(reference, changed, context="test")
 
 
-def test_seed_renderer_uses_display_only_times_100_scale():
+def test_seed_renderer_uses_display_only_times_100_scale(tmp_path):
     cells = []
     for dataset in ("pet", "kvasir", "fives", "isic", "tn3k"):
         for condition in ("clipseg-target", "deeplabv3-target"):
@@ -1200,3 +1200,10 @@ def test_seed_renderer_uses_display_only_times_100_scale():
     assert "mean $\\pm$ sample SD [range]" in rendered
     assert "multiplied by 100 for display only" in rendered
     assert "0.0123" not in rendered
+    assert macro_contrast_values(
+        by_key, contrast_name="dice_vs_nhd_under_nhd"
+    ) == pytest.approx([1.23, -0.45, 0.0])
+    figure = render_figure(by_key, tmp_path / "seed.pdf")
+    assert figure.stat().st_size > 0
+    with pytest.raises(FileExistsError, match="refusing to overwrite"):
+        render_figure(by_key, figure)

@@ -6,12 +6,14 @@ negative conditional risk of the fixed deployed mask. Because pixel marginals do
 not identify nonlinear mask risk, we declare a shared-threshold level-set law as
 a \emph{working posterior}. Its nested candidates represent coherent boundary
 motion and turn expected loss into a one-dimensional integral. We separate
-quadrature from posterior error and propagate both to selective-risk and AURC
-regret. Normalized full Hausdorff loss (nHD) is the flagship instance: its surface
-geometry gives a constant-one Wasserstein posterior bound. Nonmetric nHD95 is a
-robust bounded-loss extension; Dice is a regional contrast whose exact algorithm
-and count-dispersion bound explain SDC's strength. On five binary datasets and 16
-frozen conditions, nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in all ten
+quadrature from posterior error and propagate both to selective risk and area
+under the risk--coverage curve (AURC) regret. Normalized penalized full
+Hausdorff distance (nHD) is the flagship loss: its surface geometry gives a
+constant-one Wasserstein posterior bound. Normalized penalized 95th-percentile
+Hausdorff distance (nHD95) is a nonmetric robust extension; Dice is a regional
+contrast whose exact algorithm and count-dispersion bound explain Soft Dice
+Confidence (SDC). On five binary datasets and 16 frozen conditions, the 32-node
+nHD score (nHD-M32) lowers nHD-risk AURC relative to Dice-M32 in all ten
 target conditions, with every pointwise interval excluding zero; a
 boundary-indexed score is best among the displayed methods in nine. The
 nHD--nHD95 ordering is smaller and sensitive to checkpoint and deployment

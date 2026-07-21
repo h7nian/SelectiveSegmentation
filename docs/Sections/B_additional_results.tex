@@ -43,7 +43,7 @@ or scheduler records are distributed to reviewers.
 
   \input{Tables/mechanism_evidence.tex}
 }{%
-  \paragraph{Mechanism-evidence rendering guard.}
+  \noindent\textbf{Mechanism-evidence rendering guard.}
   The score-redundancy and loss-association table appears only after all ten
   target-condition records pass the dedicated renderer.
 }
@@ -62,7 +62,7 @@ or scheduler records are distributed to reviewers.
     \label{fig:dice-count-posterior}
   \end{figure}
 }{%
-  \paragraph{Dice count-posterior rendering guard.}
+  \noindent\textbf{Dice count-posterior rendering guard.}
   The table and forest plot appear only after all ten locked condition outputs
   and their control recomputations pass the dedicated analyzer.
 }
@@ -78,7 +78,7 @@ or scheduler records are distributed to reviewers.
   minimum/median repeat-to-mean score Spearman correlation is .915/.994. The
   gate uses each four-repeat mean, and this Monte Carlo study remains secondary.
 }{%
-  \paragraph{Dice partition rendering guard.}
+  \noindent\textbf{Dice partition rendering guard.}
   The component--grid table appears only after all 80 declared artifacts and
   their fixed-action controls pass the dedicated analyzer.
 }
@@ -97,7 +97,7 @@ or scheduler records are distributed to reviewers.
     \label{fig:ensemble-posterior}
   \end{figure}
 }{%
-  \paragraph{Ensemble-posterior rendering guard.}
+  \noindent\textbf{Ensemble-posterior rendering guard.}
   The symmetric table and forest plot appear only after all ten mean-map and
   member-mask artifacts pass the predeclared analyzer.
 }
@@ -105,6 +105,20 @@ or scheduler records are distributed to reviewers.
 \IfFileExists{Tables/seed_sensitivity_main.tex}{%
   \subsection{Checkpoint-level direction reversals}
   \input{Tables/seed_sensitivity_main.tex}
+
+  \IfFileExists{Figures/seed_sensitivity.pdf}{%
+    \begin{figure*}[t]
+      \centering
+      \includegraphics[width=.82\textwidth]{Figures/seed_sensitivity.pdf}
+      \caption{Training-seed sensitivity of the four predeclared contrasts.
+      Each point is the macro mean across the ten target conditions and is shown
+      on the AURC \(\times100\) scale; values below zero favor the left score.
+      The Dice--nHD contrast keeps its macro direction, whereas the two boundary
+      contrasts shrink across checkpoints. Macro averages do not erase the
+      condition-level reversals reported in Table~\ref{tab:seed-sensitivity-main}.}
+      \label{fig:seed-sensitivity}
+    \end{figure*}
+  }{}
 }{}
 
 \IfFileExists{Tables/results_complete.tex}{%
@@ -121,8 +135,23 @@ or scheduler records are distributed to reviewers.
 
   \IfFileExists{Tables/m128_numerical_reference.tex}{%
     \input{Tables/m128_numerical_reference.tex}
+
+    \IfFileExists{Figures/threshold_count_ablation.pdf}{%
+      \begin{figure*}[t]
+        \centering
+        \includegraphics[width=.92\textwidth]{Figures/threshold_count_ablation.pdf}
+        \caption{Threshold-count ablation for the three matched risks. Each
+        point is the mean AURC across the ten target conditions, multiplied by
+        100 for display. Dice uses Exact as the dashed numerical oracle; M128 is
+        a high-resolution, non-exact reference for nHD and nHD95. Increasing
+        \(M\) improves integration fidelity, but AURC is a ranking functional
+        and therefore need not change monotonically. Cross-panel heights are not
+        directly comparable because the three deployment losses differ.}
+        \label{fig:threshold-count-ablation}
+      \end{figure*}
+    }{}
   }{%
-    \paragraph{M128 rendering guard.}
+    \noindent\textbf{M128 rendering guard.}
     The high-resolution boundary audit appears only after all sixteen M128
     artifacts pass the campaign-bound validator.
   }
@@ -135,13 +164,27 @@ or scheduler records are distributed to reviewers.
     \subsection{Deployment-threshold sensitivity}
 
     \input{Tables/gamma_sensitivity.tex}
+
+    \IfFileExists{Figures/gamma_sensitivity.pdf}{%
+      \begin{figure*}[t]
+        \centering
+        \includegraphics[width=.90\textwidth]{Figures/gamma_sensitivity.pdf}
+        \caption{Deployment-threshold ablation for the four predeclared
+        contrasts. Points are macro means across the ten target conditions on
+        the AURC \(\times100\) scale; values below zero favor the left score.
+        The nHD advantage under nHD risk persists at all three actions, while
+        the nHD--nHD95 macro comparisons cross zero, exposing their greater
+        dependence on the deployed threshold.}
+        \label{fig:gamma-sensitivity}
+      \end{figure*}
+    }{}
   }{%
-    \paragraph{Deployment-threshold rendering guard.}
+    \noindent\textbf{Deployment-threshold rendering guard.}
     The auxiliary \(\gamma\in\{.3,.7\}\) tables appear only after all 32
     artifacts and the 16 canonical conditions pass the strict joined analyzer.
   }
 }{%
-  \paragraph{Rendering guard.}
+  \noindent\textbf{Rendering guard.}
   Complete numerical tables appear here only after the strict sixteen-condition
   renderer publishes \texttt{Tables/results\_complete.tex} after all six tables
   share one validated analysis hash. Until then, stale or partial tables are
@@ -153,7 +196,7 @@ or scheduler records are distributed to reviewers.
 
   \input{Tables/binary_diagnostics.tex}
 }{%
-  \paragraph{Diagnostics rendering guard.}
+  \noindent\textbf{Diagnostics rendering guard.}
   The descriptive diagnostics table appears only after the campaign-bound
   validator receives the immutable lock and sixteen explicit
   \texttt{diagnostics.json} files. Marginal calibration and ladder diversity
@@ -165,8 +208,9 @@ or scheduler records are distributed to reviewers.
 
   \input{Tables/cardinality_diagnostics.tex}
 }{%
-  \paragraph{Cardinality rendering guard.}
-  Exact cardinality-CDF, randomized-PIT, foreground-mass, and empty-mask
+  \noindent\textbf{Cardinality rendering guard.}
+  Exact cardinality-CDF, randomized probability-integral-transform (PIT),
+  foreground-mass, and empty-mask
   summaries appear only after all sixteen lock-bound auxiliary artifacts pass
   strict aggregation. Favorable pooled values cannot validate \(Q_p\).
 }
@@ -176,7 +220,7 @@ or scheduler records are distributed to reviewers.
 
   \input{Tables/working_risk_diagnostics.tex}
 }{%
-  \paragraph{Working-risk rendering guard.}
+  \noindent\textbf{Working-risk rendering guard.}
   Action-quality, accepted-set, and grouped single-label agreement summaries appear only
   after the strict analyzer joins all sixteen assembled conditions and the
   renderer verifies the ten fixed target conditions. These descriptive
@@ -207,7 +251,7 @@ or scheduler records are distributed to reviewers.
     \label{fig:matched-reliability-pet}
   \end{figure*}
 }{%
-  \paragraph{Matched-risk reliability rendering guard.}
+  \noindent\textbf{Matched-risk reliability rendering guard.}
   The five reliability figures appear only after the exact sixteen-condition
   cohort passes campaign-lock validation and the write-once renderer verifies
   all ten target conditions.
@@ -279,7 +323,7 @@ or scheduler records are distributed to reviewers.
   corollary is asserted for nHD95, and finite-posterior Monte Carlo standard
   errors are reported separately from misspecification.
 }{%
-  \paragraph{Known-posterior rendering guard.}
+  \noindent\textbf{Known-posterior rendering guard.}
   The mechanism table and figure appear only after all 360 locked synthetic
   cells pass the strict complete analyzer.
 }
@@ -289,7 +333,7 @@ or scheduler records are distributed to reviewers.
 
   \input{Tables/binary_runtime.tex}
 }{%
-  \paragraph{Runtime rendering guard.}
+  \noindent\textbf{Runtime rendering guard.}
   Hardware-dependent timing appears only after all sixteen fixed-protocol
   runtime jobs pass the campaign-bound analyzer.
 }
@@ -299,7 +343,7 @@ or scheduler records are distributed to reviewers.
 
   \input{Tables/seed_robustness.tex}
 }{%
-  \paragraph{Training-seed rendering guard.}
+  \noindent\textbf{Training-seed rendering guard.}
   The three-seed table appears only after all twenty new checkpoints complete
   the freeze, score, assembly, and strict cross-seed analysis pipeline.
 }
@@ -320,7 +364,7 @@ or scheduler records are distributed to reviewers.
 
   \input{Figures/qualitative_cases.tex}
 }{%
-  \paragraph{Qualitative rendering guard.}
+  \noindent\textbf{Qualitative rendering guard.}
   Qualitative panels appear only after the campaign-bound selector and renderer
   publish their content-addressed artifacts.
 }

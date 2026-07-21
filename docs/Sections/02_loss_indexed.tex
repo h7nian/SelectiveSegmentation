@@ -1,7 +1,7 @@
 \section{Loss-indexed selective segmentation}
 \label{sec:setup}
 
-\paragraph{Prediction and loss.}
+\noindent\textbf{Prediction and loss.}
 Let \(X\) take values in a standard Borel image space and let
 \(Y\in\mathcal Y:=2^\Omega\) be its binary mask on a finite pixel grid
 \(\Omega\). Fix a regular conditional label law
@@ -21,12 +21,13 @@ uniformly bounded:
 \end{equation}
 The uniform envelope ensures that all selective risks and AURCs below are
 finite.
-Boundedness is automatic for \(1-\Dice\) and \(1-\IoU\). A surface loss that
+Boundedness is automatic for \(1-\Dice\) and one minus intersection-over-union
+(IoU), \(1-\IoU\). A surface loss that
 is undefined for an empty mask must be extended before it enters the framework.
 The convention is part of \(L\) and must be shared by the confidence computation
 and selective-risk evaluation.
 
-\paragraph{Risk and coverage are loss-indexed.}
+\noindent\textbf{Risk and coverage are loss-indexed.}
 A confidence \(g:\mathcal X\to\mathbb R\) is oriented so that larger values mean
 more confidence. At threshold \(\tau\), define
 \begin{align}
@@ -44,17 +45,13 @@ The risk in Equation~\eqref{eq:risk-coverage} is defined only when the
 denominator is positive. At a prescribed coverage, randomization within a tied
 confidence value attains the requested acceptance probability without imposing
 an arbitrary order. Writing \(R_L(c;g)\) for the resulting risk at coverage
-\(c\in(0,1]\),
-\begin{equation*}
-  \AURC_L(g)=\int_0^1 R_L(c;g)\,dc .
-\end{equation*}
+\(c\in(0,1]\), let \(\AURC_L(g)=\int_0^1 R_L(c;g)\,dc\).
 This is the loss-indexed version of the standard selective-prediction evaluation
 \citep{geifman2017selective,selectivenet}. The subscript matters:
 \(\AURC_{1-\Dice}\) and \(\AURC_{\HDF}\) evaluate different rankings of harm
 and have different semantics and scales. AURC depends on \(g\) only through its induced ranking,
 up to the declared tie rule.
 
-\paragraph{Ideal confidence.}
 \begin{definition}[Ideal loss-indexed confidence]
 \label{def:ideal}
 For a fixed deployed predictor \(\Yhat\), define
@@ -68,7 +65,7 @@ For a fixed deployed predictor \(\Yhat\), define
 \end{definition}
 If the deployment threshold changes from \(\gamma=0.5\) to \(\gamma=0.3\),
 then \(\Yhat\), and therefore \(C_L^\star\), changes. Confidence here is
-decision-aware rather than solely a property of an uncertainty distribution.
+\textbf{decision-aware} rather than solely a property of an uncertainty distribution.
 
 \begin{proposition}[Optimal selective ordering]
 \label{prop:ideal-ranking}
@@ -81,7 +78,7 @@ The result follows by conditioning the accepted loss on \(X\) and exchanging any
 accepted point of higher conditional risk with a rejected point of lower conditional
 risk. Appendix~\ref{app:theory} gives the measure-theoretic statement and proof.
 
-Definition~\ref{def:ideal} is a target, not an available score. Computing it
+Definition~\ref{def:ideal} is \textbf{a target, not an available score}. Computing it
 requires the indicated loss-functional of the conditional law of \(Y\) given
 \(x\); knowing the full law is sufficient but stronger than necessary. Even the
 true pixel marginals \(\pi_i(x):=\Prb(Y_i=1\mid X=x)\) do not identify how pixels

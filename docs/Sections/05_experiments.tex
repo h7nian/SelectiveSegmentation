@@ -1,19 +1,23 @@
 \section{Experimental protocol}
 \label{sec:experiments}
 
-\paragraph{Frozen conditions.}
-We evaluate Oxford-IIIT Pet, Kvasir-SEG, FIVES, ISIC 2018, and TN3K
+\noindent\textbf{Frozen conditions.}
+We evaluate Oxford-IIIT Pet, Kvasir-SEG, Fundus Image Vessel Segmentation
+(FIVES), International Skin Imaging Collaboration 2018 (ISIC 2018), and
+Thyroid Nodule 3K (TN3K)
 \citep{parkhi2012cats,jha2020kvasir,jin2022fives,codella2019isic,
-gong2023thyroid}. Each has \textsc{CLIPSeg-General},
-\textsc{CLIPSeg-Target}, and \textsc{DeepLabV3-Target}; Pet also has a released
+gong2023thyroid}. Each has the Contrastive Language--Image Pretraining-based
+segmentation model CLIPSeg in general and target-adapted forms
+(\textsc{CLIPSeg-General} and \textsc{CLIPSeg-Target}), plus
+\textsc{DeepLabV3-Target}; Pet also has a released
 \textsc{DeepLabV3-External} model, giving sixteen conditions. Headline counts
-use the ten target conditions trained for 40 epochs at seed 0. Seeds 1--2 form a
+use the \textbf{ten target conditions} trained for 40 epochs at seed 0. Seeds 1--2 form a
 separate descriptive extension and never select a checkpoint. Every method in a
 condition receives the same native-resolution map and action. Empty references
 remain. Appendix~\ref{app:benchmark-protocol} fixes splits, training, cohorts,
 and provenance.
 
-\paragraph{One action and three losses.}
+\noindent\textbf{One action and three losses.}
 We fix \(\Yhat=\{i:p_i\geq0.5\}\). Integration thresholds change candidates,
 not this action. Besides \(1-\Dice\), let \(D(A,B)\) pool both directed nearest
 distances between inner digital surfaces. For image diagonal
@@ -26,18 +30,19 @@ Empty--empty costs zero and a one-sided empty pair costs one. nHD is the
 flagship worst-surface endpoint; nHD95 suppresses its extreme five-percent tail;
 Dice is the regional contrast.
 
-\paragraph{Scores and comparisons.}
+\noindent\textbf{Scores and comparisons.}
 For each loss,
 \begin{equation*}
   C_{L,M}=-\frac1M\sum_{m=1}^M
   L\!\left(\{i:p_i\geq(m-1/2)/M\},\Yhat\right),
   \qquad M\in\{2,8,32\}.
 \end{equation*}
-The M32 scores are primary and Dice-Exact is the knot oracle. Seven single-map
+Here \(M\) is the number of midpoint thresholds. The \textbf{M32 scores are
+primary} and Dice-Exact is the knot oracle. Seven single-map
 references---SDC, mean maximum probability, mean negative entropy, QFR-Entropy,
 PLM/PLA-10-Entropy, MMMC-Entropy, and foreground entropy---give seventeen scores
-\citep{sdc,guarino2026aggregation,holder2021uncertainty}. The complete
-\(3\times3\) matrix is reported. The main contrast is nHD-M32 versus Dice-M32
+\citep{sdc,guarino2026aggregation,holder2021uncertainty}. The
+\textbf{complete \(3\times3\) matrix} is reported. The main contrast is nHD-M32 versus Dice-M32
 under nHD risk; three fixed contrasts complete adjacent comparisons under Dice,
 nHD, and nHD95 risk. All other cells are descriptive. M2/M8/M32, M128, and
 Dice-Exact audit numerical sensitivity.
@@ -47,7 +52,7 @@ compares its LevelSet-Q with the empirical law of checkpoint masks. Threshold-Io
 member IoU/Dice, mutual information, and variance remain extension baselines
 \citep{roy2019bayesianquicknat,kirillov2023segmentanything}.
 
-\paragraph{Locked analysis.}
+\noindent\textbf{Locked analysis.}
 Hashed manifests bind maps, labels, checkpoints, sample order, and each
 one-task-per-job shard. Separate fixed studies examine posterior support,
 known-posterior coupling, and action thresholds \(\gamma\in\{.3,.7\}\). Before
@@ -55,8 +60,8 @@ inspection, we declared a comparison sensitive when its macro sign changed or
 at least three target conditions reversed; the primary \(\gamma=.5\), seed-0
 analysis never changes.
 
-We use exact tie-aware AURC. Displayed AURCs and contrasts are multiplied by
-100; nAURC and computation remain unscaled. Each of 64 fixed condition-level
+We use \textbf{exact tie-aware AURC}. Displayed AURCs and contrasts are multiplied by
+100; normalized excess AURC (nAURC) and computation remain unscaled. Each of 64 fixed condition-level
 contrasts receives a pointwise 95\% interval from 10,000 paired image-bootstrap
 resamples \citep{efron1993}. These are neither simultaneous tests nor inference
 over training randomness. The hindsight oracle orders realized losses and is

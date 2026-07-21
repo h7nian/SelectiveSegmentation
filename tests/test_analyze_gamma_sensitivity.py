@@ -30,8 +30,10 @@ from scripts.render.gamma import (
     OUTPUT_NAME,
     _aurc_range,
     load_analysis,
+    macro_contrast_values,
     parse_args,
     render_analysis,
+    render_figure,
     validate_analysis,
     write_output,
 )
@@ -419,11 +421,21 @@ def test_renderer_is_complete_deterministic_labeled_and_content_addressed(tmp_pa
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
         write_output(tex, tmp_path / "tex", source_hash=source_hash)
 
+    figure = render_figure(by_key, tmp_path / "gamma.pdf")
+    assert figure.stat().st_size > 0
+    values = macro_contrast_values(
+        by_key, contrast_name="dice_vs_nhd_under_nhd"
+    )
+    assert len(values) == 3 and all(np.isfinite(values))
+    with pytest.raises(FileExistsError, match="refusing to overwrite"):
+        render_figure(by_key, figure)
+
 
 def test_renderer_default_and_aurc_change_use_versioned_times_100_display():
     args = parse_args(["--analysis", "analysis.json"])
     assert args.output_root == DEFAULT_OUTPUT_ROOT
     assert args.output_root.endswith("/rendered_v3")
+    assert args.figure_output is None
     assert _aurc_range({"min": -0.0123, "max": 0.0456}) == (r"$[-1.230,\,4.560]$")
 
 

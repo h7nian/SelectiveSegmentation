@@ -7,13 +7,13 @@ row reconstructible, including cases in which a predicted foreground is empty.
 
 \subsection{Native-binary cohorts}
 
-\paragraph{Oxford-IIIT Pet.}
+\noindent\textbf{Oxford-IIIT Pet.}
 We use the official trainval/test split: 3,680 released training examples and
 3,669 test examples \citep{parkhi2012cats}. Trimap values 1 (pet) and 3 (border)
 are foreground and value 2 is background. This border-inclusive mapping is
 declared before evaluation and leaves no annotation-derived ignore pixels.
 
-\paragraph{Kvasir-SEG.}
+\noindent\textbf{Kvasir-SEG.}
 The release contains 1,000 paired polyp images and masks but no official split
 \citep{jha2020kvasir}. We rank stems by
 \((\operatorname{SHA256}(\text{stem}),\text{stem})\), assign the first 800 to
@@ -21,11 +21,11 @@ training and the remaining 200 to testing, and order each split by stem. For its
 JPEG-compressed masks, a pixel is foreground iff the maximum decoded channel is
 at least 128; this rejects small compression residuals near zero.
 
-\paragraph{FIVES.}
+\noindent\textbf{FIVES.}
 We use the official 600-image training and 200-image test partitions
 \citep{jin2022fives}. A pixel is foreground iff its mask value is nonzero.
 
-\paragraph{ISIC 2018 Task 1.}
+\noindent\textbf{ISIC 2018 Task 1.}
 We use the official 2,594-image training and 1,000-image test releases for lesion
 boundary segmentation \citep{codella2019isic,tschandl2018ham10000,
 isic2018task1}. Each losslessly encoded mask denotes the primary skin lesion
@@ -33,7 +33,7 @@ with values 0 and 255; foreground is therefore the nonzero set. Image and mask
 identifiers are joined by the official \texttt{ISIC\_id} stem rather than by
 directory order.
 
-\paragraph{TN3K.}
+\noindent\textbf{TN3K.}
 We use the released split of 2,879 training and 614 test ultrasound images
 \citep{gong2021multitask,gong2023thyroid}. The source contains 3,493 images from
 2,421 patients and permits multiple disconnected nodules in one binary mask. As
@@ -86,7 +86,7 @@ All entropy comparators begin with the same foreground probabilities
 Thus \(u_i\in[0,1]\). Every reported scalar below is oriented as confidence:
 higher is better.
 
-\paragraph{QFR-Entropy.}
+\noindent\textbf{Quantile foreground-ratio entropy (QFR-Entropy).}
 The foreground-ratio aggregator sets \(q_{\mathrm{FG}}=k/n\), computes
 \(\tau=Q_{1-q_{\mathrm{FG}}}(u)\) with NumPy's default linear quantile, and
 uses the inclusive cutoff from the reference implementation
@@ -101,7 +101,7 @@ All cutoff ties are therefore retained, so their realized fraction can exceed
 the public implementation exactly rather than silently replacing it by a
 top-\(k\) rule.
 
-\paragraph{PLM-10/PLA-10-Entropy.}
+\noindent\textbf{Patch-level mean/aggregation entropy (PLM-10/PLA-10-Entropy).}
 For the set \(\mathcal W_{10}\) of all valid, unpadded \(10\times10\) windows on
 the native grid, we use
 \[
@@ -115,7 +115,7 @@ differ only by the positive constant 100 and therefore induce exactly the same
 ranking and AURC. We report one row rather than counting rank-equivalent methods
 twice.
 
-\paragraph{MMMC-Entropy.}
+\noindent\textbf{Median--minimum--maximum confidence entropy (MMMC-Entropy).}
 Following the entropy form compared by \citet{sdc} and originating with
 \citet{holder2021uncertainty},
 \[
@@ -128,7 +128,7 @@ Following the entropy form compared by \citet{sdc} and originating with
 \]
 The second branch fixes the otherwise undefined all-zero-entropy case.
 
-\paragraph{Foreground entropy.}
+\noindent\textbf{Foreground entropy.}
 The action-restricted score is
 \[
  C_{\mathrm{FGEnt}}=

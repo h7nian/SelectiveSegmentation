@@ -27,11 +27,11 @@ The construction satisfies
 \end{equation}
 Thus \(p\) is exactly the one-pixel coverage function of \(Q_p\), while the
 common threshold selects the comonotone coupling of those marginals. Samples
-are nested: if \(s<t\), then \(Y_t\subseteq Y_s\). This is a classical
+are \textbf{nested}: if \(s<t\), then \(Y_t\subseteq Y_s\). This is a classical
 coverage-function random set \citep{goodman,molchanov}; related shared-level
 constructions appear in uncertain-contour analysis \citep{poethkow,bolin}.
 
-Equation~\eqref{eq:levelset-marginals} is an identity internal to \(Q_p\),
+Equation~\eqref{eq:levelset-marginals} is \textbf{an identity internal to \(Q_p\)},
 not evidence that \(p_i\) equals the true marginal or that true labels are
 comonotone. The working posterior is attractive because it generates coherent,
 nested candidates cheaply; it can be inaccurate when ambiguity changes topology,
@@ -82,13 +82,8 @@ Every candidate is compared with the fixed deployed mask. By contrast,
 averaging \(L(Y_{t_m},Y_{t_n})\) over pairs of level sets estimates posterior
 dispersion, not conditional risk of the deployed action.
 
-Our default is equal-width midpoint quadrature,
-\begin{equation*}
-  t_m=\frac{m-1/2}{M},
-  \qquad
-  w_m=\frac1M,
-  \qquad m=1,\ldots,M.
-\end{equation*}
+Our default is equal-width midpoint quadrature:
+\(t_m=(m-1/2)/M\) and \(w_m=1/M\), for \(m=1,\ldots,M\).
 Algorithm~\ref{alg:loss-indexed-confidence} shows the complete computation.
 
 \begin{algorithm}[t]
@@ -108,9 +103,10 @@ Algorithm~\ref{alg:loss-indexed-confidence} shows the complete computation.
 \end{algorithmic}
 \end{algorithm}
 
-The three threshold roles are distinct. The deployment threshold \(\gamma\)
+The \textbf{three threshold roles are distinct}. The deployment threshold \(\gamma\)
 fixes the action; \(T\sim\operatorname{Unif}(0,1)\) defines \(Q_p\); and the
-\(t_m\)'s are deterministic integration nodes. Indeed, if \(T\) instead has CDF
+\(t_m\)'s are deterministic integration nodes. Indeed, if \(T\) instead has
+cumulative distribution function (CDF)
 \(F\), then \(\Prb(i\in Y_T)=F(p_i)\). Preserving the coverage identity for
 arbitrary probability maps therefore forces \(F(u)=u\), making the uniform law
 the unique distribution-free choice. Nonuniform proposal thresholds can still
@@ -121,10 +117,7 @@ gives the unbiased estimator, its variance, and a defensive-mixture bound.
 On a finite image \(H_{L,x}\) is a bounded step function and therefore has
 finite total variation \(V(H_{L,x})\). The one-dimensional Koksma--Hlawka
 inequality and midpoint star discrepancy give
-\begin{equation*}
-  \left|r_{L,M}(x)-r_{L,Q}(x)\right|
-  \leq \frac{V(H_{L,x})}{2M}.
-\end{equation*}
+\(\left|r_{L,M}(x)-r_{L,Q}(x)\right|\leq V(H_{L,x})/(2M)\).
 We use midpoint nodes as a fixed numerical rule, not because the bound proves
 they optimize finite-sample AURC \citep{niederreiter1992}.
 
@@ -143,7 +136,7 @@ deployed action define the loss-specific discrepancy
   \right|.
   \label{eq:loss-discrepancy}
 \end{equation}
-This loss-functional discrepancy is weaker than total-variation control: if
+This loss-functional discrepancy is weaker than total-variation (TV) control: if
 \(\TV(P_x,Q_{p(x)})\leq\delta_x\), using the supremum-over-events convention,
 then \(\Delta_{L,\Yhat}(x)\leq B_x\delta_x\), while the converse need not hold.
 Appendix~\ref{app:lem:loss-pushforward} also controls it through the
@@ -183,10 +176,10 @@ If \(\Ex[V(H_{L,X})]<\infty\) and
 \end{equation*}
 \end{corollary}
 
-Increasing \(M\) shrinks only the quadrature term; it leaves \(p\), its coupling,
+Increasing \(M\) \textbf{shrinks only the quadrature term}; it leaves \(p\), its coupling,
 and posterior discrepancy unchanged.
 
-\paragraph{From score error to AURC.}
+\noindent\textbf{From score error to AURC.}
 Let \(\eta_M=\Ex|C_{L,M}-C_L^\star|\),
 \(\bar\eta_M=\Ex[V(H_{L,X})]/(2M)+\Ex[\Delta_{L,\Yhat}(X)]\), and
 \(\Psi_B(z)=\lim_{\varepsilon\downarrow0}
@@ -198,7 +191,7 @@ Appendix~\ref{app:theory} proves
   0\leq\AURC_L(C_{L,M})-\AURC_L(C_L^\star)
   &\leq\Psi_B(\bar\eta_M).
 \end{align*}
-Thus the combined error controls population AURC regret, with low coverage most
+Thus the combined error \textbf{controls population AURC regret}, with low coverage most
 sensitive. The appendix also gives the uniform-error bound
 \(\min\{B,2\epsilon\}\); the factor-one \(L^1\) result sharpens the usual
 argument that bounds errors on the two selected sets separately.

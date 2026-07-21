@@ -54,6 +54,12 @@ CONTRAST_LABELS = {
     "nhd_vs_nhd95_under_nhd": r"nHD--nHD95 $\mid$ nHD",
     "nhd_vs_nhd95_under_nhd95": r"nHD--nHD95 $\mid$ nHD95",
 }
+PLOT_CONTRAST_LABELS = {
+    "dice_vs_nhd_under_dice": "Dice - nHD | Dice risk",
+    "dice_vs_nhd_under_nhd": "Dice - nHD | nHD risk",
+    "nhd_vs_nhd95_under_nhd": "nHD - nHD95 | nHD risk",
+    "nhd_vs_nhd95_under_nhd95": "nHD - nHD95 | nHD95 risk",
+}
 RISK_LABELS = {
     "risk_dice": "Mean Dice loss",
     "risk_nhd": "Mean nHD loss",
@@ -90,6 +96,7 @@ def parse_args(argv: Sequence[str] | None = None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis", required=True)
     parser.add_argument("--output-root", default=DEFAULT_OUTPUT_ROOT)
+    parser.add_argument("--figure-output")
     return parser.parse_args(argv)
 
 
@@ -680,6 +687,74 @@ def render_analysis(value: Any, *, source_hash: str) -> str:
     return "\n".join(lines)
 
 
+def macro_contrast_values(
+    by_key: Mapping[tuple[str, str], dict], *, contrast_name: str
+) -> list[float]:
+    """Return target-condition macro contrasts on the manuscript display scale."""
+    return [
+        100
+        * math.fsum(
+            by_key[key]["contrasts"][contrast_name]["by_gamma"][_gamma_key(gamma)][
+                "difference_left_minus_right"
+            ]
+            for key in ORDERED_TARGET_CONDITIONS
+        )
+        / len(ORDERED_TARGET_CONDITIONS)
+        for gamma in ALL_GAMMAS
+    ]
+
+
+def render_figure(
+    by_key: Mapping[tuple[str, str], dict], output: str | os.PathLike[str]
+) -> Path:
+    """Render the four predeclared macro contrasts across deployment thresholds."""
+    import matplotlib.pyplot as plt
+
+    destination = Path(output)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"refusing to overwrite gamma figure: {destination}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+
+    colors = ("#1769aa", "#d1495b", "#2a9d8f", "#7b2cbf")
+    markers = ("o", "s", "^", "D")
+    figure, axis = plt.subplots(figsize=(6.8, 3.8))
+    axis.axhline(0, color="0.45", linewidth=1, linestyle="--")
+    for (contrast_name, label), color, marker in zip(
+        PLOT_CONTRAST_LABELS.items(), colors, markers, strict=True
+    ):
+        axis.plot(
+            ALL_GAMMAS,
+            macro_contrast_values(by_key, contrast_name=contrast_name),
+            color=color,
+            marker=marker,
+            linewidth=1.7,
+            markersize=5,
+            label=label,
+        )
+    axis.set_xticks(ALL_GAMMAS)
+    axis.set_xlabel(r"Deployed action threshold $\gamma$")
+    axis.set_ylabel(r"Macro AURC contrast $\times 100$")
+    axis.set_title("Action-threshold sensitivity (10 target conditions)")
+    axis.grid(axis="y", color="0.9", linewidth=0.7)
+    axis.legend(frameon=False, fontsize=9, ncol=2, loc="best")
+    figure.tight_layout()
+
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.stem}.",
+        suffix=destination.suffix,
+        dir=destination.parent,
+    )
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    try:
+        figure.savefig(temporary, bbox_inches="tight", metadata={"Creator": __name__})
+        os.link(temporary, destination)
+    finally:
+        plt.close(figure)
+        temporary.unlink(missing_ok=True)
+    return destination
+
+
 def write_output(
     tex: str, output_root: str | os.PathLike[str], *, source_hash: str
 ) -> Path:
@@ -720,6 +795,9 @@ def main(argv: Sequence[str] | None = None) -> None:
     tex = render_analysis(analysis, source_hash=source_hash)
     destination = write_output(tex, args.output_root, source_hash=source_hash)
     print(destination.as_posix())
+    if args.figure_output:
+        figure = render_figure(validate_analysis(analysis), args.figure_output)
+        print(figure.as_posix())
 
 
 if __name__ == "__main__":
