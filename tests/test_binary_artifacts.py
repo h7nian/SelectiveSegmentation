@@ -78,6 +78,21 @@ def _write_manifest(path, manifest):
     Path(path).write_text(json.dumps(manifest, indent=2) + "\n")
 
 
+def _scientific_input(**overrides):
+    value = {
+        "root_lock_sha256": "1" * 64,
+        "condition_input_sha256": "2" * 64,
+        "science_projection_sha256": "3" * 64,
+        "eval_dataset_component_sha256": "4" * 64,
+        "source_component_sha256": "5" * 64,
+        "base_model_component_sha256": "6" * 64,
+        "checkpoint_component_sha256": "7" * 64,
+        "environment_component_sha256": "8" * 64,
+    }
+    value.update(overrides)
+    return value
+
+
 def test_round_trip_preserves_order_native_arrays_and_provenance(tmp_path):
     manifest_path = _write(tmp_path)
     artifact = load_binary_artifact(manifest_path)
@@ -108,6 +123,53 @@ def test_round_trip_preserves_order_native_arrays_and_provenance(tmp_path):
         assert sample.truth.dtype == np.uint8
         assert not sample.foreground_probability.flags.writeable
         assert not sample.truth.flags.writeable
+
+
+def test_schema_three_binds_scientific_input_roots_into_identity(tmp_path):
+    first_path = _write(
+        tmp_path / "first", scientific_input=_scientific_input()
+    )
+    first = load_binary_artifact(first_path, validate_payloads=False).manifest
+    second_path = _write(
+        tmp_path / "second",
+        scientific_input=_scientific_input(condition_input_sha256="8" * 64),
+    )
+    second = load_binary_artifact(second_path, validate_payloads=False).manifest
+
+    assert first["schema_version"] == 3
+    assert first["scientific_input"] == _scientific_input()
+    assert first["artifact_id"] != second["artifact_id"]
+
+
+def test_schema_three_rejects_missing_extra_or_invalid_scientific_roots(tmp_path):
+    with pytest.raises(ValueError, match="schema mismatch"):
+        _write(
+            tmp_path / "missing",
+            scientific_input={
+                key: value
+                for key, value in _scientific_input().items()
+                if key != "environment_component_sha256"
+            },
+        )
+    with pytest.raises(ValueError, match="schema mismatch"):
+        _write(
+            tmp_path / "extra",
+            scientific_input={**_scientific_input(), "unreviewed": "9" * 64},
+        )
+    with pytest.raises(ValueError, match="64 lowercase hexadecimal"):
+        _write(
+            tmp_path / "bad-hash",
+            scientific_input=_scientific_input(root_lock_sha256="not-a-hash"),
+        )
+
+    manifest_path = _write(
+        tmp_path / "tampered", scientific_input=_scientific_input()
+    )
+    manifest = _read_manifest(manifest_path)
+    del manifest["scientific_input"]
+    _write_manifest(manifest_path, manifest)
+    with pytest.raises(ValueError, match="schema mismatch"):
+        load_binary_artifact(manifest_path, validate_payloads=False)
 
 
 def test_writer_is_no_overwrite_and_leaves_no_staging_directory(tmp_path):

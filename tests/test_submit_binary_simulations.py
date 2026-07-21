@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -18,6 +19,7 @@ from scripts.submit_binary_simulations import (
     canonical_runtime_receipt_path,
     execute_configured_plan,
     execute_plan,
+    load_campaign_lock,
     load_config,
     plan_assemble_jobs,
     plan_common_jobs,
@@ -102,10 +104,10 @@ def _write_candidate_config(tmp_path):
         execution_policy="scheduler-preview-only",
         gpu_partition_candidates=["saffo-a100", "apollo_agate"],
         cpu_partition_candidates=[
-            "saffo-2tb",
-            "agsmall",
             "amdsmall",
+            "agsmall",
             "msismall",
+            "saffo-2tb",
         ],
     )
     path = tmp_path / "campaign-candidates-v2.json"
@@ -142,7 +144,7 @@ def _execute_candidate_runtime(
     )
 
 
-def _write_artifact(tmp_path):
+def _write_artifact(tmp_path, *, scientific_input=None):
     sample_ids = ["image-0", "image-1"]
     probability = np.linspace(0.05, 0.95, 12 * 12, dtype=np.float32).reshape(12, 12)
     truth = (probability >= 0.55).astype(np.uint8)
@@ -181,7 +183,62 @@ def _write_artifact(tmp_path):
         ],
         command=["synthetic-freeze"],
         created_utc=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        scientific_input=scientific_input,
     )
+
+
+def _write_locked_candidate_config(tmp_path):
+    preview = _write_candidate_config(tmp_path)
+    payload = json.loads(preview.path.read_text())
+    payload.update(
+        execution_policy="scientific-input-locked",
+        data_root="data",
+        scientific_input_lock={
+            "path": str(tmp_path / "scientific-input.lock.json"),
+            "sha256": "1" * 64,
+        },
+    )
+    path = tmp_path / "campaign-locked-v2.json"
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    return load_config(path)
+
+
+def _fake_scientific_plan(config):
+    dataset_binding = {
+        "dataset": "pet",
+        "path": "locks/pet.json",
+        "sha256": "2" * 64,
+    }
+    components = {
+        "datasets": [dataset_binding],
+        "source": {"path": "locks/source.json", "sha256": "3" * 64},
+        "base_models": {"path": "locks/models.json", "sha256": "4" * 64},
+        "checkpoints": {"path": "locks/checkpoints.json", "sha256": "5" * 64},
+        "environment": {"path": "locks/environment.json", "sha256": "6" * 64},
+    }
+    binding = {
+        "path": Path(config.data["scientific_input_lock"]["path"]),
+        "sha256": "1" * 64,
+        "lock": {
+            "campaign_id": config.data["campaign_id"],
+            "science_config": {"projection_sha256": "7" * 64},
+            "components": components,
+        },
+        "projection": {
+            "config": {
+                "campaign_id": config.data["campaign_id"],
+                "conditions": config.data["conditions"],
+            }
+        },
+        "components": {
+            "datasets": {"pet": {}},
+            **{
+                key: {}
+                for key in ("source", "base_models", "checkpoints", "environment")
+            },
+        },
+    }
+    return Path(config.data["scientific_input_lock"]["path"]), "1" * 64, binding
 
 
 def _locked_campaign(tmp_path):
@@ -279,7 +336,11 @@ def test_freeze_and_score_plans_are_one_job_per_cartesian_row(tmp_path):
 def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_path):
     config, _, lock_path, _ = _locked_candidate_campaign(tmp_path)
     gpu_request = "saffo-a100,apollo_agate"
-    cpu_request = "saffo-2tb,agsmall,amdsmall,msismall"
+    cpu_requests = (
+        "amdsmall,agsmall,msismall,saffo-2tb",
+        "agsmall,msismall,amdsmall,saffo-2tb",
+        "msismall,amdsmall,agsmall,saffo-2tb",
+    )
 
     freeze_jobs = plan_freeze_jobs(config)
     common_jobs = plan_common_jobs(config, lock_path)
@@ -311,9 +372,25 @@ def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_p
     for job in cpu_jobs:
         command = list(job.command)
         assert command.count("--partition") == 1
-        assert command[command.index("--partition") + 1] == cpu_request
+        assert set(command[command.index("--partition") + 1].split(",")) == {
+            "amdsmall",
+            "agsmall",
+            "msismall",
+            "saffo-2tb",
+        }
         assert "--array" not in command
         assert not any(token.startswith("--array=") for token in command)
+    assert [
+        job.command[job.command.index("--partition") + 1] for job in score_jobs
+    ] == list(cpu_requests)
+    assert (
+        common_jobs[0].command[common_jobs[0].command.index("--partition") + 1]
+        == cpu_requests[0]
+    )
+    assert (
+        diagnose_jobs[0].command[diagnose_jobs[0].command.index("--partition") + 1]
+        == cpu_requests[0]
+    )
     assert all(
         job.command.count("scripts/slurm/score_binary_simulation.sbatch") == 1
         for job in score_jobs
@@ -331,7 +408,9 @@ def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_p
     assemble_jobs = plan_assemble_jobs(config, lock_path)
     assert len(assemble_jobs) == 1
     assemble_command = list(assemble_jobs[0].command)
-    assert assemble_command[assemble_command.index("--partition") + 1] == cpu_request
+    assert assemble_command[assemble_command.index("--partition") + 1] == (
+        cpu_requests[0]
+    )
     assert (
         assemble_command.count("scripts/slurm/assemble_binary_simulations.sbatch") == 1
     )
@@ -340,6 +419,126 @@ def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_p
     )
     assert "--array" not in assemble_command
     assert not any(token.startswith("--array=") for token in assemble_command)
+
+
+def test_scientific_locked_freeze_plan_binds_each_job_to_exact_inputs(
+    tmp_path, monkeypatch
+):
+    config = _write_locked_candidate_config(tmp_path)
+    science = _fake_scientific_plan(config)
+    monkeypatch.setattr(
+        submit_binary_simulations,
+        "_scientific_plan_binding",
+        lambda candidate, *, mode: science,
+    )
+
+    jobs = plan_freeze_jobs(config)
+    assert len(jobs) == 1
+    command = list(jobs[0].command)
+    assert command[command.index("--partition") + 1] == (
+        "saffo-a100,apollo_agate"
+    )
+    assert command[command.index("--data-root") + 1] == "data"
+    assert command[command.index("--campaign-config") + 1] == str(config.path)
+    assert command[command.index("--expected-campaign-config-sha256") + 1] == (
+        config.sha256
+    )
+    assert command[command.index("--scientific-input-lock") + 1] == str(
+        science[0]
+    )
+    assert command[
+        command.index("--expected-scientific-input-lock-sha256") + 1
+    ] == science[1]
+    assert len(command[command.index("--expected-condition-input-sha256") + 1]) == 64
+    assert "--array" not in command
+
+
+def test_scientific_locked_submit_preflights_then_receipts_without_duplicates(
+    tmp_path, monkeypatch
+):
+    config = _write_locked_candidate_config(tmp_path)
+    science = _fake_scientific_plan(config)
+    monkeypatch.setattr(
+        submit_binary_simulations,
+        "_scientific_plan_binding",
+        lambda candidate, *, mode: science,
+    )
+    jobs = plan_freeze_jobs(config)
+    receipt = canonical_runtime_receipt_path(config, "freeze")
+    preflight_calls = []
+    real_calls = []
+
+    def preflight(command, **kwargs):
+        preflight_calls.append(tuple(command))
+        assert "--test-only" in command and "--parsable" not in command
+        return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+    def real(command, **kwargs):
+        real_calls.append(tuple(command))
+        return SimpleNamespace(returncode=0, stdout="73001\n", stderr="")
+
+    assert execute_configured_plan(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=real,
+        preflight_runner=preflight,
+    ) == ("73001",)
+    assert execute_configured_plan(
+        config,
+        jobs,
+        submit=True,
+        receipt_path=receipt,
+        runner=real,
+        preflight_runner=preflight,
+    ) == ()
+    assert len(preflight_calls) == 2
+    assert real_calls == [jobs[0].command]
+    events = [json.loads(line)["event"] for line in receipt.read_text().splitlines()]
+    assert events == ["submitting", "submitted"]
+
+
+def test_scientific_campaign_lock_propagates_condition_roots(
+    tmp_path, monkeypatch
+):
+    from selectseg import scientific_inputs
+
+    config = _write_locked_candidate_config(tmp_path)
+    science = _fake_scientific_plan(config)
+    monkeypatch.setattr(
+        submit_binary_simulations,
+        "_scientific_plan_binding",
+        lambda candidate, *, mode: science,
+    )
+    identity = scientific_inputs.condition_input_identity(
+        science[2],
+        dataset="pet",
+        model="clipseg",
+        condition="clipseg-general",
+    )
+    scientific = {
+        **identity["scientific_input_hashes"],
+        "condition_input_sha256": identity["scientific_input_sha256"],
+    }
+    artifact = _write_artifact(tmp_path, scientific_input=scientific)
+    lock = build_campaign_lock(config, [artifact])
+    assert lock["lock_schema_version"] == 2
+    assert lock["scientific_input"] == {
+        "root_lock_path": submit_binary_simulations._portable_path(science[0]),
+        "root_lock_sha256": science[1],
+        "science_projection_sha256": "7" * 64,
+    }
+    assert lock["artifacts"][0]["scientific_input"] == scientific
+
+    lock_path, _ = write_campaign_lock(lock, tmp_path / "scientific-campaign.lock")
+    monkeypatch.setattr(
+        scientific_inputs,
+        "load_root_lock",
+        lambda path, *, expected_sha256: science[2],
+    )
+    _, _, loaded = load_campaign_lock(lock_path, config=config)
+    assert loaded == lock
 
 
 def test_schema_v1_partition_commands_remain_legacy_compatible(tmp_path):
@@ -379,10 +578,10 @@ def test_schema_v1_partition_commands_remain_legacy_compatible(tmp_path):
             {
                 "gpu_partition_candidates": ["saffo-a100", "apollo_agate"],
                 "cpu_partition_candidates": [
-                    "saffo-2tb",
-                    "agsmall",
                     "amdsmall",
+                    "agsmall",
                     "msismall",
+                    "saffo-2tb",
                 ],
             },
             "require config_schema_version 2",
@@ -401,10 +600,10 @@ def test_schema_v1_partition_commands_remain_legacy_compatible(tmp_path):
                 "execution_policy": "scheduler-preview-only",
                 "gpu_partition_candidates": ["apollo_agate", "saffo-a100"],
                 "cpu_partition_candidates": [
-                    "saffo-2tb",
-                    "agsmall",
                     "amdsmall",
+                    "agsmall",
                     "msismall",
+                    "saffo-2tb",
                 ],
             },
             "gpu_partition_candidates must equal",
@@ -428,7 +627,7 @@ def test_candidate_partition_fields_are_versioned_paired_and_exact(
     ("version", "policy", "message"),
     [
         (2, None, "execution_policy must equal"),
-        (2, "scientific-input-locked", "execution_policy must equal"),
+        (2, "scientific-input-locked", "require data_root"),
         (1, "scheduler-preview-only", "requires config_schema_version 2"),
     ],
 )
@@ -442,10 +641,10 @@ def test_execution_policy_is_exact_and_schema_v2_only(
         payload.update(
             gpu_partition_candidates=["saffo-a100", "apollo_agate"],
             cpu_partition_candidates=[
-                "saffo-2tb",
-                "agsmall",
                 "amdsmall",
+                "agsmall",
                 "msismall",
+                "saffo-2tb",
             ],
         )
     if policy is not None:
@@ -575,7 +774,11 @@ def test_schema_v2_preflights_the_whole_wave_without_real_jobs_or_receipt(tmp_pa
     config, _, lock_path, _ = _locked_candidate_campaign(tmp_path)
     jobs = plan_score_jobs(config, lock_path)
     original_jobs = tuple(jobs)
-    candidate_request = "saffo-2tb,agsmall,amdsmall,msismall"
+    candidate_requests = [
+        "amdsmall,agsmall,msismall,saffo-2tb",
+        "agsmall,msismall,amdsmall,saffo-2tb",
+        "msismall,amdsmall,agsmall,saffo-2tb",
+    ]
     preflight_calls = []
 
     def preflight_runner(command, **kwargs):
@@ -602,7 +805,9 @@ def test_schema_v2_preflights_the_whole_wave_without_real_jobs_or_receipt(tmp_pa
     assert tuple(jobs) == original_jobs
     assert len(preflight_calls) == len(jobs)
     preflight_commands = [call[0] for call in preflight_calls]
-    for job, preflight in zip(jobs, preflight_commands):
+    for job, preflight, candidate_request in zip(
+        jobs, preflight_commands, candidate_requests
+    ):
         expected_preflight = tuple(
             "--test-only" if token == "--parsable" else token for token in job.command
         )
@@ -610,6 +815,146 @@ def test_schema_v2_preflights_the_whole_wave_without_real_jobs_or_receipt(tmp_pa
         assert preflight[preflight.index("--partition") + 1] == candidate_request
         assert "--array" not in preflight
     assert not canonical_runtime_receipt_path(config, "score").exists()
+
+
+def test_scheduler_preflight_surfaces_successful_forecast(tmp_path, capsys):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+
+    def runner(command, **kwargs):
+        assert kwargs == {
+            "check": True,
+            "capture_output": True,
+            "text": True,
+            "timeout": 45,
+        }
+        return SimpleNamespace(
+            returncode=0,
+            stdout="start=now partition=saffo-a100\n",
+            stderr="scheduler advisory\n" * 426,
+        )
+
+    assert submit_binary_simulations.preflight_plan(jobs, runner=runner) == jobs
+    captured = capsys.readouterr()
+    assert "scheduler_preflight=ok" in captured.out
+    assert "start=now partition=saffo-a100" in captured.out
+    assert captured.err.count("scheduler advisory") == 1
+    assert "occurrences=426" in captured.err
+
+
+def test_scheduler_preflight_surfaces_failure_reason_and_stays_fail_closed(
+    tmp_path, capsys
+):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    error = subprocess.CalledProcessError(
+        1,
+        jobs[0].command,
+        output="scheduler stdout reason",
+        stderr="scheduler stderr reason",
+    )
+
+    def runner(*args, **kwargs):
+        raise error
+
+    with pytest.raises(subprocess.CalledProcessError) as raised:
+        submit_binary_simulations.preflight_plan(jobs, runner=runner)
+    assert raised.value is error
+    captured = capsys.readouterr()
+    assert "scheduler_preflight=failed" in captured.out
+    assert "scheduler stdout reason" in captured.out
+    assert "scheduler stderr reason" in captured.err
+
+
+def test_scheduler_preflight_timeout_is_compact_and_fail_closed(tmp_path, capsys):
+    config = _write_candidate_config(tmp_path)
+    jobs = plan_freeze_jobs(config)
+    error = subprocess.TimeoutExpired(
+        jobs[0].command,
+        timeout=45,
+        output=(b"socket error\n" * 426),
+        stderr=b"scheduler timed out\n",
+    )
+
+    def runner(command, **kwargs):
+        assert kwargs["timeout"] == 45
+        raise error
+
+    with pytest.raises(subprocess.TimeoutExpired) as raised:
+        submit_binary_simulations.preflight_plan(jobs, runner=runner)
+    assert raised.value is error
+    captured = capsys.readouterr()
+    assert "scheduler_preflight=failed reason=timeout_after_45s" in captured.out
+    assert captured.out.count("socket error") == 1
+    assert "occurrences=426" in captured.out
+    assert "scheduler timed out" in captured.err
+
+
+def test_scheduler_output_compaction_preserves_counts_and_caps_distinct_lines():
+    lines = ["repeated", "repeated", *[f"distinct-{index}" for index in range(25)]]
+    compact = submit_binary_simulations._compact_scheduler_output("\n".join(lines))
+    assert "repeated [occurrences=2]" in compact
+    assert "distinct-0 [occurrences=1]" in compact
+    assert "omitted 6 distinct lines (6 occurrences)" in compact
+    assert "distinct-24" not in compact
+    assert len(compact) < 10_000
+
+
+@pytest.mark.parametrize(
+    "array_tokens",
+    [
+        ("--array", "0-1"),
+        ("--array=0-1",),
+        ("-a", "0-1"),
+        ("-a=0-1",),
+        ("-a0-1",),
+    ],
+)
+def test_schema_v2_runtime_rejects_every_slurm_array_spelling(
+    tmp_path, array_tokens
+):
+    config = _write_candidate_config(tmp_path)
+    job = plan_freeze_jobs(config)[0]
+    command = list(job.command)
+    wrapper_index = command.index("scripts/slurm/freeze_binary_maps.sbatch")
+    command[wrapper_index:wrapper_index] = array_tokens
+    array_job = submit_binary_simulations.PlannedJob(
+        phase=job.phase,
+        key=job.key,
+        command=tuple(command),
+    )
+    with pytest.raises(ValueError, match="forbids Slurm arrays"):
+        submit_binary_simulations._validate_runtime_jobs((array_job,))
+
+
+def test_array_guard_does_not_parse_wrapper_argument_values(tmp_path):
+    config = _write_candidate_config(tmp_path)
+    job = plan_freeze_jobs(config)[0]
+    command = (*job.command, "--artifact-label", "-a0-1")
+    safe_job = submit_binary_simulations.PlannedJob(
+        phase=job.phase,
+        key=job.key,
+        command=command,
+    )
+    assert submit_binary_simulations._validate_runtime_jobs((safe_job,)) == (safe_job,)
+
+
+def test_canonical_sbatch_wrappers_have_no_active_array_directive():
+    repository = Path(__file__).resolve().parents[1]
+    wrappers = (
+        "scripts/slurm/freeze_binary_maps.sbatch",
+        "scripts/slurm/score_binary_common.sbatch",
+        "scripts/slurm/score_binary_simulation.sbatch",
+        "scripts/slurm/assemble_binary_simulations.sbatch",
+        "scripts/slurm/diagnose_binary_artifact.sbatch",
+        "scripts/slurm/build_scientific_dataset.sbatch",
+    )
+    directive = re.compile(
+        r"^\s*#SBATCH\s+(?:--array(?:=|\s)|-a(?:=|\d|\s))"
+    )
+    for relative_path in wrappers:
+        text = (repository / relative_path).read_text()
+        assert not any(directive.match(line) for line in text.splitlines())
 
 
 def test_schema_v2_scheduler_preflight_rejects_receipt_before_scheduler(tmp_path):
@@ -740,10 +1085,10 @@ def test_schema_v2_config_requires_one_campaign_root_for_canonical_receipts(tmp_
         execution_policy="scheduler-preview-only",
         gpu_partition_candidates=["saffo-a100", "apollo_agate"],
         cpu_partition_candidates=[
-            "saffo-2tb",
-            "agsmall",
             "amdsmall",
+            "agsmall",
             "msismall",
+            "saffo-2tb",
         ],
     )
     payload["paths"]["simulation_output_root"] = str(
@@ -1394,16 +1739,21 @@ def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
     repository = Path(__file__).resolve().parents[1]
     v1 = load_config(repository / "configs/binary_midpoint_main.json")
     v2 = load_config(repository / "configs/binary_midpoint_main_v2.json")
-    gpu_request = "saffo-a100,apollo_agate"
-    cpu_request = "saffo-2tb,agsmall,amdsmall,msismall"
+    gpu_requests = ("saffo-a100,apollo_agate", "apollo_agate,saffo-a100")
+    cpu_requests = (
+        "amdsmall,agsmall,msismall,saffo-2tb",
+        "agsmall,msismall,amdsmall,saffo-2tb",
+        "msismall,amdsmall,agsmall,saffo-2tb",
+    )
 
     assert v2.data["config_schema_version"] == 2
     assert v2.data["campaign_id"] == "binary-midpoint-main-v2"
-    assert v2.data["execution_policy"] == "scheduler-preview-only"
-    assert not any("scientific" in field or "lock" in field for field in v2.data)
+    assert v2.data["execution_policy"] == "scientific-input-locked"
+    assert v2.data["data_root"] == "data"
+    assert set(v2.data["scientific_input_lock"]) == {"path", "sha256"}
     assert v2.data["campaign_id"] != v1.data["campaign_id"]
-    assert v2.data["gpu_partition_candidates"] == gpu_request.split(",")
-    assert v2.data["cpu_partition_candidates"] == cpu_request.split(",")
+    assert v2.data["gpu_partition_candidates"] == gpu_requests[0].split(",")
+    assert v2.data["cpu_partition_candidates"] == cpu_requests[0].split(",")
     assert v2.data["protocol"] == v1.data["protocol"]
     assert v2.data["conditions"] == v1.data["conditions"]
     assert v2.data["estimator_spec"] == v1.data["estimator_spec"]
@@ -1415,12 +1765,23 @@ def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
     }
     assert set(v2.data["paths"].values()).isdisjoint(v1.data["paths"].values())
 
+    from selectseg.scientific_inputs import load_root_lock
+
+    science = v2.data["scientific_input_lock"]
+    science_path = repository / science["path"]
+    science_binding = load_root_lock(science_path, expected_sha256=science["sha256"])
+    monkeypatch.setattr(
+        submit_binary_simulations,
+        "_scientific_plan_binding",
+        lambda candidate, *, mode: (science_path, science["sha256"], science_binding),
+    )
+
     freeze_jobs = plan_freeze_jobs(v2)
     assert len(freeze_jobs) == 16
     assert len({job.key for job in freeze_jobs}) == len(freeze_jobs)
-    for job in freeze_jobs:
+    for index, job in enumerate(freeze_jobs):
         command = list(job.command)
-        assert command[command.index("--partition") + 1] == gpu_request
+        assert command[command.index("--partition") + 1] == gpu_requests[index % 2]
         assert command.count("scripts/slurm/freeze_binary_maps.sbatch") == 1
         assert "--array" not in command
         assert not any(token.startswith("--array=") for token in command)
@@ -1465,10 +1826,13 @@ def test_checked_in_v2_main_campaign_is_isolated_and_plans_independent_jobs(
     assert len(diagnose_jobs) == 16
     for jobs in (common_jobs, score_jobs, diagnose_jobs):
         assert len({job.key for job in jobs}) == len(jobs)
-        for job in jobs:
+        for index, job in enumerate(jobs):
             command = list(job.command)
             assert command.count("--partition") == 1
-            assert command[command.index("--partition") + 1] == cpu_request
+            request = command[command.index("--partition") + 1]
+            assert request == cpu_requests[index % 3]
+            assert set(request.split(",")) == set(cpu_requests[0].split(","))
+            assert request.endswith(",saffo-2tb")
             assert "--array" not in command
             assert not any(token.startswith("--array=") for token in command)
 

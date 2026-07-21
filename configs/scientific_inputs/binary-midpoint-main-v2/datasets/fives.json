@@ -1,0 +1,3414 @@
+{
+  "component_kind": "eval_dataset",
+  "component_schema_version": 1,
+  "data_root": "data",
+  "dataset": "fives",
+  "loader_class": "FivesSegmentation",
+  "loader_order_sha256": "dd5b4b2abacb00e13407f460cf9df1a76872d30c6153e394fca45ed542e23edc",
+  "sample_count": 200,
+  "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d",
+  "samples": [
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/100_D.png",
+        "sha256": "cf6c2db90479cb0dc83da42b666f6c8c97acd14355938f9322fd175580fa13f9",
+        "size_bytes": 2130474
+      },
+      "index": 0,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/100_D.png",
+        "sha256": "b7171d5f29f10d2cfc5b3fbdacb39193daa4d6161cd7717414f919ea9cd0bd93",
+        "size_bytes": 58862
+      },
+      "prompt_index": 0,
+      "sample_id": "100_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/101_G.png",
+        "sha256": "b475e3d1deba5ad6aacebaa71ffaac4979562488b96799ecf5aa03ceaa8bb5b5",
+        "size_bytes": 1471732
+      },
+      "index": 1,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/101_G.png",
+        "sha256": "ba046817ae1b044c21cd5beec9eaaf2287679d9244e2cd6255a9de854d991739",
+        "size_bytes": 45631
+      },
+      "prompt_index": 0,
+      "sample_id": "101_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/102_G.png",
+        "sha256": "289b389add5ba8b9f6eed88c40d48176930418d7372c1d9c9044d8c6dd37618a",
+        "size_bytes": 1099721
+      },
+      "index": 2,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/102_G.png",
+        "sha256": "ce2072cbaf01336c1c8c62169c1bde9a2da3495a8f10da4223cf0edbc86ac521",
+        "size_bytes": 52525
+      },
+      "prompt_index": 0,
+      "sample_id": "102_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/103_G.png",
+        "sha256": "53a124f340314be5f2eaac87a964abfc610f7c37f366244e8d1a2d980809b414",
+        "size_bytes": 2164615
+      },
+      "index": 3,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/103_G.png",
+        "sha256": "6356d8bd003c28a936fce2095a1a4902e63e23112a0c56cfbdb515da085170dd",
+        "size_bytes": 55211
+      },
+      "prompt_index": 0,
+      "sample_id": "103_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/104_G.png",
+        "sha256": "a52636736ddfda8b7f96a38bc458e2f17e14ce01aebde95843b7da404ed89542",
+        "size_bytes": 1754564
+      },
+      "index": 4,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/104_G.png",
+        "sha256": "e739f020785a433093f3ef13763a8efa8be47e40022c029465ae0fcb10d74270",
+        "size_bytes": 65889
+      },
+      "prompt_index": 0,
+      "sample_id": "104_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/105_G.png",
+        "sha256": "fca558b2b74a65a9d0c552bc94b72f5e250520f38766e2e699528a08f0a0b7c5",
+        "size_bytes": 2005085
+      },
+      "index": 5,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/105_G.png",
+        "sha256": "e0b4c5a58f6882eb83745857a2b1b603b2be509158c4635c947d3cfa2bdcd812",
+        "size_bytes": 65776
+      },
+      "prompt_index": 0,
+      "sample_id": "105_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/106_G.png",
+        "sha256": "7f0fd9247f3f135e8603e45dd091aff84ece6c8ec8b6dd51ac69df4a5007d6e5",
+        "size_bytes": 2147768
+      },
+      "index": 6,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/106_G.png",
+        "sha256": "95024c6928834a86b7c20d7618770716a0480eaaf17a9b507cb8d3f637880238",
+        "size_bytes": 66869
+      },
+      "prompt_index": 0,
+      "sample_id": "106_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/107_G.png",
+        "sha256": "848fe4d889a51b6ee3eb3acb6e77fd5842c48f44bd241b050e723ea045d88fd0",
+        "size_bytes": 2246236
+      },
+      "index": 7,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/107_G.png",
+        "sha256": "470a8c0fe4961759f5f9d558261dd48c5fd90b1c3b85203d6fdcc6d3ba395148",
+        "size_bytes": 79660
+      },
+      "prompt_index": 0,
+      "sample_id": "107_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/108_G.png",
+        "sha256": "4803303f973f2460f76917b4e9dae54f0c02d13f91865e1c308d81e577993299",
+        "size_bytes": 2354787
+      },
+      "index": 8,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/108_G.png",
+        "sha256": "19bec0a6832014aead8532a4cbee98b3f7c8e90b9d626d9d072b284c59bb44cf",
+        "size_bytes": 33701
+      },
+      "prompt_index": 0,
+      "sample_id": "108_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/109_G.png",
+        "sha256": "0b258d5f96319e9f2005327e005dc5207743f3dc056424c265be50f8227f6800",
+        "size_bytes": 1982528
+      },
+      "index": 9,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/109_G.png",
+        "sha256": "3d677c9ce2988b2b70eaacf70f30fe27ab1adc4a42f763d543707e8f3b8d57c9",
+        "size_bytes": 72610
+      },
+      "prompt_index": 0,
+      "sample_id": "109_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/10_A.png",
+        "sha256": "2ffc7556512e3a213c4d6db42daf2bbdd286a8cdcf3b67289b856a969d23b2b3",
+        "size_bytes": 2295251
+      },
+      "index": 10,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/10_A.png",
+        "sha256": "4b8b1e30a94e04f42497081dfea52c0ccfa783ebe954152d4d9fcf5e771e8148",
+        "size_bytes": 54747
+      },
+      "prompt_index": 0,
+      "sample_id": "10_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/110_G.png",
+        "sha256": "595b38f4595633edfb2b9160a33ba5d0c84108b39d2062a0d8dcea272c3a3a2b",
+        "size_bytes": 1823255
+      },
+      "index": 11,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/110_G.png",
+        "sha256": "e08e7fea7cce4103f597de8a2a9af529670ed2f26f921a617aeb2da95b24669f",
+        "size_bytes": 67004
+      },
+      "prompt_index": 0,
+      "sample_id": "110_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/111_G.png",
+        "sha256": "9b83c60ba41113b7806e9e23551c7662b5f1dda77b47804edfbf77139be4b959",
+        "size_bytes": 2176672
+      },
+      "index": 12,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/111_G.png",
+        "sha256": "de15ad44f47135ee7aeede14ab256fed1b30bc47d73e0ae2f467da123f5c3ae6",
+        "size_bytes": 57232
+      },
+      "prompt_index": 0,
+      "sample_id": "111_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/112_G.png",
+        "sha256": "0fd3fb4abeef2e0fc234c945f03237ed55a760d7e69ff83a639ef5f4f92efe8d",
+        "size_bytes": 1224530
+      },
+      "index": 13,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/112_G.png",
+        "sha256": "e8a8f10999eb51da0eb58ad72bcfda25530fc287d708dc93412aa0d532518d40",
+        "size_bytes": 59988
+      },
+      "prompt_index": 0,
+      "sample_id": "112_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/113_G.png",
+        "sha256": "104ca2a476f304606097bc78b39d06bcb7b5948fcb8bce1ff0f81871d8b81b53",
+        "size_bytes": 699943
+      },
+      "index": 14,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/113_G.png",
+        "sha256": "bcbf19dd7e9eb4de297b26ce61c5a8043c5605ca959b91b493231ed19af8657a",
+        "size_bytes": 29595
+      },
+      "prompt_index": 0,
+      "sample_id": "113_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/114_G.png",
+        "sha256": "3edfcc96cc733312093d4c2872bbb61c073debf958c7cb77818ecba631bfec92",
+        "size_bytes": 899971
+      },
+      "index": 15,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/114_G.png",
+        "sha256": "1e4b6f99f8a70d7360e2f0cc47c4278ff0e63bbfc778840163ff6ce80b86906c",
+        "size_bytes": 28318
+      },
+      "prompt_index": 0,
+      "sample_id": "114_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/115_G.png",
+        "sha256": "c48165f99f240c89655acc4c2ae1409718a9057fcee88bab072ea8ba3fd6309f",
+        "size_bytes": 2156858
+      },
+      "index": 16,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/115_G.png",
+        "sha256": "c763675e4d428ac51cd7db3d8cd55de95d15c45852aed25a4681cd6937899bd2",
+        "size_bytes": 69909
+      },
+      "prompt_index": 0,
+      "sample_id": "115_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/116_G.png",
+        "sha256": "4f353fc912bc2cf5b173c94a643546428d7e6325b0ba099caec8a3f8a818b346",
+        "size_bytes": 909330
+      },
+      "index": 17,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/116_G.png",
+        "sha256": "7d1a73687ff2c8c8eb25a1abf24c969b52ae1ac1d25c3462666d9d2949655567",
+        "size_bytes": 56256
+      },
+      "prompt_index": 0,
+      "sample_id": "116_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/117_G.png",
+        "sha256": "0466ff5a29e171fc43de72c1dcc97f7c8681fc3cb737678c4717d71af82a3e62",
+        "size_bytes": 2103043
+      },
+      "index": 18,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/117_G.png",
+        "sha256": "fc28ec55858f448c95825627352717938f2d8a8677477bd0ea097fe7a9634f1c",
+        "size_bytes": 64150
+      },
+      "prompt_index": 0,
+      "sample_id": "117_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/118_G.png",
+        "sha256": "c1091ca6850fcbee9119a781b7118dc155be730d334c8910fc47059e7994b5a9",
+        "size_bytes": 2256100
+      },
+      "index": 19,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/118_G.png",
+        "sha256": "b41817cce1edd8ed856f51e51e21b92c271e152c1bfb3ca6476fc3022fe46f36",
+        "size_bytes": 77264
+      },
+      "prompt_index": 0,
+      "sample_id": "118_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/119_G.png",
+        "sha256": "60ced735afaa28703cce7f42388200e006731f53d8ae8b44a181d5fce9b11d0a",
+        "size_bytes": 2143796
+      },
+      "index": 20,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/119_G.png",
+        "sha256": "026e5b4073b4eaa9c473cf2d5b19fa8c1ed3475fc40850008521cce7a7d635a1",
+        "size_bytes": 28265
+      },
+      "prompt_index": 0,
+      "sample_id": "119_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/11_A.png",
+        "sha256": "3aea82ec26f24fb71aadeff3e20b0e7ffd5c2aaa1b43134ae676c123a00f57ac",
+        "size_bytes": 1864048
+      },
+      "index": 21,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/11_A.png",
+        "sha256": "f2fb83cb69eedf232a5194d0769061c3818cc2cf49cf3cc55fc75e68c6167bd8",
+        "size_bytes": 59991
+      },
+      "prompt_index": 0,
+      "sample_id": "11_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/120_G.png",
+        "sha256": "aff64b346cf7008db4e752bc517a47c0d3e88724979821643a0a2007113af0c1",
+        "size_bytes": 1833366
+      },
+      "index": 22,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/120_G.png",
+        "sha256": "6ba0dc4bb9d1f5f84fd43be83e6486e5a4b4cae1a1b89bc86bd3e2b686142de6",
+        "size_bytes": 67394
+      },
+      "prompt_index": 0,
+      "sample_id": "120_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/121_G.png",
+        "sha256": "7140cbcfb8a1ca568bb709f205b5ff210725ecc96cb4222bd464d65e8724da67",
+        "size_bytes": 1657456
+      },
+      "index": 23,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/121_G.png",
+        "sha256": "373a238cc5db98cbe5487789892208a491f22eb0b32b5310a41a0ba52a6af07d",
+        "size_bytes": 36528
+      },
+      "prompt_index": 0,
+      "sample_id": "121_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/122_G.png",
+        "sha256": "071359936c2be1598bb46a83af2a251379ebdae43d91ea2b8997df2bafde605d",
+        "size_bytes": 1296606
+      },
+      "index": 24,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/122_G.png",
+        "sha256": "0f26fb64c089332004676099c37e6dd81247847877234bf5304690a94f973330",
+        "size_bytes": 21972
+      },
+      "prompt_index": 0,
+      "sample_id": "122_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/123_G.png",
+        "sha256": "4f7ec1163270d8376ad1d2d98fe079051d7e6f8d42d888f1bf239e7b3ed22240",
+        "size_bytes": 811903
+      },
+      "index": 25,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/123_G.png",
+        "sha256": "9cc74e332272ad18a26d36bbbf3665ebc888f98e3df42bedf4e282e0efe718fe",
+        "size_bytes": 24126
+      },
+      "prompt_index": 0,
+      "sample_id": "123_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/124_G.png",
+        "sha256": "dc9a7319b71bc2a46e334022adc40fb697d92f09fc8a44ff86a042abfdcb58ea",
+        "size_bytes": 1366483
+      },
+      "index": 26,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/124_G.png",
+        "sha256": "6b3b322b6023fc7a8825110c98809229076c929bc69a6c11e6a93ffe4e9bd161",
+        "size_bytes": 51262
+      },
+      "prompt_index": 0,
+      "sample_id": "124_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/125_G.png",
+        "sha256": "b7cebadff2f751b0a0dbadfca33b24d11919d138d46415facacd94b259558713",
+        "size_bytes": 1759391
+      },
+      "index": 27,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/125_G.png",
+        "sha256": "85256d5b4315c3e3fd5b28b9ea8de317d643f810394c9cea74dc456386e430bf",
+        "size_bytes": 61053
+      },
+      "prompt_index": 0,
+      "sample_id": "125_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/126_G.png",
+        "sha256": "839360404bdf4ffd5573ee6ba363be2a04549800a853841107c51c92a82905a1",
+        "size_bytes": 2722636
+      },
+      "index": 28,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/126_G.png",
+        "sha256": "8c73cf5d8f04e229c95b2f391f583857e012aa9b09720f68584b39617347dac5",
+        "size_bytes": 57263
+      },
+      "prompt_index": 0,
+      "sample_id": "126_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/127_G.png",
+        "sha256": "aea3a6df92413d9fc0902aa11de38a8743b06c3adc8a06555e344f5b26a5f321",
+        "size_bytes": 2513432
+      },
+      "index": 29,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/127_G.png",
+        "sha256": "dc5a16e11bb98ac87c95227900bd378c2477cc60671c0a49d223fd1eccb6770e",
+        "size_bytes": 54086
+      },
+      "prompt_index": 0,
+      "sample_id": "127_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/128_G.png",
+        "sha256": "fe6e96b7e37786bd2c92576aebf7fac9ef249f5a3a49f022d05154ee7fd9ab4b",
+        "size_bytes": 2042728
+      },
+      "index": 30,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/128_G.png",
+        "sha256": "b3b5bbb8bc98a40ea4a177819c1f62b5fcf3e98c2ca142eabd7def3d737505ef",
+        "size_bytes": 59027
+      },
+      "prompt_index": 0,
+      "sample_id": "128_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/129_G.png",
+        "sha256": "72218ad9ae3b68db231958634eccd0a327b5671969ae52635f11aaea50a61ce1",
+        "size_bytes": 2625940
+      },
+      "index": 31,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/129_G.png",
+        "sha256": "73a1a2c1edaf9eb1f62ba362efc50a618e7ffb26eb8730980afcb5fa708975fa",
+        "size_bytes": 50762
+      },
+      "prompt_index": 0,
+      "sample_id": "129_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/12_A.png",
+        "sha256": "e308f6eb9afe631466eebaf6f431835d7cdefc8e582e23e6698f2906c946f506",
+        "size_bytes": 2161839
+      },
+      "index": 32,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/12_A.png",
+        "sha256": "1f4337c1a847bc53f48c310e35c5c95c2f346ac5855ee53982eec1862a918665",
+        "size_bytes": 63164
+      },
+      "prompt_index": 0,
+      "sample_id": "12_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/130_G.png",
+        "sha256": "5a2ffc1f8c15b3dfd1dcece2b95d8c29e0a06f9e03daed3720002fdf22cd9282",
+        "size_bytes": 1907065
+      },
+      "index": 33,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/130_G.png",
+        "sha256": "c94fe9a28a75b1e614f02a6450078b64be3295dfb5f3d8764e868e3fe767eb07",
+        "size_bytes": 67726
+      },
+      "prompt_index": 0,
+      "sample_id": "130_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/131_G.png",
+        "sha256": "03689a59d222c601412a43c9cfecb914da7240a29fe3bbf95550fecbd42c610c",
+        "size_bytes": 2175775
+      },
+      "index": 34,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/131_G.png",
+        "sha256": "44707a005f1477cdb9c71ef996fc348df1b3acecf72587c85ac8b3dfadc4955f",
+        "size_bytes": 71387
+      },
+      "prompt_index": 0,
+      "sample_id": "131_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/132_G.png",
+        "sha256": "2f11b97a1f5ebc8d082fc74987d9f6b5b3f94035f5bbce409b132fb4ada03f10",
+        "size_bytes": 1703145
+      },
+      "index": 35,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/132_G.png",
+        "sha256": "e0fc864def0def5e18ce9953ed3278dd57ed21ccdfa9e85eb9cd463b541e0ab9",
+        "size_bytes": 62667
+      },
+      "prompt_index": 0,
+      "sample_id": "132_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/133_G.png",
+        "sha256": "7a16e451a3c19bdee98967b239638eceaa1b8a40ee6f00ca726280e3f986f4d3",
+        "size_bytes": 888437
+      },
+      "index": 36,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/133_G.png",
+        "sha256": "ad40c106d9dd8eb215cf30b5723bcc207ee1891976b8bf53618ef1fb417106bb",
+        "size_bytes": 33191
+      },
+      "prompt_index": 0,
+      "sample_id": "133_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/134_G.png",
+        "sha256": "e047ab7a28e22a01eaac6f11f0268dc44e1db3b825297264e67da02b822029dd",
+        "size_bytes": 2107610
+      },
+      "index": 37,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/134_G.png",
+        "sha256": "0432e97a4ccc0f75f17156045e709331bde528135799233c1c72f7ba10c64f43",
+        "size_bytes": 69490
+      },
+      "prompt_index": 0,
+      "sample_id": "134_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/135_G.png",
+        "sha256": "d0eae47e194e9942709bf6cfbf2bed1a861f4b989cb2ee66167f3a78c469f66d",
+        "size_bytes": 1979064
+      },
+      "index": 38,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/135_G.png",
+        "sha256": "6c4dae641f9b600464c9c4a0b9e3f368aa3d1623bd082b7173c76fc94ab511a6",
+        "size_bytes": 46982
+      },
+      "prompt_index": 0,
+      "sample_id": "135_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/136_G.png",
+        "sha256": "0ef9b96ab13b8c30f6acffb99278c5fe237913ebcd4f6b94b1fc604b0ace1235",
+        "size_bytes": 986825
+      },
+      "index": 39,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/136_G.png",
+        "sha256": "8c3159b56d7e02e48c3c2a072d93fefa45eb4c1534941df5e94f8c7df171b843",
+        "size_bytes": 31078
+      },
+      "prompt_index": 0,
+      "sample_id": "136_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/137_G.png",
+        "sha256": "abefc7c6b590013322787f6239c5894f1cf3b2b5dda0cfad0810ee81ba9106fc",
+        "size_bytes": 1439699
+      },
+      "index": 40,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/137_G.png",
+        "sha256": "ec8c09a2da5c43d6f2d521aa017a86b2754adf44b60f9ebc1393f1c0ec28f68c",
+        "size_bytes": 35055
+      },
+      "prompt_index": 0,
+      "sample_id": "137_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/138_G.png",
+        "sha256": "cb6ea036bd1234ab657a66b13e51af84c68cda04f7c6e6614914332c8a168970",
+        "size_bytes": 1655220
+      },
+      "index": 41,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/138_G.png",
+        "sha256": "3404c6ca0ffb2d7e19eb1bea4f381287588d2b76cba429ed289511dfd65fc380",
+        "size_bytes": 28740
+      },
+      "prompt_index": 0,
+      "sample_id": "138_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/139_G.png",
+        "sha256": "65eb3ca54f7cc0419a43e5c50b2e126a5dda8397e57ea7bceb0513477918fac3",
+        "size_bytes": 2145175
+      },
+      "index": 42,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/139_G.png",
+        "sha256": "d3073320fec6040a42379601892832257f16f1a5f0377733a43e9fb8e05794c3",
+        "size_bytes": 77804
+      },
+      "prompt_index": 0,
+      "sample_id": "139_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/13_A.png",
+        "sha256": "d8d2059944fbd2c5d2a0db26c3fe37f1a6575ce307b1664c754e0a741d36b9e3",
+        "size_bytes": 2027613
+      },
+      "index": 43,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/13_A.png",
+        "sha256": "c88861bc47c94638fce82f5827a203f682df04ead6ea8afaaed75543ef6a906d",
+        "size_bytes": 66258
+      },
+      "prompt_index": 0,
+      "sample_id": "13_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/140_G.png",
+        "sha256": "0cdf93c5e47c0eba6ce4ea430c261a96101e790f8f612113cfd567b7f1ab61fe",
+        "size_bytes": 2432607
+      },
+      "index": 44,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/140_G.png",
+        "sha256": "4134e65e4c50beafbc355d52b343a7c77f497fb49c8fb23defb81240050615de",
+        "size_bytes": 55893
+      },
+      "prompt_index": 0,
+      "sample_id": "140_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/141_G.png",
+        "sha256": "1b9df30dedfbcb73bda54d373df65d7f16a3dce0abc5c293c799d446409a1cce",
+        "size_bytes": 2006535
+      },
+      "index": 45,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/141_G.png",
+        "sha256": "b4555cba6944025e9c5464438c12e1c375c0d2fa1b0eaf9653f1f1dc87cd0bf7",
+        "size_bytes": 70568
+      },
+      "prompt_index": 0,
+      "sample_id": "141_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/142_G.png",
+        "sha256": "8d49a46b269bf2cb0b9f4da0799ad778cb83cd8b8e288e2fd66a3a3dcfdb3522",
+        "size_bytes": 2219184
+      },
+      "index": 46,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/142_G.png",
+        "sha256": "c2df22f74506cef69eae6d00eda09b1b26a9fefdf1800140415efd72e3aef131",
+        "size_bytes": 78748
+      },
+      "prompt_index": 0,
+      "sample_id": "142_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/143_G.png",
+        "sha256": "a6979ed9cfa15342a992b102b447a5be2c1bd0a51fce862d1db51b69b6e9be0c",
+        "size_bytes": 2205237
+      },
+      "index": 47,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/143_G.png",
+        "sha256": "de3ae7129839284c38d1162f79f600504c62698c18b8b301af256168eb4f021d",
+        "size_bytes": 77154
+      },
+      "prompt_index": 0,
+      "sample_id": "143_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/144_G.png",
+        "sha256": "88098a5e83058e0919a2d34b3f13b3ed11a45a595c1ff0b5c3073bfe1e8ed67e",
+        "size_bytes": 1728831
+      },
+      "index": 48,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/144_G.png",
+        "sha256": "0e37a1e760aeb529d78450315f80b3e895795bd1e5d1f020489ca79e4ba98b40",
+        "size_bytes": 43186
+      },
+      "prompt_index": 0,
+      "sample_id": "144_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/145_G.png",
+        "sha256": "f5d0f3c4797ac9d407657a1458ae60a1e79a8bf75f88a7a1a783d763476d37b1",
+        "size_bytes": 941064
+      },
+      "index": 49,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/145_G.png",
+        "sha256": "4805e02203189e993c8aa2844d7c6ec1567c765b184ffa5bcb9ba899dfc648cf",
+        "size_bytes": 40999
+      },
+      "prompt_index": 0,
+      "sample_id": "145_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/146_G.png",
+        "sha256": "6834316b6fbccd997b29b2dcf3c1b470039fc775b2f3be39101977a09942cddf",
+        "size_bytes": 2282532
+      },
+      "index": 50,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/146_G.png",
+        "sha256": "6db597b9644417396b060cb264ffe1d22a8b8650ecc347f6aae09af138b2cb95",
+        "size_bytes": 78713
+      },
+      "prompt_index": 0,
+      "sample_id": "146_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/147_G.png",
+        "sha256": "eed869d80452d0f8414193452eabc17e4fddb9011a9406b12b93372b65a550f5",
+        "size_bytes": 1949331
+      },
+      "index": 51,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/147_G.png",
+        "sha256": "8d62dd31c42167aa0497fb7e4173dba52eec007c505e880040f32ec2a29222a2",
+        "size_bytes": 62676
+      },
+      "prompt_index": 0,
+      "sample_id": "147_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/148_G.png",
+        "sha256": "9c48cb9be71ea8efb4a3a7c76184970627e3c246340b672ad3bb25c92c0d4bb1",
+        "size_bytes": 1173989
+      },
+      "index": 52,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/148_G.png",
+        "sha256": "a29a2cdaa54fe940dfab3cc4b46e009ac652175d70044390f639c32e4ed41731",
+        "size_bytes": 39965
+      },
+      "prompt_index": 0,
+      "sample_id": "148_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/149_G.png",
+        "sha256": "53c2ab95d77e85cf03e3fbe89815a44b5ac17e8f223d4d164c4719eeb5dc1ce3",
+        "size_bytes": 1897506
+      },
+      "index": 53,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/149_G.png",
+        "sha256": "26d5e5aea9f1b9e2a3f1554465d0e3139dc88e0e350be77570519c7d81b365f9",
+        "size_bytes": 34798
+      },
+      "prompt_index": 0,
+      "sample_id": "149_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/14_A.png",
+        "sha256": "d731426578c9c9e0db8ddc55530e31d69914c17835535b95d1f324bf76f581fa",
+        "size_bytes": 2124614
+      },
+      "index": 54,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/14_A.png",
+        "sha256": "55bc5778df119b53edac0d89f261e147c10757ac6b48005370be847830d2ac62",
+        "size_bytes": 69173
+      },
+      "prompt_index": 0,
+      "sample_id": "14_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/150_G.png",
+        "sha256": "f6c6e117efa011f6619909782c4d198936e208ff4401f24ccaca9f274e7c6c48",
+        "size_bytes": 2122654
+      },
+      "index": 55,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/150_G.png",
+        "sha256": "7522fbf898ddd9f9e3c72b57e86e7ae68f4efad0854659f872e8ff6eeb336fa7",
+        "size_bytes": 69459
+      },
+      "prompt_index": 0,
+      "sample_id": "150_G"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/151_N.png",
+        "sha256": "448ed389057cdc3d5cab3f31e72631fe1f55c056aa376a3a7aeda770bb3b8ab6",
+        "size_bytes": 2124283
+      },
+      "index": 56,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/151_N.png",
+        "sha256": "d8b360c96553e38fd4c9730713995e1b16c7cf1468b5261e7c2b7f21ebfed81f",
+        "size_bytes": 71887
+      },
+      "prompt_index": 0,
+      "sample_id": "151_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/152_N.png",
+        "sha256": "2c24e6642ca755c3b7c5e00b94badc878c09e34c79cf7911d7dc7ff4ea4a73fc",
+        "size_bytes": 2005170
+      },
+      "index": 57,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/152_N.png",
+        "sha256": "03dfd5d5a8abc99be156da3d86fced2e0031aeb1d0c306df15df46759bb976bf",
+        "size_bytes": 69307
+      },
+      "prompt_index": 0,
+      "sample_id": "152_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/153_N.png",
+        "sha256": "0fb5229463e98029705a6f8e1f3d5b8bdb0ff0feb770fb60bc602d51d01a76f0",
+        "size_bytes": 1956640
+      },
+      "index": 58,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/153_N.png",
+        "sha256": "b55b3da0ff6d7978b88f82684cd99c4d74cf068765f3c7d3e6c407dbf3dbc865",
+        "size_bytes": 57571
+      },
+      "prompt_index": 0,
+      "sample_id": "153_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/154_N.png",
+        "sha256": "27ebd1197d257882caedf5a56747334b346a0c0cdbc374c1703fe81788c0a974",
+        "size_bytes": 2239055
+      },
+      "index": 59,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/154_N.png",
+        "sha256": "50e90773af811f442589278cdc46402e2742718101fa903b999909dce97243d8",
+        "size_bytes": 52859
+      },
+      "prompt_index": 0,
+      "sample_id": "154_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/155_N.png",
+        "sha256": "02e5c317e664ba635f728e6a0fdbbdf3866d813dc2b7be12ff731eff83402ada",
+        "size_bytes": 1470892
+      },
+      "index": 60,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/155_N.png",
+        "sha256": "3fdbd638d6ddb0d3997f573524c0da642aab5da8ff7d64620fcfdadc14262680",
+        "size_bytes": 56153
+      },
+      "prompt_index": 0,
+      "sample_id": "155_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/156_N.png",
+        "sha256": "23c0b40e1c6239b56c370bd5ccaa00ab38265d6361927336e198102f08526154",
+        "size_bytes": 1860758
+      },
+      "index": 61,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/156_N.png",
+        "sha256": "4cdea851b1c1cac0fde3976e4580cdc6f7210bf44911efac70762e98bc51320b",
+        "size_bytes": 55983
+      },
+      "prompt_index": 0,
+      "sample_id": "156_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/157_N.png",
+        "sha256": "72777c47ab65072f52f43f01d56f5dfbc55d2c0381a4cd6b08b197d8535571a0",
+        "size_bytes": 1781715
+      },
+      "index": 62,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/157_N.png",
+        "sha256": "b7b31b2757853904e13457862f043f2d6232a69deebe9436569bc6b84599a6b5",
+        "size_bytes": 76943
+      },
+      "prompt_index": 0,
+      "sample_id": "157_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/158_N.png",
+        "sha256": "f2155ecbfe687b099f240cebab10181a3eb5861cf2f1e13bd6065eb177b71119",
+        "size_bytes": 1494640
+      },
+      "index": 63,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/158_N.png",
+        "sha256": "2fddc4133b2b97d8fb2f339d5bb457f40806e43e943e20a47d270c4ec05293c4",
+        "size_bytes": 69607
+      },
+      "prompt_index": 0,
+      "sample_id": "158_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/159_N.png",
+        "sha256": "5d63fd3ee1c21f094a9994d6d6528821bfcf17a716293e1e01af8d9ff32d0189",
+        "size_bytes": 1912119
+      },
+      "index": 64,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/159_N.png",
+        "sha256": "eec10411fac44a2f3564efa12b108a10e1ff8d15a48901a81507f3fc772eb6b4",
+        "size_bytes": 72591
+      },
+      "prompt_index": 0,
+      "sample_id": "159_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/15_A.png",
+        "sha256": "d1068c0f31da03c2b7c3bd5cbfe4cf2657228b2f81847bed2d97db9bedbade27",
+        "size_bytes": 2260469
+      },
+      "index": 65,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/15_A.png",
+        "sha256": "56d608ef5b45743229d907188ab5988db039d29d1dac844890900c9475cfe58b",
+        "size_bytes": 66792
+      },
+      "prompt_index": 0,
+      "sample_id": "15_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/160_N.png",
+        "sha256": "b2241c7febb6c2edb6ee6a4da2246c0570519967c400d85528a6dda1410da468",
+        "size_bytes": 2098037
+      },
+      "index": 66,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/160_N.png",
+        "sha256": "1e9da3b157e0f68f19f68af594048cbfc279340414ce1279f1b338c520f41cdf",
+        "size_bytes": 70046
+      },
+      "prompt_index": 0,
+      "sample_id": "160_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/161_N.png",
+        "sha256": "60c48b7cb3d71114ec7b4f6c826236e6a1377a15438125699e687c90270e3c5b",
+        "size_bytes": 1829695
+      },
+      "index": 67,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/161_N.png",
+        "sha256": "236cbcaafce0bf41a27af769fc821601c11287c387288f8197034485895b0757",
+        "size_bytes": 64635
+      },
+      "prompt_index": 0,
+      "sample_id": "161_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/162_N.png",
+        "sha256": "4f8512a36f5b761ce378e43c2c2a8709500bcc99aab213a970caf0a485d11ada",
+        "size_bytes": 1904782
+      },
+      "index": 68,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/162_N.png",
+        "sha256": "0c7f164bf8eb10f2a26e40684747e533131de1f092d3d49494fa0ae27ded0f5c",
+        "size_bytes": 67085
+      },
+      "prompt_index": 0,
+      "sample_id": "162_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/163_N.png",
+        "sha256": "06f3511911ade891e27dfc9eecef8efbd1c7ea1f2fd271fbca05133178db6846",
+        "size_bytes": 1377596
+      },
+      "index": 69,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/163_N.png",
+        "sha256": "c7987f9cbbb47fd9aa2dfa75b63c5a6db082af25fcf226f0ce7983146d6f76d5",
+        "size_bytes": 62360
+      },
+      "prompt_index": 0,
+      "sample_id": "163_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/164_N.png",
+        "sha256": "711b3b843590f9ee4b036c4efad6fa8bb8297b7b31c389e6e7c8f33aaa8ec81f",
+        "size_bytes": 1463546
+      },
+      "index": 70,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/164_N.png",
+        "sha256": "e51471b72d650b9d81f3cf49f18ab9f5df6d5871292ed8bccb72f100edb05546",
+        "size_bytes": 65860
+      },
+      "prompt_index": 0,
+      "sample_id": "164_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/165_N.png",
+        "sha256": "444c4366dd548886593b1cc319b6eb79c3b98a85b31e21bfae7395d0c07f9d70",
+        "size_bytes": 2253523
+      },
+      "index": 71,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/165_N.png",
+        "sha256": "1f0106b68008d6aa56aff42f08d469f7c28a5f95cd2e6e1a68d43e9b053b6c82",
+        "size_bytes": 76798
+      },
+      "prompt_index": 0,
+      "sample_id": "165_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/166_N.png",
+        "sha256": "8cec74fa37eb9f01a9aeae1251c264cf166c8653c0737c3ea934e145fdec27eb",
+        "size_bytes": 2388546
+      },
+      "index": 72,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/166_N.png",
+        "sha256": "742d27197ce5d7506a9d7853975bf33368f4fc392ce5b7313d2a8b81a6082b38",
+        "size_bytes": 74134
+      },
+      "prompt_index": 0,
+      "sample_id": "166_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/167_N.png",
+        "sha256": "208851156d9f82bf045c95e00e0e98e50ff273ca5dbc3f1bc6ec20304214d7da",
+        "size_bytes": 2291512
+      },
+      "index": 73,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/167_N.png",
+        "sha256": "400c9cd6a7f56a3873b4e7063ea99b2fa244161ec51ca49d3d13548bcbac9393",
+        "size_bytes": 67658
+      },
+      "prompt_index": 0,
+      "sample_id": "167_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/168_N.png",
+        "sha256": "2a2bf9f680d301685d284210504630c21e98c468cb1b944a31a0a8837c0ce307",
+        "size_bytes": 2274918
+      },
+      "index": 74,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/168_N.png",
+        "sha256": "5a0a313e8d6272f74725285b6a7f1981ad0764c213883950df69245ecb92528a",
+        "size_bytes": 69455
+      },
+      "prompt_index": 0,
+      "sample_id": "168_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/169_N.png",
+        "sha256": "8572ccdbba87b14deb1c98d3429b84a4313ad58ae1688cacaebb5312d9d41b71",
+        "size_bytes": 1461898
+      },
+      "index": 75,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/169_N.png",
+        "sha256": "b083435447be49fd0d838e4cef4593bfee3e1f0dd7d91000ca5f441b23412850",
+        "size_bytes": 69294
+      },
+      "prompt_index": 0,
+      "sample_id": "169_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/16_A.png",
+        "sha256": "9b12309db277825cee0ef67d2f2f91470647a9b9132bda1bd68107e47145e695",
+        "size_bytes": 1918332
+      },
+      "index": 76,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/16_A.png",
+        "sha256": "0aec54d1b4a57035b2680dddd3c4ff7d4af3bc1dfadf6437a31d78bd334ac355",
+        "size_bytes": 65926
+      },
+      "prompt_index": 0,
+      "sample_id": "16_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/170_N.png",
+        "sha256": "6105d9ada19864574b4ab3fb03afdf4c79cc7a199c347cb164b738a4d89275e6",
+        "size_bytes": 1329761
+      },
+      "index": 77,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/170_N.png",
+        "sha256": "d8821f6384771dcb8ba596e53a9816701ab1b6df728f19006780c7bb89b8e77e",
+        "size_bytes": 70526
+      },
+      "prompt_index": 0,
+      "sample_id": "170_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/171_N.png",
+        "sha256": "1f8e751f5329c19d4d385801f1edd5d3ceff9365568313252b214f78152a3308",
+        "size_bytes": 2435780
+      },
+      "index": 78,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/171_N.png",
+        "sha256": "fc00d70acdda86b8f18325774bea400cf15e33fe6a58816eaaf5ee4847b8b978",
+        "size_bytes": 79129
+      },
+      "prompt_index": 0,
+      "sample_id": "171_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/172_N.png",
+        "sha256": "671befa1ce675791540a26d24f4f48c35e27577ab0fd96f37ea00fe34b21a7cc",
+        "size_bytes": 2433591
+      },
+      "index": 79,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/172_N.png",
+        "sha256": "b266fff8ba8f3709d75a27a85abeeee479291b7cbcd961fdfbc80e63f63ad62f",
+        "size_bytes": 75401
+      },
+      "prompt_index": 0,
+      "sample_id": "172_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/173_N.png",
+        "sha256": "5c2139b8acb1902e981f6d51e196bc007d8f1f8ab0d8f665657e78c284eafe20",
+        "size_bytes": 2632409
+      },
+      "index": 80,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/173_N.png",
+        "sha256": "29477a9eacf8b70a7f1f39beeeeb1283a6aad0bca8b9b0ec1c2acbc8cbb66bba",
+        "size_bytes": 67683
+      },
+      "prompt_index": 0,
+      "sample_id": "173_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/174_N.png",
+        "sha256": "28a1a25f21d24cda81d8d8670e8d88b643ee2b1b7562eaf4f969c4993f356513",
+        "size_bytes": 2537553
+      },
+      "index": 81,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/174_N.png",
+        "sha256": "44ed73f92400024ca16c55d2eea58263c01e23f3f1f3d809427265491eb2c4f2",
+        "size_bytes": 77668
+      },
+      "prompt_index": 0,
+      "sample_id": "174_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/175_N.png",
+        "sha256": "2424b360465e8b10185a4e7f793f96b8d60286cdeb27c705ff3f1c37897eaf28",
+        "size_bytes": 2876887
+      },
+      "index": 82,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/175_N.png",
+        "sha256": "4fe886aa77e9bb42976f18028fa0279325c4441fee7f801943199e799704f974",
+        "size_bytes": 71079
+      },
+      "prompt_index": 0,
+      "sample_id": "175_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/176_N.png",
+        "sha256": "228ef63295e7f424668d9fb305ef4a5b338af7ccc3ef020154c7a320744b32fd",
+        "size_bytes": 2626887
+      },
+      "index": 83,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/176_N.png",
+        "sha256": "278a9c8f9bc826fd5171c81f995f734694367aea7de8d29a4aef39b7f42af656",
+        "size_bytes": 74362
+      },
+      "prompt_index": 0,
+      "sample_id": "176_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/177_N.png",
+        "sha256": "457d605a25e673fd4ebe912b85e25a9dd5ee63ecd9f5d235a9d174ca24fd97b0",
+        "size_bytes": 2768215
+      },
+      "index": 84,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/177_N.png",
+        "sha256": "61a367da7fa5823870934c3e84cfe18dd09bda31c015abdc78c7bb0730ac6041",
+        "size_bytes": 74452
+      },
+      "prompt_index": 0,
+      "sample_id": "177_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/178_N.png",
+        "sha256": "5b298646f729a1eb455f92f6f8fd48fed0448bfa37612e8f140d9c4e3a06c3ab",
+        "size_bytes": 2680049
+      },
+      "index": 85,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/178_N.png",
+        "sha256": "d0619e14aee96878ed5a84b1f084242ac6d9f0071738f00bf5edac59404f785c",
+        "size_bytes": 73336
+      },
+      "prompt_index": 0,
+      "sample_id": "178_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/179_N.png",
+        "sha256": "13c2c951159b16aed4ecac84119a733e8d11f7300580491ef39f3eba8835f445",
+        "size_bytes": 2622480
+      },
+      "index": 86,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/179_N.png",
+        "sha256": "61393b6201fdffb25f7cba37eedfd36fab264ec9783e77c53fefe91498a73217",
+        "size_bytes": 75819
+      },
+      "prompt_index": 0,
+      "sample_id": "179_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/17_A.png",
+        "sha256": "000f6422e3ca6cc3c271941b1dda450b85a3a1a449f479ecf0270642ca8c89d3",
+        "size_bytes": 2390865
+      },
+      "index": 87,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/17_A.png",
+        "sha256": "e219193c4edde5a2f72bee0fdf8948c5fcf4d810bbe634f952bfeaf11109367a",
+        "size_bytes": 68004
+      },
+      "prompt_index": 0,
+      "sample_id": "17_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/180_N.png",
+        "sha256": "8786144744c817e2a9344c9216ce61214dc0eccdc9b2b67eec7a7a5839466339",
+        "size_bytes": 2618975
+      },
+      "index": 88,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/180_N.png",
+        "sha256": "6867bc9773c675fba6a06294ee6e0d40863cc0f3bb849af8e14e31315c3d00c3",
+        "size_bytes": 69922
+      },
+      "prompt_index": 0,
+      "sample_id": "180_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/181_N.png",
+        "sha256": "1af81df68c865e0b4705bfc62d168b56840a7b6c252b913d004a118abdea66c2",
+        "size_bytes": 2013675
+      },
+      "index": 89,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/181_N.png",
+        "sha256": "e7589f39fb61f5a8afc237cd22d274588f100e20aeaf281afc3f8cfc686c5341",
+        "size_bytes": 65178
+      },
+      "prompt_index": 0,
+      "sample_id": "181_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/182_N.png",
+        "sha256": "3e91ad9bc138d9b6081a12ddba885ff34fd2b57ad656e38bee39dd3207947304",
+        "size_bytes": 2315250
+      },
+      "index": 90,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/182_N.png",
+        "sha256": "0ffd737338f260f138d3901cb6ae950b0acf96c4024bc8cb6972887c67e71f3a",
+        "size_bytes": 73980
+      },
+      "prompt_index": 0,
+      "sample_id": "182_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/183_N.png",
+        "sha256": "7051d5cee6dd4c1eb6040d99240430d6e03ad010994d485759e47fa682a2e2f3",
+        "size_bytes": 1658355
+      },
+      "index": 91,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/183_N.png",
+        "sha256": "d0665e384038ed033b590d1f44f0bac9a0996e6dd20f09aa434140f5cb179e13",
+        "size_bytes": 68189
+      },
+      "prompt_index": 0,
+      "sample_id": "183_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/184_N.png",
+        "sha256": "403ff93c1ab686f0be981e21e39a18e8f3c40140d5013f0d95207ccda170b8e0",
+        "size_bytes": 2237398
+      },
+      "index": 92,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/184_N.png",
+        "sha256": "9a45a59c001b44ecc6dc35f0978d7f7a61275e1beea56638b1750cd21f8c8d25",
+        "size_bytes": 75770
+      },
+      "prompt_index": 0,
+      "sample_id": "184_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/185_N.png",
+        "sha256": "f1b05d2320f7f49ef2725292df62da5d5c73b6a9371c5f05ea8859557cfe0e81",
+        "size_bytes": 2508904
+      },
+      "index": 93,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/185_N.png",
+        "sha256": "15736e724dfd7bed2cd6ddd4fc782dd76046862404984e86501a0ac068ca5874",
+        "size_bytes": 73462
+      },
+      "prompt_index": 0,
+      "sample_id": "185_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/186_N.png",
+        "sha256": "0f32b1eaa24881874af7c62b90755ec994ba2ed6bad4349e7a47903017a50b4c",
+        "size_bytes": 2679821
+      },
+      "index": 94,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/186_N.png",
+        "sha256": "cb667378d55e0f82f0b391e198c853db61c4414ddca02fbf9de70891dfd0d9e1",
+        "size_bytes": 74743
+      },
+      "prompt_index": 0,
+      "sample_id": "186_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/187_N.png",
+        "sha256": "e8d9153654ad9c61d7d852c894c67e499eef230de92ba9d2a52e5db27ae16383",
+        "size_bytes": 2340396
+      },
+      "index": 95,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/187_N.png",
+        "sha256": "291a14fcae7208a1f8a66de71b06aaa0e01926751d4be942bbf919f1dc1d5087",
+        "size_bytes": 74880
+      },
+      "prompt_index": 0,
+      "sample_id": "187_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/188_N.png",
+        "sha256": "a1ddf31799f9eeee56e6ed712024e2e4c1316c522e23e2e788a92c606314412e",
+        "size_bytes": 2728387
+      },
+      "index": 96,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/188_N.png",
+        "sha256": "824f12caf3fa0e1efe752fa0917c390ab8e3aef00ade314e9537bb9c33422142",
+        "size_bytes": 82234
+      },
+      "prompt_index": 0,
+      "sample_id": "188_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/189_N.png",
+        "sha256": "4e59a2d0d47779ecb3092c34130da5bea552e6d131e89bd1fa0a5a4f7b4d6ba5",
+        "size_bytes": 2769675
+      },
+      "index": 97,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/189_N.png",
+        "sha256": "e924bf52d3bb9166c50f80ca7e1573474d9c3ac1718ecfecc04559823c9714f8",
+        "size_bytes": 77825
+      },
+      "prompt_index": 0,
+      "sample_id": "189_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/18_A.png",
+        "sha256": "db56a380cfb9a0792026429e03f32efaccff457326ce5300474fee4d18f85dcc",
+        "size_bytes": 1869233
+      },
+      "index": 98,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/18_A.png",
+        "sha256": "0ba0ca370827eb4c6a612517e7f81cf1e62f79bd34fc4ce421667fef7af07ae4",
+        "size_bytes": 45835
+      },
+      "prompt_index": 0,
+      "sample_id": "18_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/190_N.png",
+        "sha256": "53bc7d29720d2a22806f1147e01568e429f888e92474105f3f78ebce2926a0c9",
+        "size_bytes": 2576677
+      },
+      "index": 99,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/190_N.png",
+        "sha256": "9dc5a7ab5a2a19057e8edd4dbda2fe68ed7dfea9c34d2ddaa0839edd8b06d210",
+        "size_bytes": 74805
+      },
+      "prompt_index": 0,
+      "sample_id": "190_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/191_N.png",
+        "sha256": "4fba2752992a0c0c95fa3b9a37a8c7b74306f9972fa744bc38f5f6cf0bcd8cda",
+        "size_bytes": 2623893
+      },
+      "index": 100,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/191_N.png",
+        "sha256": "a541bce4d74bcc9c072fc926250d2898b86e75ce5c6add341442089c0fc20ead",
+        "size_bytes": 74113
+      },
+      "prompt_index": 0,
+      "sample_id": "191_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/192_N.png",
+        "sha256": "ca3350e9abd92833893644f29f880eea3f996d80e5e5a6c7adce36b681e46219",
+        "size_bytes": 2603630
+      },
+      "index": 101,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/192_N.png",
+        "sha256": "c2f654bb40d0184cf56c97d5d367b5c5436ea69a2875210c7b11613f5e8d0fd4",
+        "size_bytes": 72557
+      },
+      "prompt_index": 0,
+      "sample_id": "192_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/193_N.png",
+        "sha256": "9e886110e4271548bbc4f02eae2e0e8304d37158f5a18ad97b83b9bf499224f2",
+        "size_bytes": 2224264
+      },
+      "index": 102,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/193_N.png",
+        "sha256": "53c0be6f3dc3a9706660e068c05d457fcfde4541600557d1c07729413db5e22b",
+        "size_bytes": 75939
+      },
+      "prompt_index": 0,
+      "sample_id": "193_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/194_N.png",
+        "sha256": "d7e8b8ead0f7f1f42d7d83341686c031740e5c556c62a9d4a929238aa75f7d37",
+        "size_bytes": 2291130
+      },
+      "index": 103,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/194_N.png",
+        "sha256": "3a17c70838b4f8b6b4925ee294bd03a443b89d9c9abc5297bf802f0a4d6ec0d2",
+        "size_bytes": 80208
+      },
+      "prompt_index": 0,
+      "sample_id": "194_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/195_N.png",
+        "sha256": "9c80c6ed7cb90b25d1be2d68873bf9d4ce63b554f3850119e53916ae620bfddd",
+        "size_bytes": 2211692
+      },
+      "index": 104,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/195_N.png",
+        "sha256": "b2f4afd42340369cacd3224cd8de01f3e1d72ba98bd49c929918501f39e82a61",
+        "size_bytes": 74044
+      },
+      "prompt_index": 0,
+      "sample_id": "195_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/196_N.png",
+        "sha256": "90743bd7b304e8bf1792e379144def32f77eb3c1e463c8e890ed2b489ace9fdb",
+        "size_bytes": 1936350
+      },
+      "index": 105,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/196_N.png",
+        "sha256": "b61734901e049a902dcc1a1b026ced31d8dfd3bf58d0a9991625c4f0c0865817",
+        "size_bytes": 62559
+      },
+      "prompt_index": 0,
+      "sample_id": "196_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/197_N.png",
+        "sha256": "6227c5b1f9099c3abfdc27858d545e4019a0a11102353148f2a4497dc6cef5e6",
+        "size_bytes": 1780316
+      },
+      "index": 106,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/197_N.png",
+        "sha256": "78a501802419766848061b052a72e81fafbe7e87a643f6e898aa8ce3ee017819",
+        "size_bytes": 72774
+      },
+      "prompt_index": 0,
+      "sample_id": "197_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/198_N.png",
+        "sha256": "ad1407a33320ca173e4cd768bd7ee35bea064a18b103e6dd80f577a72a5b5121",
+        "size_bytes": 2146860
+      },
+      "index": 107,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/198_N.png",
+        "sha256": "303884e313de4101feaa15a8dbe96fe9739372b12bd472360195a552b8016356",
+        "size_bytes": 79243
+      },
+      "prompt_index": 0,
+      "sample_id": "198_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/199_N.png",
+        "sha256": "46a07d0a4e29ea26e05f53a8c1f38f7133c6d8e02fbf01efae82b9c26fb54668",
+        "size_bytes": 2641010
+      },
+      "index": 108,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/199_N.png",
+        "sha256": "6b12fca517fdefda45cccd36c26640a0fd205d5b986edaa7724804f3f687bf17",
+        "size_bytes": 71412
+      },
+      "prompt_index": 0,
+      "sample_id": "199_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/19_A.png",
+        "sha256": "ae4b09bbbb94c84ef3c3a5ff00d1734aafa21b004d13f054e13ce5a829428468",
+        "size_bytes": 2156355
+      },
+      "index": 109,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/19_A.png",
+        "sha256": "ad7593d95c5748f7b96b319b0bb8d7a3139db5b5296558de56f80b044de1f632",
+        "size_bytes": 55534
+      },
+      "prompt_index": 0,
+      "sample_id": "19_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/1_A.png",
+        "sha256": "79a49718fdb300f94880ad119641b9dbb5c2d2b589804b16ccd9cb433fb2fcaa",
+        "size_bytes": 2055810
+      },
+      "index": 110,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/1_A.png",
+        "sha256": "e5d5b7ebe13075d0196d9041898922476c46dab0293adf4369596dce9299f794",
+        "size_bytes": 77228
+      },
+      "prompt_index": 0,
+      "sample_id": "1_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/200_N.png",
+        "sha256": "cdad2cf20e13a5e4785ff09909f53e1a0e6db991f44acab2768898d353f89e49",
+        "size_bytes": 2787289
+      },
+      "index": 111,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/200_N.png",
+        "sha256": "fee46b43692cb33cb30ebc2d6f8faa83be6fd637941ac12bd69ab0965849fe99",
+        "size_bytes": 78228
+      },
+      "prompt_index": 0,
+      "sample_id": "200_N"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/20_A.png",
+        "sha256": "766795107f7c9d4960559d3a0532ac4f9c1bb62e8249dfe4deab9cb3262255c7",
+        "size_bytes": 2530840
+      },
+      "index": 112,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/20_A.png",
+        "sha256": "2c71972e8bc698446955e83f64454c93041b2e2d3097e656c5ce5d511aba0828",
+        "size_bytes": 75390
+      },
+      "prompt_index": 0,
+      "sample_id": "20_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/21_A.png",
+        "sha256": "57c177de102c1bad88d19d4d065b5f633591fe3577128d3103337b45cec82da2",
+        "size_bytes": 2226450
+      },
+      "index": 113,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/21_A.png",
+        "sha256": "c1d6480abd2b425d83af2be0093b7015df0e88acbef93339a04c63a40a2124e4",
+        "size_bytes": 59365
+      },
+      "prompt_index": 0,
+      "sample_id": "21_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/22_A.png",
+        "sha256": "0970f87fe066c8234c8ae9c8ad32b29d3a4557cfe7e4829034c944f23f324193",
+        "size_bytes": 2311262
+      },
+      "index": 114,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/22_A.png",
+        "sha256": "4eeb65ad34d1602e3115979e3d94f637e75da8070fb92320b03b90cde18ab82e",
+        "size_bytes": 71402
+      },
+      "prompt_index": 0,
+      "sample_id": "22_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/23_A.png",
+        "sha256": "fa44e5dace728c1f7a9996597f8cca80e51a9e03dc220ca5355876bedcedb9ca",
+        "size_bytes": 2283187
+      },
+      "index": 115,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/23_A.png",
+        "sha256": "4eeb65ad34d1602e3115979e3d94f637e75da8070fb92320b03b90cde18ab82e",
+        "size_bytes": 71402
+      },
+      "prompt_index": 0,
+      "sample_id": "23_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/24_A.png",
+        "sha256": "07b320a972e38649013bc65e35f49af1f72831701fc818d270722ec4a2d8a7af",
+        "size_bytes": 2219622
+      },
+      "index": 116,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/24_A.png",
+        "sha256": "a3eba2fa676e3477e9c52b64c84d2ee763c98e7f158e8189e1471b8be7ed50f3",
+        "size_bytes": 52605
+      },
+      "prompt_index": 0,
+      "sample_id": "24_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/25_A.png",
+        "sha256": "8743969c1e506beef39892e05a38c6acceb8253e1b2cb76e508e24d98a595859",
+        "size_bytes": 2715294
+      },
+      "index": 117,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/25_A.png",
+        "sha256": "7b430ba6374a605b1d09955795ba04c5b35eed5caa42a30b3587291e740de013",
+        "size_bytes": 63997
+      },
+      "prompt_index": 0,
+      "sample_id": "25_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/26_A.png",
+        "sha256": "39b113b62cd578d897856a767e833f09632fcaa0990f47497c7fdabaaaeb31d7",
+        "size_bytes": 2317620
+      },
+      "index": 118,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/26_A.png",
+        "sha256": "67bdbf30770c14c4483366d420d357852cc13403917314d4654af9626ef4b9f0",
+        "size_bytes": 71092
+      },
+      "prompt_index": 0,
+      "sample_id": "26_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/27_A.png",
+        "sha256": "a20d51edcbfaa759de7a30db8a7295c127ce85bbace98917277ac4d818963e44",
+        "size_bytes": 1689231
+      },
+      "index": 119,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/27_A.png",
+        "sha256": "248a7ea0a61eca0ca3721aaa369cc7c8d141b07c84e63ce631f4740024acb72d",
+        "size_bytes": 41034
+      },
+      "prompt_index": 0,
+      "sample_id": "27_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/28_A.png",
+        "sha256": "83042e934f8613e2c65aa4acfb2cb5ac22a61a05084eb00cdc31301d687f2122",
+        "size_bytes": 2208415
+      },
+      "index": 120,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/28_A.png",
+        "sha256": "fa65432d0b37ef4c7f15e587bdcaf35db536f8de40ad37a14586313a7570ba28",
+        "size_bytes": 68200
+      },
+      "prompt_index": 0,
+      "sample_id": "28_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/29_A.png",
+        "sha256": "22283f007ebd895d8fff81bc4cabb11260e79500866781703e3421c36009e14c",
+        "size_bytes": 2505506
+      },
+      "index": 121,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/29_A.png",
+        "sha256": "ec0b1750887b2ae5f87fbd8343af02b6a437a4cacb543e835a7754af418f5c53",
+        "size_bytes": 69415
+      },
+      "prompt_index": 0,
+      "sample_id": "29_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/2_A.png",
+        "sha256": "33912452949c0beb7d63cfb618eee615c509b5242c71990dacb632e49843b4ef",
+        "size_bytes": 2244313
+      },
+      "index": 122,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/2_A.png",
+        "sha256": "91168877d9b9892001cb6ea9bddda71f085bffca61a84c2e02c6d7743859862c",
+        "size_bytes": 85504
+      },
+      "prompt_index": 0,
+      "sample_id": "2_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/30_A.png",
+        "sha256": "4bbbe1b5137c8a1a60860be37722efb9ad7d6b2dda3a1b39e245dd3d08623fc7",
+        "size_bytes": 2398608
+      },
+      "index": 123,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/30_A.png",
+        "sha256": "062264d6d9b68dd31093450cf9505d7f6d55d58249ba12a9c39d204ef1304c9e",
+        "size_bytes": 62984
+      },
+      "prompt_index": 0,
+      "sample_id": "30_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/31_A.png",
+        "sha256": "7bf199929e9b34cfaeb4812f05fb2e1200e328c29b074402f2131231351a66f3",
+        "size_bytes": 2307243
+      },
+      "index": 124,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/31_A.png",
+        "sha256": "9e8c739bee0f939c2437959d1665cf9615315aa3388a03aa7802e1af4ab62036",
+        "size_bytes": 71046
+      },
+      "prompt_index": 0,
+      "sample_id": "31_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/32_A.png",
+        "sha256": "b0ccc9bc7f7e4f8db6ad4c3288dea7acbf6954a566578ff0bea1907db7614d46",
+        "size_bytes": 2190931
+      },
+      "index": 125,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/32_A.png",
+        "sha256": "c848f8cfa7ac296a01f91042f4143bd5ba2431e42b936081fb68d68b4cc80dae",
+        "size_bytes": 72843
+      },
+      "prompt_index": 0,
+      "sample_id": "32_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/33_A.png",
+        "sha256": "495fc690332a6ab7d5eaf6425545d959746632189e3d904ea6bbfa6b86fe0756",
+        "size_bytes": 2570623
+      },
+      "index": 126,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/33_A.png",
+        "sha256": "a6db58c40d644760df758da624120780cce8e5cf87dea6166d70a582636accfd",
+        "size_bytes": 91817
+      },
+      "prompt_index": 0,
+      "sample_id": "33_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/34_A.png",
+        "sha256": "a455a8952c22cb07b75a97d354d96d6e32ab80505bd866cc9b27c2a319e0fb6e",
+        "size_bytes": 2041335
+      },
+      "index": 127,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/34_A.png",
+        "sha256": "66f4ea1d299e965d6822f9cae73b62101c1cfcc0fd2a80856db962c294e7a9c6",
+        "size_bytes": 57064
+      },
+      "prompt_index": 0,
+      "sample_id": "34_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/35_A.png",
+        "sha256": "cfd55b585606d1282afa7fd1cd3e35eda4365885b75312c92f118e1dd7c74609",
+        "size_bytes": 2636023
+      },
+      "index": 128,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/35_A.png",
+        "sha256": "82e2b8fc719ebd87a09e5dfa9355cae0703c054aa445ec2409aadb54513c39be",
+        "size_bytes": 78079
+      },
+      "prompt_index": 0,
+      "sample_id": "35_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/36_A.png",
+        "sha256": "e616b4f67b6425777321e8eaaa5ad1bd9d59485201a2cb1260d31f0fa8432bfe",
+        "size_bytes": 2350014
+      },
+      "index": 129,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/36_A.png",
+        "sha256": "2140d0597046ed576a337c513c101e64bd0ce2720d9babf818b79d17b6ab9e53",
+        "size_bytes": 72358
+      },
+      "prompt_index": 0,
+      "sample_id": "36_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/37_A.png",
+        "sha256": "6f47d7583711041db6a0bb3918492b827885f1c95bc6044c3759f152f2c1a1ad",
+        "size_bytes": 1504965
+      },
+      "index": 130,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/37_A.png",
+        "sha256": "b13dabadeea80800399bcc33d87a0cdf3f141e16d3e45df2240d014a29d9e188",
+        "size_bytes": 41220
+      },
+      "prompt_index": 0,
+      "sample_id": "37_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/38_A.png",
+        "sha256": "090e70ba123d22d4d51da1d58f26bff561d728048edc44d126ab36031d790bcf",
+        "size_bytes": 1974449
+      },
+      "index": 131,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/38_A.png",
+        "sha256": "e74b4bea16f1a4886e93fc42178672d293c1264f112ec7d61ddcf82b50c78029",
+        "size_bytes": 58172
+      },
+      "prompt_index": 0,
+      "sample_id": "38_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/39_A.png",
+        "sha256": "f058e5e93a435d450981f88b2949a9eee9f092ab5551512be0014c286e3e5c58",
+        "size_bytes": 2508887
+      },
+      "index": 132,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/39_A.png",
+        "sha256": "fcac6df1db570ec947e6912edec1434bab774b273a4b62fa176fbc2874f22d9b",
+        "size_bytes": 62766
+      },
+      "prompt_index": 0,
+      "sample_id": "39_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/3_A.png",
+        "sha256": "89a3ab8a8079eac8e21252760d67aaef27d4e7085f7bf241e306ab017188c42c",
+        "size_bytes": 2470155
+      },
+      "index": 133,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/3_A.png",
+        "sha256": "477604f0885311cf6262f02876d3ca619b58d5ed0f7a18faa712fe389638ce7d",
+        "size_bytes": 90487
+      },
+      "prompt_index": 0,
+      "sample_id": "3_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/40_A.png",
+        "sha256": "2137b5e60a97974c4628bb3206f67019baf734c32884a9f34023c92b5b3f2cb9",
+        "size_bytes": 2290733
+      },
+      "index": 134,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/40_A.png",
+        "sha256": "2c7e316e7cca4d8059ffa4449603ad10f45a2f0ab1b6333723f2e2543890f460",
+        "size_bytes": 59599
+      },
+      "prompt_index": 0,
+      "sample_id": "40_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/41_A.png",
+        "sha256": "0d6d83f31c12a69f259a24f062ef136a9c8beba7468991575af74b3638270c92",
+        "size_bytes": 2345481
+      },
+      "index": 135,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/41_A.png",
+        "sha256": "3875467dc239810d89310f5d4809d81ff4cded8488e8e4d6d078313ef4e1cecf",
+        "size_bytes": 64428
+      },
+      "prompt_index": 0,
+      "sample_id": "41_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/42_A.png",
+        "sha256": "b245c95147438d387b3c5526d2727396943e3d6acf41162349cb23e9e2f90bf4",
+        "size_bytes": 2183157
+      },
+      "index": 136,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/42_A.png",
+        "sha256": "3b7e75d102040a76c3bebb28b2ee348f19b30c968b9992af2b42a0dd00a3e0a6",
+        "size_bytes": 68838
+      },
+      "prompt_index": 0,
+      "sample_id": "42_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/43_A.png",
+        "sha256": "a239c0b570c289b20e919678e58495e4daeedacda6c419363aa8b4466a72858f",
+        "size_bytes": 2691930
+      },
+      "index": 137,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/43_A.png",
+        "sha256": "3a037e6ae096e0731cd86377bd1ab1e26f7a93aaab522c3fa2f51b3364d6eded",
+        "size_bytes": 60447
+      },
+      "prompt_index": 0,
+      "sample_id": "43_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/44_A.png",
+        "sha256": "662605f3054b7a82da2335eb5c341f72b70bddeeabc9b9ed652e69f5442ce95e",
+        "size_bytes": 2332848
+      },
+      "index": 138,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/44_A.png",
+        "sha256": "bcffd4be855f17da94b11ee2dca92a33273a24b956686fa7ea611f996c23b62a",
+        "size_bytes": 71599
+      },
+      "prompt_index": 0,
+      "sample_id": "44_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/45_A.png",
+        "sha256": "569e0f6a5f34dee89eb52f03c3217e041461b8665a9bf7d799559da166869899",
+        "size_bytes": 2153568
+      },
+      "index": 139,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/45_A.png",
+        "sha256": "ddb09e3bfba7d6d8c314eb18f85772159c9215cfe6b6a4dc2b834123d8f2efc2",
+        "size_bytes": 56527
+      },
+      "prompt_index": 0,
+      "sample_id": "45_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/46_A.png",
+        "sha256": "6eceb5e3dd2fd99bbf6b5301e412160cadd7c98e1f53765ee738342d61fdd1db",
+        "size_bytes": 2063162
+      },
+      "index": 140,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/46_A.png",
+        "sha256": "76f996f6e0b758f8463c0eab033dcb8a0d18437849b7a29f957cfa45b43dc30f",
+        "size_bytes": 56423
+      },
+      "prompt_index": 0,
+      "sample_id": "46_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/47_A.png",
+        "sha256": "27cb082cf5687cce64c0f8e24dd8c2960c82649b9fbf8da23f9225926bcce1cf",
+        "size_bytes": 2311936
+      },
+      "index": 141,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/47_A.png",
+        "sha256": "21e1a0d9212c282e403d0dafa4b2335937b751f81ab1196a15ae7c37ee6d437d",
+        "size_bytes": 48517
+      },
+      "prompt_index": 0,
+      "sample_id": "47_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/48_A.png",
+        "sha256": "b0ccc9bc7f7e4f8db6ad4c3288dea7acbf6954a566578ff0bea1907db7614d46",
+        "size_bytes": 2190931
+      },
+      "index": 142,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/48_A.png",
+        "sha256": "fde849144cc48f2a288bec0d8dc44dd24b9b3c7243623546357ff5955f552960",
+        "size_bytes": 73063
+      },
+      "prompt_index": 0,
+      "sample_id": "48_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/49_A.png",
+        "sha256": "bb9de865d3bd14242f1e20c41c5d12b280ee9ed6ef2749fa558f337ff525b456",
+        "size_bytes": 2103329
+      },
+      "index": 143,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/49_A.png",
+        "sha256": "7be11d83b6938caa4005cd0d1499a9490f1516f80023fc8001babea8109829c9",
+        "size_bytes": 69755
+      },
+      "prompt_index": 0,
+      "sample_id": "49_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/4_A.png",
+        "sha256": "1d09423f1a57b362124bb34b024a8375be9899ddd76a8472d28b941f05e1d86b",
+        "size_bytes": 2273835
+      },
+      "index": 144,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/4_A.png",
+        "sha256": "b9ca55c6d1d43612df96755483ab078ac7b056536998e29928e16e71f5f1a99e",
+        "size_bytes": 76015
+      },
+      "prompt_index": 0,
+      "sample_id": "4_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/50_A.png",
+        "sha256": "e6abb05d3f9bc8675a7edcf7624ab6c79bf5759ed23f9a0eeb013d171bbe6c1e",
+        "size_bytes": 2606057
+      },
+      "index": 145,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/50_A.png",
+        "sha256": "c7e3347f6da4f26ac56db73cd45537f0bf124fb2c9a9d1b2fa3536f95e6867a4",
+        "size_bytes": 62847
+      },
+      "prompt_index": 0,
+      "sample_id": "50_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/51_D.png",
+        "sha256": "23ace8dd117cd096cea1eba3f34ccbb7c746e78fb93eb1aac897b466839f1b05",
+        "size_bytes": 1547717
+      },
+      "index": 146,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/51_D.png",
+        "sha256": "cf6e34953bffb3ec2fc1b174080e5c3b7992276e8e94da26cdac6b538ecf9411",
+        "size_bytes": 29955
+      },
+      "prompt_index": 0,
+      "sample_id": "51_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/52_D.png",
+        "sha256": "5003c873d2b1e0c5f106627863c9d498c9a7e0c8212d31b1fbdf0cc619b9456a",
+        "size_bytes": 1974031
+      },
+      "index": 147,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/52_D.png",
+        "sha256": "3a04463d7882bd5b8c9f20ad5366de57b695443dcf0118562f7fa547111f0594",
+        "size_bytes": 49635
+      },
+      "prompt_index": 0,
+      "sample_id": "52_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/53_D.png",
+        "sha256": "f72f1636d271540cce8d4d9bd0819f4c85b329c388b3facb1071dde464fa273b",
+        "size_bytes": 1869966
+      },
+      "index": 148,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/53_D.png",
+        "sha256": "20086f98a0b2f8550a67a1ca80c2fbc1190f07206f9ba1d7f5f442cd47af0a40",
+        "size_bytes": 51712
+      },
+      "prompt_index": 0,
+      "sample_id": "53_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/54_D.png",
+        "sha256": "0afcee35347ef2ae18334b5766ff0558d688f44d03adf3f7095912582eec94df",
+        "size_bytes": 2378744
+      },
+      "index": 149,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/54_D.png",
+        "sha256": "7e5c2ae2359897b81a8307228a3c236ee660c06ec589ea3cbb2d6fbc4e10f717",
+        "size_bytes": 74563
+      },
+      "prompt_index": 0,
+      "sample_id": "54_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/55_D.png",
+        "sha256": "acee30aea80323a0c03532fad48dba15318b158a4f76983a4acce33d7e082b78",
+        "size_bytes": 2200506
+      },
+      "index": 150,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/55_D.png",
+        "sha256": "d03c874cdcddf28b2acc7c44889c463332c7d131e3931b7ef371e3de109af506",
+        "size_bytes": 35290
+      },
+      "prompt_index": 0,
+      "sample_id": "55_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/56_D.png",
+        "sha256": "c68d91538c26a4bdee045e86855d549cbdd4501f876207d36557be17baaec557",
+        "size_bytes": 2029583
+      },
+      "index": 151,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/56_D.png",
+        "sha256": "502063103aa7e7ff57e6f8a68cf8d75406dbf4007a6cf9c663b7a9707bed62a1",
+        "size_bytes": 62732
+      },
+      "prompt_index": 0,
+      "sample_id": "56_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/57_D.png",
+        "sha256": "b944231680e0092f3b577589aa76a01f6d40124f3c7a90b125646f2373a82120",
+        "size_bytes": 2054401
+      },
+      "index": 152,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/57_D.png",
+        "sha256": "87ae988b4def55ac910f1474a6646e0a44b01b446661b8a168733f61f0a7cce6",
+        "size_bytes": 30612
+      },
+      "prompt_index": 0,
+      "sample_id": "57_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/58_D.png",
+        "sha256": "eadfbe24a1dbe3c6e79af21636ac05e3ae9382eb4b26116c558c931978a019d8",
+        "size_bytes": 2325480
+      },
+      "index": 153,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/58_D.png",
+        "sha256": "5786a2425f6ca060049679338fbcf09cdba217d324f11695491b921653ed141b",
+        "size_bytes": 65679
+      },
+      "prompt_index": 0,
+      "sample_id": "58_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/59_D.png",
+        "sha256": "9147469f6bc5c749de11c6a6f83c5555604ff4acef771bc914dcd286a506adcc",
+        "size_bytes": 2324863
+      },
+      "index": 154,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/59_D.png",
+        "sha256": "42d17afc4f74dab2f499401597282180d2c6a21f8d2309f35dc5f5e9c94a0e94",
+        "size_bytes": 70974
+      },
+      "prompt_index": 0,
+      "sample_id": "59_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/5_A.png",
+        "sha256": "ff7c700d16e8fe21180b085ae8431d334aa250a9617eec6583cbbf5e6c836267",
+        "size_bytes": 2522037
+      },
+      "index": 155,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/5_A.png",
+        "sha256": "802f30c7d80451b86b8c102647a27654096cef619a9e67a2e4443f509bbcef9e",
+        "size_bytes": 86399
+      },
+      "prompt_index": 0,
+      "sample_id": "5_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/60_D.png",
+        "sha256": "076f45f5db8cc63cafc385358fddee08b7605a3b438502f19ac715c2ee6836fd",
+        "size_bytes": 2324293
+      },
+      "index": 156,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/60_D.png",
+        "sha256": "2b33c512f5b215c774e3fe8b34f32949ef5497d1f5954d50d14b846eabb76a55",
+        "size_bytes": 68593
+      },
+      "prompt_index": 0,
+      "sample_id": "60_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/61_D.png",
+        "sha256": "42559bf0d971b8b1bbb2b46f176a977f6cb339962de5a1a7cf9bc4e9bbe2bd32",
+        "size_bytes": 1952947
+      },
+      "index": 157,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/61_D.png",
+        "sha256": "32f48ee890fccff5f0153a03f76183caf0077e270d0824e8766ced4e39d4c223",
+        "size_bytes": 47624
+      },
+      "prompt_index": 0,
+      "sample_id": "61_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/62_D.png",
+        "sha256": "864af8f5492286a9d7dbd1866c133af1c264a2799ca0210aed32550d917a10b6",
+        "size_bytes": 1343066
+      },
+      "index": 158,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/62_D.png",
+        "sha256": "97bc2d25f414a5ccbd970ca9d4982cc2b10cdfa6010d0631371069846f05ad55",
+        "size_bytes": 54161
+      },
+      "prompt_index": 0,
+      "sample_id": "62_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/63_D.png",
+        "sha256": "d4a3991bf00673ffc30f8c5e7b0b5b8d5a4c700d4c3f5c2d3a6e662651c6e31d",
+        "size_bytes": 2188183
+      },
+      "index": 159,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/63_D.png",
+        "sha256": "8213a513f12c6c2396f94b792d01546cfafabf1f53ad1309a26cee77fec81657",
+        "size_bytes": 58324
+      },
+      "prompt_index": 0,
+      "sample_id": "63_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/64_D.png",
+        "sha256": "248e4008c4eb1d400d4c85f2e908ce34ffc9904c6d327e673cc2e4b2f43124a8",
+        "size_bytes": 2171071
+      },
+      "index": 160,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/64_D.png",
+        "sha256": "92d1522c7a557b1ae5efe97f93cdb854616a9fdb5404656e589f03e0323349c1",
+        "size_bytes": 61009
+      },
+      "prompt_index": 0,
+      "sample_id": "64_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/65_D.png",
+        "sha256": "72f258a3baa4be3500324fffe7a4f03d2954ecce78d575ad6af883f8c31e7e5d",
+        "size_bytes": 1916627
+      },
+      "index": 161,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/65_D.png",
+        "sha256": "214de52b167dec21fd488bc0787495ffee9ec7b2626349a3c58a63850801c4e1",
+        "size_bytes": 57145
+      },
+      "prompt_index": 0,
+      "sample_id": "65_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/66_D.png",
+        "sha256": "de5add8ea6d0ec278e3c558394da19f966b805a70c12697eb0aa977ac1f09fe6",
+        "size_bytes": 1514193
+      },
+      "index": 162,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/66_D.png",
+        "sha256": "574673e6d97aa47837f474095a230b0d5cee99ade2822e8b6d171f83341ad0a2",
+        "size_bytes": 48141
+      },
+      "prompt_index": 0,
+      "sample_id": "66_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/67_D.png",
+        "sha256": "d193a00236f8842473663112d896e92ef5a60f1998d5bd7fd25fabc7514fd4c5",
+        "size_bytes": 2380291
+      },
+      "index": 163,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/67_D.png",
+        "sha256": "4fe79577356a4fd4791a9ea8dcf6e501ae01aff7a623dafd8f4c1282ebd40a52",
+        "size_bytes": 53638
+      },
+      "prompt_index": 0,
+      "sample_id": "67_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/68_D.png",
+        "sha256": "1992884ddcd2334db26c1a3155a2eb4c8bda5f0337caa5810cc57ff4ad515d91",
+        "size_bytes": 1930381
+      },
+      "index": 164,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/68_D.png",
+        "sha256": "7fe9999a798056d65e639a00028010f8cb76d444288696e6966fe58460e192d2",
+        "size_bytes": 61528
+      },
+      "prompt_index": 0,
+      "sample_id": "68_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/69_D.png",
+        "sha256": "879ffccf8c2f385146b4499d75233f6c53081d9fd2d967ea44ad2d502b1aa277",
+        "size_bytes": 2271684
+      },
+      "index": 165,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/69_D.png",
+        "sha256": "c38b9a0e9bf0b5ebc1e22019abd2c984eb8a27df01ac704951a46e92edf813bc",
+        "size_bytes": 69463
+      },
+      "prompt_index": 0,
+      "sample_id": "69_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/6_A.png",
+        "sha256": "754e23e60982181f73ae0952a989b3d0619e91431248de8049c150d5d6659f5c",
+        "size_bytes": 2555761
+      },
+      "index": 166,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/6_A.png",
+        "sha256": "fdca9b189417d341e9c4de2cf6407435eff1989bfe7bab0ab88f3e03a1b01414",
+        "size_bytes": 75618
+      },
+      "prompt_index": 0,
+      "sample_id": "6_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/70_D.png",
+        "sha256": "9cdb5df6d526cf15fd58ede9cffa4822e60f6c344aba43a79036f2702c1e90bc",
+        "size_bytes": 2306986
+      },
+      "index": 167,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/70_D.png",
+        "sha256": "a430eaab25909af510d39747035a2e9313454b5f834f118a47dc643d519eced5",
+        "size_bytes": 64921
+      },
+      "prompt_index": 0,
+      "sample_id": "70_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/71_D.png",
+        "sha256": "a201ab74b6cb6db4f7b43fc63a85229467a32b5661ada7af69af652e30aeaec0",
+        "size_bytes": 1901885
+      },
+      "index": 168,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/71_D.png",
+        "sha256": "dd01dfe75fca7cbc8d9e0033953c9ac14ee9c0e440dfbb17d1c6ce13b050ad34",
+        "size_bytes": 46844
+      },
+      "prompt_index": 0,
+      "sample_id": "71_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/72_D.png",
+        "sha256": "081a64db05b4fa5ca1462263929c659e770448a464e143f3b85c488d44b3b240",
+        "size_bytes": 2606915
+      },
+      "index": 169,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/72_D.png",
+        "sha256": "f62468ed4f1d07b469bdfc5a5f8786ebb234d97e3efb61e0e9010ce86c90f6d4",
+        "size_bytes": 65168
+      },
+      "prompt_index": 0,
+      "sample_id": "72_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/73_D.png",
+        "sha256": "6903b265bb2e3753c34b638e454a4716499f78b4883721c8534ad41be2fd904e",
+        "size_bytes": 1980525
+      },
+      "index": 170,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/73_D.png",
+        "sha256": "9d3afc99fb9519c13db8e52ecb0159d75c7a936f2a75ecfa898fbcce7c9b68d7",
+        "size_bytes": 61544
+      },
+      "prompt_index": 0,
+      "sample_id": "73_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/74_D.png",
+        "sha256": "6859f0e83152b0cc9ef4a193804d3d759b4223cc1b85ee4159f2dc2a3ebcccd5",
+        "size_bytes": 2001054
+      },
+      "index": 171,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/74_D.png",
+        "sha256": "c46ec4a6ce388ab6b5c82c0171b2a7c77a12fea27fab1b0a341b11ab1392d4b8",
+        "size_bytes": 65759
+      },
+      "prompt_index": 0,
+      "sample_id": "74_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/75_D.png",
+        "sha256": "e9df405bd3b38a461681e7f497232fda6a27353fd7e990d8cefd8f1ee798ced3",
+        "size_bytes": 2398912
+      },
+      "index": 172,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/75_D.png",
+        "sha256": "04402de278a7c3b915b78aecb6963a20f9c238c63f757694bb8bb24a36f82c36",
+        "size_bytes": 70178
+      },
+      "prompt_index": 0,
+      "sample_id": "75_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/76_D.png",
+        "sha256": "24f58d2620860b68afcb1bbb11309d0d97ee67e881345e76d0c44411adc46075",
+        "size_bytes": 2036998
+      },
+      "index": 173,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/76_D.png",
+        "sha256": "5850c416810cb54299476ac17b0b95f720fb6e8b80dc48ec680ea9747c7834ba",
+        "size_bytes": 41233
+      },
+      "prompt_index": 0,
+      "sample_id": "76_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/77_D.png",
+        "sha256": "2bdac57ea2abf0118acafefc28a7d84fe17d5b447c82615dfb59ef7fd6ab833e",
+        "size_bytes": 2073766
+      },
+      "index": 174,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/77_D.png",
+        "sha256": "c460d63335cf919b8880fa4a406291fba0ddc220e853803f2b0c6e98e06099d8",
+        "size_bytes": 65930
+      },
+      "prompt_index": 0,
+      "sample_id": "77_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/78_D.png",
+        "sha256": "dd586288a84ec4aa07f367cd6d626925051558695002ae62bb4570ea8ed84fad",
+        "size_bytes": 2097031
+      },
+      "index": 175,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/78_D.png",
+        "sha256": "8eef728e94362c43f72a8c5766f3dda864d136c9fdcdcb3edd213dc7e0abfc19",
+        "size_bytes": 38714
+      },
+      "prompt_index": 0,
+      "sample_id": "78_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/79_D.png",
+        "sha256": "ac1c3af43364595f075230ed88cdc40669edd6cb07f6e4425e616b41a7ab4dc7",
+        "size_bytes": 2163123
+      },
+      "index": 176,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/79_D.png",
+        "sha256": "e4c64d151e2e59200b9d1dbb5fdf9d9597fa404797b8c4cb500ebba21d1ae155",
+        "size_bytes": 59048
+      },
+      "prompt_index": 0,
+      "sample_id": "79_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/7_A.png",
+        "sha256": "bb94b0052fbd20c90b477c342570ce34e341ae3006bba3caf455918845bfc09e",
+        "size_bytes": 2469896
+      },
+      "index": 177,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/7_A.png",
+        "sha256": "5dc9680760731ab4ca78dc36044529908546a3a326c648dc32ed8588b476febf",
+        "size_bytes": 82624
+      },
+      "prompt_index": 0,
+      "sample_id": "7_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/80_D.png",
+        "sha256": "3853a18940c9d0d449ff673be277f309c6273f450bdbcf165924388ac444a78e",
+        "size_bytes": 2148044
+      },
+      "index": 178,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/80_D.png",
+        "sha256": "5aa824457a79709d413e66b0d38587664abb142461fc1daf431ce6d470f14d47",
+        "size_bytes": 56194
+      },
+      "prompt_index": 0,
+      "sample_id": "80_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/81_D.png",
+        "sha256": "19fab64eb2c5d4f1239aeafb0d82e9fd90568320f7731d4258fb758af472982f",
+        "size_bytes": 2484027
+      },
+      "index": 179,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/81_D.png",
+        "sha256": "30f7477280957a14971ae40403a669188a4986ceaf65e91582ad3b0d6056d51f",
+        "size_bytes": 65331
+      },
+      "prompt_index": 0,
+      "sample_id": "81_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/82_D.png",
+        "sha256": "2d9e36c5217690b3184f2e5f9c36d8c7a739504d8c497116a5214bba01521ede",
+        "size_bytes": 2189104
+      },
+      "index": 180,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/82_D.png",
+        "sha256": "f22acfbbacaa19a9832e623fb0524b9b8db5838f69b9810c6437e2554b307c6e",
+        "size_bytes": 44854
+      },
+      "prompt_index": 0,
+      "sample_id": "82_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/83_D.png",
+        "sha256": "0a78fb1d42f0eddc17b5008256ff737c3ecfaf49064847872c6c7f623c414e2b",
+        "size_bytes": 1983350
+      },
+      "index": 181,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/83_D.png",
+        "sha256": "b0f2e643d0d6182193774beb8d7fc5ad270f686dc9cbdb396f091069cec1843e",
+        "size_bytes": 55922
+      },
+      "prompt_index": 0,
+      "sample_id": "83_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/84_D.png",
+        "sha256": "20b7c005bda7af5e0740a7ca90ffb40d3455cc44bce6e99b6a365a05d66ec045",
+        "size_bytes": 2196717
+      },
+      "index": 182,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/84_D.png",
+        "sha256": "257453400fcad31304404eb58eb77b2a567a6cb58518267a1726bb2788726def",
+        "size_bytes": 68515
+      },
+      "prompt_index": 0,
+      "sample_id": "84_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/85_D.png",
+        "sha256": "b48615326ce22bbf1f7d9c380643876230a407f6b3cded09e0c6c4bc313b733b",
+        "size_bytes": 1990489
+      },
+      "index": 183,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/85_D.png",
+        "sha256": "f840fd494d8a08f6838681bbfc142c80918da2b6b7b895a22ba189387f42e256",
+        "size_bytes": 59908
+      },
+      "prompt_index": 0,
+      "sample_id": "85_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/86_D.png",
+        "sha256": "c0d9181a23a949ad8ae6315c47c738c40f0d6b72e227eb4d5df59dd0b449c54b",
+        "size_bytes": 2213954
+      },
+      "index": 184,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/86_D.png",
+        "sha256": "672f18efc7c95f6e74ae579922afecd31116165d8cf68ae885a33ebd58ba8c88",
+        "size_bytes": 64046
+      },
+      "prompt_index": 0,
+      "sample_id": "86_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/87_D.png",
+        "sha256": "aca36fad093a1ee42da30235a7b2ebf3ccadc237472493f2b542915fc04dd355",
+        "size_bytes": 1923921
+      },
+      "index": 185,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/87_D.png",
+        "sha256": "853adca32593af8fa6a588acde315e4b8c2eac816cba18d57eb4ffae5a5d2a43",
+        "size_bytes": 61911
+      },
+      "prompt_index": 0,
+      "sample_id": "87_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/88_D.png",
+        "sha256": "92c8ec03133eba679e1a0e4e9dd390bc0bee17f605cd35f8453099fdda1ae212",
+        "size_bytes": 2235170
+      },
+      "index": 186,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/88_D.png",
+        "sha256": "bfc83f34cf311414e1a493dd43f91fa01c6adc00bf16c51d5935b1afebd82f84",
+        "size_bytes": 58592
+      },
+      "prompt_index": 0,
+      "sample_id": "88_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/89_D.png",
+        "sha256": "7495025a5c840b6145bf55dc4dec6c921bfd66de0811c400b03b5ac419c2b0e7",
+        "size_bytes": 2029118
+      },
+      "index": 187,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/89_D.png",
+        "sha256": "73c1cc59a23a4d84a8bb889526dfe2d0636f0d9aac8a2a2c8753e589607cc167",
+        "size_bytes": 65726
+      },
+      "prompt_index": 0,
+      "sample_id": "89_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/8_A.png",
+        "sha256": "cea83a1cde3ad898ad13b86fbd2a7a68ba69b268b5ad6109732771a9524b828f",
+        "size_bytes": 2321148
+      },
+      "index": 188,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/8_A.png",
+        "sha256": "d0b6dc2e5e0b8311dfdd871dbdaaca381de23a603becde71c8a592b1c060307b",
+        "size_bytes": 71908
+      },
+      "prompt_index": 0,
+      "sample_id": "8_A"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/90_D.png",
+        "sha256": "17b095d8b93935cf84690b3719529360498da278c71834f205d88b4e8a48bafa",
+        "size_bytes": 2111305
+      },
+      "index": 189,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/90_D.png",
+        "sha256": "d962c1f40ce07553efa31229bf0633a5999fe1ec0541aa9b3246fc23f0d9fa2a",
+        "size_bytes": 58766
+      },
+      "prompt_index": 0,
+      "sample_id": "90_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/91_D.png",
+        "sha256": "0e48eb305cfd91179137302c9345ad223b9e2513a477b7f85d46c7d0b2e1a75b",
+        "size_bytes": 1927547
+      },
+      "index": 190,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/91_D.png",
+        "sha256": "9a2f2032ce69156f689cfdbfb100cc03272c0ecfef6dd8497e491b83c33b3893",
+        "size_bytes": 59965
+      },
+      "prompt_index": 0,
+      "sample_id": "91_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/92_D.png",
+        "sha256": "cf9ea344fa12d3869031d0dc907a3f8c595ed4a65f19fb19f4d801304967b14b",
+        "size_bytes": 2397975
+      },
+      "index": 191,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/92_D.png",
+        "sha256": "58b3ecdc626e2e7b399ab0285457cdf9f7bee22ef2f95fbc696a3f7bf43100ee",
+        "size_bytes": 62434
+      },
+      "prompt_index": 0,
+      "sample_id": "92_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/93_D.png",
+        "sha256": "3e0d7e70c41a3c8da18a7ef02f9908f3afc2a9e502732331be7329faa2e7d957",
+        "size_bytes": 2121350
+      },
+      "index": 192,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/93_D.png",
+        "sha256": "5c9607a3539aa88a795b33a230ecc9c6c730afee0fa0c0fe8b13946fa6af855d",
+        "size_bytes": 60005
+      },
+      "prompt_index": 0,
+      "sample_id": "93_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/94_D.png",
+        "sha256": "309d9b9a5fb583bda2455e3eebaf0c48f782f389102bc3180523419379801c0a",
+        "size_bytes": 1769134
+      },
+      "index": 193,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/94_D.png",
+        "sha256": "abd0a40d6d02b570bf5802c73dcf4f6c5a2710d6d35e92a7042e7f2cc31dd18b",
+        "size_bytes": 46851
+      },
+      "prompt_index": 0,
+      "sample_id": "94_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/95_D.png",
+        "sha256": "38649c66870076fe444199e2d61787be922d703b5e19b3f0e68a9751f1d06464",
+        "size_bytes": 1972920
+      },
+      "index": 194,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/95_D.png",
+        "sha256": "23006e02ea83ecfd292d043ecadbda12abb95c708e63ab9c4626dfd6a6425b8a",
+        "size_bytes": 35501
+      },
+      "prompt_index": 0,
+      "sample_id": "95_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/96_D.png",
+        "sha256": "e522f5409168ce7c28371e29d958c2085ea9d7456a0b0f91b53b1ab8d7904cf5",
+        "size_bytes": 2620027
+      },
+      "index": 195,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/96_D.png",
+        "sha256": "36df4717cf6df25e7c097b6152e8f016b0ada4c8ea581c9c166587396afbe4e6",
+        "size_bytes": 67243
+      },
+      "prompt_index": 0,
+      "sample_id": "96_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/97_D.png",
+        "sha256": "88ec4332198919beec8acc4f8e71a6b19055778a395a3d015842ebda3b7dc731",
+        "size_bytes": 1899594
+      },
+      "index": 196,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/97_D.png",
+        "sha256": "249d130c1a12b396fe7371d63ed28e13637cd09583fc722b0b8290843c242c02",
+        "size_bytes": 57330
+      },
+      "prompt_index": 0,
+      "sample_id": "97_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/98_D.png",
+        "sha256": "5ae697536bdf46a65cfa949a28ec2e8c58a8848d4af813c0c49952512fb70671",
+        "size_bytes": 2328843
+      },
+      "index": 197,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/98_D.png",
+        "sha256": "f65aed47ccec84853997300861a871f869625c6b352d119e770cf74f14f0b19c",
+        "size_bytes": 61777
+      },
+      "prompt_index": 0,
+      "sample_id": "98_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/99_D.png",
+        "sha256": "590224148521790ed9bc227cddc59683a74fbf64effa93dffcf43864220182af",
+        "size_bytes": 2166511
+      },
+      "index": 198,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/99_D.png",
+        "sha256": "a5bee64b569045eb097d003b09caea6649cee2c116434630477db91752320d81",
+        "size_bytes": 64819
+      },
+      "prompt_index": 0,
+      "sample_id": "99_D"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Original/9_A.png",
+        "sha256": "2078ef55fcee876975099535213cdff3bd9d706fd106ebad167cb3e86a05676c",
+        "size_bytes": 2564162
+      },
+      "index": 199,
+      "mask": {
+        "kind": "regular",
+        "path": "data/FIVES/test/Ground truth/9_A.png",
+        "sha256": "622f85c8eb5abca281235d8769536da49bff83feb0bd3bd206cfe6e582bd228f",
+        "size_bytes": 76830
+      },
+      "prompt_index": 0,
+      "sample_id": "9_A"
+    }
+  ],
+  "selection_files": [],
+  "split": "test"
+}

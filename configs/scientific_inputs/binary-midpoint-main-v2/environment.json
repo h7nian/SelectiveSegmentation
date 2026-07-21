@@ -1,0 +1,25 @@
+{
+  "component_kind": "environment",
+  "component_schema_version": 1,
+  "environment": {
+    "Pillow": "12.3.0",
+    "cuda_runtime": "13.0",
+    "numpy": "2.5.1",
+    "python": "3.12.4",
+    "python_executable_sha256": "26af6e69deb6305bbe6ca0ee74134489b5ee3d78592603820f4b16b20069e35a",
+    "python_implementation": "CPython",
+    "python_soabi": "cpython-312-x86_64-linux-gnu",
+    "scipy": "1.18.0",
+    "torch": "2.12.1",
+    "torchvision": "0.27.1",
+    "transformers": "5.13.0"
+  },
+  "packages": [
+    "numpy",
+    "torch",
+    "torchvision",
+    "transformers",
+    "Pillow",
+    "scipy"
+  ]
+}

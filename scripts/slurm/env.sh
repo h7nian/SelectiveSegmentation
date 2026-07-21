@@ -16,5 +16,6 @@ export PYTHONPATH="$REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
 export HF_HOME="$REPO_ROOT/data/cache/huggingface"
 export TORCH_HOME="$REPO_ROOT/data/cache/torch"
 export HF_HUB_OFFLINE=1
+export PYTHONNOUSERSITE=1
 export PYTHONUNBUFFERED=1
 export TOKENIZERS_PARALLELISM=false

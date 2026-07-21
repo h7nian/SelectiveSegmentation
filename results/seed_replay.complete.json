@@ -1,0 +1,8 @@
+{
+  "artifact_type": "selectseg.portable_seed_replay_complete",
+  "condition_count": 30,
+  "lock_sha256": "a5fd282c8bbb42f5f13dc53b56ca4093a4ba3c31c983c3d76deb601bcc484baa",
+  "portable_bundle_sha256": "a5fe0be50bd4db2279c69169a89fc6b03a9d9b741bb2fbe6c46b2d3ae6164a40",
+  "portable_file_count": 60,
+  "schema_version": 1
+}

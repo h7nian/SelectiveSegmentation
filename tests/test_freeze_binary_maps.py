@@ -12,9 +12,11 @@ from selectseg import freeze_binary_maps as freeze
 
 
 class _FakeDataset:
-    def __init__(self, spec, root, train, image_size):
+    def __init__(self, spec, root, train, image_size, **kwargs):
         del spec, root
         assert train is False and image_size == 4
+        self.verified_file_reader = kwargs.pop("verified_file_reader", None)
+        assert not kwargs
         self.ids = ["sample-b", "sample-a"]
         self.images = [
             torch.full((3, 4, 4), 0.25, dtype=torch.float32),
@@ -153,6 +155,98 @@ def test_cli_records_finetuned_checkpoint_identity(tmp_path, monkeypatch):
         "sha256": sha256_file(checkpoint),
         "size_bytes": checkpoint.stat().st_size,
     }
+
+
+def test_scientific_freeze_binds_schema_three_before_inference(
+    tmp_path, monkeypatch
+):
+    model = _patch_inference(monkeypatch)
+    config = tmp_path / "campaign.json"
+    config.write_text('{"campaign_id":"unit"}\n')
+    lock = tmp_path / "scientific.lock.json"
+    lock.write_text("{}\n")
+    hashes = {
+        "root_lock_sha256": "1" * 64,
+        "science_projection_sha256": "2" * 64,
+        "eval_dataset_component_sha256": "3" * 64,
+        "source_component_sha256": "4" * 64,
+        "base_model_component_sha256": "5" * 64,
+        "checkpoint_component_sha256": "6" * 64,
+        "environment_component_sha256": "7" * 64,
+    }
+    condition_sha = "8" * 64
+    verify_calls = []
+
+    def verify(path, **kwargs):
+        verify_calls.append((path, kwargs))
+        return {
+            "checkpoint": None,
+            "eval_dataset": object(),
+            "scientific_input_hashes": hashes,
+            "scientific_input_sha256": condition_sha,
+        }
+
+    monkeypatch.setattr(freeze, "verify_condition_inputs", verify)
+    manifest_path = freeze.main(
+        _args(
+            tmp_path,
+            "--campaign-config",
+            str(config),
+            "--expected-campaign-config-sha256",
+            sha256_file(config),
+            "--scientific-input-lock",
+            str(lock),
+            "--expected-scientific-input-lock-sha256",
+            "9" * 64,
+            "--expected-condition-input-sha256",
+            condition_sha,
+        )
+    )
+    manifest = load_binary_artifact(manifest_path, validate_payloads=False).manifest
+    assert model.predict_calls == 1
+    assert verify_calls[0][1]["mode"] == "consume"
+    assert manifest["schema_version"] == 3
+    assert manifest["scientific_input"] == {
+        **hashes,
+        "condition_input_sha256": condition_sha,
+    }
+
+
+def test_scientific_freeze_rejects_condition_hash_before_model_load(
+    tmp_path, monkeypatch
+):
+    model = _patch_inference(monkeypatch)
+    config = tmp_path / "campaign.json"
+    config.write_text("{}\n")
+    lock = tmp_path / "scientific.lock.json"
+    lock.write_text("{}\n")
+    monkeypatch.setattr(
+        freeze,
+        "verify_condition_inputs",
+        lambda *args, **kwargs: {
+            "checkpoint": None,
+            "eval_dataset": object(),
+            "scientific_input_hashes": {},
+            "scientific_input_sha256": "0" * 64,
+        },
+    )
+    with pytest.raises(ValueError, match="condition scientific-input"):
+        freeze.main(
+            _args(
+                tmp_path,
+                "--campaign-config",
+                str(config),
+                "--expected-campaign-config-sha256",
+                sha256_file(config),
+                "--scientific-input-lock",
+                str(lock),
+                "--expected-scientific-input-lock-sha256",
+                "9" * 64,
+                "--expected-condition-input-sha256",
+                "8" * 64,
+            )
+        )
+    assert model.predict_calls == 0
 
 
 @pytest.mark.parametrize(

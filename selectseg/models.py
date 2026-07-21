@@ -18,6 +18,7 @@ from transformers import CLIPSegForImageSegmentation, CLIPSegProcessor
 from selectseg.data import IGNORE_INDEX
 
 CLIPSEG_CHECKPOINT = "CIDAS/clipseg-rd64-refined"
+CLIPSEG_REVISION = "999e0328d9e10b484360c477313983f9afdd7050"
 DEEPLABV3_WEIGHTS = DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1
 CONDITION_NAMES = {
     "clipseg": ("clipseg-general", "clipseg-target"),
@@ -64,9 +65,17 @@ class CLIPSegModel(SegmentationModel):
     def __init__(self, spec):
         super().__init__()
         self.spec = spec
-        self.model = CLIPSegForImageSegmentation.from_pretrained(CLIPSEG_CHECKPOINT)
+        self.model = CLIPSegForImageSegmentation.from_pretrained(
+            CLIPSEG_CHECKPOINT,
+            revision=CLIPSEG_REVISION,
+            local_files_only=True,
+        )
         self.model.clip.requires_grad_(False)
-        processor = CLIPSegProcessor.from_pretrained(CLIPSEG_CHECKPOINT)
+        processor = CLIPSegProcessor.from_pretrained(
+            CLIPSEG_CHECKPOINT,
+            revision=CLIPSEG_REVISION,
+            local_files_only=True,
+        )
         tokens = processor.tokenizer(
             list(spec.prompts), padding=True, return_tensors="pt"
         )

@@ -10,11 +10,12 @@ shard paths from the lock (never from a glob), and ``diagnose`` plans one
 read-only diagnostic per locked artifact.  Every compute phase uses one
 independent Slurm job per planned row; Slurm arrays are intentionally not used.
 
-All submission phases are dry-run by default. Schema v1 can call ``sbatch``
-with ``--submit``. The checked-in schema-v2 policy permits only dry-run and
-``--scheduler-preflight-only`` until scientific inputs are independently
-content-bound. Lock files are written only when ``--write-lock`` is provided
-and are never overwritten.
+All submission phases are dry-run by default. Schema v1 retains its historical
+execution behavior. Schema v2 supports either a fail-closed scheduler preview
+or a real ``scientific-input-locked`` campaign: the latter verifies the exact
+dataset, checkpoint, base-model, source, and environment bindings before a
+whole-wave scheduler preflight, canonical receipt, or real ``sbatch`` call.
+Lock files are written only with ``--write-lock`` and are never overwritten.
 """
 
 from __future__ import annotations
@@ -29,6 +30,7 @@ import re
 import shlex
 import stat
 import subprocess
+import sys
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -38,9 +40,11 @@ from pathlib import Path
 CONFIG_SCHEMA_VERSION = 1
 CANDIDATE_CONFIG_SCHEMA_VERSION = 2
 LOCK_SCHEMA_VERSION = 1
+SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION = 2
 RECEIPT_SCHEMA_VERSION = 1
 RUNTIME_RECEIPT_SCHEMA_VERSION = 2
 SCHEDULER_PREVIEW_ONLY = "scheduler-preview-only"
+SCIENTIFIC_INPUT_LOCKED = "scientific-input-locked"
 EXPECTED_PROTOCOL = {
     "gamma_values": [0.5],
     "m_values": [2, 8, 32],
@@ -50,7 +54,10 @@ EXPECTED_PROTOCOL = {
 GPU_ACCOUNT = "ssafo"
 DEFAULT_CPU_PARTITIONS = ("agsmall", "amdsmall", "msismall")
 GPU_PARTITION_CANDIDATES = ("saffo-a100", "apollo_agate")
-CPU_PARTITION_CANDIDATES = ("saffo-2tb", *DEFAULT_CPU_PARTITIONS)
+CPU_PARTITION_CANDIDATES = ("amdsmall", "agsmall", "msismall", "saffo-2tb")
+SCHEDULER_PREFLIGHT_TIMEOUT_SECONDS = 45
+SCHEDULER_PREFLIGHT_MAX_DISTINCT_LINES = 20
+SCHEDULER_PREFLIGHT_MAX_LINE_CHARACTERS = 400
 REQUIRED_CONFIG_FIELDS = frozenset(
     {
         "config_schema_version",
@@ -66,8 +73,15 @@ PARTITION_CANDIDATE_CONFIG_FIELDS = frozenset(
     {"gpu_partition_candidates", "cpu_partition_candidates"}
 )
 OPTIONAL_CONFIG_FIELDS = frozenset(
-    {"cpu_partitions", "execution_policy", *PARTITION_CANDIDATE_CONFIG_FIELDS}
+    {
+        "cpu_partitions",
+        "execution_policy",
+        "data_root",
+        "scientific_input_lock",
+        *PARTITION_CANDIDATE_CONFIG_FIELDS,
+    }
 )
+REQUIRED_SCIENTIFIC_INPUT_BINDING_FIELDS = frozenset({"path", "sha256"})
 REQUIRED_CONDITION_FIELDS = frozenset(
     {
         "dataset",
@@ -108,6 +122,10 @@ REQUIRED_LOCK_FIELDS = frozenset(
         "artifacts",
     }
 )
+REQUIRED_SCIENTIFIC_LOCK_FIELDS = REQUIRED_LOCK_FIELDS | {"scientific_input"}
+REQUIRED_LOCK_SCIENTIFIC_INPUT_FIELDS = frozenset(
+    {"root_lock_path", "root_lock_sha256", "science_projection_sha256"}
+)
 REQUIRED_LOCK_CONFIG_FIELDS = frozenset({"path", "sha256"})
 REQUIRED_LOCK_ESTIMATOR_FIELDS = frozenset(
     {"spec_path", "spec_sha256", "estimator_id", "target_measure"}
@@ -127,6 +145,9 @@ REQUIRED_LOCK_ARTIFACT_FIELDS = frozenset(
         "num_samples",
     }
 )
+REQUIRED_SCIENTIFIC_LOCK_ARTIFACT_FIELDS = REQUIRED_LOCK_ARTIFACT_FIELDS | {
+    "scientific_input"
+}
 REQUIRED_RECEIPT_FIELDS = frozenset(
     {
         "receipt_schema_version",
@@ -272,7 +293,7 @@ def parse_args(argv=None):
         "--scheduler-preflight-only",
         action="store_true",
         help=(
-            "schema-v2 preview only: run every final command through "
+            "schema-v2: run every final command through "
             "sbatch --test-only without opening a receipt or submitting a job"
         ),
     )
@@ -524,11 +545,38 @@ def load_config(path):
             "provided together"
         )
     if config_schema_version == CANDIDATE_CONFIG_SCHEMA_VERSION and (
-        execution_policy != SCHEDULER_PREVIEW_ONLY
+        execution_policy not in {SCHEDULER_PREVIEW_ONLY, SCIENTIFIC_INPUT_LOCKED}
     ):
         raise ValueError(
-            f"schema-v2 execution_policy must equal {SCHEDULER_PREVIEW_ONLY!r}"
+            "schema-v2 execution_policy must equal "
+            f"{SCHEDULER_PREVIEW_ONLY!r} or {SCIENTIFIC_INPUT_LOCKED!r}"
         )
+    scientific_fields = {"data_root", "scientific_input_lock"} & keys
+    if config_schema_version != CANDIDATE_CONFIG_SCHEMA_VERSION and scientific_fields:
+        raise ValueError("scientific input bindings require config_schema_version 2")
+    if execution_policy == SCHEDULER_PREVIEW_ONLY and scientific_fields:
+        raise ValueError(
+            "scheduler-preview-only configs cannot claim scientific input bindings"
+        )
+    if execution_policy == SCIENTIFIC_INPUT_LOCKED:
+        if scientific_fields != {"data_root", "scientific_input_lock"}:
+            raise ValueError(
+                "scientific-input-locked configs require data_root and "
+                "scientific_input_lock together"
+            )
+        data_root = data["data_root"]
+        if data_root != "data":
+            raise ValueError("the locked binary campaign requires data_root='data'")
+        binding = data["scientific_input_lock"]
+        if (
+            not isinstance(binding, dict)
+            or set(binding) != REQUIRED_SCIENTIFIC_INPUT_BINDING_FIELDS
+        ):
+            raise ValueError(
+                "scientific_input_lock must contain exactly path and sha256"
+            )
+        _nonempty_string(binding["path"], location=f"{path}.scientific_input_lock.path")
+        _digest(binding["sha256"], location=f"{path}.scientific_input_lock.sha256")
     _nonempty_string(data["campaign_id"], location=f"{path}.campaign_id")
     _validate_protocol(data["protocol"], location=f"{path}.protocol")
     if (
@@ -634,19 +682,58 @@ def load_config(path):
     return config
 
 
-def _gpu_partition_request(config):
+def _rotated_partition_request(partitions, index):
+    partitions = tuple(partitions)
+    if not partitions:
+        raise ValueError("partition candidates must not be empty")
+    offset = index % len(partitions)
+    return ",".join((*partitions[offset:], *partitions[:offset]))
+
+
+def _gpu_partition_request(config, index):
     partitions = config.data.get(
         "gpu_partition_candidates", config.data["gpu_partitions"]
     )
+    if "gpu_partition_candidates" in config.data:
+        return _rotated_partition_request(partitions, index)
     return ",".join(partitions)
 
 
 def _cpu_partition_request(config, index):
     candidates = config.data.get("cpu_partition_candidates")
     if candidates is not None:
-        return ",".join(candidates)
+        # Rotate the three general CPU queues so a complete wave does not give
+        # every job the same first preference.  Keep the private 2-TB queue as
+        # a fallback in every request: current Slurm test-only forecasts show
+        # that placing it first can reserve an otherwise runnable job far in
+        # the future even when a general queue can start immediately.
+        primary, private_fallback = candidates[:-1], candidates[-1]
+        if not primary:
+            raise ValueError("CPU candidates require a non-private first choice")
+        return f"{_rotated_partition_request(primary, index)},{private_fallback}"
     partitions = config.data.get("cpu_partitions", list(DEFAULT_CPU_PARTITIONS))
     return partitions[index % len(partitions)]
+
+
+def _scientific_plan_binding(config, *, mode="fast"):
+    """Verify and load the pre-freeze lock before planning any locked job."""
+
+    if config.data.get("execution_policy") != SCIENTIFIC_INPUT_LOCKED:
+        raise ValueError("campaign is not authorized by a scientific input lock")
+    declared = config.data["scientific_input_lock"]
+    lock_path = _project_path(config.path, declared["path"])
+    expected_sha256 = declared["sha256"]
+    from selectseg.scientific_inputs import load_root_lock, verify_root_lock
+
+    verification = verify_root_lock(
+        lock_path,
+        expected_sha256=expected_sha256,
+        mode=mode,
+    )
+    if verification["campaign_id"] != config.data["campaign_id"]:
+        raise ValueError("scientific input lock has a different campaign_id")
+    binding = load_root_lock(lock_path, expected_sha256=expected_sha256)
+    return lock_path, expected_sha256, binding
 
 
 def _scheduler_job_name(config, base):
@@ -684,8 +771,11 @@ def _load_estimator(config):
 def plan_freeze_jobs(config):
     output_root = config.data["paths"]["artifact_output_root"]
     jobs = []
-    partition_request = _gpu_partition_request(config)
-    for condition in config.data["conditions"]:
+    scientific_plan = None
+    if config.data.get("execution_policy") == SCIENTIFIC_INPUT_LOCKED:
+        scientific_plan = _scientific_plan_binding(config, mode="fast")
+    for condition_index, condition in enumerate(config.data["conditions"]):
+        partition_request = _gpu_partition_request(config, condition_index)
         checkpoint = condition["checkpoint"] or "-"
         key = (condition["dataset"], condition["condition"], partition_request)
         job_name = f"selseg-freeze-{condition['dataset']}-{condition['condition']}"
@@ -717,6 +807,32 @@ def plan_freeze_jobs(config):
         ]
         if condition.get("freeze_limit") is not None:
             command.extend(["--limit", str(condition["freeze_limit"])])
+        if scientific_plan is not None:
+            from selectseg.scientific_inputs import condition_input_identity
+
+            lock_path, lock_sha256, binding = scientific_plan
+            identity = condition_input_identity(
+                binding,
+                dataset=condition["dataset"],
+                model=condition["model"],
+                condition=condition["condition"],
+            )
+            command.extend(
+                [
+                    "--data-root",
+                    config.data["data_root"],
+                    "--campaign-config",
+                    str(config.path),
+                    "--expected-campaign-config-sha256",
+                    config.sha256,
+                    "--scientific-input-lock",
+                    str(lock_path),
+                    "--expected-scientific-input-lock-sha256",
+                    lock_sha256,
+                    "--expected-condition-input-sha256",
+                    identity["scientific_input_sha256"],
+                ]
+            )
         jobs.append(PlannedJob(phase="freeze", key=key, command=tuple(command)))
     return tuple(jobs)
 
@@ -754,6 +870,14 @@ def build_campaign_lock(config, artifact_manifests):
             raise ValueError(f"duplicate frozen artifact for condition {key}")
         by_key[key] = (manifest_path, manifest_sha, manifest)
 
+    scientifically_locked = (
+        config.data.get("execution_policy") == SCIENTIFIC_INPUT_LOCKED
+    )
+    scientific_plan = (
+        _scientific_plan_binding(config, mode="fast")
+        if scientifically_locked
+        else None
+    )
     artifacts = []
     for expected in config.data["conditions"]:
         key = (expected["dataset"], expected["condition"])
@@ -785,29 +909,59 @@ def build_campaign_lock(config, artifact_manifests):
                     f"checkpoint SHA-256 mismatch for frozen artifact {key}"
                 )
         checkpoint_sha = None if checkpoint is None else checkpoint["sha256"].lower()
-        artifacts.append(
-            {
-                "manifest_path": _portable_path(manifest_path),
-                "manifest_sha256": manifest_sha,
-                "artifact_id": manifest["artifact_id"],
-                "dataset": manifest["dataset"],
-                "condition": manifest["condition"],
-                "model": manifest["model"],
-                "split": manifest["split"],
-                "checkpoint_sha256": checkpoint_sha,
-                "source_sha256": manifest["source_sha256"].lower(),
-                "sample_id_sha256": manifest["sample_id_sha256"].lower(),
-                "num_samples": manifest["num_samples"],
+        artifact_entry = {
+            "manifest_path": _portable_path(manifest_path),
+            "manifest_sha256": manifest_sha,
+            "artifact_id": manifest["artifact_id"],
+            "dataset": manifest["dataset"],
+            "condition": manifest["condition"],
+            "model": manifest["model"],
+            "split": manifest["split"],
+            "checkpoint_sha256": checkpoint_sha,
+            "source_sha256": manifest["source_sha256"].lower(),
+            "sample_id_sha256": manifest["sample_id_sha256"].lower(),
+            "num_samples": manifest["num_samples"],
+        }
+        if scientifically_locked:
+            if manifest.get("schema_version") != 3:
+                raise ValueError(
+                    f"frozen artifact {key} lacks schema-3 scientific provenance"
+                )
+            from selectseg.scientific_inputs import condition_input_identity
+
+            _, _, science_binding = scientific_plan
+            identity = condition_input_identity(
+                science_binding,
+                dataset=expected["dataset"],
+                model=expected["model"],
+                condition=expected["condition"],
+            )
+            expected_scientific = {
+                **identity["scientific_input_hashes"],
+                "condition_input_sha256": identity[
+                    "scientific_input_sha256"
+                ],
             }
-        )
+            if manifest.get("scientific_input") != expected_scientific:
+                raise ValueError(
+                    f"frozen artifact {key} scientific inputs differ from the root lock"
+                )
+            artifact_entry["scientific_input"] = expected_scientific
+        elif manifest.get("schema_version") != 2:
+            raise ValueError("legacy campaign locks require schema-2 frozen artifacts")
+        artifacts.append(artifact_entry)
     if set(by_key) != {
         (condition["dataset"], condition["condition"])
         for condition in config.data["conditions"]
     }:
         raise ValueError("artifact inputs contain an undeclared condition")
     estimator_path, estimator_sha, estimator = _load_estimator(config)
-    return {
-        "lock_schema_version": LOCK_SCHEMA_VERSION,
+    result = {
+        "lock_schema_version": (
+            SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION
+            if scientifically_locked
+            else LOCK_SCHEMA_VERSION
+        ),
         "campaign_id": config.data["campaign_id"],
         "config": {
             "path": _portable_path(config.path),
@@ -823,6 +977,16 @@ def build_campaign_lock(config, artifact_manifests):
         "paths": config.data["paths"],
         "artifacts": artifacts,
     }
+    if scientifically_locked:
+        science_path, science_sha256, science_binding = scientific_plan
+        result["scientific_input"] = {
+            "root_lock_path": _portable_path(science_path),
+            "root_lock_sha256": science_sha256,
+            "science_projection_sha256": science_binding["lock"][
+                "science_config"
+            ]["projection_sha256"],
+        }
+    return result
 
 
 def write_campaign_lock(lock, output_path):
@@ -873,13 +1037,25 @@ def load_campaign_lock(path, *, config=None):
     lock = _loads_strict(raw.decode("utf-8"), source=str(path))
     if not isinstance(lock, dict):
         raise ValueError(f"campaign lock must contain one object: {path}")
-    if set(lock) != REQUIRED_LOCK_FIELDS:
+    lock_schema_version = lock.get("lock_schema_version")
+    expected_lock_fields = (
+        REQUIRED_SCIENTIFIC_LOCK_FIELDS
+        if lock_schema_version == SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION
+        else REQUIRED_LOCK_FIELDS
+    )
+    if set(lock) != expected_lock_fields:
         raise ValueError(
-            f"campaign lock must contain exactly {sorted(REQUIRED_LOCK_FIELDS)}"
+            f"campaign lock must contain exactly {sorted(expected_lock_fields)}"
         )
     _assert_finite(lock, location=str(path))
-    if lock.get("lock_schema_version") != LOCK_SCHEMA_VERSION:
-        raise ValueError(f"{path}.lock_schema_version must equal {LOCK_SCHEMA_VERSION}")
+    if lock_schema_version not in {
+        LOCK_SCHEMA_VERSION,
+        SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION,
+    }:
+        raise ValueError(
+            f"{path}.lock_schema_version must equal {LOCK_SCHEMA_VERSION} or "
+            f"{SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION}"
+        )
     _nonempty_string(lock.get("campaign_id"), location=f"{path}.campaign_id")
     _validate_protocol(lock.get("protocol"), location=f"{path}.protocol")
     provenance = lock.get("config")
@@ -906,6 +1082,53 @@ def load_campaign_lock(path, *, config=None):
             raise ValueError("campaign lock was created from different config bytes")
         if paths != config.data["paths"]:
             raise ValueError("campaign lock and config have different output paths")
+    scientific_binding = None
+    if lock_schema_version == SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION:
+        scientific = lock["scientific_input"]
+        if (
+            not isinstance(scientific, dict)
+            or set(scientific) != REQUIRED_LOCK_SCIENTIFIC_INPUT_FIELDS
+        ):
+            raise ValueError(
+                f"{path}.scientific_input must contain exactly "
+                f"{sorted(REQUIRED_LOCK_SCIENTIFIC_INPUT_FIELDS)}"
+            )
+        scientific_path = _project_path(path, scientific["root_lock_path"])
+        scientific_sha256 = _digest(
+            scientific["root_lock_sha256"],
+            location=f"{path}.scientific_input.root_lock_sha256",
+        )
+        science_projection_sha256 = _digest(
+            scientific["science_projection_sha256"],
+            location=f"{path}.scientific_input.science_projection_sha256",
+        )
+        from selectseg.scientific_inputs import load_root_lock
+
+        scientific_binding = load_root_lock(
+            scientific_path, expected_sha256=scientific_sha256
+        )
+        if (
+            scientific_binding["lock"]["science_config"]["projection_sha256"]
+            != science_projection_sha256
+        ):
+            raise ValueError("campaign lock scientific projection changed")
+        if scientific_binding["lock"]["campaign_id"] != lock["campaign_id"]:
+            raise ValueError("campaign and scientific-input locks have different IDs")
+        if config is not None:
+            if config.data.get("execution_policy") != SCIENTIFIC_INPUT_LOCKED:
+                raise ValueError(
+                    "scientific campaign lock requires a scientific-input-locked config"
+                )
+            configured = config.data["scientific_input_lock"]
+            if (
+                scientific_path != _project_path(config.path, configured["path"])
+                or scientific_sha256 != configured["sha256"]
+            ):
+                raise ValueError("campaign lock names a different scientific input lock")
+    elif config is not None and config.data.get("execution_policy") == (
+        SCIENTIFIC_INPUT_LOCKED
+    ):
+        raise ValueError("scientific-input-locked config requires campaign lock schema 2")
     estimator = lock.get("estimator")
     if (
         not isinstance(estimator, dict)
@@ -934,13 +1157,18 @@ def load_campaign_lock(path, *, config=None):
         raise ValueError(f"{path}.artifacts must be a non-empty list")
     seen = set()
     for index, artifact in enumerate(artifacts):
+        expected_artifact_fields = (
+            REQUIRED_SCIENTIFIC_LOCK_ARTIFACT_FIELDS
+            if lock_schema_version == SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION
+            else REQUIRED_LOCK_ARTIFACT_FIELDS
+        )
         if (
             not isinstance(artifact, dict)
-            or set(artifact) != REQUIRED_LOCK_ARTIFACT_FIELDS
+            or set(artifact) != expected_artifact_fields
         ):
             raise ValueError(
                 f"{path}.artifacts[{index}] must contain exactly "
-                f"{sorted(REQUIRED_LOCK_ARTIFACT_FIELDS)}"
+                f"{sorted(expected_artifact_fields)}"
             )
         manifest_path = _project_path(path, artifact.get("manifest_path"))
         expected_sha = _digest(
@@ -969,6 +1197,32 @@ def load_campaign_lock(path, *, config=None):
             "sample_id_sha256": manifest["sample_id_sha256"],
             "num_samples": manifest["num_samples"],
         }
+        if lock_schema_version == SCIENTIFIC_CAMPAIGN_LOCK_SCHEMA_VERSION:
+            if manifest.get("schema_version") != 3:
+                raise ValueError(
+                    f"scientific campaign artifact {key} is not schema 3"
+                )
+            exact["scientific_input"] = manifest["scientific_input"]
+            from selectseg.scientific_inputs import condition_input_identity
+
+            identity = condition_input_identity(
+                scientific_binding,
+                dataset=manifest["dataset"],
+                model=manifest["model"],
+                condition=manifest["condition"],
+            )
+            expected_scientific = {
+                **identity["scientific_input_hashes"],
+                "condition_input_sha256": identity[
+                    "scientific_input_sha256"
+                ],
+            }
+            if manifest["scientific_input"] != expected_scientific:
+                raise ValueError(
+                    f"scientific provenance differs for frozen artifact {key}"
+                )
+        elif manifest.get("schema_version") != 2:
+            raise ValueError(f"legacy campaign artifact {key} is not schema 2")
         for field, value in exact.items():
             if _canonical_json(artifact.get(field)) != _canonical_json(value):
                 raise ValueError(
@@ -1393,27 +1647,140 @@ def _test_only_command(job):
     return tuple(command)
 
 
+def _compact_scheduler_output(value):
+    """Bound scheduler diagnostics while retaining line identities and counts."""
+
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        value = value.decode("utf-8", errors="replace")
+    else:
+        value = str(value)
+    counts = {}
+    for line in value.splitlines():
+        line = line.rstrip()
+        if not line:
+            continue
+        counts[line] = counts.get(line, 0) + 1
+    if not counts and value.strip():
+        counts[value.strip()] = 1
+
+    rendered = []
+    entries = list(counts.items())
+    shown = entries[:SCHEDULER_PREFLIGHT_MAX_DISTINCT_LINES]
+    for line, count in shown:
+        if len(line) > SCHEDULER_PREFLIGHT_MAX_LINE_CHARACTERS:
+            digest = hashlib.sha256(line.encode("utf-8")).hexdigest()[:16]
+            line = (
+                line[:SCHEDULER_PREFLIGHT_MAX_LINE_CHARACTERS]
+                + f"... [truncated sha256={digest}]"
+            )
+        rendered.append(f"{line} [occurrences={count}]")
+    omitted = entries[SCHEDULER_PREFLIGHT_MAX_DISTINCT_LINES:]
+    if omitted:
+        rendered.append(
+            "... omitted "
+            f"{len(omitted)} distinct lines ({sum(count for _, count in omitted)} "
+            "occurrences)"
+        )
+    return "\n".join(rendered)
+
+
+def _report_scheduler_preflight(job, *, status, stdout=None, stderr=None, reason=None):
+    """Expose Slurm's selected partition/start forecast for operator review."""
+
+    message = f"{job.key}: scheduler_preflight={status}"
+    if reason:
+        message += f" reason={reason}"
+    print(message)
+    stdout = _compact_scheduler_output(stdout)
+    stderr = _compact_scheduler_output(stderr)
+    if stdout:
+        print(f"{job.key}: scheduler stdout: {stdout}")
+    if stderr:
+        print(f"{job.key}: scheduler stderr: {stderr}", file=sys.stderr)
+
+
 def preflight_plan(jobs, *, runner=subprocess.run):
     """Validate a complete schema-v2 wave without submitting or writing receipts."""
 
     jobs = tuple(jobs)
     for job in jobs:
         command = _test_only_command(job)
-        result = runner(
-            list(command),
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+        try:
+            result = runner(
+                list(command),
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=SCHEDULER_PREFLIGHT_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as error:
+            _report_scheduler_preflight(
+                job,
+                status="failed",
+                stdout=getattr(error, "stdout", None),
+                stderr=getattr(error, "stderr", None),
+                reason=f"timeout_after_{error.timeout}s",
+            )
+            raise
+        except subprocess.CalledProcessError as error:
+            _report_scheduler_preflight(
+                job,
+                status="failed",
+                stdout=getattr(error, "stdout", None),
+                stderr=getattr(error, "stderr", None),
+            )
+            raise
+        except OSError as error:
+            _report_scheduler_preflight(
+                job,
+                status="failed",
+                stderr=f"{type(error).__name__}: {error}",
+            )
+            raise
         returncode = getattr(result, "returncode", 0)
         if returncode != 0:
+            _report_scheduler_preflight(
+                job,
+                status="failed",
+                stdout=getattr(result, "stdout", None),
+                stderr=getattr(result, "stderr", None),
+            )
             raise subprocess.CalledProcessError(
                 returncode,
                 list(command),
                 output=getattr(result, "stdout", None),
                 stderr=getattr(result, "stderr", None),
             )
+        _report_scheduler_preflight(
+            job,
+            status="ok",
+            stdout=getattr(result, "stdout", None),
+            stderr=getattr(result, "stderr", None),
+        )
     return jobs
+
+
+def _has_slurm_array_option(command):
+    """Inspect only the sbatch option prefix, never wrapper arguments."""
+
+    wrapper_index = next(
+        (
+            index
+            for index, token in enumerate(command[1:], start=1)
+            if isinstance(token, str) and token.endswith(".sbatch")
+        ),
+        len(command),
+    )
+    for token in command[1:wrapper_index]:
+        if not isinstance(token, str):
+            continue
+        if token == "--array" or token.startswith("--array="):
+            return True
+        if token == "-a" or token.startswith("-a=") or re.fullmatch(r"-a\d.*", token):
+            return True
+    return False
 
 
 def _validate_runtime_jobs(jobs):
@@ -1430,9 +1797,7 @@ def _validate_runtime_jobs(jobs):
         phases.add(job.phase)
         if not job.command or job.command[0] != "sbatch":
             raise ValueError(f"schema-v2 job {job.key} is not an sbatch command")
-        if any(
-            token == "--array" or token.startswith("--array=") for token in job.command
-        ):
+        if _has_slurm_array_option(job.command):
             raise ValueError("schema-v2 runtime execution forbids Slurm arrays")
     if len(phases) != 1:
         raise ValueError("schema-v2 runtime execution requires one phase per wave")
@@ -2313,27 +2678,63 @@ def execute_configured_plan(
     retry_failed_job_ids=(),
     retry_submission_failures=False,
 ):
-    """Execute v1, or safely preview the scheduler-only schema-v2 fixture."""
+    """Execute v1, preview v2, or run a scientifically locked v2 wave."""
 
     if config.data["config_schema_version"] == CANDIDATE_CONFIG_SCHEMA_VERSION:
-        if submit:
-            raise RuntimeError(
-                "schema-v2 is scheduler-preview-only because scientific inputs "
-                "are not independently bound; use a dry-run or "
-                "--scheduler-preflight-only"
-            )
-        if retry_failed_job_ids or retry_submission_failures:
-            raise ValueError("schema-v2 preview does not accept retry authorization")
-        if receipt_path is not None:
-            raise ValueError("schema-v2 scheduler preview never accepts --receipt")
+        policy = config.data["execution_policy"]
+        if policy == SCHEDULER_PREVIEW_ONLY:
+            if submit:
+                raise RuntimeError(
+                    "schema-v2 is scheduler-preview-only because scientific inputs "
+                    "are not independently bound; use a dry-run or "
+                    "--scheduler-preflight-only"
+                )
+            if retry_failed_job_ids or retry_submission_failures:
+                raise ValueError(
+                    "schema-v2 preview does not accept retry authorization"
+                )
+            if receipt_path is not None:
+                raise ValueError("schema-v2 scheduler preview never accepts --receipt")
+            if scheduler_preflight_only:
+                jobs = preflight_plan(
+                    _validate_runtime_jobs(jobs), runner=preflight_runner
+                )
+                print(
+                    f"planned_jobs={len(jobs)} scheduler_preflight_jobs={len(jobs)} "
+                    "submitted_jobs=0"
+                )
+                return ()
+            return execute_plan(jobs, submit=False, runner=runner)
+
+        _scientific_plan_binding(config, mode="fast")
+        jobs = _validate_runtime_jobs(jobs)
         if scheduler_preflight_only:
-            jobs = preflight_plan(_validate_runtime_jobs(jobs), runner=preflight_runner)
+            if receipt_path is not None:
+                raise ValueError("scheduler preflight never accepts --receipt")
+            if retry_failed_job_ids or retry_submission_failures:
+                raise ValueError("scheduler preflight never accepts retry authorization")
+            jobs = preflight_plan(jobs, runner=preflight_runner)
             print(
                 f"planned_jobs={len(jobs)} scheduler_preflight_jobs={len(jobs)} "
                 "submitted_jobs=0"
             )
             return ()
-        return execute_plan(jobs, submit=False, runner=runner)
+        if not submit:
+            if receipt_path is not None:
+                raise ValueError("dry-run planning does not accept --receipt")
+            if retry_failed_job_ids or retry_submission_failures:
+                raise ValueError("retry authorization requires --submit")
+            return execute_plan(jobs, submit=False, runner=runner)
+        receipt = _validated_runtime_receipt_path(config, jobs, receipt_path)
+        jobs = preflight_plan(jobs, runner=preflight_runner)
+        return _execute_runtime_plan(
+            config,
+            jobs,
+            receipt_path=receipt,
+            runner=runner,
+            retry_failed_job_ids=retry_failed_job_ids,
+            retry_submission_failures=retry_submission_failures,
+        )
     if scheduler_preflight_only:
         raise ValueError(
             "--scheduler-preflight-only is reserved for schema-v2 preview configs"
@@ -2349,7 +2750,7 @@ def execute_configured_plan(
 
 
 def _validate_execution_request(config, args):
-    """Enforce the checked-in v2 authorization boundary before planning or I/O."""
+    """Enforce the v2 authorization boundary before planning or external I/O."""
 
     is_v2 = config.data["config_schema_version"] == CANDIDATE_CONFIG_SCHEMA_VERSION
     if not is_v2:
@@ -2358,24 +2759,31 @@ def _validate_execution_request(config, args):
                 "--scheduler-preflight-only is reserved for schema-v2 preview configs"
             )
         return
-    if args.submit:
-        raise RuntimeError(
-            "schema-v2 is scheduler-preview-only because scientific inputs are "
-            "not independently bound; use a dry-run or "
-            "--scheduler-preflight-only"
-        )
-    if args.reconcile or args.recover_submitted_job_id:
-        raise RuntimeError(
-            "schema-v2 scheduler preview has no real submission to reconcile or recover"
-        )
-    if args.retry_failed_job_id or args.retry_submission_failure:
-        raise RuntimeError("schema-v2 scheduler preview has no attempts to retry")
-    if args.receipt:
-        raise ValueError("schema-v2 scheduler preview never accepts --receipt")
-    if args.phase == "lock" or args.write_lock:
-        raise RuntimeError(
-            "schema-v2 scheduler preview cannot create a scientific campaign lock"
-        )
+    if config.data["execution_policy"] == SCHEDULER_PREVIEW_ONLY:
+        if args.submit:
+            raise RuntimeError(
+                "schema-v2 is scheduler-preview-only because scientific inputs are "
+                "not independently bound; use a dry-run or "
+                "--scheduler-preflight-only"
+            )
+        if args.reconcile or args.recover_submitted_job_id:
+            raise RuntimeError(
+                "schema-v2 scheduler preview has no real submission to reconcile "
+                "or recover"
+            )
+        if args.retry_failed_job_id or args.retry_submission_failure:
+            raise RuntimeError("schema-v2 scheduler preview has no attempts to retry")
+        if args.receipt:
+            raise ValueError("schema-v2 scheduler preview never accepts --receipt")
+        if args.phase == "lock" or args.write_lock:
+            raise RuntimeError(
+                "schema-v2 scheduler preview cannot create a scientific campaign lock"
+            )
+        return
+
+    # This happens before job planning, receipt creation, scheduler access, or
+    # output publication. Any scientific-input drift therefore fails closed.
+    _scientific_plan_binding(config, mode="fast")
 
 
 def main(argv=None):

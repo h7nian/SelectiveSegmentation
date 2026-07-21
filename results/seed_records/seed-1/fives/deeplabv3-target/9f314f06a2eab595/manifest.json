@@ -1,0 +1,45 @@
+{
+  "artifact_type": "selectseg.portable_seed_condition",
+  "auxiliary_fields": [
+    "risk_hd_pixels",
+    "risk_hd95_pixels"
+  ],
+  "condition": "deeplabv3-target",
+  "dataset": "fives",
+  "logical_id": "seed-1/fives/deeplabv3-target/9f314f06a2eab595",
+  "manifest_schema_version": 1,
+  "model": "deeplabv3",
+  "num_images": 200,
+  "num_rows": 200,
+  "record_schema_version": 2,
+  "records_sha256": "cae8baa2cb0432d925fa211cef789061aafd271ef418e6d31a3b21fefe47d2db",
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd",
+    "risk_nhd95"
+  ],
+  "run_id": "9f314f06a2eab595",
+  "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d",
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_exact",
+    "confidence_qfr_entropy",
+    "confidence_plm10_entropy",
+    "confidence_mmmc_entropy",
+    "confidence_foreground_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd_m32",
+    "confidence_nhd95_m32"
+  ],
+  "source_assembly_manifest_sha256": "ab2edd0af6ce6673915e08dc6c9b0bdd94af362ec46917460616e7cb5cf2fb82",
+  "split": "test",
+  "training_seed": 1
+}

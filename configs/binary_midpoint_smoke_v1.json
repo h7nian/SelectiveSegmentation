@@ -1,0 +1,43 @@
+{
+  "config_schema_version": 2,
+  "campaign_id": "binary-midpoint-smoke-v1",
+  "execution_policy": "scientific-input-locked",
+  "data_root": "data",
+  "scientific_input_lock": {
+    "path": "configs/scientific_inputs/binary-midpoint-smoke-v1/root.lock.json",
+    "sha256": "01a2d0cc23325e18469f32b536dac7e6a92f095dbf47ca7f46a40c099b7848b1"
+  },
+  "protocol": {
+    "gamma_values": [0.5],
+    "m_values": [2, 8, 32],
+    "quadrature_rule": "midpoint-v1",
+    "seeds": [0]
+  },
+  "gpu_partitions": ["saffo-a100", "apollo_agate"],
+  "gpu_partition_candidates": ["saffo-a100", "apollo_agate"],
+  "cpu_partition_candidates": [
+    "amdsmall",
+    "agsmall",
+    "msismall",
+    "saffo-2tb"
+  ],
+  "estimator_spec": "configs/estimators/midpoint-v1.json",
+  "paths": {
+    "artifact_output_root": "outputs/binary_midpoint_smoke_v1/artifacts",
+    "common_output_root": "outputs/binary_midpoint_smoke_v1/common_scores",
+    "simulation_output_root": "outputs/binary_midpoint_smoke_v1/simulations",
+    "assembly_output_root": "outputs/binary_midpoint_smoke_v1/assembled"
+  },
+  "conditions": [
+    {
+      "dataset": "pet",
+      "condition": "clipseg-general",
+      "model": "clipseg",
+      "checkpoint": null,
+      "batch_size": 1,
+      "expected_num_samples": 1,
+      "expected_dataset_samples": 3669,
+      "freeze_limit": 1
+    }
+  ]
+}

@@ -6,6 +6,7 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 
 import numpy as np
 import pytest
@@ -56,7 +57,27 @@ V1_FREEZE_PLAN_SHA256 = (
 
 
 def _binding():
-    return seedext.load_spec_lock()
+    """Load immutable v1 metadata without pretending current source is v1 source.
+
+    The public v1 lock deliberately keeps the hashes of the code that actually
+    produced the completed seed extension.  The repository has since evolved,
+    so production ``load_spec_lock`` must fail closed on that source drift.
+    Unit tests for the frozen plan and metadata still need the immutable
+    binding; they bypass only the current-worktree source-byte comparison while
+    retaining the lock hash, schema, paths, model files, and all other checks.
+    """
+
+    verifier = seedext._verify_file_binding
+
+    def verify_historical_binding(binding, *, location):
+        if location.startswith("spec_lock.source_files["):
+            return Path(binding["path"])
+        return verifier(binding, location=location)
+
+    with mock.patch.object(
+        seedext, "_verify_file_binding", side_effect=verify_historical_binding
+    ):
+        return seedext.load_spec_lock()
 
 
 def _public_v1_golden_binding():
@@ -109,6 +130,20 @@ def test_v1_public_files_match_sealed_sha256():
     }
 
     assert observed == V1_GOLDEN_FILES
+
+
+def test_v1_production_loader_fails_closed_after_source_evolution():
+    lock = json.loads(
+        Path("configs/auxiliary/binary_seed_extension-v1.lock.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert any(
+        hashlib.sha256(Path(row["path"]).read_bytes()).hexdigest() != row["sha256"]
+        for row in lock["source_files"]
+    )
+    with pytest.raises(ValueError, match="locked file hash mismatch"):
+        seedext.load_spec_lock()
 
 
 def test_v1_train_and_freeze_plans_match_sealed_golden_replay():
@@ -373,6 +408,7 @@ def test_dry_run_prints_exactly_twenty_and_never_calls_scheduler(monkeypatch, ca
     def forbidden(*args, **kwargs):
         raise AssertionError("dry-run must not call Slurm")
 
+    monkeypatch.setattr(submit, "load_spec_lock", lambda *args, **kwargs: _binding())
     monkeypatch.setattr(subprocess, "run", forbidden)
     submit.main(["--phase", "train"])
     output = capsys.readouterr().out
@@ -454,7 +490,7 @@ def _fake_checkpoint_binding(binding, tmp_path, *, portable=False):
     return seedext.load_checkpoint_lock(binding, checkpoint_path, verify_files=False)
 
 
-def test_freeze_plan_is_gated_and_has_twenty_independent_jobs(tmp_path):
+def test_freeze_plan_is_gated_and_has_twenty_independent_jobs(tmp_path, monkeypatch):
     binding = _binding()
     checkpoint_binding = _fake_checkpoint_binding(binding, tmp_path)
     jobs = submit.plan_freeze_jobs(binding, checkpoint_binding)
@@ -473,6 +509,7 @@ def test_freeze_plan_is_gated_and_has_twenty_independent_jobs(tmp_path):
         assert command.count("scripts/slurm/freeze_binary_seed_extension.sbatch") == 1
         assert submit.CPU_PARTITION_REQUEST not in command
 
+    monkeypatch.setattr(submit, "load_spec_lock", lambda *args, **kwargs: binding)
     with pytest.raises(FileNotFoundError, match="gated"):
         submit.main(
             [

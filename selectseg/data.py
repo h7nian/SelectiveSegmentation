@@ -14,6 +14,7 @@ CLIPSeg fine-tuning; DeepLabV3 training ignores it.
 """
 
 import hashlib
+import io
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -124,6 +125,17 @@ SPECS = {
 }
 
 
+def _open_verified(path, *, sample_id, role, verified_file_reader):
+    """Open a source image, optionally from content-verified in-memory bytes."""
+
+    if verified_file_reader is None:
+        return Image.open(path)
+    payload = verified_file_reader(sample_id, role, Path(path))
+    if not isinstance(payload, bytes):
+        raise TypeError("verified_file_reader must return immutable bytes")
+    return Image.open(io.BytesIO(payload))
+
+
 class PetSegmentation(Dataset):
     """Oxford-IIIT Pet as binary segmentation (background/pet).
 
@@ -137,7 +149,7 @@ class PetSegmentation(Dataset):
 
     SPECIES_TO_PROMPT = {1: 0, 2: 1}
 
-    def __init__(self, root, split):
+    def __init__(self, root, split, *, verified_file_reader=None):
         base = Path(root) / "oxford-iiit-pet"
         split_file = base / "annotations" / f"{split}.txt"
         if not split_file.exists():
@@ -146,6 +158,7 @@ class PetSegmentation(Dataset):
             )
         self.images_dir = base / "images"
         self.trimaps_dir = base / "annotations" / "trimaps"
+        self.verified_file_reader = verified_file_reader
         self.samples = []
         for line in split_file.read_text().splitlines():
             if not line or line.startswith("#"):
@@ -162,8 +175,20 @@ class PetSegmentation(Dataset):
 
     def __getitem__(self, index):
         image_id, species = self.samples[index]
-        image = Image.open(self.images_dir / f"{image_id}.jpg").convert("RGB")
-        trimap = TF.pil_to_tensor(Image.open(self.trimaps_dir / f"{image_id}.png")).long()
+        with _open_verified(
+            self.images_dir / f"{image_id}.jpg",
+            sample_id=image_id,
+            role="image",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
+            image = source.convert("RGB")
+        with _open_verified(
+            self.trimaps_dir / f"{image_id}.png",
+            sample_id=image_id,
+            role="mask",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
+            trimap = TF.pil_to_tensor(source).long()
         mask = torch.zeros_like(trimap)
         mask[(trimap == 1) | (trimap == 3)] = 1
         mask[trimap == 2] = 0
@@ -177,8 +202,9 @@ class VOCSegmentationBase(Dataset):
     one per training image based on which classes are visible.
     """
 
-    def __init__(self, root, split):
+    def __init__(self, root, split, *, verified_file_reader=None):
         self.base = VOCSegmentation(root, year="2012", image_set=split)
+        self.verified_file_reader = verified_file_reader
 
     def __len__(self):
         return len(self.base)
@@ -188,7 +214,24 @@ class VOCSegmentationBase(Dataset):
         return Path(self.base.images[index]).stem
 
     def __getitem__(self, index):
-        image, target = self.base[index]
+        if self.verified_file_reader is None:
+            image, target = self.base[index]
+        else:
+            sample_id = self.sample_id(index)
+            with _open_verified(
+                self.base.images[index],
+                sample_id=sample_id,
+                role="image",
+                verified_file_reader=self.verified_file_reader,
+            ) as source:
+                image = source.convert("RGB")
+            with _open_verified(
+                self.base.masks[index],
+                sample_id=sample_id,
+                role="mask",
+                verified_file_reader=self.verified_file_reader,
+            ) as source:
+                target = source.copy()
         mask = TF.pil_to_tensor(target).long()
         return image.convert("RGB"), mask, -1
 
@@ -211,7 +254,7 @@ class KvasirSegmentation(Dataset):
     _SUFFIXES = frozenset({".jpg", ".jpeg", ".png"})
     _SPLITS = frozenset({"train", "test"})
 
-    def __init__(self, root, split):
+    def __init__(self, root, split, *, verified_file_reader=None):
         if split not in self._SPLITS:
             raise ValueError(
                 f"Kvasir-SEG split must be one of {sorted(self._SPLITS)}, got {split!r}"
@@ -249,6 +292,7 @@ class KvasirSegmentation(Dataset):
         train_count = 4 * len(pairs) // 5
         selected = pairs[:train_count] if split == "train" else pairs[train_count:]
         self.samples = sorted(selected, key=lambda sample: sample[0])
+        self.verified_file_reader = verified_file_reader
 
     @classmethod
     def _files_by_stem(cls, directory, kind):
@@ -278,9 +322,19 @@ class KvasirSegmentation(Dataset):
 
     def __getitem__(self, index):
         _, image_path, mask_path = self.samples[index]
-        with Image.open(image_path) as source:
+        with _open_verified(
+            image_path,
+            sample_id=self.samples[index][0],
+            role="image",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
             image = source.convert("RGB")
-        with Image.open(mask_path) as source:
+        with _open_verified(
+            mask_path,
+            sample_id=self.samples[index][0],
+            role="mask",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
             mask_channels = TF.pil_to_tensor(source)
         mask = (mask_channels.amax(dim=0, keepdim=True) >= 128).long()
         return image, mask, 0
@@ -297,7 +351,7 @@ class FivesSegmentation(Dataset):
     _SPLITS = frozenset({"train", "test"})
     _SUFFIXES = frozenset({".png", ".jpg", ".jpeg"})
 
-    def __init__(self, root, split):
+    def __init__(self, root, split, *, verified_file_reader=None):
         if split not in self._SPLITS:
             raise ValueError(
                 f"FIVES split must be one of {sorted(self._SPLITS)}, got {split!r}"
@@ -327,6 +381,7 @@ class FivesSegmentation(Dataset):
                         f"{stem!r}: image={image.size}, mask={mask.size}"
                     )
             self.samples.append((stem, image_path, mask_path))
+        self.verified_file_reader = verified_file_reader
 
     @classmethod
     def _files_by_stem(cls, directory, kind):
@@ -356,9 +411,19 @@ class FivesSegmentation(Dataset):
 
     def __getitem__(self, index):
         _, image_path, mask_path = self.samples[index]
-        with Image.open(image_path) as source:
+        with _open_verified(
+            image_path,
+            sample_id=self.samples[index][0],
+            role="image",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
             image = source.convert("RGB")
-        with Image.open(mask_path) as source:
+        with _open_verified(
+            mask_path,
+            sample_id=self.samples[index][0],
+            role="mask",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
             mask_channels = TF.pil_to_tensor(source)
         mask = (mask_channels != 0).any(dim=0, keepdim=True).long()
         return image, mask, 0
@@ -373,7 +438,7 @@ class _StrictPairedBinarySegmentation(Dataset):
     _DOWNLOAD_HINT = "download the dataset first"
     _MASK_STEM_SUFFIX = ""
 
-    def __init__(self, root, split):
+    def __init__(self, root, split, *, verified_file_reader=None):
         if split not in self._SPLITS:
             raise ValueError(
                 f"{self._DATASET_NAME} split must be one of "
@@ -404,6 +469,7 @@ class _StrictPairedBinarySegmentation(Dataset):
                         f"{stem!r}: image={image.size}, mask={mask_image.size}"
                     )
             self.samples.append((stem, image_path, mask_path))
+        self.verified_file_reader = verified_file_reader
 
     def _split_directories(self, root, split):
         raise NotImplementedError
@@ -438,9 +504,19 @@ class _StrictPairedBinarySegmentation(Dataset):
 
     def __getitem__(self, index):
         _, image_path, mask_path = self.samples[index]
-        with Image.open(image_path) as source:
+        with _open_verified(
+            image_path,
+            sample_id=self.samples[index][0],
+            role="image",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
             image = source.convert("RGB")
-        with Image.open(mask_path) as source:
+        with _open_verified(
+            mask_path,
+            sample_id=self.samples[index][0],
+            role="mask",
+            verified_file_reader=self.verified_file_reader,
+        ) as source:
             mask_channels = TF.pil_to_tensor(source)
         mask = (mask_channels.amax(dim=0, keepdim=True) >= 128).long()
         return image, mask, 0
@@ -476,31 +552,50 @@ class TN3KSegmentation(_StrictPairedBinarySegmentation):
         return base / f"{release_split}-image", base / f"{release_split}-mask"
 
 
-def _base_dataset(spec, root, split):
+def _base_dataset(spec, root, split, *, verified_file_reader=None):
     if spec.name == "pet":
-        return PetSegmentation(root, split)
+        return PetSegmentation(
+            root, split, verified_file_reader=verified_file_reader
+        )
     if spec.name == "kvasir":
-        return KvasirSegmentation(root, split)
+        return KvasirSegmentation(
+            root, split, verified_file_reader=verified_file_reader
+        )
     if spec.name == "fives":
-        return FivesSegmentation(root, split)
+        return FivesSegmentation(
+            root, split, verified_file_reader=verified_file_reader
+        )
     if spec.name == "isic":
-        return ISICSegmentation(root, split)
+        return ISICSegmentation(
+            root, split, verified_file_reader=verified_file_reader
+        )
     if spec.name == "tn3k":
-        return TN3KSegmentation(root, split)
+        return TN3KSegmentation(
+            root, split, verified_file_reader=verified_file_reader
+        )
     if spec.name == "voc":
-        return VOCSegmentationBase(root, split)
+        return VOCSegmentationBase(
+            root, split, verified_file_reader=verified_file_reader
+        )
     raise ValueError(f"Unsupported dataset spec {spec.name!r}")
 
 
 class SegDataset(Dataset):
     """Applies model-resolution transforms on top of a base dataset."""
 
-    def __init__(self, spec, root, train, image_size):
+    def __init__(
+        self, spec, root, train, image_size, *, verified_file_reader=None
+    ):
         self.spec = spec
         self.train = train
         self.image_size = image_size
         split = spec.train_split if train else spec.eval_split
-        self.base = _base_dataset(spec, root, split)
+        self.base = _base_dataset(
+            spec,
+            root,
+            split,
+            verified_file_reader=verified_file_reader,
+        )
 
     def __len__(self):
         return len(self.base)

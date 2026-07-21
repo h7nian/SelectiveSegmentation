@@ -33,28 +33,61 @@ the campaign lock was written, 16 CPU jobs computed M-independent fields and
 are evidence of what ran; they are not rewritten to claim the newer scheduler
 policy.
 
-In the scheduler-preview `config_schema_version: 2` fixture, each GPU job
-requests exactly the two-candidate list
-`saffo-a100,apollo_agate`, and each CPU job requests exactly the
-four-candidate list `saffo-2tb,agsmall,amdsmall,msismall`. Slurm chooses one
-eligible partition from the applicable list. Every experiment remains one job,
-each M-specific evaluation job receives one scalar M, and Slurm arrays are not
-used. Sixteen strict assemblies each join one common shard with exactly
-`M=2,8,32`; one read-only diagnostic job is also run per frozen artifact.
-Assemble paths are derived from lock-bound content IDs rather than directory
-scans, and diagnostic inputs are read directly from the lock. The candidate
-runtime design assigns all five compute phases separate append-only receipts
-to prevent blind duplicate submissions. That ledger is tested as future
-groundwork but is not reachable from the checked-in preview fixture.
+Schema v2 implements two explicit policies. A `scheduler-preview-only` fixture
+is permanently fail-closed and can only print commands or run
+`sbatch --test-only`; it cannot create receipts, locks, recoveries, retries, or
+real jobs. A `scientific-input-locked` campaign is executable only after an
+exact path and SHA-256 bind a reviewed root lock covering all five evaluation
+dataset bytes and loader order, checkpoints, base-model files, freeze sources,
+and runtime environment. Before planning and again on each freeze compute node,
+lock drift fails closed. The freeze worker uses consume verification: it fully
+checks small inputs and verifies every image/mask byte on its unavoidable read.
 
-The companion code repository includes the isolated scheduler fixture
-`configs/binary_midpoint_main_v2.json`. It preserves the reported grid only to
-compare planned commands and reserves paths below
-`outputs/binary_midpoint_main_v2/`; the sealed v1 config remains the
-reproduction record for the manuscript numbers. A dry-run performs no writes.
-`--scheduler-preflight-only` runs every final command through
-`sbatch --test-only`, still with no receipt or real job. `--submit` is rejected
-until a separate reviewed lock binds all scientific input bytes.
+Both policies retain `saffo-a100` and `apollo_agate` for every GPU experiment,
+alternating which private queue appears first. Every schema-v2 CPU experiment
+retains all four CPU candidates, rotates `amdsmall`, `agsmall`, and `msismall`
+as its first choices, and keeps `saffo-2tb` last as the private fallback. Slurm
+places the single job on one eligible partition. Every M-specific evaluation
+receives one scalar M, and Slurm arrays are not used. The scientific-input
+dataset components likewise use five independent jobs---one per dataset:
+
+```bash
+python -m scripts.submit_scientific_input_components \
+  --scheduler-preflight-only
+python -m scripts.submit_scientific_input_components --submit \
+  --receipt outputs/binary_midpoint_main_v2/scientific_inputs/dataset-build-receipt.jsonl
+```
+
+Those no-overwrite components are combined with separately sealed source,
+base-model, checkpoint, and environment components at
+`configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json`. A full-byte
+verification is required before the execution config can bind the lock:
+
+```bash
+SELSEG_SCIENCE_LOCK_SHA256=17d30fc18b496c7062acfcec9a09ec8bd6f796339d132bd99f9a6cffad5b2cf0
+python -m selectseg.scientific_inputs verify \
+  --lock configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json \
+  --expected-sha256 "$SELSEG_SCIENCE_LOCK_SHA256" --mode full
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze \
+  --scheduler-preflight-only
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze --submit \
+  --receipt outputs/binary_midpoint_main_v2/receipts/freeze.jsonl
+```
+
+The locked freeze writes schema-v3 artifact manifests. Sixteen explicit
+manifests then produce a schema-v2 post-freeze campaign lock, from which common,
+score, assemble, and diagnostic inputs are derived without scans. Each phase
+has one canonical append-only receipt; reconciliation appends observed Slurm
+facts, interrupted successful submissions require identity-checked recovery,
+and failed attempts require explicit per-job retry authorization. The sealed v1
+config and receipts remain the reproduction record for the manuscript numbers;
+no schema-v2 full rerun is implied merely by the existence of the new policy.
+The full-byte seal passed on 2026-07-21.  The isolated one-image smoke root
+also passed, but its first scheduler preflight failed closed before receipt
+creation because the Slurm controller was unreachable; no schema-v2 job is
+therefore claimed as submitted or complete yet.
 
 The lock validates immutable manifest bytes and structure and records the
 payload hashes declared there; it does not decompress every large payload on
@@ -97,6 +130,12 @@ terminal scheduler summary, and write-last provenance guard are exported only
 after all 162 one-job phase records, including the 20 training cells, satisfy
 their locked grids. Raw AURC remains unscaled in JSON; manuscript displays
 multiply AURC-derived quantities by 100.
+The anonymous analysis artifact additionally contains 30 path-free
+manifest/record pairs for the five-dataset, two-target-model, three-seed grid.
+From an extracted artifact, `python -m scripts.replay_seed_robustness`
+recomputes the full seed JSON and both seed tables from those per-image records
+and requires byte equality with all three released references. Original
+execution-bearing assembly manifests are not included in this replay bundle.
 Dataset archives, model caches, checkpoints, and frozen probability-map
 payloads are not part of this LaTeX package; their immutable identifiers are
 retained in the released manifests. The code release provides official dataset

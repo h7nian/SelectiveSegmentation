@@ -32,6 +32,10 @@ import numpy as np
 
 
 SCHEMA_VERSION = 2
+SCIENTIFIC_INPUT_SCHEMA_VERSION = 3
+SUPPORTED_SCHEMA_VERSIONS = frozenset(
+    {SCHEMA_VERSION, SCIENTIFIC_INPUT_SCHEMA_VERSION}
+)
 ARTIFACT_TYPE = "selectseg.frozen_binary_maps"
 MANIFEST_NAME = "manifest.json"
 PROBABILITY_KEY = "foreground_probability"
@@ -40,7 +44,7 @@ TRUTH_KEY = "truth"
 _HEX_64 = re.compile(r"[0-9a-f]{64}\Z")
 _HEX_16 = re.compile(r"[0-9a-f]{16}\Z")
 _PATH_TOKEN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
-_MANIFEST_FIELDS = frozenset(
+_MANIFEST_FIELDS_V2 = frozenset(
     {
         "schema_version",
         "artifact_type",
@@ -64,6 +68,7 @@ _MANIFEST_FIELDS = frozenset(
         "command",
     }
 )
+_MANIFEST_FIELDS_V3 = _MANIFEST_FIELDS_V2 | {"scientific_input"}
 _SAMPLE_FIELDS = frozenset(
     {
         "index",
@@ -83,6 +88,18 @@ _ENVIRONMENT_FIELDS = frozenset(
 )
 _PACKAGE_FIELDS = frozenset({"python", "numpy", "torch", "torchvision", "transformers"})
 _CHECKPOINT_FIELDS = frozenset({"path", "sha256", "size_bytes"})
+_SCIENTIFIC_INPUT_FIELDS = frozenset(
+    {
+        "root_lock_sha256",
+        "condition_input_sha256",
+        "science_projection_sha256",
+        "eval_dataset_component_sha256",
+        "source_component_sha256",
+        "base_model_component_sha256",
+        "checkpoint_component_sha256",
+        "environment_component_sha256",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -173,6 +190,10 @@ def artifact_identity(manifest: Mapping[str, object]) -> str:
         "cohort": manifest.get("cohort"),
         "sample_ids": ordered_ids,
     }
+    if manifest.get("schema_version") == SCIENTIFIC_INPUT_SCHEMA_VERSION:
+        payload["scientific_input"] = _scientific_input(
+            manifest.get("scientific_input"), location="scientific_input"
+        )
     encoded = json.dumps(
         payload,
         sort_keys=True,
@@ -241,6 +262,7 @@ def write_binary_artifact(
     samples: Iterable[tuple[str, np.ndarray, np.ndarray]],
     command: Sequence[str],
     created_utc: str,
+    scientific_input: Mapping[str, object] | None = None,
 ) -> Path:
     """Stream samples into a new atomically published artifact.
 
@@ -268,6 +290,16 @@ def write_binary_artifact(
         preprocessing, _PREPROCESSING_FIELDS, location="preprocessing"
     )
     command_value = _command(command)
+    schema_version = (
+        SCIENTIFIC_INPUT_SCHEMA_VERSION
+        if scientific_input is not None
+        else SCHEMA_VERSION
+    )
+    scientific_input_value = (
+        None
+        if scientific_input is None
+        else _scientific_input(scientific_input, location="scientific_input")
+    )
     ordered_ids = [
         _validate_sample_id(value, location=f"sample_ids[{index}]")
         for index, value in enumerate(sample_ids)
@@ -291,7 +323,7 @@ def write_binary_artifact(
         for index, sample_id in enumerate(ordered_ids)
     ]
     manifest = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": schema_version,
         "artifact_type": ARTIFACT_TYPE,
         "artifact_id": "",
         "created_utc": created_utc,
@@ -312,6 +344,8 @@ def write_binary_artifact(
         "samples": provisional_entries,
         "command": command_value,
     }
+    if scientific_input_value is not None:
+        manifest["scientific_input"] = scientific_input_value
     manifest["artifact_id"] = artifact_identity(manifest)
     artifact_id = manifest["artifact_id"]
 
@@ -414,12 +448,21 @@ def _validate_manifest(
     source: Path,
     require_directory_name: bool = True,
 ) -> None:
-    _exact_keys(manifest, _MANIFEST_FIELDS, location=str(source))
+    schema_version = manifest.get("schema_version")
     if (
-        type(manifest["schema_version"]) is not int
-        or manifest["schema_version"] != SCHEMA_VERSION
+        type(schema_version) is not int
+        or schema_version not in SUPPORTED_SCHEMA_VERSIONS
     ):
-        raise ValueError(f"{source}.schema_version must equal {SCHEMA_VERSION}")
+        raise ValueError(
+            f"{source}.schema_version must be one of "
+            f"{sorted(SUPPORTED_SCHEMA_VERSIONS)}"
+        )
+    expected_fields = (
+        _MANIFEST_FIELDS_V3
+        if schema_version == SCIENTIFIC_INPUT_SCHEMA_VERSION
+        else _MANIFEST_FIELDS_V2
+    )
+    _exact_keys(manifest, expected_fields, location=str(source))
     if manifest["artifact_type"] != ARTIFACT_TYPE:
         raise ValueError(f"{source}.artifact_type must equal {ARTIFACT_TYPE!r}")
     artifact_id = manifest["artifact_id"]
@@ -454,6 +497,10 @@ def _validate_manifest(
     )
     _nonempty_string(manifest["cohort"], location=f"{source}.cohort")
     _command(manifest["command"])
+    if schema_version == SCIENTIFIC_INPUT_SCHEMA_VERSION:
+        _scientific_input(
+            manifest["scientific_input"], location=f"{source}.scientific_input"
+        )
 
     entries = manifest["samples"]
     if not isinstance(entries, list) or len(entries) != num_samples:
@@ -605,6 +652,18 @@ def _exact_keys(value: Mapping, expected: frozenset[str], *, location: str) -> N
         raise ValueError(
             f"{location} schema mismatch: missing={missing}, extra={extra}"
         )
+
+
+def _scientific_input(value: Mapping[str, object], *, location: str) -> dict[str, str]:
+    """Validate the content roots carried by schema-3 frozen artifacts."""
+
+    if not isinstance(value, Mapping):
+        raise ValueError(f"{location} must be an object")
+    _exact_keys(value, _SCIENTIFIC_INPUT_FIELDS, location=location)
+    return {
+        field: _hash_string(value[field], location=f"{location}.{field}")
+        for field in sorted(_SCIENTIFIC_INPUT_FIELDS)
+    }
 
 
 def _strict_int(value, *, location: str, minimum: int) -> int:

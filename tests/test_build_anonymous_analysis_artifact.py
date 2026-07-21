@@ -132,6 +132,28 @@ def portable_seed_inputs(monkeypatch):
 
     monkeypatch.setattr(artifact, "_read_regular_source", read_source)
     monkeypatch.setattr(artifact, "load_public_seed_release", load_release)
+
+    def verify_replay(lock_payload, read_payload):
+        assert lock_payload
+        assert read_payload("results/seed_records/seed-0/fives/clipseg-target/627922c22aa3aa21/records.jsonl")
+        return {}, {
+            "verified": True,
+            "condition_count": 30,
+            "seed_count": 3,
+            "output_sha256": {
+                "analysis": hashlib.sha256(
+                    payloads[artifact.PUBLIC_SEED_ANALYSIS_SOURCE]
+                ).hexdigest(),
+                "robustness_table": hashlib.sha256(
+                    payloads[artifact.PUBLIC_SEED_TABLE_SOURCE]
+                ).hexdigest(),
+                "gate_table": hashlib.sha256(
+                    payloads[artifact.PUBLIC_SEED_GATE_TABLE_SOURCE]
+                ).hexdigest(),
+            },
+        }
+
+    monkeypatch.setattr(artifact, "verify_replay_payloads", verify_replay)
     return payloads, calls
 
 
@@ -146,13 +168,13 @@ def test_repeated_builds_are_identical_verified_and_importable(
 
     assert first.read_bytes() == second.read_bytes()
     expected_names = artifact.expected_archive_member_names()
-    assert len(artifact.RELEASE_FILES) == 51
-    assert len(expected_names) == 54
+    assert len(artifact.RELEASE_FILES) == 114
+    assert len(expected_names) == 117
 
     report = artifact.verify_archive(first)
     assert report == {
         "archive_sha256": hashlib.sha256(first.read_bytes()).hexdigest(),
-        "member_count": 54,
+        "member_count": 117,
         "root": artifact.ARCHIVE_ROOT,
         "verified": True,
     }
@@ -176,10 +198,14 @@ def test_repeated_builds_are_identical_verified_and_importable(
         unpacked_root / "tables" / "seed_sensitivity_main.tex"
     ).read_bytes() == payloads[artifact.PUBLIC_SEED_GATE_TABLE_SOURCE]
     readme = (unpacked_root / "README.md").read_text(encoding="utf-8")
-    assert "independently rebuilds the compact table byte-for-byte" in readme
+    assert "all 30 manifest/record pairs" in readme
+    assert "match the released\nreference byte for byte" in readme
     assert "five reversal cells" in readme
-    assert "seed-0 minority-direction markers" in readme
-    for module in ("scripts.analyze_binary", "scripts.render_paper_tables"):
+    for module in (
+        "scripts.analyze_binary",
+        "scripts.render_paper_tables",
+        "scripts.replay_seed_robustness",
+    ):
         result = subprocess.run(
             [sys.executable, "-m", module, "--help"],
             cwd=unpacked_root,
@@ -255,25 +281,44 @@ def test_member_allowlist_has_exact_canonical_cardinalities():
     assert roles.count("seed-provenance") == 1
     assert roles.count("seed-table") == 1
     assert roles.count("seed-gate-table") == 1
+    assert roles.count("seed-replay-code") == 1
+    assert roles.count("seed-replay-lock") == 1
+    assert roles.count("seed-replay-guard") == 1
+    assert roles.count("seed-record-manifest") == 30
+    assert roles.count("seed-records") == 30
 
     sources = [item.source for item in artifact.RELEASE_FILES]
     destinations = [item.destination for item in artifact.RELEASE_FILES]
-    assert len(sources) == len(set(sources)) == 51
-    assert len(destinations) == len(set(destinations)) == 51
-    assert set(sources[-5:]) == {
+    assert len(sources) == len(set(sources)) == 114
+    assert len(destinations) == len(set(destinations)) == 114
+    seed_sources = {
+        item.source for item in artifact.RELEASE_FILES if item.role.startswith("seed-")
+    }
+    assert {
         "results/seed_robustness_analysis.json",
         "results/seed_scheduler_summary.json",
         "results/seed_provenance.json",
         "docs/Tables/seed_robustness.tex",
         "docs/Tables/seed_sensitivity_main.tex",
+        "results/seed_replay.lock.json",
+        "results/seed_replay.complete.json",
+        "scripts/replay_seed_robustness.py",
+    } <= seed_sources
+    seed_destinations = {
+        item.destination
+        for item in artifact.RELEASE_FILES
+        if item.role.startswith("seed-")
     }
-    assert set(destinations[-5:]) == {
+    assert {
         "results/seed_robustness_analysis.json",
         "results/seed_scheduler_summary.json",
         "results/seed_provenance.json",
         "tables/seed_robustness.tex",
         "tables/seed_sensitivity_main.tex",
-    }
+        "results/seed_replay.lock.json",
+        "results/seed_replay.complete.json",
+        "scripts/replay_seed_robustness.py",
+    } <= seed_destinations
     assert not any(
         any(marker in path.lower() for marker in ("receipt", "checkpoint"))
         or Path(path).suffix.lower() in artifact._FORBIDDEN_RELEASE_SUFFIXES
@@ -294,6 +339,8 @@ def test_member_allowlist_has_exact_canonical_cardinalities():
         artifact.PUBLIC_SEED_PROVENANCE_SOURCE,
         artifact.PUBLIC_SEED_TABLE_SOURCE,
         artifact.PUBLIC_SEED_GATE_TABLE_SOURCE,
+        artifact.PUBLIC_SEED_REPLAY_LOCK_SOURCE,
+        artifact.PUBLIC_SEED_REPLAY_GUARD_SOURCE,
     ),
 )
 def test_every_public_seed_member_is_mandatory(

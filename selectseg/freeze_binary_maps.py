@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import sys
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from importlib import metadata
 from pathlib import Path
@@ -28,6 +29,21 @@ from selectseg.models import (
     DEEPLABV3_WEIGHTS,
     build_model,
 )
+from selectseg.scientific_inputs import (
+    VerifiedEvalDataset,
+    read_verified_sample_file,
+    verify_condition_inputs,
+)
+
+
+@dataclass(frozen=True)
+class ScientificFileReader:
+    """Picklable DataLoader callback that verifies each consumed source file."""
+
+    dataset: VerifiedEvalDataset
+
+    def __call__(self, sample_id, role, path):
+        return read_verified_sample_file(self.dataset, sample_id, role, path)
 
 
 def parse_args(argv=None):
@@ -42,6 +58,11 @@ def parse_args(argv=None):
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--expected-num-samples", type=int, default=None)
     parser.add_argument("--require-cuda", action="store_true")
+    parser.add_argument("--campaign-config")
+    parser.add_argument("--expected-campaign-config-sha256")
+    parser.add_argument("--scientific-input-lock")
+    parser.add_argument("--expected-scientific-input-lock-sha256")
+    parser.add_argument("--expected-condition-input-sha256")
     return parser.parse_args(argv)
 
 
@@ -54,6 +75,20 @@ def _validate_args(args) -> None:
         raise ValueError("--limit must be positive")
     if args.expected_num_samples is not None and args.expected_num_samples <= 0:
         raise ValueError("--expected-num-samples must be positive")
+    scientific_values = (
+        args.campaign_config,
+        args.expected_campaign_config_sha256,
+        args.scientific_input_lock,
+        args.expected_scientific_input_lock_sha256,
+        args.expected_condition_input_sha256,
+    )
+    if any(value is not None for value in scientific_values) and not all(
+        value is not None for value in scientific_values
+    ):
+        raise ValueError(
+            "scientific execution requires campaign config/hash, scientific "
+            "input lock/hash, and condition-input hash together"
+        )
 
 
 def _source_fingerprint() -> str:
@@ -61,12 +96,17 @@ def _source_fingerprint() -> str:
 
     root = Path(__file__).resolve().parents[1]
     paths = [
-        root / "selectseg" / name
-        for name in (
-            "binary_artifacts.py",
-            "freeze_binary_maps.py",
-            "data.py",
-            "models.py",
+        root / path
+        for path in (
+            "selectseg/__init__.py",
+            "selectseg/binary_artifacts.py",
+            "selectseg/freeze_binary_maps.py",
+            "selectseg/scientific_inputs.py",
+            "selectseg/data.py",
+            "selectseg/models.py",
+            "scripts/slurm/freeze_binary_maps.sbatch",
+            "scripts/slurm/env.sh",
+            "scripts/submit_binary_simulations.py",
         )
     ]
     digest = hashlib.sha256()
@@ -131,6 +171,39 @@ def main(argv=None):
         )
     finetuned = args.checkpoint is not None
     condition = CONDITION_NAMES[args.model][finetuned]
+    scientific = None
+    verified_file_reader = None
+    if args.scientific_input_lock is not None:
+        config_path = Path(args.campaign_config)
+        if not config_path.is_file() or config_path.is_symlink():
+            raise FileNotFoundError(
+                f"campaign config is not a regular non-symlink file: {config_path}"
+            )
+        actual_config_sha256 = sha256_file(config_path)
+        if actual_config_sha256 != args.expected_campaign_config_sha256:
+            raise ValueError("campaign config SHA-256 differs from the planned job")
+        scientific = verify_condition_inputs(
+            args.scientific_input_lock,
+            dataset=args.dataset,
+            model=args.model,
+            condition=condition,
+            expected_sha256=args.expected_scientific_input_lock_sha256,
+            mode="consume",
+        )
+        if scientific["scientific_input_sha256"] != (
+            args.expected_condition_input_sha256
+        ):
+            raise ValueError("condition scientific-input SHA-256 mismatch")
+        locked_checkpoint = scientific["checkpoint"]
+        if (locked_checkpoint is None) != (args.checkpoint is None):
+            raise ValueError("planned checkpoint state differs from scientific lock")
+        if locked_checkpoint is not None:
+            if Path(locked_checkpoint["path"]).resolve() != Path(
+                args.checkpoint
+            ).resolve():
+                raise ValueError("planned checkpoint path differs from scientific lock")
+        verified_file_reader = ScientificFileReader(scientific["eval_dataset"])
+
     checkpoint = _checkpoint_info(args.checkpoint)
     source_sha256 = _source_fingerprint()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -148,11 +221,15 @@ def main(argv=None):
         model.load_state_dict(state)
     model.to(device).eval()
 
+    dataset_options = {}
+    if verified_file_reader is not None:
+        dataset_options["verified_file_reader"] = verified_file_reader
     full_dataset = SegDataset(
         spec,
         args.data_root,
         train=False,
         image_size=model.image_size,
+        **dataset_options,
     )
     if (
         args.expected_num_samples is not None
@@ -281,6 +358,16 @@ def main(argv=None):
         samples=frozen_samples(),
         command=_command(argv),
         created_utc=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        scientific_input=(
+            None
+            if scientific is None
+            else {
+                **scientific["scientific_input_hashes"],
+                "condition_input_sha256": scientific[
+                    "scientific_input_sha256"
+                ],
+            }
+        ),
     )
     manifest_sha256 = sha256_file(manifest_path)
     print(f"saved {manifest_path}")

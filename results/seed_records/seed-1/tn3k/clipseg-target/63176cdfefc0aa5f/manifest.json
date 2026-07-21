@@ -1,0 +1,45 @@
+{
+  "artifact_type": "selectseg.portable_seed_condition",
+  "auxiliary_fields": [
+    "risk_hd_pixels",
+    "risk_hd95_pixels"
+  ],
+  "condition": "clipseg-target",
+  "dataset": "tn3k",
+  "logical_id": "seed-1/tn3k/clipseg-target/63176cdfefc0aa5f",
+  "manifest_schema_version": 1,
+  "model": "clipseg",
+  "num_images": 614,
+  "num_rows": 614,
+  "record_schema_version": 2,
+  "records_sha256": "db77f6392f1014921413d318629d1035ecf1e312b3ae6825a2af7b206c80bf4a",
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd",
+    "risk_nhd95"
+  ],
+  "run_id": "63176cdfefc0aa5f",
+  "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9",
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_exact",
+    "confidence_qfr_entropy",
+    "confidence_plm10_entropy",
+    "confidence_mmmc_entropy",
+    "confidence_foreground_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd_m32",
+    "confidence_nhd95_m32"
+  ],
+  "source_assembly_manifest_sha256": "434efd33ebdeb084d85021cce0cb17de6dec08af84335fbc33e17e4c77488565",
+  "split": "test",
+  "training_seed": 1
+}

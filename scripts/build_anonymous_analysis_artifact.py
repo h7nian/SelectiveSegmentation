@@ -31,14 +31,18 @@ from pathlib import Path, PurePosixPath
 from typing import Sequence
 
 from scripts.export_binary_seed_provenance import load_public_seed_release
+from scripts.replay_seed_robustness import (
+    ReplayValidationError,
+    verify_replay_payloads,
+)
 
 
 ARCHIVE_ROOT = "selective-segmentation-analysis-artifact-v4"
 ARCHIVE_MTIME = 0
 ARCHIVE_FILE_MODE = 0o644
 EXPECTED_CONDITION_COUNT = 16
-EXPECTED_RELEASE_FILE_COUNT = 51
-EXPECTED_ARCHIVE_MEMBER_COUNT = 54
+EXPECTED_RELEASE_FILE_COUNT = 114
+EXPECTED_ARCHIVE_MEMBER_COUNT = 117
 
 # The builder consumes the byte-exact public-mirror layout.  This makes the
 # same command usable in a clean public clone and prevents the anonymous
@@ -51,6 +55,8 @@ PUBLIC_SEED_SCHEDULER_SOURCE = "results/seed_scheduler_summary.json"
 PUBLIC_SEED_PROVENANCE_SOURCE = "results/seed_provenance.json"
 PUBLIC_SEED_TABLE_SOURCE = "docs/Tables/seed_robustness.tex"
 PUBLIC_SEED_GATE_TABLE_SOURCE = "docs/Tables/seed_sensitivity_main.tex"
+PUBLIC_SEED_REPLAY_LOCK_SOURCE = "results/seed_replay.lock.json"
+PUBLIC_SEED_REPLAY_GUARD_SOURCE = "results/seed_replay.complete.json"
 
 SEED_GATE_CONTRAST = "nhd_vs_nhd95_under_nhd95"
 SEED_GATE_DATASETS = ("pet", "kvasir", "fives", "isic", "tn3k")
@@ -114,6 +120,42 @@ ASSEMBLED_RUNS = (
     ("tn3k", "deeplabv3-target", "01b4c3a58986cf27"),
 )
 
+# Thirty path-free replay inputs: the same ten target conditions for each of
+# training seeds 0, 1, and 2.  These are explicit release data, not discovery
+# patterns.  Every record file has one strictly allowlisted portable manifest.
+PORTABLE_SEED_RUNS = (
+    (0, "fives", "clipseg-target", "627922c22aa3aa21"),
+    (0, "fives", "deeplabv3-target", "a62d754378787146"),
+    (0, "isic", "clipseg-target", "69fc681ff737f148"),
+    (0, "isic", "deeplabv3-target", "a42288ea78a340b1"),
+    (0, "kvasir", "clipseg-target", "1a1c02b968ab86a4"),
+    (0, "kvasir", "deeplabv3-target", "5cca940975b7f02d"),
+    (0, "pet", "clipseg-target", "cd4341aaed2bda20"),
+    (0, "pet", "deeplabv3-target", "fd2f61c609c18fba"),
+    (0, "tn3k", "clipseg-target", "eccb8f4f045a5473"),
+    (0, "tn3k", "deeplabv3-target", "01b4c3a58986cf27"),
+    (1, "fives", "clipseg-target", "2435c524ef0766f3"),
+    (1, "fives", "deeplabv3-target", "9f314f06a2eab595"),
+    (1, "isic", "clipseg-target", "c848014159175786"),
+    (1, "isic", "deeplabv3-target", "46dc7182fd5fc6e3"),
+    (1, "kvasir", "clipseg-target", "2860e2e7601882f3"),
+    (1, "kvasir", "deeplabv3-target", "acc2da1ce32ad656"),
+    (1, "pet", "clipseg-target", "0fec2bd382f23d4f"),
+    (1, "pet", "deeplabv3-target", "127e78caea1a1586"),
+    (1, "tn3k", "clipseg-target", "63176cdfefc0aa5f"),
+    (1, "tn3k", "deeplabv3-target", "f7530ce073e35ec3"),
+    (2, "fives", "clipseg-target", "3c23e51d0dbd3f7c"),
+    (2, "fives", "deeplabv3-target", "164b183d9f7e8b7b"),
+    (2, "isic", "clipseg-target", "1bef05e564bac5ac"),
+    (2, "isic", "deeplabv3-target", "db6ed7fad1d713ac"),
+    (2, "kvasir", "clipseg-target", "6b50e05a2e7b7bb2"),
+    (2, "kvasir", "deeplabv3-target", "7c7a5f46a399fb83"),
+    (2, "pet", "clipseg-target", "4f23a8a500f3ad40"),
+    (2, "pet", "deeplabv3-target", "42833caf0bdfc194"),
+    (2, "tn3k", "clipseg-target", "73f6639aefd90529"),
+    (2, "tn3k", "deeplabv3-target", "2b5e117d5edba5b6"),
+)
+
 
 @dataclass(frozen=True)
 class ReleaseFile:
@@ -137,6 +179,11 @@ _CODE_FILES = (
         "code",
     ),
     ReleaseFile("selectseg/__init__.py", "selectseg/__init__.py", "code"),
+    ReleaseFile(
+        "scripts/replay_seed_robustness.py",
+        "scripts/replay_seed_robustness.py",
+        "seed-replay-code",
+    ),
 )
 
 _LOCKED_RESULT_FILES = (
@@ -188,6 +235,37 @@ _PUBLIC_SEED_FILES = (
     ),
 )
 
+_PUBLIC_SEED_REPLAY_FILES = (
+    ReleaseFile(
+        PUBLIC_SEED_REPLAY_LOCK_SOURCE,
+        "results/seed_replay.lock.json",
+        "seed-replay-lock",
+    ),
+    *tuple(
+        ReleaseFile(
+            (
+                f"results/seed_records/seed-{seed}/{dataset}/{condition}/"
+                f"{run_id}/{name}"
+            ),
+            (
+                f"results/seed_records/seed-{seed}/{dataset}/{condition}/"
+                f"{run_id}/{name}"
+            ),
+            role,
+        )
+        for seed, dataset, condition, run_id in PORTABLE_SEED_RUNS
+        for name, role in (
+            ("manifest.json", "seed-record-manifest"),
+            ("records.jsonl", "seed-records"),
+        )
+    ),
+    ReleaseFile(
+        PUBLIC_SEED_REPLAY_GUARD_SOURCE,
+        "results/seed_replay.complete.json",
+        "seed-replay-guard",
+    ),
+)
+
 # The only repository files eligible for inclusion.  Generated metadata below
 # is separately fixed by GENERATED_MEMBER_NAMES.
 RELEASE_FILES = (
@@ -196,6 +274,7 @@ RELEASE_FILES = (
     + _ASSEMBLED_FILES
     + _TABLE_FILES
     + _PUBLIC_SEED_FILES
+    + _PUBLIC_SEED_REPLAY_FILES
 )
 GENERATED_MEMBER_NAMES = (
     "MANIFEST.sha256",
@@ -209,8 +288,9 @@ ANONYMOUS_README = """# Core analysis reproduction artifact
 
 This anonymous artifact contains the fixed 16-condition records, their
 manifests, the immutable campaign lock, the analysis and table source code,
-the seven canonical tables, the four-file public seed-robustness bundle, and
-the compact Gate-C table used in the main text.  It does not contain model
+the seven canonical tables, the public seed-robustness bundle, all 30 portable
+seed 0/1/2 condition records, and the compact Gate-C table used in the main
+text.  It does not contain model
 weights, raw images, training data, per-job scheduler records, submission
 receipts, checkpoint bytes, or author identities.
 
@@ -243,17 +323,20 @@ for name in main_results full_target_results complete_results cross_loss_results
 done
 ```
 
-The seed bundle consists of `results/seed_robustness_analysis.json`,
-`results/seed_scheduler_summary.json`, `results/seed_provenance.json`, and
-`tables/seed_robustness.tex`; `tables/seed_sensitivity_main.tex` is its compact
-main-text derivative.  These files support verification-level review: the
-verifier checks their strict schemas and cross-file bindings, verifies the full
-table hash, and independently rebuilds the compact table byte-for-byte from the
-validated public analysis.  That rebuild checks the five reversal cells, three
-seed-0 minority-direction markers, and the displayed `100 x AURC` scale.  The
-infrastructure-coupled renderer is deliberately outside this anonymous minimal
-bundle.  The bundle does not include the per-image seed records or probability
-maps needed to recompute the seed analysis from individual examples.
+The seed release can be replayed end to end with one command:
+
+```bash
+python -m scripts.replay_seed_robustness
+```
+
+This validates the path-free lock and all 30 manifest/record pairs, rejoins the
+same held-out cohort across seeds, recomputes every AURC and adjacent-loss
+contrast, rebuilds `seed_robustness_analysis.json`, `seed_robustness.tex`, and
+`seed_sensitivity_main.tex`, and requires each result to match the released
+reference byte for byte.  The replay also checks the five reversal cells,
+three seed-0 minority-direction markers, and the displayed `100 x AURC` scale.
+The outputs are written below `rebuild/seed_replay`.  Probability maps and
+model weights are not required for this post-inference statistical replay.
 
 `MANIFEST.sha256` authenticates every other archive member.  Verification can
 also be performed before extraction with the artifact builder's `verify`
@@ -430,6 +513,18 @@ def _validate_allowlist_contract() -> None:
         "seed-gate-table",
     ):
         raise ArtifactValidationError("public seed release allowlist is incomplete")
+    replay_roles = [item.role for item in _PUBLIC_SEED_REPLAY_FILES]
+    if (
+        len(PORTABLE_SEED_RUNS) != 30
+        or replay_roles.count("seed-replay-lock") != 1
+        or replay_roles.count("seed-replay-guard") != 1
+        or replay_roles.count("seed-record-manifest") != 30
+        or replay_roles.count("seed-records") != 30
+    ):
+        raise ArtifactValidationError("portable seed replay allowlist is incomplete")
+    replay_identities = [row[:3] for row in PORTABLE_SEED_RUNS]
+    if len(replay_identities) != len(set(replay_identities)):
+        raise ArtifactValidationError("portable seed replay identities are duplicated")
 
 
 def _read_regular_source(repo_root: Path, relative: str) -> bytes:
@@ -837,9 +932,86 @@ def _validate_public_seed_closure(files: dict[str, bytes]) -> None:
         )
 
 
+def _validate_seed_replay_closure(files: dict[str, bytes]) -> None:
+    """Recompute all seed outputs from the 30 portable condition records."""
+
+    guard = _strict_json(
+        files[PUBLIC_SEED_REPLAY_GUARD_SOURCE],
+        source=PUBLIC_SEED_REPLAY_GUARD_SOURCE,
+    )
+    expected_guard_fields = {
+        "schema_version",
+        "artifact_type",
+        "lock_sha256",
+        "condition_count",
+        "portable_file_count",
+        "portable_bundle_sha256",
+    }
+    if not isinstance(guard, dict) or set(guard) != expected_guard_fields:
+        raise ArtifactValidationError("portable seed replay guard schema is invalid")
+    if (
+        guard["schema_version"] != 1
+        or guard["artifact_type"] != "selectseg.portable_seed_replay_complete"
+        or guard["condition_count"] != 30
+        or guard["portable_file_count"] != 60
+        or guard["lock_sha256"]
+        != _sha256_bytes(files[PUBLIC_SEED_REPLAY_LOCK_SOURCE])
+    ):
+        raise ArtifactValidationError("portable seed replay guard binding is invalid")
+    bundle_digest = hashlib.sha256()
+    prefix = "results/seed_records/"
+    replay_payloads = sorted(
+        (item.source, files[item.source])
+        for item in _PUBLIC_SEED_REPLAY_FILES
+        if item.role in {"seed-record-manifest", "seed-records"}
+    )
+    for source, payload in replay_payloads:
+        if not source.startswith(prefix):
+            raise ArtifactValidationError("portable seed replay source is noncanonical")
+        bundle_digest.update(source.removeprefix(prefix).encode("utf-8"))
+        bundle_digest.update(b"\0")
+        bundle_digest.update(hashlib.sha256(payload).digest())
+        bundle_digest.update(b"\0")
+    if guard["portable_bundle_sha256"] != bundle_digest.hexdigest():
+        raise ArtifactValidationError("portable seed replay bundle digest mismatch")
+
+    aliases = {
+        "tables/seed_robustness.tex": PUBLIC_SEED_TABLE_SOURCE,
+        "tables/seed_sensitivity_main.tex": PUBLIC_SEED_GATE_TABLE_SOURCE,
+    }
+
+    def read_payload(relative: str) -> bytes:
+        source = aliases.get(relative, relative)
+        try:
+            return files[source]
+        except KeyError as error:
+            raise ArtifactValidationError(
+                f"seed replay requests a non-release member: {relative}"
+            ) from error
+
+    try:
+        _, report = verify_replay_payloads(
+            files[PUBLIC_SEED_REPLAY_LOCK_SOURCE], read_payload
+        )
+    except (KeyError, OSError, ValueError, ReplayValidationError) as error:
+        raise ArtifactValidationError(f"invalid portable seed replay: {error}") from error
+    if report != {
+        "verified": True,
+        "condition_count": 30,
+        "seed_count": 3,
+        "output_sha256": {
+            "analysis": _sha256_bytes(files[PUBLIC_SEED_ANALYSIS_SOURCE]),
+            "robustness_table": _sha256_bytes(files[PUBLIC_SEED_TABLE_SOURCE]),
+            "gate_table": _sha256_bytes(files[PUBLIC_SEED_GATE_TABLE_SOURCE]),
+        },
+    }:
+        raise ArtifactValidationError("portable seed replay returned an invalid report")
+
+
 def _validate_release_closure(files: dict[str, bytes]) -> None:
     _validate_canonical_closure(files)
     _validate_public_seed_closure(files)
+    _validate_seed_replay_closure(files)
 
 
 def _load_release_files(repo_root: Path) -> dict[str, bytes]:

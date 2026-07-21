@@ -190,6 +190,39 @@ def test_kvasir_thresholds_jpeg_mask_and_keeps_stable_sample_id(tmp_path):
     assert dataset.sample_id(0) == dataset.base.sample_id(0)
 
 
+def test_eval_dataset_reads_image_and_mask_through_content_verifier(tmp_path):
+    for index in range(5):
+        _write_kvasir_sample(tmp_path, f"case_{index}")
+    calls = []
+
+    def verified_reader(sample_id, role, path):
+        calls.append((sample_id, role, path.relative_to(tmp_path).as_posix()))
+        return path.read_bytes()
+
+    dataset = SegDataset(
+        SPECS["kvasir"],
+        tmp_path,
+        train=False,
+        image_size=16,
+        verified_file_reader=verified_reader,
+    )
+    dataset[0]
+    assert [(sample_id, role) for sample_id, role, _ in calls] == [
+        (dataset.sample_id(0), "image"),
+        (dataset.sample_id(0), "mask"),
+    ]
+
+    invalid = SegDataset(
+        SPECS["kvasir"],
+        tmp_path,
+        train=False,
+        image_size=16,
+        verified_file_reader=lambda *_: bytearray(b"not immutable"),
+    )
+    with pytest.raises(TypeError, match="immutable bytes"):
+        invalid[0]
+
+
 def test_kvasir_rejects_unpaired_files(tmp_path):
     images = tmp_path / "Kvasir-SEG" / "images"
     masks = tmp_path / "Kvasir-SEG" / "masks"

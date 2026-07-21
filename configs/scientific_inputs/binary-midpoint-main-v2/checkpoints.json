@@ -1,0 +1,152 @@
+{
+  "component_kind": "checkpoints",
+  "component_schema_version": 1,
+  "entries": [
+    {
+      "checkpoint": null,
+      "condition": "clipseg-general",
+      "dataset": "fives",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/fives/clipseg/seed-0/checkpoint.pt",
+        "sha256": "6f8f196d8a89202738b3c908552bd55e93b8c3ca1c19c7f6ec79ae77275d9e43",
+        "size_bytes": 603178463
+      },
+      "condition": "clipseg-target",
+      "dataset": "fives",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/fives/deeplabv3/seed-0/checkpoint.pt",
+        "sha256": "ed6ec767d275c11edeab04f0c14255a0271167e020847135c3b0d0e2719dd389",
+        "size_bytes": 168337923
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "fives",
+      "model": "deeplabv3"
+    },
+    {
+      "checkpoint": null,
+      "condition": "clipseg-general",
+      "dataset": "isic",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/isic/clipseg/seed-0/checkpoint.pt",
+        "sha256": "8a8d29290e21b5c12741488b236242c647a04d0fac99e1674109d6018e7decae",
+        "size_bytes": 603179867
+      },
+      "condition": "clipseg-target",
+      "dataset": "isic",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/isic/deeplabv3/seed-0/checkpoint.pt",
+        "sha256": "2d40aaa7e5cd6363677c6f65af559df2ce3250d956d052d70bad2d7407661b28",
+        "size_bytes": 168339051
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "isic",
+      "model": "deeplabv3"
+    },
+    {
+      "checkpoint": null,
+      "condition": "clipseg-general",
+      "dataset": "kvasir",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/kvasir/clipseg/seed-0/checkpoint.pt",
+        "sha256": "0d457d64fb9a048cfec8a2217599f8db965ebb560892dc9043282a3a60d839a8",
+        "size_bytes": 603178463
+      },
+      "condition": "clipseg-target",
+      "dataset": "kvasir",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/kvasir/deeplabv3/seed-0/checkpoint.pt",
+        "sha256": "ffe500c671270b14761c97d78d552a398ae44a90d131b55db728a0c17df3bd88",
+        "size_bytes": 168337923
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "kvasir",
+      "model": "deeplabv3"
+    },
+    {
+      "checkpoint": null,
+      "condition": "clipseg-general",
+      "dataset": "pet",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/pet/clipseg/seed-0/checkpoint.pt",
+        "sha256": "0b62aa359ae1d4e4df2741de2fe61836322925ec1461764dc6529e4e3fe5bed2",
+        "size_bytes": 603178463
+      },
+      "condition": "clipseg-target",
+      "dataset": "pet",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": null,
+      "condition": "deeplabv3-external",
+      "dataset": "pet",
+      "model": "deeplabv3"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/pet/deeplabv3/seed-0/checkpoint.pt",
+        "sha256": "9a67e8b1be718df9543423852696a7a59aec40a151e19736b85fe6cea9e1fb40",
+        "size_bytes": 168337923
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "pet",
+      "model": "deeplabv3"
+    },
+    {
+      "checkpoint": null,
+      "condition": "clipseg-general",
+      "dataset": "tn3k",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/tn3k/clipseg/seed-0/checkpoint.pt",
+        "sha256": "09c2b17250f0dc810e0b960746b79ed9f63a0ae67951b2b1258e7fffe8d938cf",
+        "size_bytes": 603179867
+      },
+      "condition": "clipseg-target",
+      "dataset": "tn3k",
+      "model": "clipseg"
+    },
+    {
+      "checkpoint": {
+        "kind": "regular",
+        "path": "outputs/binary_train/tn3k/deeplabv3/seed-0/checkpoint.pt",
+        "sha256": "9e7e44ddaa0291e1ff0a3f56c0900c3481d5617bd717af7cafa3299b1deda16e",
+        "size_bytes": 168339051
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "tn3k",
+      "model": "deeplabv3"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "component_kind": "source",
+  "component_schema_version": 1,
+  "files": [
+    {
+      "kind": "regular",
+      "path": "scripts/slurm/env.sh",
+      "sha256": "82fa8fb6dac4fc2d02416137f12dc924342e272a65aeee376739e8d33a486a04",
+      "size_bytes": 858
+    },
+    {
+      "kind": "regular",
+      "path": "scripts/slurm/freeze_binary_maps.sbatch",
+      "sha256": "fae6f27b0c9b531e6d8c71be6d44a1e8dde12d7982231a10e420043c6c870fb3",
+      "size_bytes": 858
+    },
+    {
+      "kind": "regular",
+      "path": "scripts/submit_binary_simulations.py",
+      "sha256": "d2e962cd2c05b04ffc7e6cdd1252d0e14b01e131546b43ba1b4cc5b4872de83b",
+      "size_bytes": 113212
+    },
+    {
+      "kind": "regular",
+      "path": "selectseg/__init__.py",
+      "sha256": "666a38c71d854e403e06a0f03325c9423e5e2cad28b8db3b58bf4f732f66adf1",
+      "size_bytes": 308
+    },
+    {
+      "kind": "regular",
+      "path": "selectseg/binary_artifacts.py",
+      "sha256": "fb7b1abd547c998c346af3a431e5fe5c8e333a82690ebb9cae5ecf5ad2ea52ec",
+      "size_bytes": 33638
+    },
+    {
+      "kind": "regular",
+      "path": "selectseg/data.py",
+      "sha256": "1347efb99cda368ddf22b38943efaa9a6f70c6759a0f5dcc27336b815c0bd6bd",
+      "size_bytes": 24623
+    },
+    {
+      "kind": "regular",
+      "path": "selectseg/freeze_binary_maps.py",
+      "sha256": "d93c704adc95f67691291ca13591e92246be351e8b579af70b1af5b57c33ab53",
+      "size_bytes": 14780
+    },
+    {
+      "kind": "regular",
+      "path": "selectseg/models.py",
+      "sha256": "e1a683164be6b54de498a7a676b2318b0e2010b9a788f5e74daf60ae1c786333",
+      "size_bytes": 9337
+    },
+    {
+      "kind": "regular",
+      "path": "selectseg/scientific_inputs.py",
+      "sha256": "d2282a1001381bb5cc83ad38e540e1503abb6f1714bd12e3352fc65186adf66f",
+      "size_bytes": 71930
+    }
+  ]
+}

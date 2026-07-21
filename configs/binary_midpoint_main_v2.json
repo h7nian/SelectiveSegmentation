@@ -1,7 +1,12 @@
 {
   "config_schema_version": 2,
   "campaign_id": "binary-midpoint-main-v2",
-  "execution_policy": "scheduler-preview-only",
+  "execution_policy": "scientific-input-locked",
+  "data_root": "data",
+  "scientific_input_lock": {
+    "path": "configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json",
+    "sha256": "17d30fc18b496c7062acfcec9a09ec8bd6f796339d132bd99f9a6cffad5b2cf0"
+  },
   "protocol": {
     "gamma_values": [0.5],
     "m_values": [2, 8, 32],
@@ -11,10 +16,10 @@
   "gpu_partitions": ["saffo-a100", "apollo_agate"],
   "gpu_partition_candidates": ["saffo-a100", "apollo_agate"],
   "cpu_partition_candidates": [
-    "saffo-2tb",
-    "agsmall",
     "amdsmall",
-    "msismall"
+    "agsmall",
+    "msismall",
+    "saffo-2tb"
   ],
   "estimator_spec": "configs/estimators/midpoint-v1.json",
   "paths": {

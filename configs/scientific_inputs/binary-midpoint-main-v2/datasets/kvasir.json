@@ -1,0 +1,3414 @@
+{
+  "component_kind": "eval_dataset",
+  "component_schema_version": 1,
+  "data_root": "data",
+  "dataset": "kvasir",
+  "loader_class": "KvasirSegmentation",
+  "loader_order_sha256": "9f890059166f802741e9ebdb83cdd99660a865c8cffca7bf9f4ce802d26918fd",
+  "sample_count": 200,
+  "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f",
+  "samples": [
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju0qoxqj9q6s0835b43399p4.jpg",
+        "sha256": "a2fbe43d8b079bcf3290f1daea4af382500eb2505289a778f28877d92c671576",
+        "size_bytes": 117064
+      },
+      "index": 0,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju0qoxqj9q6s0835b43399p4.jpg",
+        "sha256": "7f8035336e3e2dcc4445c560007c72999991d02e557d1f84a98d0c290690f5b6",
+        "size_bytes": 41779
+      },
+      "prompt_index": 0,
+      "sample_id": "cju0qoxqj9q6s0835b43399p4"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju0u2g7pmnux0801vkk47ivj.jpg",
+        "sha256": "07e7414834110274aaf7dc6e23dad773192c618667f68b18a39d5fbd41b9b979",
+        "size_bytes": 43978
+      },
+      "index": 1,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju0u2g7pmnux0801vkk47ivj.jpg",
+        "sha256": "2862ec555395ea90d52b04eee5ff88ddb460da2376639397213113bc4d48f568",
+        "size_bytes": 15948
+      },
+      "prompt_index": 0,
+      "sample_id": "cju0u2g7pmnux0801vkk47ivj"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju13cgqmnhwn0988yrainhcp.jpg",
+        "sha256": "e93c3f5734ab9e9ec13bc81cef83f0ac7abc01dc090eaccdeb4b2e84c86dca2e",
+        "size_bytes": 32581
+      },
+      "index": 2,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju13cgqmnhwn0988yrainhcp.jpg",
+        "sha256": "e4d1f390a33c87651b3e1454b16fe72e2812be3a9f6f028c80d49fffa06690b3",
+        "size_bytes": 12404
+      },
+      "prompt_index": 0,
+      "sample_id": "cju13cgqmnhwn0988yrainhcp"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju14pxbaoksp0835qzorx6g6.jpg",
+        "sha256": "60596b4a58a3cdf209e8ef662d2618b1903ae79bd1c1fb03dedbc7751c04984e",
+        "size_bytes": 40816
+      },
+      "index": 3,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju14pxbaoksp0835qzorx6g6.jpg",
+        "sha256": "807aff4fa56314fb956990c4aef342f42f03affce50318fe8074506a0d9454e2",
+        "size_bytes": 10405
+      },
+      "prompt_index": 0,
+      "sample_id": "cju14pxbaoksp0835qzorx6g6"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju15jr8jz8sb0855ukmkswkz.jpg",
+        "sha256": "922eea160ab1a8902135d195f9255747a1da7f37366d816954a81ffc338988ae",
+        "size_bytes": 37355
+      },
+      "index": 4,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju15jr8jz8sb0855ukmkswkz.jpg",
+        "sha256": "f49d10317abc370b411d1db6da7e7ffbecbbb7f776b7627a5d6cf0371129ca36",
+        "size_bytes": 13934
+      },
+      "prompt_index": 0,
+      "sample_id": "cju15jr8jz8sb0855ukmkswkz"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju160wshltz10993i1gmqxbe.jpg",
+        "sha256": "acd337e91710ad11bec132cfbbd56787e7d1cfb66bebc103e75ffe7da87ffb44",
+        "size_bytes": 28303
+      },
+      "index": 5,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju160wshltz10993i1gmqxbe.jpg",
+        "sha256": "6fdd7b31ff3daea99ea180f98e576b21bb869095a592b9de62a026151e677d57",
+        "size_bytes": 8439
+      },
+      "prompt_index": 0,
+      "sample_id": "cju160wshltz10993i1gmqxbe"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju16b6ynq8e40988m8vx0xnj.jpg",
+        "sha256": "41b99c163dcd6de135165223bd572bc0a3cee9ceb74361b67ba15813f62b3a2a",
+        "size_bytes": 26999
+      },
+      "index": 6,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju16b6ynq8e40988m8vx0xnj.jpg",
+        "sha256": "2b46b7c1e71752eeaf64ff514db85c464ef4a2bbf9b6c4a31e0bc02e1036f45f",
+        "size_bytes": 7583
+      },
+      "prompt_index": 0,
+      "sample_id": "cju16b6ynq8e40988m8vx0xnj"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju16d65tzw9d0799ouslsw25.jpg",
+        "sha256": "999c2a386d96b67d3a64435e482d66f88cd76155436fea2acf7a400754d91fee",
+        "size_bytes": 18352
+      },
+      "index": 7,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju16d65tzw9d0799ouslsw25.jpg",
+        "sha256": "ecd4176994ddb438de68223766fabd5afc6ef8f7efa2fd6ac5e26738dbdefb60",
+        "size_bytes": 7969
+      },
+      "prompt_index": 0,
+      "sample_id": "cju16d65tzw9d0799ouslsw25"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju16jgnyzp970878melv7r25.jpg",
+        "sha256": "cea956191d9addd2855461c40ef6aba1cd715fcc4370a8dcaf1b03ce0e9cab63",
+        "size_bytes": 32884
+      },
+      "index": 8,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju16jgnyzp970878melv7r25.jpg",
+        "sha256": "3fa28f321f2a46e31293c7d52283429a2f7eb1ce038c0e1ab8ca2c930920bb10",
+        "size_bytes": 11477
+      },
+      "prompt_index": 0,
+      "sample_id": "cju16jgnyzp970878melv7r25"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju17g6ykn1cs0993dww6qdi8.jpg",
+        "sha256": "74ddbfce3a0727500b587975d026c3529c54ba921031275c4c373e8cfbc945c4",
+        "size_bytes": 39379
+      },
+      "index": 9,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju17g6ykn1cs0993dww6qdi8.jpg",
+        "sha256": "c0d605559dcaa335ab8d20da46b419c4a2e34038ed3c9682e47483002da16ffe",
+        "size_bytes": 15631
+      },
+      "prompt_index": 0,
+      "sample_id": "cju17g6ykn1cs0993dww6qdi8"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju17otoe119u0799nqcbl8n1.jpg",
+        "sha256": "236147eb700fdd2030b32058ad71fde97e8b976c588af3bb3e7896f2da371618",
+        "size_bytes": 37552
+      },
+      "index": 10,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju17otoe119u0799nqcbl8n1.jpg",
+        "sha256": "45b2eee012c644cd8b8ff43e1b74c09752a70d7519804552e3e07a2fbeb4a0cd",
+        "size_bytes": 16026
+      },
+      "prompt_index": 0,
+      "sample_id": "cju17otoe119u0799nqcbl8n1"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju17x0j4nfc10993y31pvlgs.jpg",
+        "sha256": "b59d143f8911e8a923040285531f5064e26a83cfc42e9ba822682d6098a62182",
+        "size_bytes": 23061
+      },
+      "index": 11,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju17x0j4nfc10993y31pvlgs.jpg",
+        "sha256": "71f13a3bd5f85645b20be5a17370de72b51941289114b1f5ebd23d0829dcebf7",
+        "size_bytes": 12399
+      },
+      "prompt_index": 0,
+      "sample_id": "cju17x0j4nfc10993y31pvlgs"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1819curo000988pd5xcqme.jpg",
+        "sha256": "b26380cca253ee3ac20b316df3882bb4b2ea962efb6678f2c32391993c1f9541",
+        "size_bytes": 38960
+      },
+      "index": 12,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1819curo000988pd5xcqme.jpg",
+        "sha256": "dc4ed5b92e826fccfeda064dd583de149bf424c3112c221b2ba77e6cab3b92fb",
+        "size_bytes": 11291
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1819curo000988pd5xcqme"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju18849rrsgr0988p90hkygb.jpg",
+        "sha256": "2f2327245105387b77272ace34a776286b4ca215f7731d6784de7224b19757d8",
+        "size_bytes": 36073
+      },
+      "index": 13,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju18849rrsgr0988p90hkygb.jpg",
+        "sha256": "52dd1ccd517cdc5385237d1b8598265b31bcf26733a8c62ca49307f8ac0edaa7",
+        "size_bytes": 11087
+      },
+      "prompt_index": 0,
+      "sample_id": "cju18849rrsgr0988p90hkygb"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju18kevfrojc0835bn90f1in.jpg",
+        "sha256": "b1e432049cc5b8871b78fb99bd20c14bd2848e9f6f7c669f7860fd91ae5bd7fe",
+        "size_bytes": 37802
+      },
+      "index": 14,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju18kevfrojc0835bn90f1in.jpg",
+        "sha256": "2e298b0d3c5b914730b0f43b290356c9e06327d1ef02ddd2cf5bc4ca7115fa68",
+        "size_bytes": 10550
+      },
+      "prompt_index": 0,
+      "sample_id": "cju18kevfrojc0835bn90f1in"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1ats0y372e08011yazcsxm.jpg",
+        "sha256": "25e4ad67a1992e8512dcc4f242004de6a85844f6474ac5380512f7d10e82c81d",
+        "size_bytes": 46742
+      },
+      "index": 15,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1ats0y372e08011yazcsxm.jpg",
+        "sha256": "624b4344964638137a825e801bb902bf4ad703d925c34091931b8ea8df2e307d",
+        "size_bytes": 12447
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1ats0y372e08011yazcsxm"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1bhnfitmge0835ynls0l6b.jpg",
+        "sha256": "e7a8ec609a2d9b569dee4e4f8f02f858262d4117ea8f7740552397593235054d",
+        "size_bytes": 25635
+      },
+      "index": 16,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1bhnfitmge0835ynls0l6b.jpg",
+        "sha256": "8395c0437dd7ca4f83ab9e05d85b4568eb954faf22033cbaa80a8a219771a680",
+        "size_bytes": 10867
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1bhnfitmge0835ynls0l6b"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1c3218411b08014g9f6gig.jpg",
+        "sha256": "ce0917bde1b63af35b8b83476e4ffb05bb3173459bceb18779b6a5cf0d0b8461",
+        "size_bytes": 43447
+      },
+      "index": 17,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1c3218411b08014g9f6gig.jpg",
+        "sha256": "9c80597aa1154a92ed386006590989a9260ebfe1f4bfcbb1ef960a3b6af9bde6",
+        "size_bytes": 12981
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1c3218411b08014g9f6gig"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1c6yfz42md08550zgoz3pw.jpg",
+        "sha256": "e368d9b5cb3629fe19321f09404c8d052d70981645bd6ac6b4623352df2101f8",
+        "size_bytes": 26590
+      },
+      "index": 18,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1c6yfz42md08550zgoz3pw.jpg",
+        "sha256": "3db309c35f14627cb02d6eccd381cd3c18a61f4a889aadceb2737afdf3878c67",
+        "size_bytes": 11891
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1c6yfz42md08550zgoz3pw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1dfeupuzlw0835gnxip369.jpg",
+        "sha256": "f2446bc6c97dc8ef4f616349bc4b2401d27cb977fe4d8b2f898dc4bbd7e971b0",
+        "size_bytes": 116783
+      },
+      "index": 19,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1dfeupuzlw0835gnxip369.jpg",
+        "sha256": "d944a1e114297802d3e9e531b1bbce1c309b045c17d2146c6a9847b369c5ae08",
+        "size_bytes": 32502
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1dfeupuzlw0835gnxip369"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1dia8hvc6v098827mgffnm.jpg",
+        "sha256": "0648f2be324a723409c7e0e56ddddb3d3f63461a832ea3c65bc8ba667529a019",
+        "size_bytes": 42576
+      },
+      "index": 20,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1dia8hvc6v098827mgffnm.jpg",
+        "sha256": "4b3740fd4e7077a993dac3c8b989584258fab2296366c600fb50c273bc3bbfde",
+        "size_bytes": 8839
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1dia8hvc6v098827mgffnm"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1drnhbrb9409935wi7vkhg.jpg",
+        "sha256": "4f97c05874342a8dd91c91a6dfdde28ed19d9e776cf2b3a85ea32a4fcdc61927",
+        "size_bytes": 37082
+      },
+      "index": 21,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1drnhbrb9409935wi7vkhg.jpg",
+        "sha256": "52c074bef2d83700836e818b1b8b1b4accdbb22f38acf7891d0817333d7a4411",
+        "size_bytes": 18008
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1drnhbrb9409935wi7vkhg"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1egx9pvz2n0988eoy8jp23.jpg",
+        "sha256": "f8723f1d2e1d25d65b3178320f8639884437eefb13fc76821aa4f75241f9220b",
+        "size_bytes": 37415
+      },
+      "index": 22,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1egx9pvz2n0988eoy8jp23.jpg",
+        "sha256": "2eb905d4d92478a126b5dd25d91379d76049b099c38fbd3e8eadb86a31e0c82e",
+        "size_bytes": 7768
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1egx9pvz2n0988eoy8jp23"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1f8w0t65en0799m9oacq0q.jpg",
+        "sha256": "84df850f3532c26326c2a5f45671d71915a0ac859d872c986bd07ea42d25586d",
+        "size_bytes": 41947
+      },
+      "index": 23,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1f8w0t65en0799m9oacq0q.jpg",
+        "sha256": "2cbc7f51c63f987295f97c15f66dc3205303bdb659f87aec2615af99335f54b5",
+        "size_bytes": 11738
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1f8w0t65en0799m9oacq0q"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1fb9236a110801yvg0fwju.jpg",
+        "sha256": "7213ed09543ece8f76951f72f50de3bae3314c315137df1b3418e01840182a5a",
+        "size_bytes": 36309
+      },
+      "index": 24,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1fb9236a110801yvg0fwju.jpg",
+        "sha256": "289a4e6db33027bbedd6e671b919a91eda46fc64ff6fa787a7d937929f423b61",
+        "size_bytes": 15525
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1fb9236a110801yvg0fwju"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1fuoa4wmc50835qfd11sp9.jpg",
+        "sha256": "6fda9e082dec580e0285d5582e7e2ec1368465ac6ccc301b65c78224f2d26c55",
+        "size_bytes": 27677
+      },
+      "index": 25,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1fuoa4wmc50835qfd11sp9.jpg",
+        "sha256": "1e230a166497f46cd05abac4234460920177ceed1a411b927e54b94d61acbd8f",
+        "size_bytes": 9783
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1fuoa4wmc50835qfd11sp9"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1fyb1d69et0878muzdak9u.jpg",
+        "sha256": "fd6d8d06f1fe01bdecd67667acb01ff60eb5b8b37bdd6be69adcc050c3560a73",
+        "size_bytes": 48180
+      },
+      "index": 26,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1fyb1d69et0878muzdak9u.jpg",
+        "sha256": "8e412b38b7d93a3557af7e3338d42372f9091402d40a840c530f1faf6d748c17",
+        "size_bytes": 11547
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1fyb1d69et0878muzdak9u"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1hhj6mxfp90835n3wofrap.jpg",
+        "sha256": "3b8819ba49ddb242700c2b5df44d502419d2909aefc805eba50bc4a1595b87d0",
+        "size_bytes": 29206
+      },
+      "index": 27,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1hhj6mxfp90835n3wofrap.jpg",
+        "sha256": "1ca0eb6098dd8d6e0d054db04080a74cf12c5ef59286b50c08b1dd71cdd26875",
+        "size_bytes": 9341
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1hhj6mxfp90835n3wofrap"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1hmff8tkp809931jps6fbr.jpg",
+        "sha256": "4d53fc6f8ac40e32aa505648296b12b70ec0b2a555568eec370bf9a7c17b1ecd",
+        "size_bytes": 39001
+      },
+      "index": 28,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1hmff8tkp809931jps6fbr.jpg",
+        "sha256": "c60e9698a82176fc07c710218ebebd6eda5803b639c9b87dbc085426eb859bf9",
+        "size_bytes": 17013
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1hmff8tkp809931jps6fbr"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju1hp9i2xu8e0988u2dazk7m.jpg",
+        "sha256": "60d63166289909cb429de3282a18394625bd8e2d00998c65e41017b6cbcfa547",
+        "size_bytes": 23928
+      },
+      "index": 29,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju1hp9i2xu8e0988u2dazk7m.jpg",
+        "sha256": "19a1345c975a82fd793aeb2b4ce9b715a328c06676521e452b9e085725c7abc1",
+        "size_bytes": 10434
+      },
+      "prompt_index": 0,
+      "sample_id": "cju1hp9i2xu8e0988u2dazk7m"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2hqt33lmra0988fr5ijv8j.jpg",
+        "sha256": "6897b4b3706b4ffb8aba3514c7fe16bf53f3682123190329b9138da92331ccb0",
+        "size_bytes": 37907
+      },
+      "index": 30,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2hqt33lmra0988fr5ijv8j.jpg",
+        "sha256": "020436c3b2240d1dae21ac28d31cbfa30c00d54f3cbdd000e4abfe9daf8e0406",
+        "size_bytes": 12092
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2hqt33lmra0988fr5ijv8j"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2i03ptvkiu0799xbbd4det.jpg",
+        "sha256": "f0949df18c0c0e27a0711f144faca79e1fc905ef8357eda87bbf75a042d30e32",
+        "size_bytes": 35844
+      },
+      "index": 31,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2i03ptvkiu0799xbbd4det.jpg",
+        "sha256": "c5449317c841e0e607edd02dd2a541581fbb3810275236208956f98c779fbac3",
+        "size_bytes": 10855
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2i03ptvkiu0799xbbd4det"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2m56cryvqd0801gtn2yp8t.jpg",
+        "sha256": "decc07b29327317f924e62767db7ca1aa570ecd0dc11d2bfbdc689553e298a46",
+        "size_bytes": 37530
+      },
+      "index": 32,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2m56cryvqd0801gtn2yp8t.jpg",
+        "sha256": "6cd091c8336708d0d42437989f32466b81a01d0a503d1313d057d1cc03a94b37",
+        "size_bytes": 9244
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2m56cryvqd0801gtn2yp8t"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2m71z2ywwv080131bcrsd3.jpg",
+        "sha256": "da47ab9c8531f664183bcfe3ded5623f9decaa0cf3539c249ff3f3a00d83af98",
+        "size_bytes": 27689
+      },
+      "index": 33,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2m71z2ywwv080131bcrsd3.jpg",
+        "sha256": "be4ca1792e3d7d2b155ef839a2899fc6f8245106e537ee108eee9bc9e79bc216",
+        "size_bytes": 10361
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2m71z2ywwv080131bcrsd3"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2ma647l0nj0993ot4deq2q.jpg",
+        "sha256": "86a7b4778d613d72a8c59e91643f1362a279ec81bd6de0d3d4040f5fa862d41f",
+        "size_bytes": 34205
+      },
+      "index": 34,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2ma647l0nj0993ot4deq2q.jpg",
+        "sha256": "2bdf8eb04a7e004ceecdddb9b3abca930229b4a5942896932d7bbe27ed4fea66",
+        "size_bytes": 13477
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2ma647l0nj0993ot4deq2q"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2mfjndoz700988b9lc3zeq.jpg",
+        "sha256": "a1c3617c21909c8ce8431184c32c2d4a6ad2e6fb67f0da130e544c44effaa21d",
+        "size_bytes": 29472
+      },
+      "index": 35,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2mfjndoz700988b9lc3zeq.jpg",
+        "sha256": "0054eedd31806b537ba42745c1a4ebcee2734157312ed003585ced683108e576",
+        "size_bytes": 11584
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2mfjndoz700988b9lc3zeq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2nbdpmlmcj0993s1cht0dz.jpg",
+        "sha256": "0e69903496a2b4126c1ec5765dfdc0e5e30103c04825c7b3b19dde0d399350c9",
+        "size_bytes": 30475
+      },
+      "index": 36,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2nbdpmlmcj0993s1cht0dz.jpg",
+        "sha256": "00ee96d1a3e525c4de933376d59972cc1c171fac9ddfa81add22608ae16362e1",
+        "size_bytes": 15116
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2nbdpmlmcj0993s1cht0dz"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2osuru0ki00855txo0n3uu.jpg",
+        "sha256": "cb86bb88a22474c52c7201d22e0917d291c8788bf601d1eb3b61069e26775827",
+        "size_bytes": 40265
+      },
+      "index": 37,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2osuru0ki00855txo0n3uu.jpg",
+        "sha256": "f173511c6097cd73f96642e8b8a89c37d2e9fed0fbc8b891574c0b491aff507c",
+        "size_bytes": 12945
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2osuru0ki00855txo0n3uu"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2ouil2mssu0993hvxsed6d.jpg",
+        "sha256": "9c103a9d35cd21ca01e8de472066ef0ef5d93947b7401f5dfbe1f6eb4917cadf",
+        "size_bytes": 39026
+      },
+      "index": 38,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2ouil2mssu0993hvxsed6d.jpg",
+        "sha256": "8ecde35b233c235af7e4d8ab6d0c88be771d439df9cece87240a0d5d8500b008",
+        "size_bytes": 8654
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2ouil2mssu0993hvxsed6d"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2pjb9v0ywn0878j5g5n69j.jpg",
+        "sha256": "a201a4271d941226164994e15caa11579a61f75a995651e521c1db3531a2fed2",
+        "size_bytes": 42686
+      },
+      "index": 39,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2pjb9v0ywn0878j5g5n69j.jpg",
+        "sha256": "af8aa4bfda9d439201404878958df20c94b5455669da9b56fa9f5977f348a1fc",
+        "size_bytes": 11358
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2pjb9v0ywn0878j5g5n69j"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2qu37qobl50993aw7ghcfq.jpg",
+        "sha256": "e4491ccc7f9a7decb767491d4d88f589c3b4ee69a5180d749217f7f478d45b16",
+        "size_bytes": 23679
+      },
+      "index": 40,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2qu37qobl50993aw7ghcfq.jpg",
+        "sha256": "c4abb160e98ca645a554b02b4ad4a9de29e40d821628c7957ae1d352d490b983",
+        "size_bytes": 8606
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2qu37qobl50993aw7ghcfq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2r6mt2om21099352pny5gw.jpg",
+        "sha256": "b7b7f42715e980dc7208d04b161a54625d76cfde2567bd87b8d0f6ae0ee2019a",
+        "size_bytes": 44979
+      },
+      "index": 41,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2r6mt2om21099352pny5gw.jpg",
+        "sha256": "92971bdbb95573725667a754236d7cf73b7b26fd644050966a7ce8fff067a064",
+        "size_bytes": 15718
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2r6mt2om21099352pny5gw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2rga4psq9n09881z519xx0.jpg",
+        "sha256": "829c016145501115503078aa76ca2e8ce8af5dd8bfcd2ea8cdbc43c154a4abcb",
+        "size_bytes": 41579
+      },
+      "index": 42,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2rga4psq9n09881z519xx0.jpg",
+        "sha256": "689f7a319f5330a9b5ebd64d77550c9aac4e9df4d3b9eec07821f52b1191ccd1",
+        "size_bytes": 10432
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2rga4psq9n09881z519xx0"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2rnkt22xep0801as160g9t.jpg",
+        "sha256": "09e3ba698ddcb61f423dc4da55b8733b2f577ab8ce4d8e1b228cdd0a95ca8115",
+        "size_bytes": 21459
+      },
+      "index": 43,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2rnkt22xep0801as160g9t.jpg",
+        "sha256": "7a7ebfcd402e9da03ebf3223d10e8084f341528dcd01c26012bc65d31fc08d1e",
+        "size_bytes": 8562
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2rnkt22xep0801as160g9t"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2rqo702wpx0855fn7d5cxh.jpg",
+        "sha256": "89f7c3346cc5a27e1f24a07de2206168ca59eb05242df1151528b0e935aac731",
+        "size_bytes": 39995
+      },
+      "index": 44,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2rqo702wpx0855fn7d5cxh.jpg",
+        "sha256": "902fe86fb8ef33857ec87c85f916f68cc9900781f3212e9265f170d338e8ac60",
+        "size_bytes": 8869
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2rqo702wpx0855fn7d5cxh"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2rz4k434s70855wwx3ddtx.jpg",
+        "sha256": "5f70e8c8d21d8c1ba055c82b1d9d0f19abd24a9e33bc60ee8e1217a61c324386",
+        "size_bytes": 36535
+      },
+      "index": 45,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2rz4k434s70855wwx3ddtx.jpg",
+        "sha256": "45081e3e0ae9aaf118af6b6658f961fc36c0f161e2dde954d6b3be8e138764fb",
+        "size_bytes": 15310
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2rz4k434s70855wwx3ddtx"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2saez63gxl08559ucjq3kt.jpg",
+        "sha256": "54c0ea5ed209be54cbc7532cef4335e70dfe504ff7a4bb7ee1ad696ed7f6cec7",
+        "size_bytes": 21332
+      },
+      "index": 46,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2saez63gxl08559ucjq3kt.jpg",
+        "sha256": "435add4500c52eaa8212cd32f03505a8fbb3d64e7551bf8e677b8ca1775c5bd9",
+        "size_bytes": 11220
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2saez63gxl08559ucjq3kt"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2spdagu1l50835da1f46fr.jpg",
+        "sha256": "3993dde5644d747cf288e8a69984c8e9268035e6b8b1fe742a29e725d9cf58bb",
+        "size_bytes": 30109
+      },
+      "index": 47,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2spdagu1l50835da1f46fr.jpg",
+        "sha256": "ff452cdd7fe22d27d59d223d2ae1594ab95942a61b38cb25f971746dbc0f6425",
+        "size_bytes": 7830
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2spdagu1l50835da1f46fr"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2ti1du4idn0878giuozonw.jpg",
+        "sha256": "7f695806dbf31b7674309cf4e5edd1a3b87e8862cd58e07ea10ea27ec0f748a1",
+        "size_bytes": 24845
+      },
+      "index": 48,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2ti1du4idn0878giuozonw.jpg",
+        "sha256": "bc2579544fbd34b6b2309fbd8e0e951c8b72d6712f7bd7dd17af3ba002a88482",
+        "size_bytes": 10983
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2ti1du4idn0878giuozonw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2trtjf4qjd0878a2zle9v9.jpg",
+        "sha256": "bcf4a86511ef7862eb729d7871403871fdfc727a4c0b45170578e31b32f9c58b",
+        "size_bytes": 30984
+      },
+      "index": 49,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2trtjf4qjd0878a2zle9v9.jpg",
+        "sha256": "2b71e62b3b9fccd44232b35c7b8bab19263a3f94c72f9bad679c7b3a2f8f24e8",
+        "size_bytes": 8135
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2trtjf4qjd0878a2zle9v9"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2uy8ox62jo0801g88hh42z.jpg",
+        "sha256": "15086b09936f6c9ac22d3942174b5f618f6f98dd2e05bc591eade5c5132f88f0",
+        "size_bytes": 41802
+      },
+      "index": 50,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2uy8ox62jo0801g88hh42z.jpg",
+        "sha256": "87372d29049cb05dc7d91589da8d20d184a908587afab114497176c5b20c95c9",
+        "size_bytes": 10516
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2uy8ox62jo0801g88hh42z"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2uzabhs6er0993x3aaf87p.jpg",
+        "sha256": "3398c0b072f5c5cc1a2f1248a200affe24c63ea25024e6fddf4635d161faf378",
+        "size_bytes": 42768
+      },
+      "index": 51,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2uzabhs6er0993x3aaf87p.jpg",
+        "sha256": "439522393c9c635ee5e28eaa8d6111fd8296f817004cee6b7c9afd7c58b54c3b",
+        "size_bytes": 12857
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2uzabhs6er0993x3aaf87p"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2wzu8wxtgu09880ku9x1pg.jpg",
+        "sha256": "97f464f4287eb402d167d0d86ef3f45f031f307068dd0a48b76c100db893f39d",
+        "size_bytes": 42602
+      },
+      "index": 52,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2wzu8wxtgu09880ku9x1pg.jpg",
+        "sha256": "e38962c37935ce446079c5c78f8830092d9417ab5b207001abb6d7b67941cefb",
+        "size_bytes": 12160
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2wzu8wxtgu09880ku9x1pg"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2xlcqxy9c60988vjacdznb.jpg",
+        "sha256": "8da466ed07acdc2a077e6d9b5dc1e25839d16682384f8e15648c2901f31d4b3a",
+        "size_bytes": 35308
+      },
+      "index": 53,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2xlcqxy9c60988vjacdznb.jpg",
+        "sha256": "3d427008eb272edc6f0d1334afec6dd0f9179f18241a60a525662d25dbc90470",
+        "size_bytes": 13926
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2xlcqxy9c60988vjacdznb"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2xwm1s84l50799i60mq0pu.jpg",
+        "sha256": "9f6b378a396d6db02d4df4407bf2cbd7d5642a0ac0105825dfa7fb14c41d1162",
+        "size_bytes": 35734
+      },
+      "index": 54,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2xwm1s84l50799i60mq0pu.jpg",
+        "sha256": "603feabf093aa6dd9ab1a8a13ad0b9aed39c09277592f075f9d6d57a2a5981b9",
+        "size_bytes": 10059
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2xwm1s84l50799i60mq0pu"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2y5zas8m7f0801d34g5owq.jpg",
+        "sha256": "1783c3d532316f34e364179ad8d7ec752e1d87b6415b92f6b21af3118b2bff73",
+        "size_bytes": 30784
+      },
+      "index": 55,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2y5zas8m7f0801d34g5owq.jpg",
+        "sha256": "0e37064b70b7d65100b32e146559c4cefe04c707dadc5cb427adb4b2e5bda56e",
+        "size_bytes": 17010
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2y5zas8m7f0801d34g5owq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2y8s56ymqr083541ggdsml.jpg",
+        "sha256": "9648fbe32e961300eda5f42078f74a12932807e0b84081487c1ebaa40017b694",
+        "size_bytes": 34806
+      },
+      "index": 56,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2y8s56ymqr083541ggdsml.jpg",
+        "sha256": "bd99414e3a572b21f88168c5d4012a76ce8bbd5db396add48435786a701d02cc",
+        "size_bytes": 11585
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2y8s56ymqr083541ggdsml"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2z45kuzf6d0988nz2c819m.jpg",
+        "sha256": "ddde6074f512d9b189353cffad8253340f42e379312585909ef5654d7cbf345b",
+        "size_bytes": 45307
+      },
+      "index": 57,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2z45kuzf6d0988nz2c819m.jpg",
+        "sha256": "eb00440220c282e06361aa3cbd4ff68d109ce278cffd9052d8ececadfae97723",
+        "size_bytes": 8408
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2z45kuzf6d0988nz2c819m"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2zdvjn9h7r08553cp4eed5.jpg",
+        "sha256": "f8f455c38a2e232612e90dc5a5860be019eb5ae107870da18b3bc0a0de062cf5",
+        "size_bytes": 15994
+      },
+      "index": 58,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2zdvjn9h7r08553cp4eed5.jpg",
+        "sha256": "701f7785e00062ea8296430a0c3d46b10e129a2b24fea7f7f7a6ea89caccf077",
+        "size_bytes": 6228
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2zdvjn9h7r08553cp4eed5"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2zjcvj9qma0801dk71hhi0.jpg",
+        "sha256": "7a9763c859a64714c2ff07fbf868c27d3e24063c189fe15a0e300e2d90f61f9a",
+        "size_bytes": 34344
+      },
+      "index": 59,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2zjcvj9qma0801dk71hhi0.jpg",
+        "sha256": "bf88a3f681eea93a145b050d353ff6ab52de1b2b89737c8c42204975e523495d",
+        "size_bytes": 19676
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2zjcvj9qma0801dk71hhi0"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2zm0axztpe0988r8s9twjr.jpg",
+        "sha256": "e2761f18dd780cf96a5b094aff455f6a136680a431bf65cc99b0d572571c8398",
+        "size_bytes": 39110
+      },
+      "index": 60,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2zm0axztpe0988r8s9twjr.jpg",
+        "sha256": "1b588815bedfda06095b84851d660271f77505c99dd42c1e306b99f094262541",
+        "size_bytes": 10674
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2zm0axztpe0988r8s9twjr"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2zp89k9q1g0855k1x0f1xa.jpg",
+        "sha256": "0636251245fe8ae346e948b9c82a08e865a1e4613a2684a62fc0c5178a652ca5",
+        "size_bytes": 24220
+      },
+      "index": 61,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2zp89k9q1g0855k1x0f1xa.jpg",
+        "sha256": "bcc801a82bafe0f3dd0e16f9c985d5c15fae8b5fdde0c0423b76178850bb434b",
+        "size_bytes": 8680
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2zp89k9q1g0855k1x0f1xa"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2zpw4q9vzr0801p0lysjdl.jpg",
+        "sha256": "454ac493a02931bb5f4b587ea8ff005541b3db8e4b6ec473aa2803230c1459d6",
+        "size_bytes": 33122
+      },
+      "index": 62,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2zpw4q9vzr0801p0lysjdl.jpg",
+        "sha256": "f29de40658280cbfdbf8af199839788c309aae70ff061d597144421963a4771d",
+        "size_bytes": 8934
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2zpw4q9vzr0801p0lysjdl"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju2zy1e49pqk0878t6ncqn12.jpg",
+        "sha256": "0ff6ce096f7f375ec818a5a42f5768536ee6334a9e74e9b424d381ed9251686c",
+        "size_bytes": 36463
+      },
+      "index": 63,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju2zy1e49pqk0878t6ncqn12.jpg",
+        "sha256": "b0bc1f9a11c91fa17c971e05790cfe4c6dde8a9f82a6a8aadefc62dd07fe45b1",
+        "size_bytes": 9123
+      },
+      "prompt_index": 0,
+      "sample_id": "cju2zy1e49pqk0878t6ncqn12"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju30ov1oah920801mi8thuyg.jpg",
+        "sha256": "715976e9096a2f88d5012cd319dc6c8a6d6ca18d466bdaeac21ea78e87c64d95",
+        "size_bytes": 29962
+      },
+      "index": 64,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju30ov1oah920801mi8thuyg.jpg",
+        "sha256": "30f698f8b650f02164e1f4e2f927a4424f68bd8fd53e63a35f50bdcb7ee6dcc6",
+        "size_bytes": 8241
+      },
+      "prompt_index": 0,
+      "sample_id": "cju30ov1oah920801mi8thuyg"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju31w6goazci0799n014ly1q.jpg",
+        "sha256": "c3a485b127a2f51608fa4afbc30891295957ed94f7fe866205dcf5b3af88450c",
+        "size_bytes": 29821
+      },
+      "index": 65,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju31w6goazci0799n014ly1q.jpg",
+        "sha256": "24cfd608573c03a4608451dd92011eac1c2e880b56d3761a3cfcbf67bda4e083",
+        "size_bytes": 12717
+      },
+      "prompt_index": 0,
+      "sample_id": "cju31w6goazci0799n014ly1q"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju31y80qbawn0801twwm2l5s.jpg",
+        "sha256": "4b462a2e0a1d22a07abff27273f5673402c24019a1412a0198d9ec0fdf466575",
+        "size_bytes": 22539
+      },
+      "index": 66,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju31y80qbawn0801twwm2l5s.jpg",
+        "sha256": "33c7f34a22ecf97b1c2ac5c5f55fb1b4b1b9f0a2baf9615e4cc9bbc14a12c5ac",
+        "size_bytes": 12408
+      },
+      "prompt_index": 0,
+      "sample_id": "cju31y80qbawn0801twwm2l5s"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju32gzs6xo8x0993r8tedbpb.jpg",
+        "sha256": "7509145c950db819b4eb6043c451313c2eb40e59a5704637daa778b72adb68aa",
+        "size_bytes": 42893
+      },
+      "index": 67,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju32gzs6xo8x0993r8tedbpb.jpg",
+        "sha256": "cc31d180844aaf2e40641797d779b2719c95c4b3e0fc669bc71a3071b409a17a",
+        "size_bytes": 14772
+      },
+      "prompt_index": 0,
+      "sample_id": "cju32gzs6xo8x0993r8tedbpb"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju32l161bi1v07990vm376in.jpg",
+        "sha256": "843788d71ca50ab79805314561e3694e7eb44ccec46eccfb00c826b1069af34f",
+        "size_bytes": 37512
+      },
+      "index": 68,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju32l161bi1v07990vm376in.jpg",
+        "sha256": "1a923a2dbc9b03c2d0d92789bfb618610f0b351bd6b25a50b4a65a7db84ecf3b",
+        "size_bytes": 8093
+      },
+      "prompt_index": 0,
+      "sample_id": "cju32l161bi1v07990vm376in"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju32upim1z7u0988l883nqp6.jpg",
+        "sha256": "aaecc4b52ec2ce268a56fa591294c327963930e814599c60905c31f01c5c63e5",
+        "size_bytes": 30062
+      },
+      "index": 69,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju32upim1z7u0988l883nqp6.jpg",
+        "sha256": "276bafa4a78079c6d335c4edfeeb5e189123d4f0e0d40337de67464a15b3d5ab",
+        "size_bytes": 10545
+      },
+      "prompt_index": 0,
+      "sample_id": "cju32upim1z7u0988l883nqp6"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju33231uy4gi0993qc7b1jch.jpg",
+        "sha256": "f465b6de0b016102471a9d700920844d4aa677bbaec51dd1a471feab41f9acb0",
+        "size_bytes": 38020
+      },
+      "index": 70,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju33231uy4gi0993qc7b1jch.jpg",
+        "sha256": "45645fcfda16975e169567bcecc68a3f24afc6d747a568f228825887e210fd01",
+        "size_bytes": 12463
+      },
+      "prompt_index": 0,
+      "sample_id": "cju33231uy4gi0993qc7b1jch"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju334jzo261t0835yqudnfs1.jpg",
+        "sha256": "a5724cc05fed3d29fcde9da02c1d3367d813e41348fa984d0d082ac2c4d24136",
+        "size_bytes": 43248
+      },
+      "index": 71,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju334jzo261t0835yqudnfs1.jpg",
+        "sha256": "76b9e405647592d20f30c72acaeda518e65e90096045dc6c5c2de8c87b70b0a4",
+        "size_bytes": 12374
+      },
+      "prompt_index": 0,
+      "sample_id": "cju334jzo261t0835yqudnfs1"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju33jon3ygbj0993pu22a4k6.jpg",
+        "sha256": "d57b64ebb3deea3e39b2dc2535802eb565164edc15a4c61694a8964131384d90",
+        "size_bytes": 39290
+      },
+      "index": 72,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju33jon3ygbj0993pu22a4k6.jpg",
+        "sha256": "d446e39a06f2c5ae620be95e6bc03e63bf7be95f24c6e9b5ef8a34f95b6586a9",
+        "size_bytes": 9980
+      },
+      "prompt_index": 0,
+      "sample_id": "cju33jon3ygbj0993pu22a4k6"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju33o12x2jm50988944mxq0v.jpg",
+        "sha256": "2cd8916ff1dabf6c98287dba0c432b1071f29e4021af8295a18c910b87a1f969",
+        "size_bytes": 28555
+      },
+      "index": 73,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju33o12x2jm50988944mxq0v.jpg",
+        "sha256": "ceee45330fb46e7303eef7ad5b58129f6d5d532773ff607a3faa9162cb69b83c",
+        "size_bytes": 8660
+      },
+      "prompt_index": 0,
+      "sample_id": "cju33o12x2jm50988944mxq0v"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju34c1xfyz920993itxkkfad.jpg",
+        "sha256": "f782dcedd0e0a323df486ce15c96848c736cf3ea0dfbd3a0045d0619df22f0cf",
+        "size_bytes": 32349
+      },
+      "index": 74,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju34c1xfyz920993itxkkfad.jpg",
+        "sha256": "a1a959843d3f60fad970cfcd8f64fbc505c7d20284a399a79a8a650a652f4364",
+        "size_bytes": 14391
+      },
+      "prompt_index": 0,
+      "sample_id": "cju34c1xfyz920993itxkkfad"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju34m7h536wq0988xz7gx79v.jpg",
+        "sha256": "9aeea85e4bd6e7c41f0f99d60a0233c66bb36451733ddeeefdeafa5b71d42e61",
+        "size_bytes": 40085
+      },
+      "index": 75,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju34m7h536wq0988xz7gx79v.jpg",
+        "sha256": "df858ca1f8b7a7ea462db78f81ac774bfbf17a0b9d16f995c9b3984542df02eb",
+        "size_bytes": 11806
+      },
+      "prompt_index": 0,
+      "sample_id": "cju34m7h536wq0988xz7gx79v"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju34repocy5208780gswillm.jpg",
+        "sha256": "44b4c5820cd486b8aca9449ac9804bcba4b138a3bde8874da852934f7d26d4fa",
+        "size_bytes": 44810
+      },
+      "index": 76,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju34repocy5208780gswillm.jpg",
+        "sha256": "d60490b02ed2ffb116e998a30e7bf2c678a469f35bd09d5e6c583f4ed3b34a7b",
+        "size_bytes": 13762
+      },
+      "prompt_index": 0,
+      "sample_id": "cju34repocy5208780gswillm"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju34ymm8d6700799uop0cw33.jpg",
+        "sha256": "b0efc8df1b665d1b3168a7bd1c08e546d62c4c20aba7f8ea01081369a7b8f537",
+        "size_bytes": 28515
+      },
+      "index": 77,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju34ymm8d6700799uop0cw33.jpg",
+        "sha256": "02907ebb2115932918ce03e0ab8c6eac9bdd8278a04ffdbdee8c273c9db93726",
+        "size_bytes": 10161
+      },
+      "prompt_index": 0,
+      "sample_id": "cju34ymm8d6700799uop0cw33"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju353d1eda8c07992afde611.jpg",
+        "sha256": "9a08a18587f29e23834fb3e08c78f026da0948c2831b3141da13bee34325e2c4",
+        "size_bytes": 45460
+      },
+      "index": 78,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju353d1eda8c07992afde611.jpg",
+        "sha256": "0b757c85d62492f49f4e4889d42bc46c47888462b22fd3c9d61baf3cf8652c4d",
+        "size_bytes": 10141
+      },
+      "prompt_index": 0,
+      "sample_id": "cju353d1eda8c07992afde611"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju35740hzm0g0993zl5ic246.jpg",
+        "sha256": "76f43c4d13b68328ce6d4f2aa3a22841a37d4e24df9de6396d48e637657f31be",
+        "size_bytes": 22099
+      },
+      "index": 79,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju35740hzm0g0993zl5ic246.jpg",
+        "sha256": "15ffc51a58e494a69d1721242eba1f65aabdc2c4fcdc18107ffbd01542eae680",
+        "size_bytes": 7804
+      },
+      "prompt_index": 0,
+      "sample_id": "cju35740hzm0g0993zl5ic246"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju357rxxdaz30878y2esjpjt.jpg",
+        "sha256": "016c0c97306ec844e330f1c4903e2f2e42600dbd4ffebe4f700fcfbf1da5204f",
+        "size_bytes": 22459
+      },
+      "index": 80,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju357rxxdaz30878y2esjpjt.jpg",
+        "sha256": "1bf4e3d308e69489620b14fd7f89149b318e6ae3ffa67db66266f27f0b0af537",
+        "size_bytes": 8256
+      },
+      "prompt_index": 0,
+      "sample_id": "cju357rxxdaz30878y2esjpjt"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju35oyvd3y850988km12hdz1.jpg",
+        "sha256": "3280561f9ef81add2a05bec0dd15be556d2d7280b30e83c852ec42c1adb23540",
+        "size_bytes": 20520
+      },
+      "index": 81,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju35oyvd3y850988km12hdz1.jpg",
+        "sha256": "86538eb6fbb2cab2be32aaab760b3864cacfbadd3641e854b411827eb4b1d6cc",
+        "size_bytes": 10614
+      },
+      "prompt_index": 0,
+      "sample_id": "cju35oyvd3y850988km12hdz1"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3v72v5h1qz0818fggilwtq.jpg",
+        "sha256": "25e29d7627f49d31ccbb6ebcc4b59a7721eb39a787ed18c91cc7a0f13d45b1b4",
+        "size_bytes": 33260
+      },
+      "index": 82,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3v72v5h1qz0818fggilwtq.jpg",
+        "sha256": "ca46b58867b0ba9315b12e87b6d8fa08fc5041e1d98f07a7dc6622d1b8118a5b",
+        "size_bytes": 9292
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3v72v5h1qz0818fggilwtq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3x5u2tiihx0818914gzxy1.jpg",
+        "sha256": "4464be91b559cd104235cfb3c18fefb70af52cb467f0df4b4c73c17c7c85e29c",
+        "size_bytes": 30099
+      },
+      "index": 83,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3x5u2tiihx0818914gzxy1.jpg",
+        "sha256": "884c8af21ed6042cfce530e47de966860e42b0327e114f74bdd850ca873211f8",
+        "size_bytes": 12455
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3x5u2tiihx0818914gzxy1"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3x7xsaijq80818f0psavav.jpg",
+        "sha256": "ea5f7ec71d48817ae84706a4fd913f1aeb03bcab700be00de43ddbddec4d1842",
+        "size_bytes": 32871
+      },
+      "index": 84,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3x7xsaijq80818f0psavav.jpg",
+        "sha256": "914c79dcedf3c7d13816c3bd7df492185711220352de918f1dc47eb3b62c16f3",
+        "size_bytes": 11286
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3x7xsaijq80818f0psavav"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3xjqtpikx50817tppy6g84.jpg",
+        "sha256": "411bcace07dc378a156c33bbf9375ad936cc7ea3c0a5e99fe2cc26575198be8b",
+        "size_bytes": 34739
+      },
+      "index": 85,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3xjqtpikx50817tppy6g84.jpg",
+        "sha256": "7f6b1e1d8a718555b2cdcc9108b5fb6ec3bfdac2f89900868a97de0d9be17215",
+        "size_bytes": 12914
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3xjqtpikx50817tppy6g84"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3xvoo2iqlc0817eku2r3wl.jpg",
+        "sha256": "e9aeeadcac6ed0d53c549fc1f3f9347f95eefaae43b91c443375015eb32ff3e8",
+        "size_bytes": 20054
+      },
+      "index": 86,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3xvoo2iqlc0817eku2r3wl.jpg",
+        "sha256": "74c7f77203f0c3ed3c2a9c8b35eb93f732cd60dc2fc02f40b0051f90ab6f63bf",
+        "size_bytes": 7187
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3xvoo2iqlc0817eku2r3wl"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3xzvnzj0hd0755xprz39nj.jpg",
+        "sha256": "5a36741ef155a0f72d289f564813a5b02993f0c003faf682580ff7cdb6c0f884",
+        "size_bytes": 27986
+      },
+      "index": 87,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3xzvnzj0hd0755xprz39nj.jpg",
+        "sha256": "838e05f89c787c72532cb001289982a2660e1318564e64bfd99bff2044a3cd11",
+        "size_bytes": 15335
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3xzvnzj0hd0755xprz39nj"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3y79ofj3va0871uqfb1mzo.jpg",
+        "sha256": "fb9975172be8af6e9000b4f40ca489417a2603f0af45ab5bcac8cbb40b737229",
+        "size_bytes": 37205
+      },
+      "index": 88,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3y79ofj3va0871uqfb1mzo.jpg",
+        "sha256": "97e299306e044b4e775bb6fe94d99434bf096db19cfa0000eed2aec438d13b60",
+        "size_bytes": 12549
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3y79ofj3va0871uqfb1mzo"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3y9difj6th0801kd1rqm3w.jpg",
+        "sha256": "027b0191d313ac294da96cbdb12f174fd7ef4cbdecb5a20d0fe29d13ef2dbc29",
+        "size_bytes": 34642
+      },
+      "index": 89,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3y9difj6th0801kd1rqm3w.jpg",
+        "sha256": "f5ee4e7e7639a000d1871650a91efe79c8d91c2bdd92b167ecb033cbfdf758c8",
+        "size_bytes": 10390
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3y9difj6th0801kd1rqm3w"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju3yht87j83m08507yk1u1fg.jpg",
+        "sha256": "88aa50382053f825805f5c990c47fa34266be0ee43206487fb999950cc8c4af2",
+        "size_bytes": 35929
+      },
+      "index": 90,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju3yht87j83m08507yk1u1fg.jpg",
+        "sha256": "8a661eb2584bc327298b5f408eb4275a0155602c26e5dec91027ef5998e7ca35",
+        "size_bytes": 15116
+      },
+      "prompt_index": 0,
+      "sample_id": "cju3yht87j83m08507yk1u1fg"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju40jl7skiuo0817p0smlgg8.jpg",
+        "sha256": "56f9e971f9667290622c6f33e9658dce5fd6ee3602565fbad57cfa6c8a3f77ba",
+        "size_bytes": 40933
+      },
+      "index": 91,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju40jl7skiuo0817p0smlgg8.jpg",
+        "sha256": "269517f0a0e1fb0375b29d4f180df39c52af0e64f3c74961bb387df511cf068b",
+        "size_bytes": 15261
+      },
+      "prompt_index": 0,
+      "sample_id": "cju40jl7skiuo0817p0smlgg8"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju41kd7yl4nm0850gil5qqwh.jpg",
+        "sha256": "f9600d8b20aab7517400c646c73707c6ef2e918079f9424b7f45530acf33236e",
+        "size_bytes": 24342
+      },
+      "index": 92,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju41kd7yl4nm0850gil5qqwh.jpg",
+        "sha256": "724dd5e6fecdc721192912b7e59ef910da4191bfbe2c85657b368a40575436b3",
+        "size_bytes": 9707
+      },
+      "prompt_index": 0,
+      "sample_id": "cju41kd7yl4nm0850gil5qqwh"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju41p90plcsx08018cnzpndc.jpg",
+        "sha256": "c8deee98fce546276f43949fdc8a30381abbfc9eaf60f80ee7728148d9163da0",
+        "size_bytes": 39989
+      },
+      "index": 93,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju41p90plcsx08018cnzpndc.jpg",
+        "sha256": "174c9f14074ce67dc332550e320fbc84a19ed324554e85d5b0f53d1ae8955dcf",
+        "size_bytes": 8903
+      },
+      "prompt_index": 0,
+      "sample_id": "cju41p90plcsx08018cnzpndc"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju41s6nbleqy0755e2mslg0b.jpg",
+        "sha256": "390e267c23ae9762ab304c9592fdac1fd67972b27e709118610eea5cb086e599",
+        "size_bytes": 26394
+      },
+      "index": 94,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju41s6nbleqy0755e2mslg0b.jpg",
+        "sha256": "9013cece5456f6086486dd4d287155ec2634ee7af939f6cb7bec795b51c27164",
+        "size_bytes": 10178
+      },
+      "prompt_index": 0,
+      "sample_id": "cju41s6nbleqy0755e2mslg0b"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju42nm68lpyo0818xvvqmupq.jpg",
+        "sha256": "70ffbf22189a283017ba7f2213a29c385c030c033c633eb71244696531ac011b",
+        "size_bytes": 27571
+      },
+      "index": 95,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju42nm68lpyo0818xvvqmupq.jpg",
+        "sha256": "0214b3867e78b248146137cd5f98b4b840b85f12b08e03163f59cd6e6a2d6050",
+        "size_bytes": 11556
+      },
+      "prompt_index": 0,
+      "sample_id": "cju42nm68lpyo0818xvvqmupq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju43in5fm22c08175rxziqrk.jpg",
+        "sha256": "190abbf6eccf13482a2fcda633409892fe22f9ed1adc9d497b242560101a701b",
+        "size_bytes": 31156
+      },
+      "index": 96,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju43in5fm22c08175rxziqrk.jpg",
+        "sha256": "d51f2d960cc13aadc8a130e3c8a8fb88b76592604b095467d86eb665448d90ba",
+        "size_bytes": 13255
+      },
+      "prompt_index": 0,
+      "sample_id": "cju43in5fm22c08175rxziqrk"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju43kj2pm34f0850l28ahpni.jpg",
+        "sha256": "750cd2f59778a2103da12b7c8f504a56751845f72bff0531553fe01100d45b35",
+        "size_bytes": 48054
+      },
+      "index": 97,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju43kj2pm34f0850l28ahpni.jpg",
+        "sha256": "1aa7bb2796d7d1b9c1515640a69edf1ec1151f887aab99c7e012208f61a84316",
+        "size_bytes": 7601
+      },
+      "prompt_index": 0,
+      "sample_id": "cju43kj2pm34f0850l28ahpni"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju43lcnum9y10755bjs7z87f.jpg",
+        "sha256": "1fca898716e74df808270b19f9b7a441840dc411214d5af74ad357233803a510",
+        "size_bytes": 40540
+      },
+      "index": 98,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju43lcnum9y10755bjs7z87f.jpg",
+        "sha256": "e985782f5af61b4910b4a4c9d0d237100d935c7937b6dbf54b9c5dbd1631d7b0",
+        "size_bytes": 8753
+      },
+      "prompt_index": 0,
+      "sample_id": "cju43lcnum9y10755bjs7z87f"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju45rj7ln8980850a7821fov.jpg",
+        "sha256": "ef8d080bd2a02d94bebb459adeedac8b48b4baee94cf53dce68a363d07386bde",
+        "size_bytes": 28120
+      },
+      "index": 99,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju45rj7ln8980850a7821fov.jpg",
+        "sha256": "7ad39b1706aeb27df023f09d344b1a521fc5d06c13787165ca26aac769eb11ef",
+        "size_bytes": 13759
+      },
+      "prompt_index": 0,
+      "sample_id": "cju45rj7ln8980850a7821fov"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5bf6hxa6m50817rbwettgu.jpg",
+        "sha256": "9f41dbb3b5ccf7476e7ac55ebbd2643bf8ca0f4f963474381941add4a8d32988",
+        "size_bytes": 29125
+      },
+      "index": 100,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5bf6hxa6m50817rbwettgu.jpg",
+        "sha256": "e32e14f31fcf0a906abb079591cb26df5865f58c92dbbfc252f8dadde2709e8e",
+        "size_bytes": 11059
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5bf6hxa6m50817rbwettgu"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5bycdkalkb09875f7bfrvx.jpg",
+        "sha256": "aee8a2b85b4d8cc0f771ad0b720fee83b426dba52a9ad7f3662eca22ed019e14",
+        "size_bytes": 33198
+      },
+      "index": 101,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5bycdkalkb09875f7bfrvx.jpg",
+        "sha256": "5e61fe5f67b5aef4702ddec20ba1291a819f9442896f9d757d4ba8fb0f624c17",
+        "size_bytes": 15130
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5bycdkalkb09875f7bfrvx"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5eftctcdbj08712gdp989f.jpg",
+        "sha256": "a713661edecb5c480571dc8673bd6d1b6b00539dc8017225637c074599e2f436",
+        "size_bytes": 32232
+      },
+      "index": 102,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5eftctcdbj08712gdp989f.jpg",
+        "sha256": "701b5a0ef9e597a472d9fce9745d2ddd4bc11042cfe2ecfaf1f8c99969be1ee5",
+        "size_bytes": 15774
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5eftctcdbj08712gdp989f"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5enq1tcn1i0755hnkon787.jpg",
+        "sha256": "90c5c5f2fead7ae551569ba81f476e619a9d99a226930d6e7a4ad4705e54e449",
+        "size_bytes": 27723
+      },
+      "index": 103,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5enq1tcn1i0755hnkon787.jpg",
+        "sha256": "ede817e699c7060c161cae234f34b891a7fd294d0d8ce1cb534af63ea0ce0ca7",
+        "size_bytes": 14056
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5enq1tcn1i0755hnkon787"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5eq8c8ck690850vix98hv3.jpg",
+        "sha256": "f98b0ada5b70a1f89b41b1661afbfb6104a5b5e583c225821b7f198b0ae6f5c9",
+        "size_bytes": 36556
+      },
+      "index": 104,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5eq8c8ck690850vix98hv3.jpg",
+        "sha256": "176df4eaaceded39bf0e2b7f278d537b700314ca98ff4641680c44653b9d4a38",
+        "size_bytes": 15777
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5eq8c8ck690850vix98hv3"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5f0dezct4q08183ydw11dx.jpg",
+        "sha256": "44e1fd4cf6ef9f041971140a176c4356622f0dae6294923f3908931f504a51ba",
+        "size_bytes": 30344
+      },
+      "index": 105,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5f0dezct4q08183ydw11dx.jpg",
+        "sha256": "00611f290470367044c36804961093fb04757bf53dfa8e39f049553fcacd5a92",
+        "size_bytes": 12236
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5f0dezct4q08183ydw11dx"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5f8hxdcxxn08188obby0ea.jpg",
+        "sha256": "001ee3566e9bd36a43d55a89381b763db0b74dba674337bdd8de7e0db64ac710",
+        "size_bytes": 31077
+      },
+      "index": 106,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5f8hxdcxxn08188obby0ea.jpg",
+        "sha256": "7fd051c98077a6aabeb5c01076f05365c1861f1f626a456ba2ae4801b4d5612e",
+        "size_bytes": 12618
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5f8hxdcxxn08188obby0ea"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5g163vd6mt0817uccuga6u.jpg",
+        "sha256": "cc61ae6f94e5c93f1e0f5598192688e2f88e79e07979b5802617b373e7f875f1",
+        "size_bytes": 30110
+      },
+      "index": 107,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5g163vd6mt0817uccuga6u.jpg",
+        "sha256": "94c4f99fbc25bbd183fe1330e2565b3120999e5de8e363b6148dbed5ba80b4ee",
+        "size_bytes": 9503
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5g163vd6mt0817uccuga6u"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5hi52odyf90817prvcwg45.jpg",
+        "sha256": "42cf697a8387f73af8eccf088ea67ccbb78f6a7aabb7a9db0fff5d57c8a29432",
+        "size_bytes": 21245
+      },
+      "index": 108,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5hi52odyf90817prvcwg45.jpg",
+        "sha256": "05b6608467f70fbf00bfef4374dd9304805d68efce9803004c95f3d7ab14463a",
+        "size_bytes": 9805
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5hi52odyf90817prvcwg45"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5hyi9yegob0755ho3do8en.jpg",
+        "sha256": "fdf185ded26fd1319ebc7518875c961f95b461797782de8970af9b7fc7a75952",
+        "size_bytes": 39622
+      },
+      "index": 109,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5hyi9yegob0755ho3do8en.jpg",
+        "sha256": "2f1398323e4015786134e5a16f5bd92b051c50e8cd62d7c00e21d8fd6bf2e3c3",
+        "size_bytes": 12622
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5hyi9yegob0755ho3do8en"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5jx7jzf7c90871c2i9aiov.jpg",
+        "sha256": "f13db59353cfc443549a1bc8349df25cd5729ff187cce09ff48fe8763e97a9bc",
+        "size_bytes": 49833
+      },
+      "index": 110,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5jx7jzf7c90871c2i9aiov.jpg",
+        "sha256": "b6b4416a69efab4575681a43950bf4fa01bf779aa9701bc4de200cf83a4014ee",
+        "size_bytes": 13269
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5jx7jzf7c90871c2i9aiov"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5klveuff6w0871wbibgh3m.jpg",
+        "sha256": "5298e09520aa3bb341468607a9a2429d7cb9abd891eea2d85fae26e6576bd9b6",
+        "size_bytes": 29316
+      },
+      "index": 111,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5klveuff6w0871wbibgh3m.jpg",
+        "sha256": "7c285868df847ab378cde15766de697acdaee08941af51d302a0f39f35809bd0",
+        "size_bytes": 8734
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5klveuff6w0871wbibgh3m"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5kre09fhka0850h7b1898j.jpg",
+        "sha256": "d5dbe723ca30c5372080a632c94646e92f72500eb32ddd4e5cbf2a042b812bf6",
+        "size_bytes": 47279
+      },
+      "index": 112,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5kre09fhka0850h7b1898j.jpg",
+        "sha256": "b2f85a26c1f9648b6ccffbf74ef63f27975710d1ae35f1cab7145890c1b3434f",
+        "size_bytes": 10558
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5kre09fhka0850h7b1898j"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5uget8krjy0818kvywd0zu.jpg",
+        "sha256": "18306f65e19315077bc1242b71c3331cf1616f8a21fa5926373dc572f82a034d",
+        "size_bytes": 34502
+      },
+      "index": 113,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5uget8krjy0818kvywd0zu.jpg",
+        "sha256": "fb8cf1bb697a9bc0df6c7898c66ad5bb9f0aa2aeab370ab89abaf85af4457e8c",
+        "size_bytes": 9131
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5uget8krjy0818kvywd0zu"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5uhrdwkmsu0817ervv91l8.jpg",
+        "sha256": "3e74badeac945f248f15d95cc68570203d1a568f9a7aaccd37024eeec661b103",
+        "size_bytes": 43356
+      },
+      "index": 114,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5uhrdwkmsu0817ervv91l8.jpg",
+        "sha256": "eb9f11b6ad6f283b1b3ec66cc654c2b92d2461038ce35d9cfe687d16069f8e24",
+        "size_bytes": 8316
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5uhrdwkmsu0817ervv91l8"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5vgawslbe30987ndeepc1b.jpg",
+        "sha256": "bcb5c5699c1c19f86b6cd391b9378074f38d5db9a78c1cc8781925f48b4d946b",
+        "size_bytes": 32984
+      },
+      "index": 115,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5vgawslbe30987ndeepc1b.jpg",
+        "sha256": "439cedb698f484b8007af41f990676e355f85273f2237e706a1ea6778ec271a6",
+        "size_bytes": 15257
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5vgawslbe30987ndeepc1b"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5vi4nxlc530817uoqm2m7a.jpg",
+        "sha256": "dc635546f203e637396538f287c606bab2a08fa95acc8a1a4e84c896c0a64bb2",
+        "size_bytes": 36981
+      },
+      "index": 116,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5vi4nxlc530817uoqm2m7a.jpg",
+        "sha256": "abd6fe1295bb18cf841221f6aa2888dfb02cf5a621833c98e8135c149a49639d",
+        "size_bytes": 14327
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5vi4nxlc530817uoqm2m7a"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5vxuc5loxw0818u8xgf45p.jpg",
+        "sha256": "fbe9bf09f845d89469c096db47ae8068b57165089d908c91f208de6d402b0bcc",
+        "size_bytes": 36346
+      },
+      "index": 117,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5vxuc5loxw0818u8xgf45p.jpg",
+        "sha256": "edbf01e6a036e6eec1cb2d02d0b145531d023ad7aa2a5d4564cf5892962a7fbe",
+        "size_bytes": 12413
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5vxuc5loxw0818u8xgf45p"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5wkonqlrl409877y8zvnub.jpg",
+        "sha256": "f33327e16c1ba575b499382031d6001b0ac5590bbd5607767922856523514d4c",
+        "size_bytes": 37041
+      },
+      "index": 118,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5wkonqlrl409877y8zvnub.jpg",
+        "sha256": "c413a2d214b9831d838a1e8043f5dd7e71e0f4e5e5e54f6d7c18f3d48cb16935",
+        "size_bytes": 13538
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5wkonqlrl409877y8zvnub"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5wrrs0m2af0818vmnajbtw.jpg",
+        "sha256": "04163fbad1d63acc8f0bd2d1d3aa92deb9ede1253bcd0110046eeb965a540cb8",
+        "size_bytes": 30883
+      },
+      "index": 119,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5wrrs0m2af0818vmnajbtw.jpg",
+        "sha256": "ef1868d36d7d861f5c23308e7b6fb0d20bb96a09981e5d131a794518620a5b27",
+        "size_bytes": 8974
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5wrrs0m2af0818vmnajbtw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5x7iskmad90818frchyfwd.jpg",
+        "sha256": "75f26fe99ed7cbf77258c61da15889d0ca4eaa2ae13e3423e823249bf7956014",
+        "size_bytes": 22340
+      },
+      "index": 120,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5x7iskmad90818frchyfwd.jpg",
+        "sha256": "0bfe0c94fa36c4db0b740d2e84880a4d5383ce120ff213a96b431ca5168e1942",
+        "size_bytes": 11254
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5x7iskmad90818frchyfwd"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5xneamme2p0801qdf7fdwv.jpg",
+        "sha256": "dbda15579f1d65b330f6c5886591fdf001a4218a0281333c83a9fea06888200e",
+        "size_bytes": 35199
+      },
+      "index": 121,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5xneamme2p0801qdf7fdwv.jpg",
+        "sha256": "68f17e4b1241c7ef8377fb132695a8ea5f01d797a0471fb10bbcacb9b509d4f3",
+        "size_bytes": 9804
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5xneamme2p0801qdf7fdwv"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju5yjq1pmlgc0801z0t24bly.jpg",
+        "sha256": "8e0f386eb8da0354b0a0124209f1809fce6986ad5ef7a9751d2676fe837d1a34",
+        "size_bytes": 27084
+      },
+      "index": 122,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju5yjq1pmlgc0801z0t24bly.jpg",
+        "sha256": "a7054c4e9ceb9715a5c580596d043ec9afaac46c8334afc52c9e3674a6d29256",
+        "size_bytes": 11919
+      },
+      "prompt_index": 0,
+      "sample_id": "cju5yjq1pmlgc0801z0t24bly"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6us80mv1b50871ebyq2wxa.jpg",
+        "sha256": "28f659375c2ef8ab331d284faeec17e4f542c7c6337c9fc7a4b29b6250f26767",
+        "size_bytes": 26828
+      },
+      "index": 123,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6us80mv1b50871ebyq2wxa.jpg",
+        "sha256": "07d7e15206de6d3b0ff353a9bdb0bf2ae3b144e16eb85e23da61a4b011dfc611",
+        "size_bytes": 7375
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6us80mv1b50871ebyq2wxa"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6uzxk0v83p0801rcwnexdu.jpg",
+        "sha256": "e9fa4770b9a885dc6674a37d07a17bb7016a899e43813505e990f84bcdb038c7",
+        "size_bytes": 39201
+      },
+      "index": 124,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6uzxk0v83p0801rcwnexdu.jpg",
+        "sha256": "db9c95f5257ad6f734c5af218afc16bd32344709a15071bd960883921f227686",
+        "size_bytes": 14452
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6uzxk0v83p0801rcwnexdu"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6v3bb2v7xo085090blubyw.jpg",
+        "sha256": "207789ac08850872f7b0c06e6920a1b30b5f18371648dce881b62d54546d6a48",
+        "size_bytes": 33955
+      },
+      "index": 125,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6v3bb2v7xo085090blubyw.jpg",
+        "sha256": "8fdd8a7f3459f6064d49be0e5239c9003c585d550add37bbe9f11bc98b2a9760",
+        "size_bytes": 15213
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6v3bb2v7xo085090blubyw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6v4szov55u0871qmqz3v8n.jpg",
+        "sha256": "47633b8855339a94598b9d770e3da5667b4ab4c7c8263e0d0db9a84613b1766c",
+        "size_bytes": 17538
+      },
+      "index": 126,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6v4szov55u0871qmqz3v8n.jpg",
+        "sha256": "f09474b18c7798005313469b80e420f8b0df0e88393e389c494a9b0d6e8ae7ae",
+        "size_bytes": 12470
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6v4szov55u0871qmqz3v8n"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6vta3kvazg0817qbeppjtm.jpg",
+        "sha256": "809e4721ad434d86f2246b7817ec4ef67991b81d95de6ab3985f1bdbcbb12b12",
+        "size_bytes": 49940
+      },
+      "index": 127,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6vta3kvazg0817qbeppjtm.jpg",
+        "sha256": "40d81429b05457e591145ae563f80550e18f7f9df4c42785a83655c9343ee476",
+        "size_bytes": 14220
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6vta3kvazg0817qbeppjtm"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6wn57mvooj0850rp78hhy7.jpg",
+        "sha256": "26e56874a20ca2cb1a276594b958abf59c54f5731f95c14730278394fb6a69f8",
+        "size_bytes": 34095
+      },
+      "index": 128,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6wn57mvooj0850rp78hhy7.jpg",
+        "sha256": "d74b300d2df1dbfcb1f33b035205ab39285c6eacc4c4183a42110a4ec39544ec",
+        "size_bytes": 17591
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6wn57mvooj0850rp78hhy7"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6ywm40wdbo0987pbftsvtg.jpg",
+        "sha256": "600ce406406dfa6294c70affc78dbfa683f28cd7ccad3d241d38511b09b751d6",
+        "size_bytes": 31846
+      },
+      "index": 129,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6ywm40wdbo0987pbftsvtg.jpg",
+        "sha256": "3a6b8982fa02e59b83e0c71feb1cd46ed7ea370a2f3b987e318e9ece9303d253",
+        "size_bytes": 12704
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6ywm40wdbo0987pbftsvtg"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju6yxyt0wh080871sqpepu47.jpg",
+        "sha256": "841d586f9d65c8af0a5e7e533e3a391fabd39db4df4c6b6f8f01baef65bca5c9",
+        "size_bytes": 47040
+      },
+      "index": 130,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju6yxyt0wh080871sqpepu47.jpg",
+        "sha256": "9eb08e1366290b06cbfcf7ec7e5663ebfda2b644d14c597999118b15b5466f3f",
+        "size_bytes": 10910
+      },
+      "prompt_index": 0,
+      "sample_id": "cju6yxyt0wh080871sqpepu47"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju76l27oyrw907551ri2a7fl.jpg",
+        "sha256": "c700ea6f69055ded503d343b4216960d03ef1542dafc6e03d5cf3bdac7eb8b83",
+        "size_bytes": 24913
+      },
+      "index": 131,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju76l27oyrw907551ri2a7fl.jpg",
+        "sha256": "8369c9e8ffcd275a107ab4c856afba0a641a9e0e9f3fd26cfa3fc77ed8f157d9",
+        "size_bytes": 10749
+      },
+      "prompt_index": 0,
+      "sample_id": "cju76l27oyrw907551ri2a7fl"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju76lsehyia10987u54vn8rb.jpg",
+        "sha256": "fc2d769164522fb64db343da171f9a6658f30e9c4b82717f52fb660e34f4f6ce",
+        "size_bytes": 39712
+      },
+      "index": 132,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju76lsehyia10987u54vn8rb.jpg",
+        "sha256": "1a57f87f82e342c7c388e4f9612626bb6891e0a3fc07f161794b427e43977181",
+        "size_bytes": 10303
+      },
+      "prompt_index": 0,
+      "sample_id": "cju76lsehyia10987u54vn8rb"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju76o55nymqd0871h31sph9w.jpg",
+        "sha256": "44bc5f56f8c4aaa9ffe1c0328ad89449038c05367807c1a2420f0039a3220ad3",
+        "size_bytes": 38284
+      },
+      "index": 133,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju76o55nymqd0871h31sph9w.jpg",
+        "sha256": "02188230b0f2f6a4b373c97cd62b06df25a5966cc5ae941ac5355b1b14409fda",
+        "size_bytes": 7042
+      },
+      "prompt_index": 0,
+      "sample_id": "cju76o55nymqd0871h31sph9w"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7787c5yy3l080159mwqsnj.jpg",
+        "sha256": "a5ee54bf37623eb175e9df763142911f4a849d415f3899414151aa4e330aa84d",
+        "size_bytes": 25750
+      },
+      "index": 134,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7787c5yy3l080159mwqsnj.jpg",
+        "sha256": "d37be475d08a6aa1ee5043b458beae6758cc87b20a80c05e398ae47fb5242a7f",
+        "size_bytes": 10593
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7787c5yy3l080159mwqsnj"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju77afzlz3kp07550x5nafzs.jpg",
+        "sha256": "bb414e1f23606d6d254656189c7525e90455c6fe3dbcff5d09ebab9f3efa0ce3",
+        "size_bytes": 46519
+      },
+      "index": 135,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju77afzlz3kp07550x5nafzs.jpg",
+        "sha256": "73f3fae5b6e95067ee46bbd875bdb6b3309a07dd8254f956964dbc0d3769935a",
+        "size_bytes": 17983
+      },
+      "prompt_index": 0,
+      "sample_id": "cju77afzlz3kp07550x5nafzs"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju77q10sz9ug0801449wu1nu.jpg",
+        "sha256": "baad29430b9ea618ab61e2dc4f8e1a4d8ecd8791d7be441f4b24ed96036a65e1",
+        "size_bytes": 33163
+      },
+      "index": 136,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju77q10sz9ug0801449wu1nu.jpg",
+        "sha256": "fc05a67445de64b2e5d569937b82d66f99c5d8ef25c2e9fd697928cc1c79bfdf",
+        "size_bytes": 12018
+      },
+      "prompt_index": 0,
+      "sample_id": "cju77q10sz9ug0801449wu1nu"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7adqyj1jcx08712r1ro5gx.jpg",
+        "sha256": "e660b90e1dc6368cf3103b3f7d6447c9c0ecbf09e1cd1a976fce5b0bed115849",
+        "size_bytes": 36848
+      },
+      "index": 137,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7adqyj1jcx08712r1ro5gx.jpg",
+        "sha256": "6dc5fa0c5575216ebb6012ec48cbbf3c3a47dd22fbc4d469425afd1180c5c3e3",
+        "size_bytes": 13635
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7adqyj1jcx08712r1ro5gx"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7aklv31h4309871m29l4e7.jpg",
+        "sha256": "02db7d310e9a5437a86c484fbf17687f7791b069c0ef4927178eafafa5fef7fb",
+        "size_bytes": 35194
+      },
+      "index": 138,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7aklv31h4309871m29l4e7.jpg",
+        "sha256": "170f29a7f586d18d8efab0aaf93dfc1505be2aa05456e333cee44bf7bcb9cd5a",
+        "size_bytes": 11173
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7aklv31h4309871m29l4e7"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7apr0c1qqm0755s7msqot4.jpg",
+        "sha256": "bc4c3f2f0f5a74636779bcdd1479f25892a5dd8ee27d5ced5f5b8c7b9a77b8a9",
+        "size_bytes": 28018
+      },
+      "index": 139,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7apr0c1qqm0755s7msqot4.jpg",
+        "sha256": "7a7e4e6caf33e2849a84d20e571b08aab42328a94f6df84d5721b8eddca4701e",
+        "size_bytes": 11585
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7apr0c1qqm0755s7msqot4"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7arvfe1ldu0850erdmphgj.jpg",
+        "sha256": "e76b04e092e7b5c07bb3f18e91113e300bf77a07dabaeaab3d348c8dfb73f787",
+        "size_bytes": 34254
+      },
+      "index": 140,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7arvfe1ldu0850erdmphgj.jpg",
+        "sha256": "5809222d15148f7dddef905883fc0e0edbd13ee814ecb4c12d14bd0b163d59c9",
+        "size_bytes": 13315
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7arvfe1ldu0850erdmphgj"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7b2l561oas0871decgslaf.jpg",
+        "sha256": "5df9ecaeeeade45cd48de641d18e7be875f78491a7c0662d755b1ed38b996eb1",
+        "size_bytes": 24936
+      },
+      "index": 141,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7b2l561oas0871decgslaf.jpg",
+        "sha256": "e74bf1c502474733d7dff386e3a9ff55133211ac33beac2341ae82bfdee55df0",
+        "size_bytes": 10367
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7b2l561oas0871decgslaf"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7bf1lp1shi081835vs84lc.jpg",
+        "sha256": "c306a5fb2f52aad2ae43fb8523eb3d53b7130abdbe2633d01c02b40c728fd5bf",
+        "size_bytes": 29717
+      },
+      "index": 142,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7bf1lp1shi081835vs84lc.jpg",
+        "sha256": "60af1f3673ea41f3cfb60548d8619b48365d6d9fc46102e081b958ee845a55da",
+        "size_bytes": 15122
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7bf1lp1shi081835vs84lc"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7bmi1v1pnj0987pa52jjok.jpg",
+        "sha256": "253736e97ed0793614f23a93d6cbe9a0d7909b16f3422629d9210d8b879c246b",
+        "size_bytes": 32009
+      },
+      "index": 143,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7bmi1v1pnj0987pa52jjok.jpg",
+        "sha256": "bc5061db7de5374336659f424442c1ffa6e547175d1d37b355eee1d9b4252e0e",
+        "size_bytes": 11836
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7bmi1v1pnj0987pa52jjok"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7cq6su27qv075574dir0r3.jpg",
+        "sha256": "4bc00d7f34a4740fb0d161e15f94062137bffb07c3bbe8ba4934cf9bf7e5daed",
+        "size_bytes": 33182
+      },
+      "index": 144,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7cq6su27qv075574dir0r3.jpg",
+        "sha256": "dc1c2c66e40161523ccef3524e0e995f57f9b40ba73e435cca3991b1ee1cab74",
+        "size_bytes": 12272
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7cq6su27qv075574dir0r3"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7crgxa28550755wbsgqkel.jpg",
+        "sha256": "003aba7f3b43e03060a442eaadfdb373d721e0c08844d2faf21b7e26905ad560",
+        "size_bytes": 25006
+      },
+      "index": 145,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7crgxa28550755wbsgqkel.jpg",
+        "sha256": "55ef9226b347a43873d49079e8b5e371ad8256bd7023bc37411663fe2d5ef765",
+        "size_bytes": 11802
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7crgxa28550755wbsgqkel"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7d7aut2a2p0818z4uxc6cd.jpg",
+        "sha256": "e5ec4cacab0ee5145fbd80c8765a2ab8c2f9540c16178a2893d324d74e1adf80",
+        "size_bytes": 31720
+      },
+      "index": 146,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7d7aut2a2p0818z4uxc6cd.jpg",
+        "sha256": "f101f2aa3ce9ba1c77b8b2801293bb78d31e1c7d605484b70535468c882df584",
+        "size_bytes": 8238
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7d7aut2a2p0818z4uxc6cd"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7d7tly27h408016fyp5nr7.jpg",
+        "sha256": "e35815410575e3fb58d132635e364aa31927722c7aafa636cd1d4513d834aa09",
+        "size_bytes": 32276
+      },
+      "index": 147,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7d7tly27h408016fyp5nr7.jpg",
+        "sha256": "99a3bf477cc363cf682217dd3192a79bbfe3faeec8bf745b0d8b3302c9c28626",
+        "size_bytes": 11403
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7d7tly27h408016fyp5nr7"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7d9seq29zd0871nzl2uu5m.jpg",
+        "sha256": "01c51f8c6a111c84a8deab4c656e52bb500f4605b007c0e482b711530bdca448",
+        "size_bytes": 42375
+      },
+      "index": 148,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7d9seq29zd0871nzl2uu5m.jpg",
+        "sha256": "86d247611c01b698f834ca27a753accbe6a692f2ca9edfa5739cb80412f184de",
+        "size_bytes": 14777
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7d9seq29zd0871nzl2uu5m"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7db7lp2f400755tntd1ohf.jpg",
+        "sha256": "cca28a0f329245967628b8bcf8f605249e67e700ae16a40763f490ce75536a6a",
+        "size_bytes": 27015
+      },
+      "index": 149,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7db7lp2f400755tntd1ohf.jpg",
+        "sha256": "5b86151006cbc1f860ddc113ba4c87c0f1a92c90ff7572dd694dbae6a42a768c",
+        "size_bytes": 13472
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7db7lp2f400755tntd1ohf"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7dda8w2br20818zhsuz8s7.jpg",
+        "sha256": "f6b35acda93e282e8a363df337260c9e9d0de485a83c4432f02889c5ee927999",
+        "size_bytes": 26576
+      },
+      "index": 150,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7dda8w2br20818zhsuz8s7.jpg",
+        "sha256": "d74c24a24688be5ec04ece429d6bdfd42db0a028f13a57ce2eabf8cd5beb2991",
+        "size_bytes": 15307
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7dda8w2br20818zhsuz8s7"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7dff9529h208503w60lbil.jpg",
+        "sha256": "61af74345ca89e44acfc6aa7cbb5a09aedce34d32cf015751d38c8fde3c7c71b",
+        "size_bytes": 29887
+      },
+      "index": 151,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7dff9529h208503w60lbil.jpg",
+        "sha256": "389c6d9f60f0f50d53f6a53e4fa5838eb90f279622e3b1df2fe5eb2c4c7f9147",
+        "size_bytes": 17401
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7dff9529h208503w60lbil"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7dizi82h2i0755doucgnt3.jpg",
+        "sha256": "fa9efe1fef81fee47f3b174ec766bc92053ee03a66a07070d2ae0d4874a42069",
+        "size_bytes": 35742
+      },
+      "index": 152,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7dizi82h2i0755doucgnt3.jpg",
+        "sha256": "dc4d6b3985252267eeec9947a6558886fdfd1914aed44e2e53d0072a04d33beb",
+        "size_bytes": 10720
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7dizi82h2i0755doucgnt3"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7dubap2g0w0801fgl42mg9.jpg",
+        "sha256": "5b47f15183f148249a75b08a1c7171d3b9d30c659cf510cafce9dd6d02c35c32",
+        "size_bytes": 39153
+      },
+      "index": 153,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7dubap2g0w0801fgl42mg9.jpg",
+        "sha256": "ae9683943607aca2b61ec229d6ef71ffff4f7a844133b6f27fb21401d5381748",
+        "size_bytes": 15187
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7dubap2g0w0801fgl42mg9"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7er4kc2opa0801anuxc0eb.jpg",
+        "sha256": "07ce75a013e5111561c31f65c238c9fc463808306f71293c9b3abc7158e2b43f",
+        "size_bytes": 35261
+      },
+      "index": 154,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7er4kc2opa0801anuxc0eb.jpg",
+        "sha256": "445d79a9631d52fdfcec97e9e14eece1d2ef507016d59e2e52d6324f25d67ec8",
+        "size_bytes": 13150
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7er4kc2opa0801anuxc0eb"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7es23b2vcp0755gpbm9s7v.jpg",
+        "sha256": "4702bf12749ff647bbd8c13ffc3434565d0b5ab30490168ed4cf590dc8eb512f",
+        "size_bytes": 38376
+      },
+      "index": 155,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7es23b2vcp0755gpbm9s7v.jpg",
+        "sha256": "60b51bc7bb412ac35c99aca9e839eaebd67a802068d5401a45bc4f1cd6c0c0bb",
+        "size_bytes": 13075
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7es23b2vcp0755gpbm9s7v"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7etr3y2p4t0801cdzjj8ab.jpg",
+        "sha256": "b7850e6d4a7095290f55d79f068a47876281a9515b5f415c3c42ab04906936a5",
+        "size_bytes": 36913
+      },
+      "index": 156,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7etr3y2p4t0801cdzjj8ab.jpg",
+        "sha256": "d6440cada0f68fda3ba88a88fa4e7ddd2569c28bd3d974716cda33c6f509e5fd",
+        "size_bytes": 10743
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7etr3y2p4t0801cdzjj8ab"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7ev2b12owa08500bpfpwyw.jpg",
+        "sha256": "241b4d446dd7f2d53dcf55be9dfc3ef8eae2e6f9272c6f7101cb0476bac3d064",
+        "size_bytes": 35400
+      },
+      "index": 157,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7ev2b12owa08500bpfpwyw.jpg",
+        "sha256": "a5256019351d9d880bc0b0c83c10287725ace647d2282c8ca1d1136cd9357727",
+        "size_bytes": 14984
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7ev2b12owa08500bpfpwyw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7fen322ou10817ziqkob4k.jpg",
+        "sha256": "94f1d625852a2e88cc3269b7839db61c759ba8f9e6313f2ddbf0d63083a7604e",
+        "size_bytes": 35414
+      },
+      "index": 158,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7fen322ou10817ziqkob4k.jpg",
+        "sha256": "cbba3173fc8407e8b0a9636f73f32366847bef3b3122a93835cc0667ae4b5cd9",
+        "size_bytes": 16062
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7fen322ou10817ziqkob4k"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7fob3x301u0755x985pmmq.jpg",
+        "sha256": "1b4cfe512fc5ab602cf41a0955308cd6dbff59a62d9da5995f53563909c2139d",
+        "size_bytes": 37041
+      },
+      "index": 159,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7fob3x301u0755x985pmmq.jpg",
+        "sha256": "e53df685adb8c6d7a3f032d29712320239570782fd04d9b256e00e4191a8d4f3",
+        "size_bytes": 11637
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7fob3x301u0755x985pmmq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju7g7ba42z310987bqzbi2bq.jpg",
+        "sha256": "2ba78d66447ddc5586ed735512fb7e12dedded3f058a0e4e5b791f31c1c87d0f",
+        "size_bytes": 31733
+      },
+      "index": 160,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju7g7ba42z310987bqzbi2bq.jpg",
+        "sha256": "d8f3cee3d0e0a4a3e46196739df163f852a93e01fa5f820e913db894f6549776",
+        "size_bytes": 15810
+      },
+      "prompt_index": 0,
+      "sample_id": "cju7g7ba42z310987bqzbi2bq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju83ipu3jwpx0801z5pvguf8.jpg",
+        "sha256": "b0a972b928a65083189a5ab58e47a1131a84c53f06811cc7404f108f693519cc",
+        "size_bytes": 44746
+      },
+      "index": 161,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju83ipu3jwpx0801z5pvguf8.jpg",
+        "sha256": "cf5d30db81fdcfe3473c5a06524c90887740cc5967485933a409fda4c411d343",
+        "size_bytes": 9453
+      },
+      "prompt_index": 0,
+      "sample_id": "cju83ipu3jwpx0801z5pvguf8"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju83nwu1jxte0987h1krpfmv.jpg",
+        "sha256": "18fbba8565c1af6fcac7a6f07228f842f732174e9210ff7c62b09e8675e708e9",
+        "size_bytes": 43900
+      },
+      "index": 162,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju83nwu1jxte0987h1krpfmv.jpg",
+        "sha256": "81d686f2c64ca89f51bb197e96dae1eda70db458dfbea0fa6f94765ce11740c6",
+        "size_bytes": 11253
+      },
+      "prompt_index": 0,
+      "sample_id": "cju83nwu1jxte0987h1krpfmv"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju83wwn1k55e0850kw6i2d81.jpg",
+        "sha256": "10c318fa595f65854727503c80bcc7311584132186258e93b2b725ff8074e35b",
+        "size_bytes": 41711
+      },
+      "index": 163,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju83wwn1k55e0850kw6i2d81.jpg",
+        "sha256": "eec2031ae0b9cd9171d7f01190dc15ae55896c938a5156c5761f2f0e7791094b",
+        "size_bytes": 10558
+      },
+      "prompt_index": 0,
+      "sample_id": "cju83wwn1k55e0850kw6i2d81"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju84dsvaklpx098750hp83x4.jpg",
+        "sha256": "98015627de309e0b6e01cc55194cda608b5f00b2fd9689782fafdea5a6c9e8be",
+        "size_bytes": 36493
+      },
+      "index": 164,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju84dsvaklpx098750hp83x4.jpg",
+        "sha256": "64859d04ae3d47eb39c4e4b14eee28e16374adb52ce648d3fa5ab63245b92cd3",
+        "size_bytes": 16897
+      },
+      "prompt_index": 0,
+      "sample_id": "cju84dsvaklpx098750hp83x4"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju84jdl9kv0i0871eog9b3i9.jpg",
+        "sha256": "9b89cf86c49601b9317f73b0aa837eb2c46065eb28dc75e242ab0571fc862f62",
+        "size_bytes": 127979
+      },
+      "index": 165,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju84jdl9kv0i0871eog9b3i9.jpg",
+        "sha256": "53fa8b2e93ef33d1feeaa7209ce93839d66b1bbc04883f95287fcad4d3b02c29",
+        "size_bytes": 40865
+      },
+      "prompt_index": 0,
+      "sample_id": "cju84jdl9kv0i0871eog9b3i9"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju85fc11ljr40818edpb0inh.jpg",
+        "sha256": "b02a7b0f43fcb2d6b708ac1e1f2522ef247ffa834c5d3bab472692319e95c503",
+        "size_bytes": 43408
+      },
+      "index": 166,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju85fc11ljr40818edpb0inh.jpg",
+        "sha256": "e2dd30a03c484217010305c68f49d183572abff5474c9b52e99b033b4e4a61fa",
+        "size_bytes": 14851
+      },
+      "prompt_index": 0,
+      "sample_id": "cju85fc11ljr40818edpb0inh"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju85l4yjlops0801fvmnwptf.jpg",
+        "sha256": "efe92e82581f6d9618884404b0d44bd8c8d7f7bd17539b2df98f961d128a81b9",
+        "size_bytes": 33286
+      },
+      "index": 167,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju85l4yjlops0801fvmnwptf.jpg",
+        "sha256": "ddf624742f4b05a043cd8de972c6036a371829b09d3358750693bd2f6a517e6b",
+        "size_bytes": 15166
+      },
+      "prompt_index": 0,
+      "sample_id": "cju85l4yjlops0801fvmnwptf"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju85plp7lmkw0850rx42jdpf.jpg",
+        "sha256": "dfd47c1d960f5065f7729d3a1a4abf30a407565601233a5fd94f96a49a29eb50",
+        "size_bytes": 26631
+      },
+      "index": 168,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju85plp7lmkw0850rx42jdpf.jpg",
+        "sha256": "356d20323a495778b0bf1660f4c25644ac3ecbbad21968df74df0dc04f1f66d6",
+        "size_bytes": 14946
+      },
+      "prompt_index": 0,
+      "sample_id": "cju85plp7lmkw0850rx42jdpf"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju87mrypnb1e0818scv1mxxg.jpg",
+        "sha256": "e4fd886c6813bed9cf45ca239520a16093a02b39a9c947ec90b886c3ee8d00f8",
+        "size_bytes": 35496
+      },
+      "index": 169,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju87mrypnb1e0818scv1mxxg.jpg",
+        "sha256": "f61580083691dea28c7c1a57e99285c862f566ca20c93d87d38ef4f5965a4fee",
+        "size_bytes": 9595
+      },
+      "prompt_index": 0,
+      "sample_id": "cju87mrypnb1e0818scv1mxxg"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju87xn2snfmv0987sc3d9xnq.jpg",
+        "sha256": "8d21c2189b6c078d829fe4238704fb6030d0f1241a52ac3d3878e0bb9883f3dd",
+        "size_bytes": 32229
+      },
+      "index": 170,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju87xn2snfmv0987sc3d9xnq.jpg",
+        "sha256": "7b277c6fa5498229776fb923ad931194bfa4fb11eeda677e20fe449e4b3ff350",
+        "size_bytes": 12524
+      },
+      "prompt_index": 0,
+      "sample_id": "cju87xn2snfmv0987sc3d9xnq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju884985nlmx0817vzpax3y4.jpg",
+        "sha256": "3ea4356b0a8a227bbe4560aab1961341f51c96d199f509be61648e5e630e7f3e",
+        "size_bytes": 43043
+      },
+      "index": 171,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju884985nlmx0817vzpax3y4.jpg",
+        "sha256": "63c731cb8b2756ca5cb979f13f106c3fbea9098e54435b5ef68bc1eb2786961f",
+        "size_bytes": 9096
+      },
+      "prompt_index": 0,
+      "sample_id": "cju884985nlmx0817vzpax3y4"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju886ryxnsl50801r93jai7q.jpg",
+        "sha256": "9f1981fba3b037ed4d822d3de9878312add628e416afdd9da1d82f35d3b1fbc5",
+        "size_bytes": 36415
+      },
+      "index": 172,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju886ryxnsl50801r93jai7q.jpg",
+        "sha256": "a7145a37ce31d1a3665197a044d50018b6fbcf70bb9a65e052d820e7024bedc8",
+        "size_bytes": 12427
+      },
+      "prompt_index": 0,
+      "sample_id": "cju886ryxnsl50801r93jai7q"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju887ftknop008177nnjt46y.jpg",
+        "sha256": "406b33869623adfc208839dccfab233ca0cff34d1be43cf9a41d8d6c2263012a",
+        "size_bytes": 35714
+      },
+      "index": 173,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju887ftknop008177nnjt46y.jpg",
+        "sha256": "f9a9f5b9e168e459f27ef83915ed734c292123c15529e907c58ff5643553609e",
+        "size_bytes": 8910
+      },
+      "prompt_index": 0,
+      "sample_id": "cju887ftknop008177nnjt46y"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju88fpm4o0tl0871w1i6a4ds.jpg",
+        "sha256": "f05fed5be533d38cedb33d37888acaf98039768962e00a41d072c8162b61177d",
+        "size_bytes": 22801
+      },
+      "index": 174,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju88fpm4o0tl0871w1i6a4ds.jpg",
+        "sha256": "4a803c651de41db3758b8a6cd2ac03c89a00bbb60c57cdc78b32b765481da19d",
+        "size_bytes": 7246
+      },
+      "prompt_index": 0,
+      "sample_id": "cju88fpm4o0tl0871w1i6a4ds"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju88gx09o2vk0818610zody3.jpg",
+        "sha256": "0d89e2f0b1ef63b129309eb7e2da8292533bac5f3f94cb17da2800fbe8a9c9de",
+        "size_bytes": 32126
+      },
+      "index": 175,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju88gx09o2vk0818610zody3.jpg",
+        "sha256": "e57e626f0f7cfe6593cbf193d811d4c691279c9d7ab2133128b05cfec8b50b71",
+        "size_bytes": 11166
+      },
+      "prompt_index": 0,
+      "sample_id": "cju88gx09o2vk0818610zody3"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju88nroho44508500129f1nh.jpg",
+        "sha256": "0155d34f9208a8643f8a1e40a4b077218222bce5be02aa598f640f34acd328ee",
+        "size_bytes": 35401
+      },
+      "index": 176,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju88nroho44508500129f1nh.jpg",
+        "sha256": "5d397f1b0f2bcc50f7106d4e053100413b58a2f42940a6235e1afe30ab0ab741",
+        "size_bytes": 8658
+      },
+      "prompt_index": 0,
+      "sample_id": "cju88nroho44508500129f1nh"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju88oh0po9gq0801nge4tgr1.jpg",
+        "sha256": "8f1bf938b8084cfc5b34f0dab4e3c782a6900318978ad3c30579e2c8713bc91f",
+        "size_bytes": 35608
+      },
+      "index": 177,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju88oh0po9gq0801nge4tgr1.jpg",
+        "sha256": "4f823f5d9af7a994d3b199fcce707826c0d1d459e00120a054ba6ecef930f3fa",
+        "size_bytes": 8932
+      },
+      "prompt_index": 0,
+      "sample_id": "cju88oh0po9gq0801nge4tgr1"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju88v2f9oi8w0871hx9auh01.jpg",
+        "sha256": "56685b7b23f25de0bc62185449cc6958bcd5925e8a52a0d2bb25f9d7820cfe46",
+        "size_bytes": 29491
+      },
+      "index": 178,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju88v2f9oi8w0871hx9auh01.jpg",
+        "sha256": "d44d7497f64d6c429e8b962cc482467da11c859bad55fe87ab4bd41bd66b932e",
+        "size_bytes": 8890
+      },
+      "prompt_index": 0,
+      "sample_id": "cju88v2f9oi8w0871hx9auh01"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8a3nhbpwnb0850d37fo2na.jpg",
+        "sha256": "007ed6cfae736ea152bfc5b9418614590e7e2ae59a1a08a313ae4765ddec18c4",
+        "size_bytes": 37810
+      },
+      "index": 179,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8a3nhbpwnb0850d37fo2na.jpg",
+        "sha256": "312728b4a7ee41a34e941c500a35a5020bdf0202168b730b4faea0897d9e2187",
+        "size_bytes": 9966
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8a3nhbpwnb0850d37fo2na"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8a56vxpy780850r45yu4wk.jpg",
+        "sha256": "23cd86df6bd35516575b4403eea0ff5795b06615da5471247905dd3b18fd54fc",
+        "size_bytes": 26240
+      },
+      "index": 180,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8a56vxpy780850r45yu4wk.jpg",
+        "sha256": "338e1b95855c70229bb096f85c10668056556f4ede0194d24f36de201da12d62",
+        "size_bytes": 12372
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8a56vxpy780850r45yu4wk"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8auylgqx0z0871u4o4db7o.jpg",
+        "sha256": "2d23ee7b5dc06b804275fe2f43ee3380cf42a4b44fc93ca094c2e1118cbf803c",
+        "size_bytes": 35522
+      },
+      "index": 181,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8auylgqx0z0871u4o4db7o.jpg",
+        "sha256": "7f1268c89e4c0ee6bd2d2bf325f3d300e6f093ba7e309db18ee12dd93ac29172",
+        "size_bytes": 8589
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8auylgqx0z0871u4o4db7o"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8aw9n1qyg10801jkjlmors.jpg",
+        "sha256": "1b292066666fe1dc81c237328167de77d7a039b40f90b9fc7cac69e4dafe6ffa",
+        "size_bytes": 34535
+      },
+      "index": 182,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8aw9n1qyg10801jkjlmors.jpg",
+        "sha256": "bdf08d0c623297b0b19508ea918821bb761cf583382ef4137c4d2ae87c91f649",
+        "size_bytes": 14723
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8aw9n1qyg10801jkjlmors"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8ayeq7r1fb0818z1junacy.jpg",
+        "sha256": "f6aa9407a0d33918a3c41eb90f664c84c16cd5875508b1fcbbf6466b6322c652",
+        "size_bytes": 44769
+      },
+      "index": 183,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8ayeq7r1fb0818z1junacy.jpg",
+        "sha256": "4f9455b0ec80bf49f99c2b364768401c37baf23f48d71b7cbea4e7e5c84451c5",
+        "size_bytes": 9169
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8ayeq7r1fb0818z1junacy"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8b4ja9r2s808509d45ma86.jpg",
+        "sha256": "1811b413474f6f1daf455342f63196f51d0ee67bbbbfc4e8da930993fc601b9b",
+        "size_bytes": 40788
+      },
+      "index": 184,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8b4ja9r2s808509d45ma86.jpg",
+        "sha256": "14b9b8c8f1f9873bcf9a8b3b244ec3cc3346d00d6cdf8ad4e15763b567b921b3",
+        "size_bytes": 14462
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8b4ja9r2s808509d45ma86"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8b542nr81x0871uxnkm9ih.jpg",
+        "sha256": "bffe0a6e21a8f6511a8e74315038fcb15e725b6e91f830c2e4ed225f6c572026",
+        "size_bytes": 30360
+      },
+      "index": 185,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8b542nr81x0871uxnkm9ih.jpg",
+        "sha256": "a22f80cebbeda57e42ceeff22f5faab01d4443905ec609d34174d70e8d05821a",
+        "size_bytes": 8226
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8b542nr81x0871uxnkm9ih"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8bafgqrf4x0818twisk3ea.jpg",
+        "sha256": "80bc0cf61d156a2d9965a7c38d3cfeb3519383ea6c8a8493bff869b48b58c632",
+        "size_bytes": 27138
+      },
+      "index": 186,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8bafgqrf4x0818twisk3ea.jpg",
+        "sha256": "45b1d9d487d7aeb88993c830a0613014bb5932c93d020e4ca921c87f7c4b5328",
+        "size_bytes": 12150
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8bafgqrf4x0818twisk3ea"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8bh8surexp0987o5pzklk1.jpg",
+        "sha256": "92e5767dfe4814b3a1965f0efb1f3797e602a4feffdea97c402f1725b4937ca2",
+        "size_bytes": 30827
+      },
+      "index": 187,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8bh8surexp0987o5pzklk1.jpg",
+        "sha256": "dee08384c8a471719a210e0f082603ef691a55ee9d506e7ed7d490e9f914fbb6",
+        "size_bytes": 12714
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8bh8surexp0987o5pzklk1"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8bysfgrzkl081786jwac09.jpg",
+        "sha256": "90dd7be4869e1291c91751c109f1969a952aa17e470185390dfbf6922d949c56",
+        "size_bytes": 27447
+      },
+      "index": 188,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8bysfgrzkl081786jwac09.jpg",
+        "sha256": "308f47dcd24ea17d9799b54d5d1f7fabd1fecd5ca47f466a051eca09b86d217e",
+        "size_bytes": 11665
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8bysfgrzkl081786jwac09"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8c5zcbsdfz0801o5t6jag1.jpg",
+        "sha256": "54a9f49520f7eadcbb3686b50461a7e08b86aeefe50ffbde901b3b55a66f5944",
+        "size_bytes": 30886
+      },
+      "index": 189,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8c5zcbsdfz0801o5t6jag1.jpg",
+        "sha256": "24f395cff6a8454f5103aa3429c697d5385149073336be9ca4bee00885e20b73",
+        "size_bytes": 9244
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8c5zcbsdfz0801o5t6jag1"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8ca4geseia0850i2ru11hw.jpg",
+        "sha256": "2df1824d0a2e0665e8d98e8ff17a7736f43397753a255989b07486279c8c2e94",
+        "size_bytes": 46815
+      },
+      "index": 190,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8ca4geseia0850i2ru11hw.jpg",
+        "sha256": "92449df48ca7ed0828fc219d86a71fa68fa5dd63a419fa45108bd59351c9f6c8",
+        "size_bytes": 11749
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8ca4geseia0850i2ru11hw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8ceacrsqkr0755hdz145es.jpg",
+        "sha256": "f094eb2204634a8afaa8c0e09becad5d440544279495122e8861adc0a7c4fd84",
+        "size_bytes": 21517
+      },
+      "index": 191,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8ceacrsqkr0755hdz145es.jpg",
+        "sha256": "9cf7acaa74fb9c029ef6dc2c92d333a45b55c386a31a43c26eda5dec9c0ed57b",
+        "size_bytes": 8210
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8ceacrsqkr0755hdz145es"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8czvnztbf40871b4m7t78w.jpg",
+        "sha256": "6720011271fc7a70b22e235bc68ee18bf3f3302f6281bdb607cdbb62e34bcc83",
+        "size_bytes": 33731
+      },
+      "index": 192,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8czvnztbf40871b4m7t78w.jpg",
+        "sha256": "3c28fa2a61d79199c746cfaeb1ea7147fe23c1aeb777d4b7c03028440ecd82de",
+        "size_bytes": 12849
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8czvnztbf40871b4m7t78w"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8dm2cau2km0818jsv9eeq2.jpg",
+        "sha256": "0ac961618c6ef58d40b262ca24f0c27aacb97da149242e2baecd8bc93b0deed3",
+        "size_bytes": 37922
+      },
+      "index": 193,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8dm2cau2km0818jsv9eeq2.jpg",
+        "sha256": "08fd7eb00ca207761ee54e67ffbebec2d7e08a12453ac758ee924a04f6956443",
+        "size_bytes": 10555
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8dm2cau2km0818jsv9eeq2"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cju8doa16u5gh0818w1ywda3q.jpg",
+        "sha256": "5a9eda66c4419c9d7b418e561936cc981c26957da286a47d488ee4471606a5e0",
+        "size_bytes": 44381
+      },
+      "index": 194,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cju8doa16u5gh0818w1ywda3q.jpg",
+        "sha256": "bb0e22722ad83345fe483c0f12433f14ed2f13c739f0a86795adacd0bea3dfd7",
+        "size_bytes": 17111
+      },
+      "prompt_index": 0,
+      "sample_id": "cju8doa16u5gh0818w1ywda3q"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cjyzjzssvd8pq0838f4nolj5l.jpg",
+        "sha256": "44079049f8bec15c37ba39fd40db5517b486bc6b7e7013fa48b65f944da981f5",
+        "size_bytes": 191059
+      },
+      "index": 195,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cjyzjzssvd8pq0838f4nolj5l.jpg",
+        "sha256": "e235a5006b238fd9112d6fa22edef79720bacdc35203bab0ed6908988b397955",
+        "size_bytes": 11693
+      },
+      "prompt_index": 0,
+      "sample_id": "cjyzjzssvd8pq0838f4nolj5l"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/cjyzlw7f9faqr070129au64sq.jpg",
+        "sha256": "1432032e8e25594efc42a928c7c723b22b56cd439d1c859914b7b0feb62a40fe",
+        "size_bytes": 175544
+      },
+      "index": 196,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/cjyzlw7f9faqr070129au64sq.jpg",
+        "sha256": "88096f578c37b17cc13475c167e61bed96693aa115e3ea5b5d03f9c2973ff150",
+        "size_bytes": 13153
+      },
+      "prompt_index": 0,
+      "sample_id": "cjyzlw7f9faqr070129au64sq"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/ck2395w2mb4vu07480otsu6tw.jpg",
+        "sha256": "9bd68d18df9917bf1bf8c2e39be55f15c492a91d21735745cdee63dbcd1f78cc",
+        "size_bytes": 172630
+      },
+      "index": 197,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/ck2395w2mb4vu07480otsu6tw.jpg",
+        "sha256": "e84a72e81eb972bd47c1e0c99b720a58638ad2051ae6f0d05171ccc1f380a76b",
+        "size_bytes": 12626
+      },
+      "prompt_index": 0,
+      "sample_id": "ck2395w2mb4vu07480otsu6tw"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/ck2bxw18mmz1k0725litqq2mc.jpg",
+        "sha256": "a85371c97ebe180df03248e21b494966761a3e76bf9a8d78eafeca17fee2b099",
+        "size_bytes": 37883
+      },
+      "index": 198,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/ck2bxw18mmz1k0725litqq2mc.jpg",
+        "sha256": "5167de6a7b0734567796038f40be904aab7f5625ff866309e9903e767bd626c7",
+        "size_bytes": 15982
+      },
+      "prompt_index": 0,
+      "sample_id": "ck2bxw18mmz1k0725litqq2mc"
+    },
+    {
+      "image": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/images/ck2da7fwcjfis07218r1rvm95.jpg",
+        "sha256": "45f146963c670a5a0619860d8a9f2da4339f853d161300ed43264299f204e66a",
+        "size_bytes": 166204
+      },
+      "index": 199,
+      "mask": {
+        "kind": "regular",
+        "path": "data/Kvasir-SEG/masks/ck2da7fwcjfis07218r1rvm95.jpg",
+        "sha256": "86dfbf52a1251ea59e748745ec3007c3b8f8dda658fe5b1b92ac7555d00601a8",
+        "size_bytes": 11122
+      },
+      "prompt_index": 0,
+      "sample_id": "ck2da7fwcjfis07218r1rvm95"
+    }
+  ],
+  "selection_files": [],
+  "split": "test"
+}

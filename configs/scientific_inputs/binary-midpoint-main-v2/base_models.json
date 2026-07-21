@@ -1,0 +1,92 @@
+{
+  "component_kind": "base_models",
+  "component_schema_version": 1,
+  "entries": [
+    {
+      "file": {
+        "kind": "relative_symlink",
+        "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/config.json",
+        "resolved_path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/blobs/9c1a3a8693f29070857102aea691cadcb7e8a806",
+        "sha256": "c023375966d31b3b1392764f7bd91df47098ce19f62f11b0263d8eedcf708bcd",
+        "size_bytes": 4732,
+        "symlink_target": "../../blobs/9c1a3a8693f29070857102aea691cadcb7e8a806"
+      },
+      "model": "clipseg"
+    },
+    {
+      "file": {
+        "kind": "relative_symlink",
+        "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/merges.txt",
+        "resolved_path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/blobs/76e821f1b6f0a9709293c3b6b51ed90980b3166b",
+        "sha256": "9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a",
+        "size_bytes": 524619,
+        "symlink_target": "../../blobs/76e821f1b6f0a9709293c3b6b51ed90980b3166b"
+      },
+      "model": "clipseg"
+    },
+    {
+      "file": {
+        "kind": "relative_symlink",
+        "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/model.safetensors",
+        "resolved_path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/blobs/d00ca85d6b859f9d07b7cfb8ef26fe9771cb275b34c9368f2ecf603139307f55",
+        "sha256": "d00ca85d6b859f9d07b7cfb8ef26fe9771cb275b34c9368f2ecf603139307f55",
+        "size_bytes": 603049496,
+        "symlink_target": "../../blobs/d00ca85d6b859f9d07b7cfb8ef26fe9771cb275b34c9368f2ecf603139307f55"
+      },
+      "model": "clipseg"
+    },
+    {
+      "file": {
+        "kind": "relative_symlink",
+        "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/preprocessor_config.json",
+        "resolved_path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/blobs/30fe86be4cc83725316cbc68ed8c78f9d1483642",
+        "sha256": "4fb09ebcfd7651205ca8299b993c30088e5535ef350a72d46c5c4580eeac0440",
+        "size_bytes": 380,
+        "symlink_target": "../../blobs/30fe86be4cc83725316cbc68ed8c78f9d1483642"
+      },
+      "model": "clipseg"
+    },
+    {
+      "file": {
+        "kind": "relative_symlink",
+        "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/special_tokens_map.json",
+        "resolved_path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/blobs/2c2130b544c0c5a72d5d00da071ba130a9800fb2",
+        "sha256": "c4864a9376a8401918425bed71fc14fc0e81f9b59ec45c1cf96cccb2df508eac",
+        "size_bytes": 472,
+        "symlink_target": "../../blobs/2c2130b544c0c5a72d5d00da071ba130a9800fb2"
+      },
+      "model": "clipseg"
+    },
+    {
+      "file": {
+        "kind": "relative_symlink",
+        "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/tokenizer_config.json",
+        "resolved_path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/blobs/446c39016ef7112b9ace812c98641502da0193d1",
+        "sha256": "4c75d57fd9bd0be8478ad2d6f8b9cebdd4a45338eb108547329c2b6333476ca6",
+        "size_bytes": 974,
+        "symlink_target": "../../blobs/446c39016ef7112b9ace812c98641502da0193d1"
+      },
+      "model": "clipseg"
+    },
+    {
+      "file": {
+        "kind": "relative_symlink",
+        "path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/snapshots/999e0328d9e10b484360c477313983f9afdd7050/vocab.json",
+        "resolved_path": "data/cache/huggingface/hub/models--CIDAS--clipseg-rd64-refined/blobs/469be27c5c010538f845f518c4f5e8574c78f7c8",
+        "sha256": "e089ad92ba36837a0d31433e555c8f45fe601ab5c221d4f607ded32d9f7a4349",
+        "size_bytes": 1059962,
+        "symlink_target": "../../blobs/469be27c5c010538f845f518c4f5e8574c78f7c8"
+      },
+      "model": "clipseg"
+    },
+    {
+      "file": {
+        "kind": "regular",
+        "path": "data/cache/torch/hub/checkpoints/deeplabv3_resnet50_coco-cd0a2569.pth",
+        "sha256": "cd0a25694c4a0f7106b38f4938bf90a874f2f241cc410b8f63c7024399538f06",
+        "size_bytes": 168312152
+      },
+      "model": "deeplabv3"
+    }
+  ]
+}

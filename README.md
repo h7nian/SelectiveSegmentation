@@ -143,31 +143,39 @@ CPU jobs, 48 M-specific CPU jobs, 16 strict assemblies, and 16 read-only
 artifact diagnostics. Every independent experiment is one `sbatch` job; no
 Slurm arrays or multi-experiment jobs are used.
 
-For every new campaign, the current scheduler rule is exact: each GPU training
-or freeze job requests the candidate list `saffo-a100,apollo_agate`, and each
-GPU-free job requests `saffo-2tb,agsmall,amdsmall,msismall`, always under
-account `ssafo`. A comma-delimited candidate request lets Slurm place one job;
-it does not create one job per partition. Every `sbatch` must still represent
-exactly one experiment, and every quadrature score job must receive exactly
-one scalar `M` (`2`, `8`, or `32`); Slurm arrays and fused `M` lists are not
-allowed. Partition commands recorded in completed immutable receipts are
-historical evidence and remain byte-for-byte unchanged even when they predate
-this rule.
+For every new campaign, the current scheduler rule is exact. GPU training and
+freeze jobs alternate the first preference between `saffo-a100` and
+`apollo_agate` while retaining both in every request. GPU-free schema-v2 jobs
+rotate `amdsmall`, `agsmall`, and `msismall` as the first three candidates and
+always retain `saffo-2tb` last as the private fallback, under account `ssafo`.
+A comma-delimited candidate request lets Slurm place one job; it does not
+create one job per partition. Every `sbatch` must still represent exactly one
+experiment, and every quadrature score job must receive exactly one scalar
+`M` (`2`, `8`, or `32`); Slurm arrays and fused `M` lists are not allowed.
+Partition commands recorded in completed immutable receipts are historical
+evidence and remain byte-for-byte unchanged even when they predate this rule.
 
-The generic planner exposes this policy through a scheduler-only
-`config_schema_version: 2` fixture containing
-`execution_policy: "scheduler-preview-only"` and both exact fields
-`gpu_partition_candidates: ["saffo-a100", "apollo_agate"]` and
-`cpu_partition_candidates: ["saffo-2tb", "agsmall", "amdsmall",
-"msismall"]`. The candidate fields are inseparable and order-sensitive.
-This fixture validates job granularity and scheduler eligibility; it is not a
-scientific replay config and cannot create a campaign lock or receipt.
+Schema v2 has two explicit, mutually exclusive execution policies. A dedicated
+fixture with `execution_policy: "scheduler-preview-only"` remains permanently
+fail-closed: it can print commands or run `sbatch --test-only`, but it cannot
+open a receipt, create a post-freeze campaign lock, reconcile scheduler state,
+or submit a real job. A campaign with
+`execution_policy: "scientific-input-locked"` is executable only when its
+`scientific_input_lock` names an exact path and SHA-256 for a previously sealed
+root lock. Both policies require the inseparable, order-sensitive candidate
+fields `gpu_partition_candidates: ["saffo-a100", "apollo_agate"]` and
+`cpu_partition_candidates: ["amdsmall", "agsmall", "msismall",
+"saffo-2tb"]`.
 
-The checked-in fixture is `configs/binary_midpoint_main_v2.json`. It preserves
-the v1 protocol grid for command comparison, uses campaign ID
-`binary-midpoint-main-v2`, and reserves four disjoint roots below
-`outputs/binary_midpoint_main_v2/`. Purely print the 16 independent freeze
-commands with:
+The execution config is `configs/binary_midpoint_main_v2.json`, with campaign
+ID `binary-midpoint-main-v2` and four disjoint roots below
+`outputs/binary_midpoint_main_v2/`. It now uses
+`scientific-input-locked` and binds the fully verified root lock at
+`configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json` (SHA-256
+`17d30fc18b496c7062acfcec9a09ec8bd6f796339d132bd99f9a6cffad5b2cf0`).
+Changing only the operational policy, `data_root`, and exact root-lock binding
+does not change the lock's science projection. Purely print the 16 independent
+freeze commands with:
 
 ```bash
 python -m scripts.submit_binary_simulations \
@@ -175,7 +183,9 @@ python -m scripts.submit_binary_simulations \
 ```
 
 To ask Slurm to validate every command against both private GPU candidates,
-without creating a job or receipt, run:
+without creating a job or receipt, run the command below. Successful and
+failed checks print Slurm's captured partition/start forecast or rejection
+reason so candidate ordering can be reviewed before submission:
 
 ```bash
 python -m scripts.submit_binary_simulations \
@@ -183,11 +193,152 @@ python -m scripts.submit_binary_simulations \
   --scheduler-preflight-only
 ```
 
-For this fixture, `--submit` intentionally fails before planning, scheduler
-access, or receipt I/O. A real schema-v2 campaign remains disabled until a
-reviewed content-addressed lock independently binds dataset/cohort bytes,
-checkpoints, base-model revisions, and freeze-worker sources. The sealed v1
-commands below remain the exact reproduction path for the reported campaign.
+In preview-only mode, `--submit` intentionally fails before planning,
+scheduler access, or receipt I/O. In scientific-input-locked mode, the planner
+instead validates the root lock before planning, scheduler preflight, receipt
+I/O, or submission. The sealed v1 commands below remain the exact reproduction
+record for the reported campaign; schema v2 is the independently sealed replay
+path and must not be represented as completed until its jobs and receipts have
+actually reached their terminal gates.
+
+### Seal the schema-v2 scientific inputs
+
+The root lock binds the bytes and real evaluation-loader order of all five
+datasets, the target checkpoints, the exact base-model files, the freeze source
+closure, and the Python/package/CUDA environment. Dataset hashing is split into
+five independent CPU jobs so no job bundles datasets and Slurm may choose any
+of the four eligible CPU partitions. On a fresh output root, preview,
+scheduler-check, and submit that five-job wave with:
+
+```bash
+python -m scripts.submit_scientific_input_components
+python -m scripts.submit_scientific_input_components \
+  --scheduler-preflight-only
+python -m scripts.submit_scientific_input_components --submit \
+  --receipt outputs/binary_midpoint_main_v2/scientific_inputs/dataset-build-receipt.jsonl
+```
+
+Each component is write-once. If any target component already exists, the
+planner refuses the entire wave rather than silently replacing scientific
+evidence. After all five jobs are terminal and their JSON files have been
+inspected, build the small components in the same runtime environment:
+
+```bash
+SCIENCE_DIR=configs/scientific_inputs/binary-midpoint-main-v2
+
+python -m selectseg.scientific_inputs build-source \
+  --path selectseg/__init__.py \
+  --path selectseg/binary_artifacts.py \
+  --path selectseg/freeze_binary_maps.py \
+  --path selectseg/scientific_inputs.py \
+  --path selectseg/data.py \
+  --path selectseg/models.py \
+  --path scripts/slurm/freeze_binary_maps.sbatch \
+  --path scripts/slurm/env.sh \
+  --path scripts/submit_binary_simulations.py \
+  --output "$SCIENCE_DIR/source.json"
+python -m selectseg.scientific_inputs build-base-models \
+  --seed-extension-lock configs/auxiliary/binary_seed_extension-v1.lock.json \
+  --output "$SCIENCE_DIR/base-models.json"
+python -m selectseg.scientific_inputs build-checkpoints \
+  --config configs/binary_midpoint_main_v2.json \
+  --output "$SCIENCE_DIR/checkpoints.json"
+python -m selectseg.scientific_inputs build-environment \
+  --output "$SCIENCE_DIR/environment.json"
+python -m selectseg.scientific_inputs build-root \
+  --config configs/binary_midpoint_main_v2.json \
+  --dataset-component pet="$SCIENCE_DIR/datasets/pet.json" \
+  --dataset-component kvasir="$SCIENCE_DIR/datasets/kvasir.json" \
+  --dataset-component fives="$SCIENCE_DIR/datasets/fives.json" \
+  --dataset-component isic="$SCIENCE_DIR/datasets/isic.json" \
+  --dataset-component tn3k="$SCIENCE_DIR/datasets/tn3k.json" \
+  --source-component "$SCIENCE_DIR/source.json" \
+  --base-model-component "$SCIENCE_DIR/base-models.json" \
+  --checkpoint-component "$SCIENCE_DIR/checkpoints.json" \
+  --environment-component "$SCIENCE_DIR/environment.json" \
+  --output "$SCIENCE_DIR/root.lock.json"
+```
+
+Every builder is atomic and no-overwrite. Before authorizing submission,
+replace the value below with the independently recorded digest and run the
+authoritative full-byte audit:
+
+```bash
+SELSEG_SCIENCE_LOCK_SHA256=REPLACE_WITH_64_HEX_DIGEST
+python -m selectseg.scientific_inputs verify \
+  --lock configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json \
+  --expected-sha256 "$SELSEG_SCIENCE_LOCK_SHA256" \
+  --mode full
+```
+
+Only after that succeeds may `configs/binary_midpoint_main_v2.json` set
+`execution_policy` to `scientific-input-locked`, set `data_root` to `data`, and
+bind that exact root-lock path and digest. A fast verification is the cheap
+pre-planning guard; the condition-level consume guard additionally full-hashes
+small inputs and selection metadata. During GPU inference the data loader
+hashes every image and mask on its unavoidable read, so a changed large input
+cannot enter a schema-v3 frozen artifact unnoticed:
+
+```bash
+python -m selectseg.scientific_inputs verify \
+  --lock configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json \
+  --expected-sha256 "$SELSEG_SCIENCE_LOCK_SHA256" \
+  --mode fast
+python -m selectseg.scientific_inputs verify \
+  --lock configs/scientific_inputs/binary-midpoint-main-v2/root.lock.json \
+  --expected-sha256 "$SELSEG_SCIENCE_LOCK_SHA256" \
+  --mode consume --dataset pet --model clipseg \
+  --condition clipseg-general
+```
+
+The locked freeze wave writes schema-v3 artifact manifests containing the
+condition-specific scientific-input identity. After all 16 freezes succeed,
+`--phase lock` accepts only an explicit 16-manifest list and produces a
+schema-v2 post-freeze campaign lock. That lock is the sole input authority for
+common, score, assemble, and diagnose jobs; schema-v2 artifacts/schema-v1
+campaign locks remain historical v1 evidence only.
+
+Real schema-v2 submission requires the phase's canonical receipt path. The
+planner fast-verifies the scientific seal, checks all final commands with
+`sbatch --test-only`, durably records intent, and only then calls `sbatch`:
+
+```bash
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze \
+  --scheduler-preflight-only
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze --submit \
+  --receipt outputs/binary_midpoint_main_v2/receipts/freeze.jsonl
+```
+
+Reuse that exact receipt for observation and recovery. Reconciliation only
+appends observed terminal scheduler facts. An interrupted client after a
+successful `sbatch` leaves an unresolved intent and must be explicitly bound
+to the verified Slurm identity. A terminal job failure or a genuine
+submission failure also requires explicit retry authorization; the planner
+never retries an entire wave blindly:
+
+```bash
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze --reconcile \
+  --receipt outputs/binary_midpoint_main_v2/receipts/freeze.jsonl
+
+RECOVERED_JOB_ID=REPLACE_WITH_VERIFIED_SLURM_JOB_ID
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze \
+  --recover-submitted-job-id "$RECOVERED_JOB_ID" \
+  --receipt outputs/binary_midpoint_main_v2/receipts/freeze.jsonl
+
+FAILED_JOB_ID=REPLACE_WITH_TERMINAL_FAILED_SLURM_JOB_ID
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze --submit \
+  --retry-failed-job-id "$FAILED_JOB_ID" \
+  --receipt outputs/binary_midpoint_main_v2/receipts/freeze.jsonl
+python -m scripts.submit_binary_simulations \
+  --config configs/binary_midpoint_main_v2.json --phase freeze --submit \
+  --retry-submission-failure \
+  --receipt outputs/binary_midpoint_main_v2/receipts/freeze.jsonl
+```
 
 1. **Freeze once.** Run the model once for each condition and write immutable,
    content-addressed foreground-probability/truth artifacts. Every job requests
@@ -907,6 +1058,39 @@ receipts, recomputes the analysis, verifies the rendered table byte-for-byte,
 and rejects private paths, scheduler metadata, credentials, or unknown schema
 fields before either public destination is written.
 
+Export the post-inference replay bundle only after that guarded public analysis
+exists. This command reads the ten locked seed-0 target assemblies and the 20
+seed-1/2 assemblies, retains the exact per-image record bytes, replaces every
+execution-bearing assembly manifest with a strict scientific-field allowlist,
+recomputes the complete seed analysis in memory, writes the replay lock, and
+writes `seed_replay.complete.json` last as the publication guard:
+
+```bash
+python -m scripts.export_seed_replay_bundle
+```
+
+The resulting `outputs/public_seed/seed_records/` tree contains exactly 30
+manifest/record pairs (five datasets by two target models by three training
+seeds). `outputs/public_seed/seed_replay.lock.json` binds every path-free
+manifest, record digest, ordered cohort digest, source assembly digest, and all
+three expected output hashes. The completion guard binds the lock and canonical
+60-file bundle digest. Neither file contains a private machine path, queue,
+node, receipt, or credential field.
+
+After mirroring the bundle—or from the root of the extracted anonymous
+artifact—the complete statistical replay is one command:
+
+```bash
+python -m scripts.replay_seed_robustness
+```
+
+It validates all 30 inputs, rejoins the exact held-out cohort across seeds,
+recomputes every raw AURC and adjacent-loss contrast, applies Gate C, rebuilds
+`seed_robustness_analysis.json`, `seed_robustness.tex`, and
+`seed_sensitivity_main.tex`, and fails unless all three match the released
+references byte-for-byte. Rebuilt files are written under
+`rebuild/seed_replay/` without overwriting an existing replay.
+
 Every retry must reuse the exact receipt path shown for its phase; changing a
 receipt path defeats duplicate-submission detection. The strict analysis joins
 the same held-out cohort across seeds 0/1/2, reports raw AURC without image
@@ -1131,6 +1315,7 @@ selectseg/binary_baselines.py  exact Dice and strong single-map comparators
 selectseg/binary_eval.py       strict one-row-per-image binary evaluator
 selectseg/binary_artifacts.py  immutable probability/truth artifact I/O
 selectseg/freeze_binary_maps.py  freeze-once GPU inference CLI
+selectseg/scientific_inputs.py  byte-addressed pre-freeze components and root seal
 selectseg/binary_boundary.py  shared nHD/nHD95 digital-surface distances
 selectseg/score_binary_common.py  risks, Exact Dice, and common baselines
 selectseg/threshold_estimators.py  immutable quadrature specifications
@@ -1143,6 +1328,7 @@ selectseg/data.py              dataset specifications, validation, transforms
 selectseg/models.py            CLIPSeg and DeepLabV3 adapters
 selectseg/train.py             target fine-tuning CLI
 scripts/submit_binary_simulations.py  lock-driven freeze/common/score/assemble/diagnose planner
+scripts/submit_scientific_input_components.py  one full-hash CPU job per dataset
 scripts/adjust_seed_downstream_timelimits.py  fixed 80-job pending-limit audit ledger
 scripts/assemble_binary_simulations.py  strict common+M=2/8/32 assembly
 scripts/diagnose_binary_artifact.py  one frozen-artifact diagnostic CLI
