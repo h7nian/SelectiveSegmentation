@@ -679,6 +679,38 @@ independent job; arrays are never used. `common`, `score`, and `diagnose` are
 separate waves and may overlap, but assembly must wait until all common and
 score outputs validate:
 
+The already submitted common and score waves have one deliberately narrow
+scheduler-only maintenance path. Their original wrappers requested 12 hours,
+whereas the completed canonical campaign used at most 1,018 seconds for a
+common job and 3,783 seconds for a score job. The fixed adjuster therefore
+permits only `TimeLimit` 720 -> 180 minutes, leaving 7,017 seconds of headroom
+over the larger historical maximum. It is hard-bound to downstream lock
+`8aab3572...23fe73`, common receipt `b3c2659d...a3213e`, and score receipt
+`cabec33d...633f67f`; together those receipts must resolve to 80 unique
+top-level jobs. Preview first:
+
+```bash
+python -m scripts.adjust_seed_downstream_timelimits
+```
+
+The default is read-only. Use the following only if the preview reports the
+exact 20 common plus 60 score jobs, all still `PENDING`, all with
+`TimelimitRaw=720`, and unchanged identities, partitions, and commands:
+
+```bash
+python -m scripts.adjust_seed_downstream_timelimits --apply
+```
+
+`--apply` durably appends a hash-chained intent before issuing any scheduler
+update. Its only mutation is `scontrol update JobId=<fixed-receipt-id>
+TimeLimit=03:00:00`; after all 80 jobs report 180 minutes it appends a verified
+applied event to
+`outputs/binary_seed_campaign/downstream-timelimit-adjustments.jsonl`. If an
+update fails or the process is interrupted, keep the immutable lock and both
+receipts unchanged and rerun the same command after confirming all jobs that
+still require adjustment remain pending. Never cancel, resubmit, delete a
+receipt, or choose a new receipt path as recovery.
+
 ```bash
 python -m scripts.submit_binary_seed_extension --phase assemble \
   --downstream-lock outputs/binary_seed_campaign/downstream.lock.json \
@@ -969,6 +1001,7 @@ python -m pytest -q tests/test_binary_framework.py \
   tests/test_binary_runtime.py \
   tests/test_cardinality_diagnostics.py \
   tests/test_binary_seed_extension.py \
+  tests/test_adjust_seed_downstream_timelimits.py \
   tests/test_finalize_seed_scheduler_ledger.py \
   tests/test_export_binary_seed_provenance.py \
   tests/test_publish_binary_seed_extension.py tests/test_synthetic_posterior.py \
@@ -1016,6 +1049,7 @@ selectseg/data.py              dataset specifications, validation, transforms
 selectseg/models.py            CLIPSeg and DeepLabV3 adapters
 selectseg/train.py             target fine-tuning CLI
 scripts/submit_binary_simulations.py  lock-driven freeze/common/score/assemble/diagnose planner
+scripts/adjust_seed_downstream_timelimits.py  fixed 80-job pending-limit audit ledger
 scripts/assemble_binary_simulations.py  strict common+M=2/8/32 assembly
 scripts/diagnose_binary_artifact.py  one frozen-artifact diagnostic CLI
 scripts/analyze_binary_diagnostics.py  strict campaign-bound diagnostic aggregation
