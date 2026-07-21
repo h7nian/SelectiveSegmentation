@@ -49,9 +49,10 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Tables/dice_count_posterior.tex}{%
-  \subsection{Marginal-preserving Dice count coupling}
+  \subsection{Paired uncertainty for the Dice count coupling}
 
-  \input{Tables/dice_count_posterior.tex}
+  \Cref{tab:dice-count-posterior} reports the corresponding AURCs in the
+  main text. The forest plot below reports the paired intervals.
   \begin{figure}[t]
     \centering
     \includegraphics[width=.78\linewidth]{Figures/dice_count_posterior_forest.pdf}
@@ -105,20 +106,6 @@ or scheduler records are distributed to reviewers.
 \IfFileExists{Tables/seed_sensitivity_main.tex}{%
   \subsection{Checkpoint-level direction reversals}
   \input{Tables/seed_sensitivity_main.tex}
-
-  \IfFileExists{Figures/seed_sensitivity.pdf}{%
-    \begin{figure*}[t]
-      \centering
-      \includegraphics[width=.82\textwidth]{Figures/seed_sensitivity.pdf}
-      \caption{Training-seed sensitivity of the four predeclared contrasts.
-      Each point is the macro mean across the ten target conditions and is shown
-      on the AURC \(\times100\) scale; values below zero favor the left score.
-      The Dice--nHD contrast keeps its macro direction, whereas the two boundary
-      contrasts shrink across checkpoints. Macro averages do not erase the
-      condition-level reversals reported in Table~\ref{tab:seed-sensitivity-main}.}
-      \label{fig:seed-sensitivity}
-    \end{figure*}
-  }{}
 }{}
 
 \IfFileExists{Tables/results_complete.tex}{%
@@ -136,20 +123,6 @@ or scheduler records are distributed to reviewers.
   \IfFileExists{Tables/m128_numerical_reference.tex}{%
     \input{Tables/m128_numerical_reference.tex}
 
-    \IfFileExists{Figures/threshold_count_ablation.pdf}{%
-      \begin{figure*}[t]
-        \centering
-        \includegraphics[width=.92\textwidth]{Figures/threshold_count_ablation.pdf}
-        \caption{Threshold-count ablation for the three matched risks. Each
-        point is the mean AURC across the ten target conditions, multiplied by
-        100 for display. Dice uses Exact as the dashed numerical oracle; M128 is
-        a high-resolution, non-exact reference for nHD and nHD95. Increasing
-        \(M\) improves integration fidelity, but AURC is a ranking functional
-        and therefore need not change monotonically. Cross-panel heights are not
-        directly comparable because the three deployment losses differ.}
-        \label{fig:threshold-count-ablation}
-      \end{figure*}
-    }{}
   }{%
     \noindent\textbf{M128 rendering guard.}
     The high-resolution boundary audit appears only after all sixteen M128
@@ -165,19 +138,6 @@ or scheduler records are distributed to reviewers.
 
     \input{Tables/gamma_sensitivity.tex}
 
-    \IfFileExists{Figures/gamma_sensitivity.pdf}{%
-      \begin{figure*}[t]
-        \centering
-        \includegraphics[width=.90\textwidth]{Figures/gamma_sensitivity.pdf}
-        \caption{Deployment-threshold ablation for the four predeclared
-        contrasts. Points are macro means across the ten target conditions on
-        the AURC \(\times100\) scale; values below zero favor the left score.
-        The nHD advantage under nHD risk persists at all three actions, while
-        the nHD--nHD95 macro comparisons cross zero, exposing their greater
-        dependence on the deployed threshold.}
-        \label{fig:gamma-sensitivity}
-      \end{figure*}
-    }{}
   }{%
     \noindent\textbf{Deployment-threshold rendering guard.}
     The auxiliary \(\gamma\in\{.3,.7\}\) tables appear only after all 32
@@ -373,7 +333,7 @@ or scheduler records are distributed to reviewers.
   \input{Figures/risk_coverage_complete.tex}
   \subsection{Complete risk--coverage curves}
 
-  Figures~\ref{fig:rc-pet}--\ref{fig:rc-tn3k} plot the three indexed \(M=32\)
+  \Crefrange{fig:rc-pet}{fig:rc-tn3k} plot the three indexed \(M=32\)
   scores, SDC, oracle, and random references under every risk. Exact confidence
   ties use the same analytic convention as the tabulated AURC, so the mean of
   each discrete curve equals its raw AURC before the \(\times100\) display scaling.

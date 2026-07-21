@@ -145,9 +145,9 @@ $a_c^\star=0$; and at $q_c$ the second factor is zero.  Therefore
 
 where the term involving $q_c$ vanishes because both selectors have
 mean $c$.  Combining this inequality with
-\eqref{app:eq:tower-selector} proves optimality at coverage $c$.
+\Cref{app:eq:tower-selector} proves optimality at coverage $c$.
 Thresholding $C_L^\star=-\rho_L^\star$ implements
-\eqref{app:eq:randomized-quantile-selector}.  Since the argument holds
+\cref{app:eq:randomized-quantile-selector}. Since the argument holds
 for every $c$, integrating the pointwise risk inequality proves the
 AURC claim.
 \end{proof}
@@ -234,7 +234,7 @@ In particular, the level-set risk of the deployed action is
 \end{proposition}
 
 \begin{proof}
-By Definition~\ref{app:def:levelset-posterior}, a draw from $Q_p$ is
+By \cref{app:def:levelset-posterior}, a draw from $Q_p$ is
 $Y_T$ with $T$ uniform.  Thus the expectation under $Q_p$ is the
 Lebesgue integral with respect to $T$.  Boundedness guarantees
 integrability.
@@ -308,7 +308,7 @@ the empty-set mass zero.
 \end{algorithm}
 
 The algorithm sorts once, keeps tied pixels in one group, and then performs one
-linear scan. Corollary~\ref{app:cor:exact-dice} proves its correctness. It also
+linear scan. \Cref{app:cor:exact-dice} proves its correctness. It also
 shows why the empty--empty convention must enter both the $K=0$ return and the
 mass above $v_1$; silently assigning zero Dice there would compute a different
 estimand.
@@ -359,11 +359,11 @@ Koksma--Hlawka inequality \citep{niederreiter1992} gives
 
 where $D_M^\star$ is the star discrepancy of the nodes.  The midpoint
 nodes have $D_M^\star=1/(2M)$, yielding
-\eqref{app:eq:midpoint-bound}.
+\cref{app:eq:midpoint-bound}.
 \end{proof}
 
 The constant $V(H_x)$ is image-dependent.  Proposition
-\ref{app:prop:midpoint-bound} therefore gives a per-image convergence
+\Cref{app:prop:midpoint-bound} therefore gives a per-image convergence
 statement, not a resolution-uniform bound.  It neither implies that the
 realized error decreases monotonically with $M$ nor identifies an
 optimal finite node set.  It also controls only numerical integration
@@ -410,7 +410,7 @@ deployment thresholds or post-processing rules.
 
 \begin{proposition}[Pointwise and population error]
 \label{app:prop:total-error}
-Under \eqref{app:eq:loss-specific-assumption}, the midpoint confidence
+Under \cref{app:eq:loss-specific-assumption}, the midpoint confidence
 satisfies
 \begin{equation}
   \left|C_{L,M}(x)-C_L^\star(x)\right|
@@ -434,8 +434,8 @@ $|\mathbb{E}C_{L,M}(X)-\mathbb{E}C_L^\star(X)|$.
 
 \begin{proof}
 Negation does not change absolute error, so the triangle inequality,
-Proposition~\ref{app:prop:midpoint-bound}, and
-\eqref{app:eq:loss-specific-assumption} give
+\Cref{app:prop:midpoint-bound} and
+\cref{app:eq:loss-specific-assumption} give
 \begin{align*}
   |C_{L,M}-C_L^\star|
   &=|r_{L,M}-\rho_L^\star|\\
@@ -444,7 +444,7 @@ Proposition~\ref{app:prop:midpoint-bound}, and
   &\leq \frac{V(H_x)}{2M}+\varepsilon_L(x).
 \end{align*}
 Taking expectations proves
-\eqref{app:eq:population-total-error}; Jensen's inequality gives the
+\cref{app:eq:population-total-error}; Jensen's inequality gives the
 final bias statement.
 \end{proof}
 
@@ -461,7 +461,7 @@ $0\leq L_x\leq B_x$,
 whereas the converse need not hold: two posteriors may disagree on many
 events while agreeing on the expected losses of the actions in
 $\mathcal{A}_x$.  Conversely, marginal calibration alone does not in
-general control \eqref{app:eq:loss-ipm} for nonlinear losses such as
+general control in \cref{app:eq:loss-ipm} for nonlinear losses such as
 Dice or boundary distance, because different couplings can share all
 one-point marginals.
 
@@ -552,7 +552,7 @@ For masks $A,B\in\mathcal Y$, define
 \end{equation*}
 This is the Jaccard metric and takes values in $[0,1]$; the corresponding
 transport cost is $W_{1,d_J}$ from
-Lemma~\ref{app:lem:lipschitz-wasserstein}.
+\cref{app:lem:lipschitz-wasserstein}.
 
 \begin{lemma}[Dice loss is Lipschitz in Jaccard geometry]
 \label{app:lem:dice-jaccard}
@@ -684,10 +684,10 @@ $Y$, and
   \sum_{i\in A}\mathbf 1\{i\in Y\}.
 \end{equation*}
 Partitioning by $S=s$ gives the first equality in
-\eqref{app:eq:dice-cardinality}. Taking expectations termwise and conditioning
+\cref{app:eq:dice-cardinality}. Taking expectations termwise and conditioning
 on $i\in Y$ gives the second. Subtracting the two overlap--cardinality
 representations and applying the triangle inequality proves
-\eqref{app:eq:dice-overlap-cardinality-bound}.
+\cref{app:eq:dice-overlap-cardinality-bound}.
 
 For the second bound, add and subtract
 $p_i\kappa_{i,m}^{P_x}$ inside each summand:
@@ -708,21 +708,21 @@ $p_i\kappa_{i,m}^{P_x}$ inside each summand:
 \end{align*}
 On $i\in Y$, $S\geq1$, so
 $\kappa_{i,m}^{P_x}\leq1/(m+1)$, proving
-\eqref{app:eq:dice-reciprocal-cardinality-bound}. Absolute differences of
+\cref{app:eq:dice-reciprocal-cardinality-bound}. Absolute differences of
 expected Dice and expected Dice loss coincide.
 
 If $A=\varnothing$, the declared convention gives
 $\Dice(Y,A)=\mathbf 1\{Y=\varnothing\}$. Under $Q_p$, the level-set mask is
 empty exactly when $T>\max_i p_i$, an event of probability
-$1-\max_i p_i$. This proves \eqref{app:eq:dice-empty-action}.
+$1-\max_i p_i$. This proves \cref{app:eq:dice-empty-action}.
 \end{proof}
 
-For a fixed action, Equation~\eqref{app:eq:dice-cardinality} requires only the
+For a fixed action, \cref{app:eq:dice-cardinality} requires only the
 $|\Omega|$ aggregated overlap--cardinality moments $\beta_s^R(A)$, rather than
 a complete joint mask law. Bayes-optimal F-measure prediction over a variable
 action instead uses a quadratic family of pixel--cardinality moments
 \citep{waegeman2014}. Exact marginals remove the first term of
-\eqref{app:eq:dice-reciprocal-cardinality-bound}, but agreement of the
+\cref{app:eq:dice-reciprocal-cardinality-bound}, but agreement of the
 reciprocal-cardinality terms remains sufficient, not necessary. The
 working-posterior term is computable: for $p_i>0$,
 \begin{equation*}
@@ -776,9 +776,9 @@ On $0\leq z\leq m$ and $w\geq0$,
   =\frac{2z}{(m+z+w)^2}\leq\frac{1}{2m}.
 \end{equation*}
 Varying the two coordinates in sequence shows that $g_A$ is one-Lipschitz
-under $d_A$. Apply Lemma~\ref{app:lem:lipschitz-wasserstein} on the count
+under $d_A$. Apply \cref{app:lem:lipschitz-wasserstein} on the count
 space.  The empty-action branch remains the empty-event probability in
-Equation~\eqref{app:eq:dice-empty-action}.
+\Cref{app:eq:dice-empty-action}.
 \end{proof}
 
 \begin{corollary}[SDC deviation is controlled by count dispersion]
@@ -947,7 +947,7 @@ pooled nHD95 without additional assumptions.
 \subsection{From score error to selective-risk and AURC regret}
 
 The image-dependent pointwise bound in
-\eqref{app:eq:pointwise-total-error} need not preserve every pairwise ordering.
+\cref{app:eq:pointwise-total-error} need not preserve every pairwise ordering.
 Its population $L^1$ consequence does, however, control aggregate selective
 regret without a margin assumption.
 
@@ -977,7 +977,7 @@ If instead $\|r-\widetilde r\|_\infty\leq\epsilon$ in essential supremum, then
 Let $a_c^\star$ and $\widetilde a_c$ be the randomized selectors induced by
 the lower tails of $r$ and $\widetilde r$, respectively. Both take values in
 $[0,1]$ and have expectation $c$, including when a quantile is an atom.
-Proposition~\ref{app:prop:optimal-ranking}, applied once to each risk
+\Cref{app:prop:optimal-ranking}, applied once to each risk
 function, gives
 \begin{equation*}
   \mathbb E[(\widetilde a_c-a_c^\star)\widetilde r]\leq0.
@@ -1014,7 +1014,7 @@ For $B>0$, define the nondecreasing envelope on $[0,\infty)$ by
     B,&z\geq B.
   \end{cases}
 \end{equation*}
-Under Proposition~\ref{app:prop:aurc-regret},
+Under \cref{app:prop:aurc-regret},
 \begin{equation*}
   0\leq\AURC(g)-\AURC(-r)\leq\Psi_B(\eta).
 \end{equation*}
@@ -1036,7 +1036,7 @@ last claim.
 \end{proof}
 
 Applying this result with $r=\rho_L^\star$ and
-$\widetilde r=r_{L,M}$, Proposition~\ref{app:prop:total-error} gives
+$\widetilde r=r_{L,M}$, \cref{app:prop:total-error} gives
 \begin{equation*}
   \AURC_L(C_{L,M})-\AURC_L(C_L^\star)
   \leq
@@ -1045,7 +1045,7 @@ $\widetilde r=r_{L,M}$, Proposition~\ref{app:prop:total-error} gives
     +\mathbb E[\varepsilon_L(X)]
   \right).
 \end{equation*}
-For normalized penalized full Hausdorff, Lemma~\ref{app:lem:full-hd-wasserstein}
+For normalized penalized full Hausdorff, \cref{app:lem:full-hd-wasserstein}
 allows $\varepsilon_L(x)=\delta_H(x)$ and $B=1$, where
 $\delta_H(x):=W_{1,d_{H,x}}(P_x,Q_{p_x})$, yielding
 \begin{equation*}
@@ -1057,8 +1057,8 @@ $\delta_H(x):=W_{1,d_{H,x}}(P_x,Q_{p_x})$, yielding
   \right).
 \end{equation*}
 This bound concerns full Hausdorff, not nHD95.
-For exact level-set Dice, Corollary~\ref{app:cor:exact-dice} removes the
-quadrature term. Lemma~\ref{app:lem:dice-jaccard} then gives the sharper
+For exact level-set Dice, \cref{app:cor:exact-dice} removes the
+quadrature term. \Cref{app:lem:dice-jaccard} then gives the sharper
 Dice-specific chain
 \begin{equation*}
   \delta_{\Dice}(x):=
@@ -1170,7 +1170,7 @@ If \(B_x>0\), then, for every \(z>0\),
   2\exp\!\left(-\frac{2M\alpha^2z^2}{B_x^2}\right).
 \end{equation*}
 When \(B_x=0\), \(H_x=0\) almost everywhere and all displayed errors vanish.
-Under \eqref{app:eq:loss-specific-assumption},
+Under \cref{app:eq:loss-specific-assumption},
 \begin{align*}
   \mathbb E_S\!\left[
     |\widehat C^{\mathrm{IS}}_{L,M}(x)-C_L^\star(x)|
@@ -1230,7 +1230,7 @@ $\widehat Y=\varnothing$, the ratio requires a separate convention; the
 experimental SDC baseline follows the published implementation and assigns
 confidence zero. The published SDC analysis also defines
 $\Dice(\varnothing,\varnothing)=0$, whereas our deployment loss uses
-Equation~\eqref{app:eq:empty-dice}. Its approximation guarantee therefore
+\Cref{app:eq:empty-dice}. Its approximation guarantee therefore
 applies directly under our convention only for nonempty deployed masks (or
 after separately controlling the empty-action case). All ratio identities
 below assume a positive denominator.
@@ -1239,7 +1239,7 @@ below assume a positive denominator.
 \label{app:prop:sdc-ratio}
 Let $Q$ be any joint law on $Y$ with one-point marginals
 $\mathbb{P}_Q(Y_i=1)=p_i$.  If the denominator in
-\eqref{app:eq:sdc} is positive, then
+\cref{app:eq:sdc} is positive, then
 \begin{equation}
   \frac{
     \mathbb{E}_Q[2\sum_iY_i\widehat y_i]
@@ -1265,7 +1265,7 @@ Linearity gives
   \qquad
   \mathbb{E}_Q\!\left[\sum_iY_i\right]=\sum_i p_i,
 \end{equation*}
-which proves \eqref{app:eq:sdc-ratio-identity}. On the event that its
+which proves \cref{app:eq:sdc-ratio-identity}. On the event that its
 denominator is positive, Dice is a ratio of random quantities, so linearity
 does not move its expectation through that ratio. On a zero-denominator event,
 expected Dice additionally depends on the declared empty--empty convention.
@@ -1274,7 +1274,7 @@ expected Dice additionally depends on the declared empty--empty convention.
 The distinction already appears with two pixels.  Let
 $p=(1/2,1/2)$ and $\widehat Y=\{1\}$.  Under independent Bernoulli
 marginals, the four masks have probability $1/4$, and the Dice values
-under \eqref{app:eq:empty-dice} are $0,1,0,2/3$.  Hence
+under \cref{app:eq:empty-dice} are $0,1,0,2/3$. Hence
 
 \begin{equation*}
   \mathbb{E}_{\mathrm{indep}}[

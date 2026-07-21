@@ -30,18 +30,14 @@ and selective-risk evaluation.
 \noindent\textbf{Risk and coverage are loss-indexed.}
 A confidence \(g:\mathcal X\to\mathbb R\) is oriented so that larger values mean
 more confidence. At threshold \(\tau\), define
-\begin{align}
-  \operatorname{cov}_g(\tau)
-    &=\Prb\!\left(g(X)\geq\tau\right), \notag\\
-  R_L(\tau;g)
-    &=
-    \frac{\Ex\!\left[
-      L_X(Y,\Yhat(X))\mathbf 1\{g(X)\geq\tau\}
-    \right]}
-    {\Prb(g(X)\geq\tau)} .
+\begin{equation}
+  \operatorname{cov}_g(\tau)=\Prb(g(X)\geq\tau),\qquad
+  R_L(\tau;g)=
+  \frac{\Ex[L_X(Y,\Yhat(X))\mathbf 1\{g(X)\geq\tau\}]}
+       {\operatorname{cov}_g(\tau)} .
   \label{eq:risk-coverage}
-\end{align}
-The risk in Equation~\eqref{eq:risk-coverage} is defined only when the
+\end{equation}
+The risk in \Cref{eq:risk-coverage} is defined only when the
 denominator is positive. At a prescribed coverage, randomization within a tied
 confidence value attains the requested acceptance probability without imposing
 an arbitrary order. Writing \(R_L(c;g)\) for the resulting risk at coverage
@@ -76,9 +72,9 @@ up to randomization among ties. Equivalently, ranking by \(C_L^\star\) minimizes
 \end{proposition}
 The result follows by conditioning the accepted loss on \(X\) and exchanging any
 accepted point of higher conditional risk with a rejected point of lower conditional
-risk. Appendix~\ref{app:theory} gives the measure-theoretic statement and proof.
+risk. \Cref{app:theory} gives the measure-theoretic statement and proof.
 
-Definition~\ref{def:ideal} is \textbf{a target, not an available score}. Computing it
+\Cref{def:ideal} is \textbf{a target, not an available score}. Computing it
 requires the indicated loss-functional of the conditional law of \(Y\) given
 \(x\); knowing the full law is sufficient but stronger than necessary. Even the
 true pixel marginals \(\pi_i(x):=\Prb(Y_i=1\mid X=x)\) do not identify how pixels

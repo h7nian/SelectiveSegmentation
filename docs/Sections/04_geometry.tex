@@ -12,7 +12,7 @@ inequality gives
   |L_x^{\mathrm{nHD}}(Y,A)-L_x^{\mathrm{nHD}}(Y',A)|
   \leq d_{H,x}(Y,Y'),
 \end{equation*}
-and the general transport lemma in Appendix~\ref{app:theory} therefore yields
+and the general transport lemma in \Cref{app:theory} therefore yields
 \begin{equation*}
   \Delta_{L^{\mathrm{nHD}},\Yhat}(x)
   \leq W_{1,d_{H,x}}(P_x,Q_{p(x)})
@@ -22,7 +22,7 @@ This is the \textbf{main geometry-aware guarantee}. Under \(Q_p\), one scalar le
 the candidate surface coherently through the probability landscape; under nHD,
 the loss records the most displaced point of that surface. The construction and
 loss are thus aligned at the level of boundary motion. Combining this display
-with Section~\ref{sec:framework} controls nHD score error and then nHD AURC
+with \Cref{sec:framework} controls nHD score error and then nHD AURC
 regret.
 
 \noindent\textbf{Robust extension: pooled nHD95.}
@@ -33,14 +33,14 @@ transport bound, and AURC theorem all apply. It is not a mask metric, however:
 percentile losses can jump when the fraction of distant surface points crosses
 five percent and need not satisfy a triangle inequality. Consequently nHD95 is
 a \textbf{practical robust extension} of the boundary experiment, not a corollary of the
-constant-one nHD Wasserstein theorem. Appendix~\ref{app:theory} gives an explicit
+constant-one nHD Wasserstein theorem. \Cref{app:theory} gives an explicit
 quantile-jump construction.
 
 \noindent\textbf{Regional contrast: Dice.}
 For binary masks, define \(\Dice(A,B)=2|A\cap B|/(|A|+|B|)\),
 with \(\Dice(\varnothing,\varnothing)=1\) and Dice zero when exactly one mask
 is empty. The loss \(L_{\Dice}=1-\Dice\) lies in \([0,1]\). For Jaccard
-distance \(d_J\), Appendix~\ref{app:theory} proves
+distance \(d_J\), \Cref{app:theory} proves
 \begin{equation*}
   \Delta_{L_{\Dice},\Yhat}(x)
   \leq\min\{\TV(P_x,Q_{p(x)}),2W_{1,d_J}(P_x,Q_{p(x)})\}.
@@ -50,13 +50,13 @@ different, noninterchangeable mask geometries. Dice does not, however, make the
 comonotone level-set coupling uniquely natural in the way coordinated surface
 motion motivates it for nHD.
 
-Equation~\eqref{eq:quad} estimates expected Dice under \(Q_p\). Because level
+\Cref{eq:quad} estimates expected Dice under \(Q_p\). Because level
 sets change only at probability knots, sorting tied groups gives the exact
-integral in \(O(N\log N)\) time. The algorithm in Appendix~\ref{app:theory}
+integral in \(O(N\log N)\) time. The algorithm in \Cref{app:theory}
 removes Dice quadrature error; midpoint integration remains the common estimator
 used for controlled cross-loss comparison.
 
-\noindent\textbf{Why SDC remains strong for Dice.}
+\noindent\textbf{Why SDC and level-set Dice can be close.}
 When its denominator is positive, SDC is
 \begin{equation}
   \SDC(p,\Yhat)

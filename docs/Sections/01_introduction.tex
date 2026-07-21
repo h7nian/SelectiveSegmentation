@@ -32,8 +32,8 @@ score error to area under the risk--coverage curve (AURC) regret. Normalized
 penalized HD95 (nHD95) instead uses the 95th percentile of the pooled
 bidirectional surface distances: it is a robust practical extension, but its
 percentile operation is nonmetric. Dice provides the regional contrast, and
-Soft Dice Confidence (SDC) reveals why a count-oriented one-map score can remain
-hard to beat.
+Soft Dice Confidence (SDC) reveals why two differently derived, count-oriented
+one-map scores can remain close.
 
 We \textbf{freeze every probability map and deployed action}, then change only confidence and
 evaluation loss. The primary question is whether boundary-aligned confidence
@@ -130,7 +130,7 @@ baseline. \textbf{The distinction is probabilistic rather than cosmetic}: SDC is
 of expected overlap and size counts, whereas level-set Dice is the expectation
 of their random ratio under a declared coupling. Our count-dispersion theorem
 explains when those quantities are close, and the negative coupling ablations
-show why replacing SDC is difficult in practice. The broader framework is not a
+show why neither score consistently dominates in practice. The broader framework is not a
 claim that level sets dominate SDC for regional risk; it uses the same
 loss-indexed principle beyond Dice, with its clearest advantage under Hausdorff
 boundary risk.

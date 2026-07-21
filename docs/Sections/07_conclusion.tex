@@ -15,7 +15,7 @@ must therefore be fixed as deployment choices. Our five binary datasets, two
 model families, primary seed, and image bootstrap do not cover site,
 multi-rater, patient-cluster, or training uncertainty. Learned detectors,
 calibrated annotation posteriors, multiclass actions, and absolute risk
-calibration remain future work; Appendix~\ref{app:limitations} gives details.
+calibration remain future work; \Cref{app:limitations} gives details.
 
 \noindent\textbf{Conclusion.}
 \label{sec:conclusion}
@@ -24,6 +24,7 @@ abstention}. Loss indexing supplies the target, but the working posterior must
 also encode how that failure occurs. Shared thresholds model coherent boundary
 motion, and normalized full Hausdorff loss yields the clearest theory and
 empirical ranking. nHD95 exposes the value and sensitivity of a robust endpoint;
-Dice explains why the same coupling need not dominate count-oriented SDC.
+Dice shows parity between level-set and count-oriented SDC across the target
+conditions, consistent with the count-dispersion analysis.
 \textbf{Confidence is not universal or metric-free}: it is a declared model of how a
 fixed deployed mask may be wrong.

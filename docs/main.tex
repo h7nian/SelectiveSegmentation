@@ -8,18 +8,36 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{microtype}
+\definecolor{bestblue}{RGB}{0,76,153}
+\definecolor{linkblue}{RGB}{0,76,153}
 \usepackage{hyperref}
 \usepackage{url}
-\hypersetup{hidelinks}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue
+}
+\usepackage[capitalise,noabbrev,nameinlink]{cleveref}
 
 \newtheorem{theorem}{Theorem}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
 \theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
+\newtheorem{definition}{Definition}
 \theoremstyle{remark}
-\newtheorem{remark}[theorem]{Remark}
+\newtheorem{remark}{Remark}
+
+\crefname{algorithm}{Algorithm}{Algorithms}
+\crefname{definition}{Definition}{Definitions}
+\crefname{proposition}{Proposition}{Propositions}
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{remark}{Remark}{Remarks}
+\crefname{appendix}{Appendix}{Appendices}
+\Crefname{appendix}{Appendix}{Appendices}
 
 \newcommand{\Yhat}{\widehat{Y}}
 \newcommand{\Dice}{\operatorname{Dice}}
@@ -31,7 +49,6 @@
 \newcommand{\Prb}{\mathbb{P}}
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\TV}{\operatorname{TV}}
-\definecolor{bestblue}{RGB}{0,76,153}
 \newcommand{\bestresult}[1]{\textcolor{bestblue}{\bfseries #1}}
 
 \title{Loss-Indexed Confidence for Selective Segmentation}
@@ -56,6 +73,19 @@
 \bibliographystyle{iclr2026_conference}
 
 \appendix
+\crefalias{section}{appendix}
+\crefalias{subsection}{appendix}
+\crefalias{subsubsection}{appendix}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\numberwithin{algorithm}{section}
+\numberwithin{definition}{section}
+\numberwithin{proposition}{section}
+\numberwithin{theorem}{section}
+\numberwithin{lemma}{section}
+\numberwithin{corollary}{section}
+\numberwithin{remark}{section}
 \input{Sections/A_theory}
 \input{Sections/B_additional_results}
 \input{Sections/C_expanded_limitations}

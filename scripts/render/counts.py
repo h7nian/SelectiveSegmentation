@@ -22,6 +22,11 @@ MODELS = (
     ("clipseg-target", "CLIPSeg target (CLIP-T)"),
     ("deeplabv3-target", "DeepLabV3 target (DL-T)"),
 )
+PROPOSED_COUNT_METHODS = {
+    "confidence_dice_action_two_block_m32",
+    "confidence_dice_m32",
+    "confidence_dice_exact",
+}
 
 
 def parse_args(argv=None):
@@ -100,7 +105,8 @@ def _table(analysis: dict, analysis_sha256: str) -> str:
                 _format(value, value == minima[index])
                 for index, value in enumerate(values[field])
             ]
-            lines.append(label + " & " + " & ".join(cells) + r" \\")
+            method_label = rf"\textbf{{{label}}}" if field in PROPOSED_COUNT_METHODS else label
+            lines.append(method_label + " & " + " & ".join(cells) + r" \\")
         lines.extend([r"\bottomrule", r"\end{tabular*}", r"\par\smallskip"])
     lines.extend([r"}", r"\end{table*}", ""])
     return "\n".join(lines)

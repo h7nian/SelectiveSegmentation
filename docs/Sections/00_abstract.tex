@@ -1,22 +1,25 @@
 \begin{abstract}
-Selective segmentation should reject masks that are unsafe under the deployment
-loss. Boundary failures make this dependence visible: regional overlap can remain
-high despite a dangerously displaced surface. We define confidence as the
-negative conditional risk of the fixed deployed mask. Because pixel marginals do
-not identify nonlinear mask risk, we declare a shared-threshold level-set law as
-a \emph{working posterior}. Its nested candidates represent coherent boundary
-motion and turn expected loss into a one-dimensional integral. We separate
-quadrature from posterior error and propagate both to selective risk and area
-under the risk--coverage curve (AURC) regret. Normalized penalized full
-Hausdorff distance (nHD) is the flagship loss: its surface geometry gives a
-constant-one Wasserstein posterior bound. Normalized penalized 95th-percentile
-Hausdorff distance (nHD95) is a nonmetric robust extension; Dice is a regional
-contrast whose exact algorithm and count-dispersion bound explain Soft Dice
-Confidence (SDC). On five binary datasets and 16 frozen conditions, the 32-node
-nHD score (nHD-M32) lowers nHD-risk AURC relative to Dice-M32 in all ten
-target conditions, with every pointwise interval excluding zero; a
-boundary-indexed score is best among the displayed methods in nine. The
-nHD--nHD95 ordering is smaller and sensitive to checkpoint and deployment
-threshold. Thus confidence needs both a target loss and a working-posterior
-geometry matched to how that loss measures error.
+A mask can achieve high Dice overlap yet contain a small component dangerously
+far from the anatomy. It may therefore be safe under a regional loss and unsafe
+under a worst-boundary loss: \textbf{selective segmentation cannot rely on a
+metric-agnostic confidence score}. A single probability map also supplies only
+pixel marginals, not the joint mask law required by nonlinear deployment losses.
+We address both gaps by fixing the deployed mask and loss, then declaring a
+shared-threshold level-set law as a \emph{working posterior}. Its nested
+candidates model coherent boundary motion, and their loss against the fixed
+action yields a one-dimensional risk integral. Our theory separates numerical
+quadrature from posterior discrepancy and propagates both to area under the
+risk--coverage curve (AURC) regret. Normalized penalized full Hausdorff distance
+(nHD) is the flagship loss: its surface geometry gives a constant-one
+Wasserstein posterior bound. Normalized penalized HD95 (nHD95), which replaces
+the maximum by the 95th percentile of pooled bidirectional surface distances,
+is a robust nonmetric extension. Dice provides a regional contrast whose exact
+algorithm and count-dispersion bound explain why level-set Dice and Soft Dice
+Confidence (SDC) can behave similarly. Across five binary datasets and 16 frozen conditions, the
+32-node nHD score lowers nHD-risk AURC relative to Dice-M32 in all ten target
+conditions, with every pointwise interval excluding zero; a boundary-indexed
+score is best among the displayed methods in nine. The nHD--nHD95 ordering is
+smaller and sensitive to checkpoint and deployment threshold. \textbf{Reliable
+selection requires both a declared loss and a working-posterior geometry matched
+to how that loss measures error.}
 \end{abstract}

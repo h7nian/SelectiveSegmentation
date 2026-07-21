@@ -18,10 +18,10 @@ guarantee does not automatically cover empty deployed masks under our loss.
 Dropping undefined cases would change the target population and is not equivalent.
 
 \noindent\textbf{Quadrature control is not posterior control.}
-Equation~\eqref{eq:decomp} separates numerical and posterior terms but does not make
+\Cref{eq:decomp} separates numerical and posterior terms but does not make
 the latter small by assertion, and the variation constant can be loose. The
 population \(L^1\) bound yields the AURC-regret envelope in
-Corollary~\ref{app:cor:aurc-regret}, but its posterior term remains even as
+\Cref{app:cor:aurc-regret}, but its posterior term remains even as
 \(M\to\infty\), and the resulting control is weakest at very low coverage. Thus a
 larger \(M\) need not improve empirical AURC monotonically. A pairwise margin is
 still needed to guarantee exact ordering; aggregate AURC control does not provide
