@@ -21,10 +21,7 @@ def parse_args(argv=None):
         default="configs/auxiliary/dice_coupling_analysis_v1.json",
     )
     parser.add_argument("--submit", action="store_true")
-    parser.add_argument(
-        "--receipt",
-        default="outputs/dice_count_posterior_v1/submission_receipt.jsonl",
-    )
+    parser.add_argument("--receipt")
     return parser.parse_args(argv)
 
 
@@ -150,21 +147,65 @@ def _append_receipt(path: Path, value: dict) -> None:
         output.flush()
 
 
+def _load_receipt(path: Path, contract_sha256: str) -> dict[str, dict]:
+    if path.is_symlink():
+        raise ValueError(f"submission receipt cannot be a symlink: {path}")
+    if not path.exists():
+        return {}
+    events = {}
+    with path.open(encoding="utf-8") as source:
+        for line_number, line in enumerate(source, start=1):
+            if not line.strip():
+                raise ValueError(f"blank line in submission receipt at {line_number}")
+            event = json.loads(line)
+            if set(event) != {
+                "created_utc",
+                "key",
+                "analysis_contract_sha256",
+                "command",
+                "job_id",
+            }:
+                raise ValueError(f"invalid submission receipt row at {line_number}")
+            if event["analysis_contract_sha256"] != contract_sha256:
+                raise ValueError("submission receipt belongs to another contract")
+            key = event["key"]
+            if not isinstance(key, str) or not key or key in events:
+                raise ValueError(f"invalid or duplicate receipt key at {line_number}")
+            if not isinstance(event["command"], list) or not event["command"]:
+                raise ValueError(f"invalid receipt command at {line_number}")
+            if not str(event["job_id"]).isdigit():
+                raise ValueError(f"invalid receipt job id at {line_number}")
+            events[key] = event
+    return events
+
+
 def main(argv=None):
     args = parse_args(argv)
     config_path = Path(args.config)
     config = _load_json(config_path)
     contract_sha256 = sha256_file(config_path)
-    for key, command in plan_commands(config, config_path):
+    jobs = plan_commands(config, config_path)
+    receipt_path = Path(
+        args.receipt
+        or repository_path(config["paths"]["output_root"])
+        / "submission_receipt.jsonl"
+    )
+    submitted = _load_receipt(receipt_path, contract_sha256) if args.submit else {}
+    for key, command in jobs:
         print(f"[{key}] {shlex.join(command)}")
         if not args.submit:
+            continue
+        if key in submitted:
+            if submitted[key]["command"] != command:
+                raise ValueError(f"submitted command changed for {key}")
+            print(f"[{key}] already submitted as job {submitted[key]['job_id']}")
             continue
         completed = subprocess.run(command, check=True, text=True, capture_output=True)
         job_id = completed.stdout.strip().split(";", maxsplit=1)[0]
         if not job_id.isdigit():
             raise RuntimeError(f"could not parse sbatch job id: {completed.stdout!r}")
         _append_receipt(
-            Path(args.receipt),
+            receipt_path,
             {
                 "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "key": key,
