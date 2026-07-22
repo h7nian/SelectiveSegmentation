@@ -1,7 +1,8 @@
 \section{Results}
 \label{sec:results}
 
-\textbf{The clearest gain occurs when posterior and loss share boundary geometry.} Values
+\textbf{The clearest gain occurs when working-posterior geometry and deployment
+risk are aligned.} Values
 are AURC \(\times100\); lower is better.
 
 \subsection{Main comparisons}
@@ -12,26 +13,33 @@ are AURC \(\times100\); lower is better.
   }{\noindent\textbf{Rendering guard.} The final analysis is incomplete.}
 }{\noindent\textbf{Rendering guard.} The final analysis is incomplete.}
 
+Tables~\ref{tab:main-results}--\ref{tab:main-results-sf} use the same six
+datasets, ten methods, and three risk blocks for CLIP-T, DL-T, and SF-T. These
+absolute AURCs are a symmetric descriptive display. The claims below retain the
+original locked families: ten primary target conditions and seven
+architecture/domain extension conditions. DUTS/CLIP-T completes Table~1 only
+and does not enlarge either inferential family.
+
 \noindent\textbf{Worst-boundary risk.}
-nHD-M32 lowers nHD-risk AURC relative to Dice-M32 in \textbf{all ten target conditions};
+HD-M32 lowers HD-risk AURC relative to Dice-M32 in \textbf{all ten target conditions};
 all ten pointwise intervals exclude zero. A boundary-indexed score is lowest
 among the ten displayed methods in nine conditions, with SDC on
-FIVES/CLIPSeg-Target the exception. nHD-M32 also has higher association with
-realized nHD safety than Dice-M32 in all ten, with Spearman differences
+FIVES/CLIPSeg-Target the exception. HD-M32 also has higher association with
+realized HD safety than Dice-M32 in all ten, with Spearman differences
 .179--.432. The level-set score thus carries spatial-extreme information absent
 from its regional counterpart.
 
 \noindent\textbf{Robust boundary risk.}
-nHD-M32 is lower than nHD95-M32 in nine conditions under nHD risk; nHD95-M32 is
-lower in eight under nHD95 risk. Only four and two matched-direction intervals
+HD-M32 is lower than HD95-M32 in nine conditions under HD risk; HD95-M32 is
+lower in eight under HD95 risk. Only four and two matched-direction intervals
 exclude zero. The latter comparison is checkpoint-sensitive: five conditions
 reverse across seeds and seed 0 disagrees with the majority in three. Both
-boundary macro contrasts also reverse at action threshold \(\gamma=.3\). nHD95
+boundary macro contrasts also reverse at action threshold \(\gamma=.3\). HD95
 is therefore a \textbf{useful but condition-sensitive robust endpoint}, not a guaranteed
-improvement over nHD.
+improvement over HD.
 
 \noindent\textbf{Regional contrast.}
-Dice-M32 is lower than nHD-M32 in eight conditions under Dice risk, but only
+Dice-M32 is lower than HD-M32 in eight conditions under Dice risk, but only
 three intervals exclude zero. \textbf{Dice-M32 and SDC split their direct comparison
 five conditions to five}, so the data support parity with condition-specific
 wins rather than a general advantage for either score; foreground entropy also
@@ -53,26 +61,26 @@ the same map can remain close even when its marginals are well calibrated.
 \subsection{Architecture and domain extension}
 
 \IfFileExists{Tables/architecture_domain_extension_complete.tex}{%
-  \input{Tables/architecture_domain_extension.tex}
-
   \noindent\textbf{The flagship result survives both interventions.}
-  Under nHD risk, nHD-M32 improves on Dice-M32 in \textbf{all seven extension
+  Under HD risk, HD-M32 improves on Dice-M32 in \textbf{all seven extension
   conditions}; every pointwise interval excludes zero and every approximate
   bootstrap tail probability remains below .01 after Holm adjustment within
   the 28-comparison extension family. This includes SegFormer-B2 on all five
   original datasets and both SegFormer-B2 and DeepLabV3 on the new DUTS domain.
-  Among the same ten primary methods, nHD-M32 is lowest in five conditions and
+  Among the same ten primary methods, HD-M32 is lowest in five conditions and
   a boundary-indexed M32 score is lowest in six; MMMC-Entropy on Kvasir-SEG is
-  the exception. \Cref{tab:architecture-domain-extension-full} reports all 17
-  scores. The primary finding is therefore neither specific to CLIPSeg nor
-  confined to the original domains.
+  the exception. Table~\ref{tab:main-results-sf} gives the same ten-method,
+  six-dataset view as Tables~\ref{tab:main-results} and
+  \ref{tab:main-results-dl}; \Cref{tab:architecture-domain-extension-full}
+  reports all 17 scores. The primary finding is therefore neither specific to
+  CLIPSeg nor confined to the original domains.
 
   \noindent\textbf{The robust endpoint remains a smaller distinction.}
-  nHD95-M32 is lower than nHD-M32 in all seven conditions under nHD95 risk and
-  is the lowest displayed method in six. Conversely, nHD-M32 is lower in six
-  under nHD risk. Only two intervals in the first comparison and three in the
+  HD95-M32 is lower than HD-M32 in all seven conditions under HD95 risk and
+  is the lowest displayed method in six. Conversely, HD-M32 is lower in six
+  under HD risk. Only two intervals in the first comparison and three in the
   second exclude zero, so this matched-direction pattern is suggestive but much
-  less decisive than nHD versus Dice.
+  less decisive than HD versus Dice.
 
   \noindent\textbf{Dice still supports parity, not dominance.}
   SDC is lower than Dice-M32 in five of seven extension conditions, while Dice-M32
@@ -95,7 +103,7 @@ the same map can remain close even when its marginals are well calibrated.
 \Cref{fig:threshold-count-ablation} compares \(M\in\{2,8,32\}\) with
 Dice-Exact and the high-resolution boundary reference \(M=128\). Dice-M32 and
 Dice-Exact have \(\rho\geq.9992\), \(\tau_b\geq.9791\), and at most .363
-displayed AURC difference. For nHD and nHD95, M32--M128 Spearman agreement is
+displayed AURC difference. For HD and HD95, M32--M128 Spearman agreement is
 .973--.998 and .951--.996, respectively. \textbf{M32 already recovers nearly the
 same ranking}; more nodes refine the integral but do not resolve posterior
 misspecification.
@@ -105,19 +113,19 @@ misspecification.
   \includegraphics[width=.90\textwidth]{Figures/threshold_count_ablation.pdf}
   \caption{Threshold-count ablation for the three matched risks. Each point is
   mean AURC across the ten target conditions, multiplied by 100. Dice-Exact is
-  the exact numerical oracle; M128 is the high-resolution reference for nHD and
-  nHD95. AURC need not vary monotonically with \(M\) because it depends only on
-  the induced ranking. Cross-panel heights are not comparable across losses.}
+  the exact numerical oracle; M128 is the high-resolution reference for HD and
+  HD95. AURC need not vary monotonically with \(M\) because it depends only on
+  the induced ranking. Cross-panel heights are not comparable across criteria.}
   \label{fig:threshold-count-ablation}
 \end{figure*}
 
 \noindent\textbf{Does the deployed action change the conclusion?}
 \Cref{fig:gamma-sensitivity} recomputes both the fixed action and every
-action-aware score at \(\gamma\in\{.3,.5,.7\}\). The nHD-over-Dice advantage
-under nHD risk persists at all three thresholds. By contrast, both nHD--nHD95
+action-aware score at \(\gamma\in\{.3,.5,.7\}\). The HD-over-Dice advantage
+under HD risk persists at all three thresholds. By contrast, both HD--HD95
 macro comparisons cross zero at \(\gamma=.3\). The flagship boundary result is
 therefore action-robust in this range, whereas the distinction between maximum
-and percentile boundary loss is action-sensitive.
+and percentile boundary risk is action-sensitive.
 
 \begin{figure*}[t]
   \centering
@@ -125,16 +133,16 @@ and percentile boundary loss is action-sensitive.
   \caption{Deployment-threshold ablation for the four predeclared contrasts.
   Points are macro means over the ten target conditions on the AURC
   \(\times100\) scale; values below zero favor the left score. The action is
-  rebuilt before its loss-indexed confidence is recomputed.}
+  rebuilt before its risk-aligned confidence is recomputed.}
   \label{fig:gamma-sensitivity}
 \end{figure*}
 
 \noindent\textbf{Does training randomness change the conclusion?}
 The three-checkpoint audit in \Cref{fig:seed-sensitivity} preserves the
-macro direction of Dice-M32 versus nHD-M32. The two boundary contrasts are less
+macro direction of Dice-M32 versus HD-M32. The two boundary contrasts are less
 stable: five conditions reverse across checkpoints and the primary seed
 disagrees with the within-condition majority in three. This distinction keeps
-the main nHD claim separate from the more tentative nHD--nHD95 ordering.
+the main HD claim separate from the more tentative HD--HD95 ordering.
 
 \begin{figure*}[t]
   \centering
@@ -160,12 +168,37 @@ the count-law explanation}, not superiority of either Dice score.
   \input{Tables/dice_count_posterior.tex}
 }{\noindent\textbf{Rendering guard.} The Dice coupling ablation is incomplete.}
 
+\noindent\textbf{Does smooth non-nested coupling help?}
+The prespecified spatial copula improves on Dice-M32 in 5/10 conditions and
+worsens it in five, so it \textbf{fails the declared 7/10 directional gate}.
+Its macro difference is \(-.665\) AURC\(\times100\), but the median is only
+\(-.020\): the mean is dominated by FIVES/CLIP-T, where the difference is
+\(-5.001\) with pointwise interval \([-6.404,-3.373]\). Both TN3K conditions
+also improve directionally, whereas both ISIC conditions worsen with intervals
+excluding zero. Thus non-nested dependence is useful for particular regional
+failure modes, not a universal Dice posterior. The primary four-repeat AURC
+range has median/max .102/.334, so Monte Carlo noise is smaller than the large
+condition effects. A finer-scale sensitivity variant wins 7/10, but it was not
+the prespecified primary setting and is not promoted post hoc.
+
+\IfFileExists{Tables/dice_spatial_copula.tex}{%
+  \input{Tables/dice_spatial_copula.tex}
+  \begin{figure}[t]
+    \centering
+    \includegraphics[width=.78\linewidth]{Figures/dice_spatial_copula_forest.pdf}
+    \caption{Primary spatial-copula minus Dice-M32 AURC under Dice risk,
+    multiplied by 100. Intervals are pointwise 95\% paired image-bootstrap
+    intervals from 10,000 resamples; negative values favor the copula.}
+    \label{fig:dice-spatial-copula}
+  \end{figure}
+}{\noindent\textbf{Rendering guard.} The spatial-copula audit is incomplete.}
+
 \clearpage
 
 \noindent\textbf{Diagnostics.}
 Known-posterior tests show TV near one with Dice score error only .0135--.0393,
 while support
 checks find incompatible references on up to 11.5\% of FIVES and 15.4\% of
-ISIC. The nHD ranking result is strong, but \textbf{one annotation per image cannot
+ISIC. The HD ranking result is strong, but \textbf{one annotation per image cannot
 validate a nested conditional posterior}. \Cref{app:additional-results}
 reports all AURCs, intervals, ablations, curves, and stress tests.

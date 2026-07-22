@@ -17,12 +17,18 @@ If `latexmk` is available, the equivalent one-line command is
 `latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex`.
 
 The tables are not hand-entered. The companion code repository uses normalized
-penalized full Hausdorff distance (nHD) as the flagship instance, normalized
-penalized HD95 (nHD95) as its robust nonmetric extension, and Dice as a regional
+penalized full Hausdorff distance (HD) in unit-diagonal image coordinates as the
+flagship instance, HD95 as its robust nonmetric extension, and Dice as a regional
 contrast. Each schema-v2 assembled row contains
-all three risks, the three loss-indexed midpoint ladders at `M=2,8,32`, common
+all three risks, the three risk-aligned midpoint ladders at `M=2,8,32`, common
 baselines, and the Exact Dice level-set oracle. The strict analysis JSON also
 uses schema v2.
+
+The main absolute-result display is a symmetric three-table grid: CLIP-T,
+DL-T, and SF-T each span Oxford Pet, Kvasir-SEG, FIVES, ISIC 2018, TN3K, and
+DUTS with the same ten methods and three risks. A separately locked
+DUTS/CLIP-T condition completes this rectangular display without enlarging the
+original seven-condition architecture/domain inference family.
 
 The completed main campaign freezes model probability maps once for each of 16
 conditions. It is an immutable schema-v1 campaign: its GPU jobs retain the

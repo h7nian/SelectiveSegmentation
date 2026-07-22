@@ -17,8 +17,11 @@ from scripts.render.paper import (
     METHODS,
     OUTPUT_NAMES,
     RISKS,
+    TABLE_COMPLETION_CONDITIONS,
+    TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET,
     TARGET_CONDITIONS,
     _contrast_label,
+    _display_label,
     _is_best,
     _method_label,
     load_analysis,
@@ -314,7 +317,7 @@ def test_extension_render_is_separate_compact_and_dataset_oriented():
         "architecture_domain_extension_full.tex",
     }
     summary = tables["architecture_domain_extension.tex"]
-    assert r"\label{tab:architecture-domain-extension}" in summary
+    assert r"\label{tab:architecture-domain-extension-contrasts}" in summary
     assert "Adjacent-geometry contrast" in summary
     assert "Oxford Pet" in summary and "DUTS" in summary
     assert "SF-T:" in summary and "DL-T:" in summary
@@ -327,6 +330,32 @@ def test_extension_render_is_separate_compact_and_dataset_oriented():
     assert "SegFormer-B2 target (SF-T)" in full
     assert "DeepLabV3 target (DL-T)" in full
     assert full.count(r"\begin{table*}[t]") == len(RISKS)
+
+
+def test_completion_analysis_builds_three_symmetric_six_dataset_main_tables():
+    primary = _analysis()
+    completion = _analysis(
+        expected_conditions=TABLE_COMPLETION_CONDITIONS,
+        family_by_dataset=TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET,
+    )
+
+    tables = render_tables(
+        primary,
+        source_hash="a" * 64,
+        completion_result=completion,
+        completion_source_hash="c" * 64,
+    )
+    main = tables["main_results.tex"]
+
+    assert main.count(r"\begin{table*}[t]") == 3
+    assert r"\label{tab:main-results}" in main
+    assert r"\label{tab:main-results-dl}" in main
+    assert r"\label{tab:main-results-sf}" in main
+    assert main.count("Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K & DUTS") == 3
+    assert main.count(r"\multicolumn{7}{l}{\textit{") == 3 + 3 * len(RISKS)
+    for method_field in MAIN_METHODS:
+        assert main.count(f"\n{_method_label(method_field)} &") == 3 * len(RISKS)
+    assert "% Supplemental analysis.json SHA-256: " + "c" * 64 in main
 
 
 def test_top1_highlight_uses_the_exact_unrounded_minimum():
@@ -400,7 +429,7 @@ def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
     ):
         assert cross.count(panel_label) == 1
     for risk_label in RISKS.values():
-        assert cross.count(rf"\textit{{{risk_label}}}") == 4
+        assert cross.count(rf"\textit{{{_display_label(risk_label)}}}") == 4
     assert cross.count("Oxford Pet") == 4
     for dataset_label in ("Kvasir-SEG", "FIVES", "ISIC 2018", "TN3K"):
         assert cross.count(dataset_label) == 3

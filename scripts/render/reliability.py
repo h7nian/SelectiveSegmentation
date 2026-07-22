@@ -45,8 +45,8 @@ MODEL_LABELS = {
 }
 PANEL_TITLES = {
     "confidence_dice_exact": "Dice-Exact → Dice",
-    "confidence_nhd_m32": "nHD-M32 → nHD",
-    "confidence_nhd95_m32": "nHD95-M32 → nHD95",
+    "confidence_nhd_m32": "HD-M32 → HD",
+    "confidence_nhd95_m32": "HD95-M32 → HD95",
 }
 COLORS = ("#1f77b4", "#d95f02", "#2ca02c")
 TOP_LEVEL_FIELDS = frozenset(

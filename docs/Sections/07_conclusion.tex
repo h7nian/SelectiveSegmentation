@@ -4,11 +4,11 @@
 
 The shared-threshold law is \textbf{a boundary-motion model, not an identified posterior}.
 More quadrature nodes reduce numerical error, not
-posterior discrepancy. The nHD theorem states a sufficient surface-geometric
+posterior discrepancy. The HD theorem states a sufficient surface-geometric
 condition; one label per image cannot verify it, and observed support failures
 show where it can break.
 
-Full nHD is sensitive to one extreme surface point. Pooled nHD95 is more robust
+Full HD is sensitive to one extreme surface point. Pooled HD95 is more robust
 but nonmetric and empirically sensitive to checkpoint and action threshold.
 Surface extraction, spacing, normalization, pooling, and empty-mask penalties
 must therefore be fixed as deployment choices. Our five-dataset primary study
@@ -17,16 +17,21 @@ but one primary seed and an image bootstrap do not cover site,
 multi-rater, patient-cluster, or training uncertainty. Learned detectors,
 calibrated annotation posteriors, multiclass actions, and absolute risk
 calibration remain future work; \Cref{app:limitations} gives details.
+The marginal-preserving spatial copula permits smooth non-nested masks, yet its
+prespecified variant wins only half the target conditions. Flexibility in the
+coupling is therefore not evidence that the resulting law is the true posterior.
 
 \noindent\textbf{Conclusion.}
 \label{sec:conclusion}
 Selective segmentation begins by \textbf{naming the failure that should trigger
-abstention}. Loss indexing supplies the target, but the working posterior must
+abstention}. Risk alignment supplies the target, but the working posterior must
 also encode how that failure occurs. Shared thresholds model coherent boundary
-motion, and normalized full Hausdorff loss yields the clearest theory and
+motion, and full HD in unit-diagonal coordinates yields the clearest theory and
 empirical ranking across both the primary and architecture--domain studies.
-nHD95 exposes the value and sensitivity of a robust endpoint;
+HD95 exposes the value and sensitivity of a robust endpoint;
 Dice shows parity between level-set and count-oriented SDC across the target
-conditions, consistent with the count-dispersion analysis.
+conditions, while the spatial-copula audit finds large but dataset-specific
+regional gains. Together these outcomes are consistent with the count-dispersion
+analysis rather than a universally optimal Dice coupling.
 \textbf{Confidence is not universal or metric-free}: it is a declared model of how a
 fixed deployed mask may be wrong.

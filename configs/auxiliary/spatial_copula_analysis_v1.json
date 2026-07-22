@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "analysis_id": "dice-spatial-copula-analysis-v1",
+  "status": "predeclared-before-reading-spatial-copula-outputs",
+  "score_contract": {
+    "path": "configs/auxiliary/spatial_copula_v1.json",
+    "sha256": "46c5b7d1d3d7d86286d299edae7153a692294b4f3d99d8b203d81121e39637e7"
+  },
+  "conditions": {
+    "datasets": ["pet", "kvasir", "fives", "isic", "tn3k"],
+    "models": ["clipseg-target", "deeplabv3-target"],
+    "count": 10
+  },
+  "reporting": {
+    "aurc_scale": 100,
+    "tie_policy": "stable average over every prefix after descending stable score sort",
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 20260723
+  },
+  "primary_comparison": {
+    "variant_id": "g50-s50-k05",
+    "risk": "dice",
+    "reference": "confidence_dice_m32",
+    "estimand": "spatial-copula AURC minus Dice-M32 AURC",
+    "support_gate": {
+      "required_condition_wins": 7,
+      "required_mean_aurc_difference_direction": "negative"
+    }
+  },
+  "secondary_reporting": {
+    "variants": "all declared score-contract variants",
+    "baselines": ["Dice-M32", "SDC", "foreground entropy"],
+    "repeat_diagnostics": [
+      "AURC range",
+      "mean per-image score standard deviation",
+      "runtime"
+    ],
+    "selection_policy": "no sensitivity variant is selected by test performance"
+  }
+}

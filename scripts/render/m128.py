@@ -319,7 +319,7 @@ def _target_table(by_key: Mapping[tuple[str, str], dict]) -> list[str]:
         r"\resizebox{\textwidth}{!}{%",
         r"\begin{tabular}{llcccccccc}",
         r"\toprule",
-        r" & & \multicolumn{4}{c}{nHD: M32 vs M128} & \multicolumn{4}{c}{nHD95: M32 vs M128} \\",
+        r" & & \multicolumn{4}{c}{HD: M32 vs M128} & \multicolumn{4}{c}{HD95: M32 vs M128} \\",
         r"\cmidrule(lr){3-6}\cmidrule(lr){7-10}",
         r"Dataset & Model & Mean/P95 $|\Delta C|$ & $\rho$ & $\tau_b$ & $100|\Delta\mathrm{AURC}|$ & Mean/P95 $|\Delta C|$ & $\rho$ & $\tau_b$ & $100|\Delta\mathrm{AURC}|$ \\",
         r"\midrule",
@@ -355,8 +355,8 @@ def _range_table(ranges: Mapping[str, Any]) -> list[str]:
     ]
     labels = {
         "dice_m128_vs_exact": "Dice: M128 vs Exact",
-        "nhd_m32_vs_m128": "nHD: M32 vs M128",
-        "nhd95_m32_vs_m128": "nHD95: M32 vs M128",
+        "nhd_m32_vs_m128": "HD: M32 vs M128",
+        "nhd95_m32_vs_m128": "HD95: M32 vs M128",
     }
     for spec in COMPARISONS:
         row = ranges[spec.name]
@@ -392,7 +392,7 @@ def render_analysis(value: Any, *, source_hash: str) -> str:
         r"\begin{table*}[t]",
         r"\centering",
         r"\caption{High-resolution midpoint fidelity on the ten target-adapted conditions. "
-        r"M128 is a numerical reference for nHD and nHD95, not an exact integral; "
+        r"M128 is a numerical reference for HD and HD95, not an exact integral; "
         r"only the Dice level-set calculation is exact. Absolute score errors and rank "
         r"agreement are computed per condition on the same frozen maps. AURC gaps are "
         r"displayed on the $\times100$ scale and use "
@@ -432,7 +432,7 @@ def threshold_aurc_series(
             "comparison": "dice_m128_vs_exact",
             "reference": "exact",
         },
-        "nHD": {
+        "HD": {
             "risk": "risk_nhd",
             "methods": (
                 "confidence_nhd_m2",
@@ -442,7 +442,7 @@ def threshold_aurc_series(
             "comparison": "nhd_m32_vs_m128",
             "reference": None,
         },
-        "nHD95": {
+        "HD95": {
             "risk": "risk_nhd95",
             "methods": (
                 "confidence_nhd95_m2",
@@ -522,7 +522,7 @@ def render_threshold_figure(
     destination.parent.mkdir(parents=True, exist_ok=True)
     series = threshold_aurc_series(primary_conditions, m128_by_key)
     nodes = (2, 8, 32, 128)
-    colors = {"Dice": "#1769aa", "nHD": "#d1495b", "nHD95": "#2a9d8f"}
+    colors = {"Dice": "#1769aa", "HD": "#d1495b", "HD95": "#2a9d8f"}
     figure, axes = plt.subplots(1, 3, figsize=(7.2, 2.65))
     for axis, (label, values) in zip(axes, series.items(), strict=True):
         axis.plot(

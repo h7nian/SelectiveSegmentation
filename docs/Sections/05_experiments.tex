@@ -27,23 +27,31 @@ Saliency (DUTS) benchmark \citep{wang2017duts}, training both SegFormer-B2 and
 DeepLabV3 on its 10,553-image training split and evaluating the fixed 5,019-image
 test split. These seven new conditions retain the same 40-epoch, seed-0 protocol,
 form their own multiplicity family, and are never pooled into the primary
-sixteen-condition analysis.
+sixteen-condition analysis. To make the absolute-result tables rectangular,
+we additionally train CLIPSeg-Target on DUTS under a separately locked
+\textbf{table-completion audit}. Its AURC values complete the six-dataset columns
+for CLIP-T, DL-T, and SF-T; it does not alter the seven-condition confirmatory
+family or any predeclared inference.
 
-\noindent\textbf{One action and three losses.}
+\noindent\textbf{One action and three deployment criteria.}
 We fix \(\Yhat=\{i:p_i\geq0.5\}\). Integration thresholds change candidates,
 not this action. Besides \(1-\Dice\), let \(D(A,B)\) pool both directed nearest
 distances between inner digital surfaces. For image diagonal
 \(D_x=\sqrt{H^2+W^2}\),
 \begin{equation*}
-  L_{\mathrm{nHD},x}=\frac{\max D(A,B)}{D_x},\qquad
-  L_{\mathrm{nHD95},x}=\frac{Q_{0.95}(D(A,B))}{D_x}.
+  L_{\mathrm{HD},x}=\frac{\max D(A,B)}{D_x},\qquad
+  L_{\mathrm{HD95},x}=\frac{Q_{0.95}(D(A,B))}{D_x}.
 \end{equation*}
-Empty--empty costs zero and a one-sided empty pair costs one. nHD is the
-flagship worst-surface endpoint; nHD95 suppresses its extreme five-percent tail;
+Equivalently, these are ordinary HD and HD95 after scaling the image coordinate
+system to unit diagonal. This convention is necessary because native diagonals
+vary by up to an order of magnitude within several datasets; raw pixel HD would
+otherwise prioritize image size. Empty--empty costs zero and a one-sided empty
+pair costs one. HD is the
+flagship worst-surface endpoint; HD95 suppresses its extreme five-percent tail;
 Dice is the regional contrast.
 
 \noindent\textbf{Scores and comparisons.}
-For each loss,
+For each metric-induced cost,
 \begin{equation*}
   C_{L,M}=-\frac1M\sum_{m=1}^M
   L\!\left(\{i:p_i\geq(m-1/2)/M\},\Yhat\right),
@@ -54,15 +62,27 @@ primary} and Dice-Exact is the knot oracle. Seven single-map
 references---SDC, mean maximum probability, mean negative entropy, QFR-Entropy,
 PLM/PLA-10-Entropy, MMMC-Entropy, and foreground entropy---give seventeen scores
 \citep{sdc,guarino2026aggregation,holder2021uncertainty}. The
-\textbf{complete \(3\times3\) matrix} is reported. The main contrast is nHD-M32 versus Dice-M32
-under nHD risk; three fixed contrasts complete adjacent comparisons under Dice,
-nHD, and nHD95 risk. All other cells are descriptive. M2/M8/M32, M128, and
+\textbf{complete \(3\times3\) matrix} is reported. The main contrast is HD-M32 versus Dice-M32
+under HD risk; three fixed contrasts complete adjacent comparisons under Dice,
+HD, and HD95 risk. All other cells are descriptive. M2/M8/M32, M128, and
 Dice-Exact audit numerical sensitivity.
 
 A higher-budget extension fixes the action of the three-checkpoint mean map and
 compares its LevelSet-Q with the empirical law of checkpoint masks. Threshold-IoU,
 member IoU/Dice, mutual information, and variance remain extension baselines
 \citep{roy2019bayesianquicknat,kirillov2023segmentanything}.
+
+\noindent\textbf{Coupling sensitivity.}
+The fixed-map Dice audit first replaces one global threshold by independent
+thresholds over the action, connected components, or matched grids. Its
+continuous counterpart evaluates six prespecified spatial-copula settings:
+global and spatial variance weights, one optional independent component, and
+three coordinate-knot spacings. Each condition--setting--repeat is a separate
+GPU job; four fixed-seed repeats with 32 antithetic posterior draws are averaged
+only after strict identity, parameter, and source-hash checks. The primary
+setting is declared before reading results and must improve over Dice-M32 in at
+least 7/10 conditions with a negative macro difference to pass its directional
+gate. SDC and foreground entropy remain matched one-map references.
 
 \noindent\textbf{Locked analysis.}
 Hashed manifests bind maps, labels, checkpoints, sample order, and each

@@ -1,5 +1,5 @@
 % The detailed proofs remain in this single auditable section file.
-\section{Theory for Loss-Indexed Selective Segmentation}
+\section{Theory for Risk-Aligned Selective Segmentation}
 \label{app:theory}
 
 This appendix states the framework for binary segmentation. Let
@@ -37,13 +37,13 @@ conventions are
   &\Dice(\varnothing,A)=\Dice(A,\varnothing)&=0
     &&(A\neq\varnothing),
   \label{app:eq:empty-dice}\\
-  L_x^{\mathrm{nHD95}}(\varnothing,\varnothing)&=0,
-  &L_x^{\mathrm{nHD95}}(\varnothing,A)
-    =L_x^{\mathrm{nHD95}}(A,\varnothing)&=1
+  L_x^{\mathrm{HD95}}(\varnothing,\varnothing)&=0,
+  &L_x^{\mathrm{HD95}}(\varnothing,A)
+    =L_x^{\mathrm{HD95}}(A,\varnothing)&=1
     &&(A\neq\varnothing). \notag
 \end{align}
 
-For two nonempty masks, $L_x^{\mathrm{nHD95}}$ pools surface distances in
+For two nonempty masks, $L_x^{\mathrm{HD95}}$ pools surface distances in
 both directions, takes their 95th percentile, and divides by the image
 diagonal $D_x$. Thus both $L_x^{\Dice}=1-\Dice$ and normalized penalized
 HD95 are bounded by one. These total conventions are necessary whenever a
@@ -504,10 +504,10 @@ claims.
 
 This lemma controls the mean-loss discrepancy; it does not claim that the
 full posterior, or even the complete scalar loss law, is identified from one
-annotation. It applies without a mask metric to pooled nHD95 by taking
-$Z_{x,A}=L_x^{\mathrm{nHD95}}(\cdot,A)$. These are posterior laws of one scalar
+annotation. It applies without a mask metric to pooled HD95 by taking
+$Z_{x,A}=L_x^{\mathrm{HD95}}(\cdot,A)$. These are posterior laws of one scalar
 loss as the complete mask varies, not the within-mask surface-distance
-distributions whose percentile defines nHD95. Mask-space total variation
+distributions whose percentile defines HD95. Mask-space total variation
 controls this pushforward discrepancy by data processing, while converses
 need not hold.
 
@@ -535,7 +535,7 @@ $K\mathbb E_\pi[d(Y,Y')]$. Take the infimum over couplings and then the
 supremum over actions.
 \end{proof}
 
-Dice and normalized full surface Hausdorff below instantiate this same lemma
+Dice and full surface Hausdorff in unit-diagonal coordinates instantiate this same lemma
 with different ground geometries and constants. Small agreement in one ground
 geometry need not imply small agreement in the other.
 
@@ -611,7 +611,7 @@ then $\operatorname{TV}(P,Q)=1$, whereas
 $W_{1,d_J}(P,Q)=d_J(Y,Y')$ can vanish as a fraction of image area. Thus there
 is no resolution-independent converse from small Jaccard--Wasserstein distance
 to small TV. This result is Dice-specific; we do not assert the required metric
-or Lipschitz property for pooled penalized nHD95.
+or Lipschitz property for pooled penalized HD95.
 
 \begin{proposition}[Fixed-action Dice moments]
 \label{app:prop:dice-cardinality}
@@ -883,7 +883,7 @@ Define the normalized penalized full-Hausdorff ground cost on masks by
     1,&\text{exactly one of $A,B$ is empty}.
   \end{cases}
 \end{equation*}
-The associated deployment loss is $L_x^{\mathrm{nHD}}:=d_{H,x}$. This is full
+The associated deployment loss is $L_x^{\mathrm{HD}}:=d_{H,x}$. This is full
 Hausdorff distance, not a percentile of the pooled directed distances.
 
 \begin{lemma}[Full-Hausdorff Wasserstein control]
@@ -893,12 +893,12 @@ $\{S_x(A):A\in\mathcal Y\}$, including the declared empty state. Its pullback
 $d_{H,x}$ is in general only a pseudometric on masks, unless $S_x$ is injective.
 For every $Y,Y',A$,
 \begin{equation*}
-  |L_x^{\mathrm{nHD}}(Y,A)-L_x^{\mathrm{nHD}}(Y',A)|
+  |L_x^{\mathrm{HD}}(Y,A)-L_x^{\mathrm{HD}}(Y',A)|
   \leq d_{H,x}(Y,Y').
 \end{equation*}
 Consequently, for any action class $\mathcal A\subseteq\mathcal Y$,
 \begin{equation*}
-  \Delta_{L^{\mathrm{nHD}},\mathcal A}(P,Q)
+  \Delta_{L^{\mathrm{HD}},\mathcal A}(P,Q)
   \leq W_{1,d_{H,x}}(P,Q)
   \leq\operatorname{TV}(P,Q),
 \end{equation*}
@@ -926,7 +926,7 @@ Finally $0\leq d_{H,x}\leq1$, so a maximal coupling has expected cost at most
 its mismatch probability $\operatorname{TV}(P,Q)$.
 \end{proof}
 
-The constant-one conclusion does \emph{not} transfer to pooled nHD95. A simple
+The constant-one conclusion does \emph{not} transfer to pooled HD95. A simple
 finite-grid construction isolates the obstruction. It is realizable by the
 erosion surface used in the experiment: take the action mask $A$ to be 100
 separated singleton pixels, so $S_x(A)=A$, and let $z$ be one remote singleton.
@@ -939,10 +939,10 @@ all its added points remain at distance $\Theta(D_x)$ from $A$. Then
 $d_{H,x}(Y,Y')\leq k/D_x$, but the new pool has 200 zeros and 21 remote
 distances, so its 95th percentile is remote. On growing grids, keep $k$ fixed
 and place $z$ at a fixed fraction of the diagonal: the ground-cost change tends
-to zero while the normalized nHD95 jump stays bounded away from zero. Thus
+to zero while the normalized HD95 jump stays bounded away from zero. Thus
 surface-point multiplicity can cross the quantile cutoff, ruling out a
 resolution-independent Lipschitz or Wasserstein bound of the form above for
-pooled nHD95 without additional assumptions.
+pooled HD95 without additional assumptions.
 
 \subsection{From score error to selective-risk and AURC regret}
 
@@ -1049,14 +1049,14 @@ For normalized penalized full Hausdorff, \cref{app:lem:full-hd-wasserstein}
 allows $\varepsilon_L(x)=\delta_H(x)$ and $B=1$, where
 $\delta_H(x):=W_{1,d_{H,x}}(P_x,Q_{p_x})$, yielding
 \begin{equation*}
-  \AURC_{L^{\mathrm{nHD}}}(C_{L^{\mathrm{nHD}},M})
-  -\AURC_{L^{\mathrm{nHD}}}(C_{L^{\mathrm{nHD}}}^\star)
+  \AURC_{L^{\mathrm{HD}}}(C_{L^{\mathrm{HD}},M})
+  -\AURC_{L^{\mathrm{HD}}}(C_{L^{\mathrm{HD}}}^\star)
   \leq\Psi_1\!\left(
     \frac{\mathbb E[V(H_X)]}{2M}
     +\mathbb E[\delta_H(X)]
   \right).
 \end{equation*}
-This bound concerns full Hausdorff, not nHD95.
+This bound concerns full Hausdorff, not HD95.
 For exact level-set Dice, \cref{app:cor:exact-dice} removes the
 quadrature term. \Cref{app:lem:dice-jaccard} then gives the sharper
 Dice-specific chain

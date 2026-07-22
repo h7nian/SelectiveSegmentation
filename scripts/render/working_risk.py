@@ -47,13 +47,13 @@ ORDERED_TARGET_CONDITIONS = tuple(
     key for key in EXPECTED_CONDITIONS if key in TARGET_CONDITIONS
 )
 PAIR_ORDER = (
-    ("confidence_dice_m32", "confidence_nhd_m32", "Dice-M32--nHD-M32"),
-    ("confidence_nhd_m32", "confidence_nhd95_m32", "nHD-M32--nHD95-M32"),
+    ("confidence_dice_m32", "confidence_nhd_m32", "Dice-M32--HD-M32"),
+    ("confidence_nhd_m32", "confidence_nhd95_m32", "HD-M32--HD95-M32"),
 )
 RELIABILITY_ORDER = (
     ("confidence_dice_exact", "risk_dice", r"Dice-Exact $\to$ Dice"),
-    ("confidence_nhd_m32", "risk_nhd", r"nHD-M32 $\to$ nHD"),
-    ("confidence_nhd95_m32", "risk_nhd95", r"nHD95-M32 $\to$ nHD95"),
+    ("confidence_nhd_m32", "risk_nhd", r"HD-M32 $\to$ HD"),
+    ("confidence_nhd95_m32", "risk_nhd95", r"HD95-M32 $\to$ HD95"),
 )
 TOP_LEVEL_KEYS = frozenset(
     {
@@ -496,8 +496,8 @@ def _render_action_quality(by_key: Mapping[tuple[str, str], dict]) -> list[str]:
 
     rows = (
         (r"Mean Dice $\uparrow$", "mean_dice_coefficient", False),
-        (r"Mean nHD $\downarrow$", "mean_normalized_penalized_hd_loss", False),
-        (r"Mean nHD95 $\downarrow$", "mean_normalized_penalized_hd95_loss", False),
+        (r"Mean HD $\downarrow$", "mean_normalized_penalized_hd_loss", False),
+        (r"Mean HD95 $\downarrow$", "mean_normalized_penalized_hd95_loss", False),
         ("Predicted empty", "deployed_prediction_empty_rate", True),
     )
     for label, field, percentage in rows:

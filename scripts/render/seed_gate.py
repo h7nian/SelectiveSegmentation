@@ -1,7 +1,7 @@
 """Render the fixed Gate-C reversal summary as a compact LaTeX table.
 
 The source analysis stores raw AURC units.  This renderer displays the
-predeclared nHD-minus-nHD95 contrast under nHD95 risk after multiplication by
+predeclared HD-minus-HD95 contrast under HD95 risk after multiplication by
 100, without changing the machine-readable analysis.  It is intentionally a
 small main-text companion to the complete three-seed appendix table.
 """
@@ -137,11 +137,11 @@ def render_table(analysis, by_key, *, analysis_sha256):
         f"% Source seed analysis SHA-256: {analysis_sha256}",
         r"\begin{table*}[t]",
         r"\centering",
-        r"\caption{Checkpoint-level direction reversals for nHD versus nHD95 under "
-        r"nHD95 risk. Each populated cell reports "
-        r"$100\!\times\![\operatorname{AURC}(C_{\mathrm{nHD}})-"
-        r"\operatorname{AURC}(C_{\mathrm{nHD95}})]$ for seeds 0/1/2; negative "
-        r"values favor nHD. Only the five cells that reverse direction are shown; "
+        r"\caption{Checkpoint-level direction reversals for HD versus HD95 under "
+        r"HD95 risk. Each populated cell reports "
+        r"$100\!\times\![\operatorname{AURC}(C_{\mathrm{HD}})-"
+        r"\operatorname{AURC}(C_{\mathrm{HD95}})]$ for seeds 0/1/2; negative "
+        r"values favor HD. Only the five cells that reverse direction are shown; "
         r"all other cells are dashes. $\dagger$ marks the three cells for which "
         r"seed 0 disagrees with the majority direction. These are descriptive "
         r"results from three independently trained checkpoints, not seed-level "

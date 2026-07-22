@@ -16,11 +16,20 @@ from __future__ import annotations
 
 import hashlib
 import math
+from dataclasses import dataclass
 
 import numpy as np
 from scipy import ndimage
 
 from selectseg.confidence import midpoint_rule
+
+
+@dataclass(frozen=True)
+class SpatialCopulaDiceEstimate:
+    """One Monte Carlo estimate under a marginal-preserving spatial copula."""
+
+    confidence: float
+    spatial_grid_shape: tuple[int, int] | None
 
 
 def _validate_inputs(probability, action) -> tuple[np.ndarray, np.ndarray]:
@@ -239,6 +248,243 @@ def _partition_seed(
 ) -> int:
     payload = f"{master_seed}|{sample_id}|{coupling}|{repeat}".encode()
     return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
+
+
+def _spatial_grid_shape(
+    image_shape: tuple[int, int], knot_spacing_diagonal: float
+) -> tuple[int, int]:
+    """Choose a bilinear-field grid from a resolution-invariant knot spacing."""
+
+    height, width = image_shape
+    if height <= 0 or width <= 0:
+        raise ValueError("image_shape must contain two positive dimensions")
+    if not math.isfinite(knot_spacing_diagonal) or not (
+        0 < knot_spacing_diagonal <= 1
+    ):
+        raise ValueError("knot_spacing_diagonal must lie in (0, 1]")
+    spacing_pixels = knot_spacing_diagonal * math.hypot(height, width)
+
+    def axis_size(length: int) -> int:
+        if length == 1:
+            return 1
+        return min(length, max(2, math.ceil((length - 1) / spacing_pixels) + 1))
+
+    return axis_size(height), axis_size(width)
+
+
+def _linear_interpolation_variance(
+    output_size: int, knot_count: int, *, torch, device
+):
+    """Return pointwise variance of aligned linear interpolation of iid knots."""
+
+    if output_size == 1 or knot_count == 1:
+        return torch.ones(output_size, dtype=torch.float32, device=device)
+    positions = torch.linspace(
+        0,
+        knot_count - 1,
+        output_size,
+        dtype=torch.float32,
+        device=device,
+    )
+    fraction = positions - torch.floor(positions)
+    return (1 - fraction).square() + fraction.square()
+
+
+def spatial_copula_dice_confidence(
+    probability,
+    action,
+    *,
+    posterior_draws: int,
+    repeat_index: int,
+    global_variance_weight: float,
+    spatial_variance_weight: float,
+    spatial_knot_spacing_diagonal: float,
+    posterior_batch_size: int = 8,
+    master_seed: int = 20260721,
+    sample_id: str = "sample",
+    device: str = "cpu",
+) -> SpatialCopulaDiceEstimate:
+    """Estimate Dice confidence under a spatial Gaussian-copula posterior.
+
+    The latent field is
+
+    ``sqrt(a) G + sqrt(b) U_i + sqrt(1-a-b) epsilon_i``,
+
+    where ``U`` is a standardized bilinear interpolation of iid Gaussian
+    knots.  Every pixel therefore has a standard-normal latent marginal and
+    ``Pr(Y_i=1)=p_i`` exactly under the sampling law.  Antithetic latent pairs
+    reduce Monte Carlo error.  One call computes exactly one repeat so repeats
+    can be scheduled as independent jobs.
+    """
+
+    probability, action = _validate_inputs(probability, action)
+    numeric_values = {
+        "global_variance_weight": global_variance_weight,
+        "spatial_variance_weight": spatial_variance_weight,
+        "spatial_knot_spacing_diagonal": spatial_knot_spacing_diagonal,
+    }
+    for name, value in numeric_values.items():
+        if not math.isfinite(value):
+            raise ValueError(f"{name} must be finite")
+    global_variance_weight = float(global_variance_weight)
+    spatial_variance_weight = float(spatial_variance_weight)
+    spatial_knot_spacing_diagonal = float(spatial_knot_spacing_diagonal)
+    if global_variance_weight < 0 or spatial_variance_weight < 0:
+        raise ValueError("variance weights must be non-negative")
+    if global_variance_weight + spatial_variance_weight > 1 + 1e-12:
+        raise ValueError("global and spatial variance weights cannot sum above one")
+    if not 0 < spatial_knot_spacing_diagonal <= 1:
+        raise ValueError("spatial_knot_spacing_diagonal must lie in (0, 1]")
+    if (
+        isinstance(posterior_draws, bool)
+        or not isinstance(posterior_draws, (int, np.integer))
+        or posterior_draws <= 0
+        or posterior_draws % 2
+    ):
+        raise ValueError("posterior_draws must be a positive even integer")
+    if (
+        isinstance(repeat_index, bool)
+        or not isinstance(repeat_index, (int, np.integer))
+        or repeat_index < 0
+    ):
+        raise ValueError("repeat_index must be a non-negative integer")
+    if (
+        isinstance(posterior_batch_size, bool)
+        or not isinstance(posterior_batch_size, (int, np.integer))
+        or posterior_batch_size <= 0
+    ):
+        raise ValueError("posterior_batch_size must be a positive integer")
+    if (
+        isinstance(master_seed, bool)
+        or not isinstance(master_seed, (int, np.integer))
+        or master_seed < 0
+    ):
+        raise ValueError("master_seed must be a non-negative integer")
+    if not isinstance(device, str) or not device:
+        raise ValueError("device must be a non-empty string")
+
+    # PyTorch supplies the same vectorized implementation on CPU and GPU.  It
+    # is imported lazily so deterministic count-only scores remain lightweight.
+    import torch
+    import torch.nn.functional as functional
+
+    compute_device = torch.device(device)
+    if compute_device.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is not available")
+
+    residual_variance_weight = max(
+        0.0, 1.0 - global_variance_weight - spatial_variance_weight
+    )
+    spatial_grid_shape = (
+        _spatial_grid_shape(probability.shape, spatial_knot_spacing_diagonal)
+        if spatial_variance_weight > 0
+        else None
+    )
+    probability_tensor = torch.as_tensor(
+        probability, dtype=torch.float32, device=compute_device
+    )
+    quantile = torch.special.ndtri(probability_tensor)
+    action_tensor = torch.as_tensor(action, dtype=torch.bool, device=compute_device)
+    action_size = int(action.sum())
+
+    spatial_standard_deviation = None
+    if spatial_grid_shape is not None:
+        row_variance = _linear_interpolation_variance(
+            probability.shape[0],
+            spatial_grid_shape[0],
+            torch=torch,
+            device=compute_device,
+        )
+        column_variance = _linear_interpolation_variance(
+            probability.shape[1],
+            spatial_grid_shape[1],
+            torch=torch,
+            device=compute_device,
+        )
+        spatial_standard_deviation = torch.sqrt(
+            row_variance[:, None] * column_variance[None, :]
+        )
+
+    coupling_id = (
+        "spatial-copula|"
+        f"global={global_variance_weight.hex()}|"
+        f"spatial={spatial_variance_weight.hex()}|"
+        f"spacing={spatial_knot_spacing_diagonal.hex()}"
+    )
+    generator = torch.Generator(device=compute_device)
+    generator.manual_seed(
+        _partition_seed(master_seed, str(sample_id), coupling_id, repeat_index)
+        % (2**63 - 1)
+    )
+
+    loss_sum = 0.0
+    remaining_pairs = posterior_draws // 2
+    while remaining_pairs:
+        batch_size = min(posterior_batch_size, remaining_pairs)
+        latent = None
+        if global_variance_weight > 0:
+            global_component = torch.randn(
+                (batch_size, 1, 1),
+                generator=generator,
+                device=compute_device,
+                dtype=torch.float32,
+            )
+            latent = math.sqrt(global_variance_weight) * global_component
+        if spatial_variance_weight > 0:
+            knot_field = torch.randn(
+                (batch_size, 1, *spatial_grid_shape),
+                generator=generator,
+                device=compute_device,
+                dtype=torch.float32,
+            )
+            spatial_component = functional.interpolate(
+                knot_field,
+                size=probability.shape,
+                mode="bilinear",
+                align_corners=True,
+            )[:, 0]
+            spatial_component = spatial_component / spatial_standard_deviation
+            weighted_spatial = math.sqrt(spatial_variance_weight) * spatial_component
+            latent = weighted_spatial if latent is None else latent + weighted_spatial
+        if residual_variance_weight > 0:
+            independent_component = torch.randn(
+                (batch_size, *probability.shape),
+                generator=generator,
+                device=compute_device,
+                dtype=torch.float32,
+            )
+            weighted_independent = (
+                math.sqrt(residual_variance_weight) * independent_component
+            )
+            latent = (
+                weighted_independent
+                if latent is None
+                else latent + weighted_independent
+            )
+        if latent is None:
+            raise RuntimeError("copula latent field has no variance component")
+
+        for signed_latent in (latent, -latent):
+            candidate = signed_latent <= quantile
+            candidate_size = candidate.sum(dim=(-2, -1), dtype=torch.float64)
+            overlap = torch.logical_and(candidate, action_tensor).sum(
+                dim=(-2, -1), dtype=torch.float64
+            )
+            denominator = candidate_size + action_size
+            losses = torch.where(
+                denominator > 0,
+                1 - 2 * overlap / denominator,
+                torch.zeros_like(denominator),
+            )
+            loss_sum += float(losses.sum().item())
+        remaining_pairs -= batch_size
+
+    confidence = -loss_sum / posterior_draws
+    if not math.isfinite(confidence) or not -1 <= confidence <= 0:
+        raise RuntimeError("spatial-copula Dice confidence is invalid")
+    return SpatialCopulaDiceEstimate(
+        confidence=float(confidence), spatial_grid_shape=spatial_grid_shape
+    )
 
 
 def _partition_count_draws(

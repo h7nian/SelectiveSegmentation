@@ -1,4 +1,4 @@
-"""Strict analysis for the loss-indexed binary segmentation experiment.
+"""Strict analysis for the risk-aligned binary segmentation experiment.
 
 The script consumes focused ``*.jsonl`` files written by
 ``selectseg.evaluate`` and the matching ``*.manifest.json`` files.  It does
@@ -17,9 +17,11 @@ main table.  All AURCs use analytic random ordering within exact confidence
 ties.  Four predeclared adjacent-geometry comparisons report paired
 image-cluster percentile-bootstrap intervals and two-sided approximate
 bootstrap tail probabilities computed from the same resamples. A Holm step-down
-transform is applied separately to the core and extension families, without
-making significance or exact finite-sample error-control claims. All other
-score--risk combinations remain descriptive.
+transform is applied within the selected design's declared family or families,
+without making significance or exact finite-sample error-control claims. The
+eight-condition table-completion design is descriptive and never replaces the
+separately locked seven-condition extension. All other score--risk combinations
+remain descriptive.
 """
 
 import argparse
@@ -62,12 +64,12 @@ METHODS = (
     ("confidence_dice_m2", "Dice-M2"),
     ("confidence_dice_m8", "Dice-M8"),
     ("confidence_dice_m32", "Dice-M32"),
-    ("confidence_nhd_m2", "nHD-M2"),
-    ("confidence_nhd_m8", "nHD-M8"),
-    ("confidence_nhd_m32", "nHD-M32"),
-    ("confidence_nhd95_m2", "nHD95-M2"),
-    ("confidence_nhd95_m8", "nHD95-M8"),
-    ("confidence_nhd95_m32", "nHD95-M32"),
+    ("confidence_nhd_m2", "HD-M2"),
+    ("confidence_nhd_m8", "HD-M8"),
+    ("confidence_nhd_m32", "HD-M32"),
+    ("confidence_nhd95_m2", "HD95-M2"),
+    ("confidence_nhd95_m8", "HD95-M8"),
+    ("confidence_nhd95_m32", "HD95-M32"),
 )
 EXPECTED_CONDITIONS = (
     ("pet", "clipseg-general"),
@@ -96,6 +98,10 @@ EXTENSION_CONDITIONS = (
     ("duts", "segformer-target"),
     ("duts", "deeplabv3-target"),
 )
+TABLE_COMPLETION_CONDITIONS = (
+    *EXTENSION_CONDITIONS,
+    ("duts", "clipseg-target"),
+)
 HOLM_FAMILY_BY_DATASET = {
     "pet": "core",
     "kvasir": "core",
@@ -106,6 +112,10 @@ HOLM_FAMILY_BY_DATASET = {
 EXTENSION_HOLM_FAMILY_BY_DATASET = {
     dataset: "architecture_domain_extension"
     for dataset, _ in EXTENSION_CONDITIONS
+}
+TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET = {
+    dataset: "target_table_completion"
+    for dataset, _ in TABLE_COMPLETION_CONDITIONS
 }
 HOLM_FAMILY_DEFINITIONS = {
     "core": (
@@ -121,6 +131,12 @@ EXTENSION_HOLM_FAMILY_DEFINITIONS = {
     "architecture_domain_extension": (
         "SegFormer architecture and DUTS domain extension across the four "
         "predeclared adjacent-geometry contrasts"
+    )
+}
+TABLE_COMPLETION_HOLM_FAMILY_DEFINITIONS = {
+    "target_table_completion": (
+        "separately locked descriptive completion of the six-dataset target-model "
+        "tables across the four adjacent-geometry contrasts"
     )
 }
 RISKS = (
@@ -289,7 +305,7 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
         "--design",
-        choices=("primary", "extension"),
+        choices=("primary", "extension", "completion"),
         default="primary",
         help="declared condition set and multiplicity family (default: primary)",
     )
@@ -1311,7 +1327,7 @@ def write_latex(result, path):
     lines = [
         r"\begin{table*}[t]",
         r"\centering",
-        r"\caption{Loss-indexed confidence for binary selective segmentation. "
+        r"\caption{Risk-aligned confidence for binary selective segmentation. "
         r"AURC and excess AURC are multiplied by 100 for display only; normalized "
         r"AURC is zero for the oracle and one for random ordering.}",
         r"\label{tab:binary-main}",
@@ -1368,10 +1384,14 @@ def main():
         expected_conditions = EXPECTED_CONDITIONS
         holm_family_by_dataset = HOLM_FAMILY_BY_DATASET
         holm_family_definitions = HOLM_FAMILY_DEFINITIONS
-    else:
+    elif args.design == "extension":
         expected_conditions = EXTENSION_CONDITIONS
         holm_family_by_dataset = EXTENSION_HOLM_FAMILY_BY_DATASET
         holm_family_definitions = EXTENSION_HOLM_FAMILY_DEFINITIONS
+    else:
+        expected_conditions = TABLE_COMPLETION_CONDITIONS
+        holm_family_by_dataset = TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET
+        holm_family_definitions = TABLE_COMPLETION_HOLM_FAMILY_DEFINITIONS
     if args.bootstrap_samples <= 0:
         raise ValueError("bootstrap sample count must be positive")
     if args.bootstrap_workers <= 0:

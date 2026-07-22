@@ -97,10 +97,23 @@ DICE_EXACT_REFERENCE = "confidence_dice_exact"
 
 
 def _method_label(method_field):
-    """Bold proposed loss-indexed methods without encoding result rank."""
+    """Bold proposed risk-aligned methods without encoding result rank."""
 
-    label = METHODS[method_field]
+    label = _display_label(METHODS[method_field])
     return rf"\textbf{{{label}}}" if method_field in PROPOSED_METHODS else label
+
+
+def _display_label(label):
+    """Present normalized-coordinate Hausdorff quantities as HD/HD95."""
+
+    risk_labels = {
+        "Normalized penalized Hausdorff risk": "HD risk",
+        "Normalized penalized HD95 risk": "HD95 risk",
+    }
+    return risk_labels.get(
+        label,
+        label.replace("nHD95", "HD95").replace("nHD", "HD"),
+    )
 
 
 @dataclass(frozen=True)
@@ -140,8 +153,8 @@ CONTRASTS = (
 CONTRAST_BY_NAME = {contrast.name: contrast for contrast in CONTRASTS}
 CONTRAST_RISK_LABELS = {
     "risk_dice": "Dice risk",
-    "risk_nhd": "nHD risk",
-    "risk_nhd95": "nHD95 risk",
+    "risk_nhd": "HD risk",
+    "risk_nhd95": "HD95 risk",
 }
 
 EXPECTED_CONDITIONS = (
@@ -171,6 +184,10 @@ ARCHITECTURE_DOMAIN_CONDITIONS = (
     ("duts", "segformer-target"),
     ("duts", "deeplabv3-target"),
 )
+TABLE_COMPLETION_CONDITIONS = (
+    *ARCHITECTURE_DOMAIN_CONDITIONS,
+    ("duts", "clipseg-target"),
+)
 TARGET_CONDITIONS = tuple(
     key
     for key in EXPECTED_CONDITIONS
@@ -189,6 +206,10 @@ HOLM_FAMILY_BY_DATASET = {
 ARCHITECTURE_DOMAIN_HOLM_FAMILY_BY_DATASET = {
     dataset: "architecture_domain_extension"
     for dataset, _ in ARCHITECTURE_DOMAIN_CONDITIONS
+}
+TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET = {
+    dataset: "target_table_completion"
+    for dataset, _ in TABLE_COMPLETION_CONDITIONS
 }
 CORE_CONDITIONS = tuple(
     key for key in EXPECTED_CONDITIONS if HOLM_FAMILY_BY_DATASET[key[0]] == "core"
@@ -246,6 +267,14 @@ EXTENSION_COMPLETION_MARKER = "architecture_domain_extension_complete.tex"
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis", required=True, help="validated analysis.json")
+    parser.add_argument(
+        "--completion-analysis",
+        default=None,
+        help=(
+            "separately locked eight-condition analysis used only to complete "
+            "the six-dataset target-model tables"
+        ),
+    )
     parser.add_argument("--output-dir", default="docs/Tables")
     parser.add_argument(
         "--design",
@@ -697,6 +726,13 @@ def validate_analysis(result, *, allow_incomplete=False, design="primary"):
             "architecture_domain_extension": (
                 len(CONTRASTS) * len(ARCHITECTURE_DOMAIN_CONDITIONS)
             )
+        }
+    elif design == "completion":
+        expected_conditions = TABLE_COMPLETION_CONDITIONS
+        family_by_dataset = TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET
+        expected_family_sizes = {
+            "target_table_completion": len(CONTRASTS)
+            * len(TABLE_COMPLETION_CONDITIONS)
         }
     else:
         raise ValueError(f"unsupported design {design!r}")
@@ -1276,16 +1312,21 @@ def _table_end(*, resize=True):
     return lines
 
 
-def _baseline_table(conditions, *, header):
-    panels = _condition_panels(conditions, TARGET_CONDITIONS)
+def _baseline_table(conditions, *, header, declared=TARGET_CONDITIONS):
+    panels = _condition_panels(conditions, declared)
+    panel_labels = {
+        "clipseg-target": "tab:main-results",
+        "deeplabv3-target": "tab:main-results-dl",
+        "segformer-target": "tab:main-results-sf",
+    }
     lines = [header.rstrip()]
-    for panel_index, (condition_name, groups) in enumerate(panels):
-        panel_label = "tab:main-results" if panel_index == 0 else "tab:main-results-dl"
+    for condition_name, groups in panels:
+        panel_label = panel_labels[condition_name]
         lines.extend(
             [
                 r"\begin{table*}[t]",
                 r"\centering",
-                rf"\caption{{Primary target-adapted results for "
+                rf"\caption{{Target-adapted absolute results for "
                 rf"{CONDITION_PANEL_LABELS[condition_name]}. Methods are rows and "
                 r"datasets are columns. Every risk block uses the same three primary "
                 r"M32 scores and all seven matched-budget baselines, and reports raw "
@@ -1305,7 +1346,7 @@ def _baseline_table(conditions, *, header):
             if risk_index:
                 lines.append(r"\midrule")
             lines.append(
-                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{_display_label(risk_label)}}}}} \\"
             )
             for method_field in MAIN_METHODS:
                 cells = [
@@ -1327,7 +1368,7 @@ def _baseline_table(conditions, *, header):
 def _contrast_label(spec):
     return (
         f"{_method_label(spec.left)} $-$ {_method_label(spec.right)} / "
-        f"{CONTRAST_RISK_LABELS[spec.risk]}"
+        f"{_display_label(CONTRAST_RISK_LABELS[spec.risk])}"
     )
 
 
@@ -1407,8 +1448,38 @@ def _split_contrast_table(
     return lines
 
 
-def render_main_results(conditions, *, header):
-    return "\n".join(_baseline_table(conditions, header=header))
+def render_main_results(conditions, *, header, completion_conditions=None):
+    if completion_conditions is None:
+        declared = TARGET_CONDITIONS
+        combined = conditions
+    else:
+        by_key = {
+            (condition["dataset"], condition["condition"]): condition
+            for condition in completion_conditions
+        }
+        # Preserve the primary analysis as the source of every overlapping cell.
+        by_key.update(
+            {
+                (condition["dataset"], condition["condition"]): condition
+                for condition in conditions
+            }
+        )
+        declared = tuple(
+            (dataset, condition_name)
+            for condition_name in (
+                "clipseg-target",
+                "deeplabv3-target",
+                "segformer-target",
+            )
+            for dataset in DATASET_LABELS
+        )
+        missing = sorted(set(declared) - set(by_key))
+        if missing:
+            raise ValueError(f"six-dataset target tables lack conditions {missing}")
+        combined = [by_key[key] for key in declared]
+    return "\n".join(
+        _baseline_table(combined, header=header, declared=declared)
+    )
 
 
 def _complete_results_table(conditions, *, header, declared, label, caption_prefix):
@@ -1421,7 +1492,7 @@ def _complete_results_table(conditions, *, header, declared, label, caption_pref
             [
                 r"\begin{table*}[t]",
                 r"\centering",
-                rf"\caption{{{caption_prefix} {risk_label}. Methods are rows and "
+                rf"\caption{{{caption_prefix} {_display_label(risk_label)}. Methods are rows and "
                 r"datasets are columns; each entry is raw AURC $\times100$, with nAURC "
                 r"in parentheses and conditions identified by the stacked panel headings. "
                 r"Lower is better. "
@@ -1484,7 +1555,7 @@ def render_cross_loss_results(conditions, *, header):
         header.rstrip(),
         r"\begin{table*}[t]",
         r"\centering",
-        r"\caption{Full $3\times3$ loss-indexed $M=32$ cross-loss matrix over all "
+        r"\caption{Full $3\times3$ risk-aligned $M=32$ cross-risk matrix over all "
         r"16 unpooled conditions. Confidence methods are rows and evaluation risks "
         r"form blocks; datasets are columns and conditions are identified by the "
         r"stacked panel headings. Each entry is raw AURC $\times100$, with nAURC "
@@ -1501,14 +1572,14 @@ def render_cross_loss_results(conditions, *, header):
             lines.append(r"\par\smallskip")
         lines.extend(
             _condition_panel_start(
-                condition_name, groups, row_label="Loss-indexed confidence"
+                condition_name, groups, row_label="Risk-aligned confidence"
             )
         )
         for risk_index, (risk_field, risk_label) in enumerate(RISKS.items()):
             if risk_index:
                 lines.append(r"\midrule")
             lines.append(
-                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{_display_label(risk_label)}}}}} \\"
             )
             for method_field in LOSS_INDEXED_M32:
                 cells = [
@@ -1558,7 +1629,7 @@ def render_quadrature_ablation(conditions, *, header):
                 lines.append(r"\midrule")
             candidates = MATCHED_METHODS[risk_field]
             lines.append(
-                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{risk_label}}}}} \\"
+                rf"\multicolumn{{{1 + len(groups)}}}{{l}}{{\textit{{{_display_label(risk_label)}}}}} \\"
             )
             for method_field in candidates:
                 cells = [
@@ -1673,11 +1744,36 @@ def render_statistical_tests(conditions, *, header):
     return "\n\n".join(("\n".join(core), "\n".join(extension)))
 
 
-def render_tables(result, *, source_hash, allow_incomplete=False):
+def render_tables(
+    result,
+    *,
+    source_hash,
+    allow_incomplete=False,
+    completion_result=None,
+    completion_source_hash=None,
+):
     conditions = validate_analysis(result, allow_incomplete=allow_incomplete)
     header = _generated_header(source_hash, incomplete=allow_incomplete)
+    completion_conditions = None
+    main_header = header
+    if completion_result is not None:
+        if allow_incomplete:
+            raise ValueError("completion analysis cannot be used for an incomplete draft")
+        if not completion_source_hash:
+            raise ValueError("completion_source_hash is required with completion_result")
+        completion_conditions = validate_analysis(
+            completion_result,
+            design="completion",
+        )
+        main_header += (
+            f"% Supplemental analysis.json SHA-256: {completion_source_hash}\n"
+        )
     return {
-        "main_results.tex": render_main_results(conditions, header=header),
+        "main_results.tex": render_main_results(
+            conditions,
+            header=main_header,
+            completion_conditions=completion_conditions,
+        ),
         "full_target_results.tex": render_full_target_results(
             conditions, header=header
         ),
@@ -1703,7 +1799,7 @@ def render_extension_tables(result, *, source_hash, allow_incomplete=False):
         conditions,
         header=header,
         declared=ARCHITECTURE_DOMAIN_CONDITIONS,
-        label="tab:architecture-domain-extension",
+        label="tab:architecture-domain-extension-contrasts",
         caption=(
             r"\caption{Architecture and domain extension. Rows are the four "
             r"predeclared adjacent-geometry contrasts and datasets are columns. "
@@ -1783,14 +1879,26 @@ def main(argv=None):
     result = load_analysis(analysis_path)
     source_hash = hashlib.sha256(analysis_path.read_bytes()).hexdigest()
     if args.design == "primary":
+        completion_result = None
+        completion_source_hash = None
+        if args.completion_analysis is not None:
+            completion_path = Path(args.completion_analysis)
+            completion_result = load_analysis(completion_path)
+            completion_source_hash = hashlib.sha256(
+                completion_path.read_bytes()
+            ).hexdigest()
         tables = render_tables(
             result,
             source_hash=source_hash,
             allow_incomplete=args.allow_incomplete,
+            completion_result=completion_result,
+            completion_source_hash=completion_source_hash,
         )
         output_names = OUTPUT_NAMES
         completion_marker = COMPLETION_MARKER
     else:
+        if args.completion_analysis is not None:
+            raise ValueError("--completion-analysis is valid only with --design primary")
         tables = render_extension_tables(
             result,
             source_hash=source_hash,

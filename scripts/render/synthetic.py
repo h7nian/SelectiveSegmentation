@@ -26,7 +26,7 @@ COUPLING_LABELS = {
     "local_block_threshold": "Local block threshold",
     "bimodal_antithetic": "Bimodal antithetic",
 }
-LOSS_LABELS = {"dice": "Dice", "nhd": "nHD", "nhd95": "nHD95"}
+LOSS_LABELS = {"dice": "Dice", "nhd": "HD", "nhd95": "HD95"}
 COLORS = {
     "shared_threshold": "#1f77b4",
     "independent_bernoulli": "#d62728",
@@ -96,8 +96,8 @@ def render_tex(analysis, source_sha):
         r"\resizebox{\textwidth}{!}{%",
         r"\begin{tabular}{lrrrrrr}",
         r"\toprule",
-        r" & \multicolumn{2}{c}{Dice} & \multicolumn{2}{c}{nHD} & "
-        r"\multicolumn{2}{c}{nHD95} \\",
+        r" & \multicolumn{2}{c}{Dice} & \multicolumn{2}{c}{HD} & "
+        r"\multicolumn{2}{c}{HD95} \\",
         r"Coupling & $|\widetilde r-r^\star|$ & $100\times$AURC reg. & "
         r"$|\widetilde r-r^\star|$ & $100\times$AURC reg. & "
         r"$|\widetilde r-r^\star|$ & $100\times$AURC reg. \\",

@@ -184,8 +184,8 @@ def test_render_has_two_manuscript_ready_tables_fixed_order_and_ranges():
     assert "Predicted empty & 0.0\\% & 0.1\\%" in tex
     assert tex.count(r"\resizebox{\linewidth}{!}{%") == 2
 
-    assert r"Dice-M32--nHD-M32 & $[0.400,\,0.490]$ & $[0.300,\,0.390]$" in tex
-    assert r"nHD-M32--nHD95-M32 & $[0.800,\,0.890]$ & $[0.700,\,0.790]$" in tex
+    assert r"Dice-M32--HD-M32 & $[0.400,\,0.490]$ & $[0.300,\,0.390]$" in tex
+    assert r"HD-M32--HD95-M32 & $[0.800,\,0.890]$ & $[0.700,\,0.790]$" in tex
     assert r"Dice-Exact $\to$ Dice & $[-0.100,\,-0.010]$ & $[0.100,\,0.190]$" in tex
 
     # Rendering is independent of condition-list input order for a fixed source hash.

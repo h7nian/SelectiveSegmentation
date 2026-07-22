@@ -1,4 +1,4 @@
-"""Tests for the strict loss-indexed binary selective-risk framework."""
+"""Tests for the strict risk-aligned binary selective-risk framework."""
 
 import math
 

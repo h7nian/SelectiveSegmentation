@@ -27,6 +27,7 @@ from selectseg.counts import (
     count_ladders,
     second_order_dice_similarity,
     shared_threshold_dice_confidence,
+    spatial_copula_dice_confidence,
 )
 from selectseg.counts import (
     labels_for_coupling,
@@ -38,12 +39,14 @@ from selectseg.counts import (
 SCHEMA_VERSION = 1
 ARTIFACT_TYPE = "selectseg.binary_dice_count_posterior"
 PARTITION_ARTIFACT_TYPE = "selectseg.binary_dice_partition_posterior"
+COPULA_ARTIFACT_TYPE = "selectseg.binary_dice_spatial_copula"
 COUPLINGS = (
     "action-two-block",
     "action-components",
     "action-grid",
     "proposal-components",
     "proposal-grid",
+    "spatial-copula",
 )
 SCORE_FIELDS = (
     "confidence_dice_shared_m32_recomputed",
@@ -77,6 +80,13 @@ def parse_args(argv=None):
     parser.add_argument("--proposal-threshold", type=float)
     parser.add_argument("--draws", type=int, default=256)
     parser.add_argument("--repeats", type=int, default=4)
+    parser.add_argument("--posterior-draws", type=int)
+    parser.add_argument("--repeat-index", type=int)
+    parser.add_argument("--global-variance-weight", type=float)
+    parser.add_argument("--spatial-variance-weight", type=float)
+    parser.add_argument("--spatial-knot-spacing-diagonal", type=float)
+    parser.add_argument("--posterior-batch-size", type=int, default=8)
+    parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--master-seed", type=int, default=20260721)
     arguments = sys.argv[1:] if argv is None else list(argv)
     args = parser.parse_args(arguments)
@@ -108,13 +118,30 @@ def _run_id(args, artifact_manifest_sha256: str, analysis_contract_sha256: str, 
         "analysis_contract_sha256": analysis_contract_sha256,
         "source_sha256": source_sha256,
         "gamma_hex": args.gamma.hex(),
-        "m": args.m,
         "coupling": args.coupling,
-        "proposal_threshold": args.proposal_threshold,
-        "draws": args.draws,
-        "repeats": args.repeats,
         "master_seed": args.master_seed,
     }
+    if args.coupling == "spatial-copula":
+        identity["spatial_copula"] = {
+            "posterior_draws": args.posterior_draws,
+            "repeat_index": args.repeat_index,
+            "global_variance_weight_hex": args.global_variance_weight.hex(),
+            "spatial_variance_weight_hex": args.spatial_variance_weight.hex(),
+            "spatial_knot_spacing_diagonal_hex": (
+                args.spatial_knot_spacing_diagonal.hex()
+            ),
+            "posterior_batch_size": args.posterior_batch_size,
+            "device": args.device,
+        }
+    else:
+        identity.update(
+            {
+                "m": args.m,
+                "proposal_threshold": args.proposal_threshold,
+                "draws": args.draws,
+                "repeats": args.repeats,
+            }
+        )
     return hashlib.sha256(
         json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
     ).hexdigest()[:16]
@@ -275,17 +302,115 @@ def score_partition_sample(
     return row
 
 
+def score_spatial_copula_sample(
+    sample,
+    *,
+    gamma: float,
+    posterior_draws: int,
+    repeat_index: int,
+    global_variance_weight: float,
+    spatial_variance_weight: float,
+    spatial_knot_spacing_diagonal: float,
+    posterior_batch_size: int,
+    master_seed: int,
+    device: str,
+) -> dict:
+    """Score one image for exactly one spatial-copula Monte Carlo repeat."""
+
+    probability = np.asarray(sample.foreground_probability)
+    truth = np.asarray(sample.truth)
+    if probability.dtype != np.float32 or probability.ndim != 2:
+        raise TypeError("probability must be one float32 2D array")
+    if truth.dtype != np.uint8 or truth.shape != probability.shape:
+        raise TypeError("truth must be uint8 and match probability")
+    probability = probability.astype(float)
+    truth = truth.astype(bool, copy=False)
+    action = probability >= gamma
+
+    started = time.perf_counter()
+    estimate = spatial_copula_dice_confidence(
+        probability,
+        action,
+        posterior_draws=posterior_draws,
+        repeat_index=repeat_index,
+        global_variance_weight=global_variance_weight,
+        spatial_variance_weight=spatial_variance_weight,
+        spatial_knot_spacing_diagonal=spatial_knot_spacing_diagonal,
+        posterior_batch_size=posterior_batch_size,
+        master_seed=master_seed,
+        sample_id=str(sample.sample_id),
+        device=device,
+    )
+    grid_shape = estimate.spatial_grid_shape
+    row = {
+        "schema_version": SCHEMA_VERSION,
+        "sample_id": str(sample.sample_id),
+        "image_index": int(sample.index),
+        "risk_dice": foreground_dice_loss(truth, action),
+        "confidence_dice_spatial_copula": estimate.confidence,
+        "spatial_grid_height": None if grid_shape is None else grid_shape[0],
+        "spatial_grid_width": None if grid_shape is None else grid_shape[1],
+        "score_runtime_seconds": float(time.perf_counter() - started),
+    }
+    numeric = [
+        value
+        for key, value in row.items()
+        if key not in {"sample_id", "spatial_grid_height", "spatial_grid_width"}
+    ]
+    if not all(np.isfinite(value) for value in numeric):
+        raise RuntimeError("spatial-copula scorer emitted a non-finite value")
+    if (grid_shape is None) != (spatial_variance_weight == 0):
+        raise RuntimeError("spatial-copula scorer emitted inconsistent grid metadata")
+    return row
+
+
 def run(args) -> Path:
     if args.gamma != 0.5 or args.m != 32:
         raise ValueError("the predeclared experiment requires gamma=.5 and M=32")
-    is_partition = args.coupling != "action-two-block"
+    is_spatial_copula = args.coupling == "spatial-copula"
+    is_partition = args.coupling not in {"action-two-block", "spatial-copula"}
     variant = None
     if is_partition:
         variant = _partition_variant(args.coupling, args.proposal_threshold)
         if args.draws != 256 or args.repeats != 4:
             raise ValueError("partition couplings require 256 draws and four repeats")
-    elif args.proposal_threshold is not None:
+    elif not is_spatial_copula and args.proposal_threshold is not None:
         raise ValueError("action-two-block does not accept a proposal threshold")
+    if is_spatial_copula:
+        required = (
+            "posterior_draws",
+            "repeat_index",
+            "global_variance_weight",
+            "spatial_variance_weight",
+            "spatial_knot_spacing_diagonal",
+        )
+        missing = [name for name in required if getattr(args, name) is None]
+        if missing:
+            raise ValueError(
+                "spatial-copula coupling requires: " + ", ".join(missing)
+            )
+        if args.proposal_threshold is not None:
+            raise ValueError("spatial-copula does not accept a proposal threshold")
+        if args.draws != 256 or args.repeats != 4:
+            raise ValueError(
+                "spatial-copula uses --posterior-draws and one --repeat-index; "
+                "legacy --draws/--repeats must retain their defaults"
+            )
+        variant = "spatial_copula"
+    else:
+        forbidden = (
+            "posterior_draws",
+            "repeat_index",
+            "global_variance_weight",
+            "spatial_variance_weight",
+            "spatial_knot_spacing_diagonal",
+        )
+        supplied = [name for name in forbidden if getattr(args, name) is not None]
+        if supplied:
+            raise ValueError(
+                "spatial-copula arguments require --coupling spatial-copula: "
+                + ", ".join(supplied)
+            )
     contract = Path(args.analysis_contract)
     if sha256_file(contract) != args.expected_analysis_contract_sha256:
         raise ValueError("analysis-contract SHA-256 mismatch")
@@ -310,7 +435,22 @@ def run(args) -> Path:
         with records_path.open("x", encoding="utf-8") as output:
             for sample in artifact.iter_samples():
                 row = (
-                    score_partition_sample(
+                    score_spatial_copula_sample(
+                        sample,
+                        gamma=args.gamma,
+                        posterior_draws=args.posterior_draws,
+                        repeat_index=args.repeat_index,
+                        global_variance_weight=args.global_variance_weight,
+                        spatial_variance_weight=args.spatial_variance_weight,
+                        spatial_knot_spacing_diagonal=(
+                            args.spatial_knot_spacing_diagonal
+                        ),
+                        posterior_batch_size=args.posterior_batch_size,
+                        master_seed=args.master_seed,
+                        device=args.device,
+                    )
+                    if is_spatial_copula
+                    else score_partition_sample(
                         sample,
                         coupling=args.coupling,
                         proposal_threshold=args.proposal_threshold,
@@ -333,16 +473,34 @@ def run(args) -> Path:
             raise RuntimeError("count-posterior scorer emitted the wrong row count")
         output_manifest = {
             "schema_version": SCHEMA_VERSION,
-            "artifact_type": PARTITION_ARTIFACT_TYPE if is_partition else ARTIFACT_TYPE,
+            "artifact_type": (
+                COPULA_ARTIFACT_TYPE
+                if is_spatial_copula
+                else PARTITION_ARTIFACT_TYPE
+                if is_partition
+                else ARTIFACT_TYPE
+            ),
             "run_id": run_id,
             "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "dataset": manifest["dataset"],
             "condition": manifest["condition"],
             "model": manifest["model"],
             "num_rows": row_count,
-            "score_fields": ["confidence_dice_partition"] if is_partition else list(SCORE_FIELDS),
+            "score_fields": (
+                ["confidence_dice_spatial_copula"]
+                if is_spatial_copula
+                else ["confidence_dice_partition"]
+                if is_partition
+                else list(SCORE_FIELDS)
+            ),
             "diagnostic_fields": (
                 [
+                    "spatial_grid_height",
+                    "spatial_grid_width",
+                    "score_runtime_seconds",
+                ]
+                if is_spatial_copula
+                else [
                     "repeat_confidences",
                     "monte_carlo_repeat_standard_deviation",
                     "num_blocks",
@@ -357,11 +515,11 @@ def run(args) -> Path:
             "analysis_contract_sha256": args.expected_analysis_contract_sha256,
             "source_sha256": source_sha256,
             "gamma": args.gamma,
-            "m": args.m,
+            "m": None if is_spatial_copula else args.m,
             "coupling": args.coupling,
             "proposal_threshold": args.proposal_threshold,
-            "draws": args.draws,
-            "repeats": args.repeats,
+            "draws": None if is_spatial_copula else args.draws,
+            "repeats": None if is_spatial_copula else args.repeats,
             "master_seed": args.master_seed,
             "records_sha256": sha256_file(records_path),
             "command": [
@@ -371,6 +529,25 @@ def run(args) -> Path:
                 *args.command_arguments,
             ],
         }
+        if is_spatial_copula:
+            output_manifest["spatial_copula"] = {
+                "posterior_draws": args.posterior_draws,
+                "repeat_index": args.repeat_index,
+                "global_variance_weight": args.global_variance_weight,
+                "spatial_variance_weight": args.spatial_variance_weight,
+                "independent_variance_weight": (
+                    1
+                    - args.global_variance_weight
+                    - args.spatial_variance_weight
+                ),
+                "spatial_knot_spacing_diagonal": (
+                    args.spatial_knot_spacing_diagonal
+                ),
+                "posterior_batch_size": args.posterior_batch_size,
+                "device": args.device,
+                "marginal_property": "Pr(Y_i=1)=p_i",
+                "sampling": "antithetic standard-normal latent pairs",
+            }
         with manifest_path.open("x", encoding="utf-8") as output:
             json.dump(output_manifest, output, indent=2, allow_nan=False)
             output.write("\n")

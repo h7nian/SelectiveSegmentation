@@ -442,7 +442,7 @@ def render_analysis(value: Mapping[str, Any], *, source_hash: str) -> str:
     body = "\n".join(rows)
     if protocol_version == 1:
         protocol_caption = (
-            "M32 joint computes Dice-, nHD-, and nHD95-indexed confidence "
+            "M32 joint computes Dice-, HD-, and HD95-aligned confidence "
             "together, whereas\nDice-Exact computes only Dice."
         )
         order_caption = "balanced-order"
@@ -453,7 +453,7 @@ def render_analysis(value: Mapping[str, Any], *, source_hash: str) -> str:
         )
     else:
         protocol_caption = (
-            "M2, M8, and M32 each compute Dice-, nHD-, and nHD95-indexed "
+            "M2, M8, and M32 each compute Dice-, HD-, and HD95-aligned "
             "confidence jointly; Dice-Exact computes Dice alone. Selected arrays "
             "are preloaded, and no confidence or boundary-distance result is "
             "reused across timed methods."

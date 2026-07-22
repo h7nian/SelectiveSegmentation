@@ -5,42 +5,52 @@ A segmentation can overlap almost perfectly with the annotation yet contain a
 small component far from the anatomy. Dice may barely change, full Hausdorff
 distance (HD) calls the error catastrophic, and its 95th-percentile variant
 (HD95) may suppress it when fewer than roughly five percent of pooled surface
-distances are extreme. \textbf{The same deployed mask can therefore be safe
-under one loss and unsafe under another.}
+distances are extreme. \textbf{The same deployed mask can therefore be safe by
+one evaluation metric and dangerous by another.}
 
-This exposes a gap in segmentation confidence. Most one-map scores compress
-pixel uncertainty by a mean, entropy, patch, or overlap statistic. Such a score
-may rank failures well, but it usually leaves two questions implicit:
-\textbf{which deployment loss defines failure, and which joint law over masks
-turns the probability map into conditional risk?} Pixelwise marginals alone do
-not answer the second question for nonlinear region or boundary losses.
+This exposes a risk-alignment gap. Most image-level confidence scores compress
+one probability map by a mean, entropy, patch, or overlap statistic, then use
+the resulting scalar for every failure definition. Yet selective deployment
+needs a sharper target: \textbf{the conditional risk of the fixed action under
+the metric that actually defines harm}. Pixel marginals alone do not identify
+that risk for nonlinear region or boundary criteria because they do not specify
+how mask pixels vary jointly.
 
-We make both choices explicit. First freeze the deployed hard mask. Then draw a
-shared threshold through its probability map to obtain coherent nested candidate
-masks. Finally compare every candidate with the same deployed action under the
-stated loss and average those losses. The result estimates the negative
-conditional risk of the action, rather than generic posterior spread. The
-shared-threshold law preserves the probability map as a coverage function
-\citep{goodman,molchanov}; it is a transparent \emph{working posterior}, not a
-claim that the unknown annotation posterior is nested.
+We separate the objects that are often conflated. An evaluation metric induces
+a per-case deployment cost \(L\); its conditional expectation
+\(\rho_L^\star(x)\) is deployment risk; and the ideal confidence is
+\(C_L^\star(x)=-\rho_L^\star(x)\). We call a score \textbf{risk-aligned} when it
+targets this quantity rather than generic uncertainty or posterior spread.
 
-Our flagship loss is normalized penalized full HD (nHD), which records the
-worst normalized surface displacement and assigns a fixed penalty to one-sided
-empty masks. Here coherent level-set motion and the loss share the same surface
-geometry, yielding a constant-one Wasserstein posterior bound. We propagate
-score error to area under the risk--coverage curve (AURC) regret. Normalized
-penalized HD95 (nHD95) instead uses the 95th percentile of the pooled
-bidirectional surface distances: it is a robust practical extension, but its
-percentile operation is nonmetric. Dice provides the regional contrast, and
-Soft Dice Confidence (SDC) reveals why two differently derived, count-oriented
+The risk remains unavailable from one probability map, so we make a second
+choice explicit. We freeze the deployed hard mask, draw a shared threshold
+through its probability map to generate coherent nested candidates, and compare
+every candidate with that same action under \(L\). Averaging the costs estimates
+working-posterior risk. The shared-threshold law preserves the probability map
+as a coverage function \citep{goodman,molchanov}; it is a transparent
+\emph{working posterior}, not a claim that the unknown annotation posterior is
+nested.
+
+Throughout, HD and HD95 are computed after scaling each image coordinate system
+to unit diagonal; this avoids confounding boundary risk with the widely varying
+native image sizes. Full HD is the flagship criterion. It records the worst
+relative surface displacement and penalizes a one-sided empty mask.
+Here coherent level-set motion and the deployment cost share surface geometry,
+yielding a constant-one Wasserstein posterior bound. We then propagate score
+error to area under the risk--coverage curve (AURC) regret. HD95 replaces the maximum with the 95th percentile of pooled
+bidirectional surface distances; it is a robust practical endpoint, but its
+percentile operation is nonmetric. Dice supplies the regional contrast, while
+Soft Dice Confidence (SDC) reveals why two differently derived count-oriented
 one-map scores can remain close.
 
-We \textbf{freeze every probability map and deployed action}, then change only confidence and
-evaluation loss. The primary question is whether boundary-aligned confidence
-improves selection under worst-boundary risk. We next compare full and robust
-boundary loss, then use Dice to expose where the shared-threshold coupling is
-less informative. Five datasets, two model families, sixteen conditions, and a
-complete \(3\times3\) score--risk design separate these questions.
+We \textbf{freeze every probability map and deployed action}, then change only
+the confidence score and evaluation risk. The primary question is whether
+boundary-aligned confidence improves selection under worst-boundary risk. We
+next compare full and robust boundary criteria, then use Dice to expose where
+the shared-threshold coupling is less informative. The final absolute-result
+display spans six datasets and three target-adapted model families with a
+complete \(3\times3\) score--risk design; the original five-dataset and
+seven-condition confirmatory families remain separately locked.
 
 \subsection{Related Work}
 \label{sec:related}
@@ -54,7 +64,7 @@ error definition, and summary measure used for evaluation \citep{jaeger}. This
 issue is sharper in segmentation. Classification normally fixes one zero--one
 error, whereas a mask can be judged by overlap, worst boundary displacement, or
 a robust surface percentile. We retain the risk--coverage and AURC formalism,
-but index both quantities by the deployed segmentation loss. The resulting
+but align both quantities with the deployed segmentation risk. The resulting
 question is \textbf{not merely whether a prediction is uncertain}; it is whether the
 fixed deployed mask is risky under a specified notion of geometric harm.
 
@@ -87,7 +97,7 @@ and the global summaries
 as fixed references. Their common object is a \textbf{scalar aggregation of pixelwise
 uncertainty}. Our score instead generates candidate masks, compares each candidate
 with the same deployed action under \(L\), and aggregates the resulting
-structured losses. This difference lets a boundary score retain the location and
+structured costs. This difference lets a boundary score retain the location and
 extent of an uncertain surface excursion rather than only its entropy mass.
 
 \noindent\textbf{Sampling agreement and threshold stability.}
@@ -116,9 +126,9 @@ appear in probabilistic surface extraction and excursion-set analysis
 coupling} of pixel marginals: it produces coherent nested masks and makes the
 otherwise implicit joint assumption auditable. Boundary-aware objectives and
 metrics were developed precisely because overlap can hide spatially remote
-errors \citep{karimi2020}. Our nHD instantiation connects these two strands:
-level sets supply a simple boundary-motion posterior, while normalized full
-Hausdorff distance supplies the matching mask geometry. Pooled nHD95 remains a
+errors \citep{karimi2020}. Our HD instantiation connects these two strands:
+level sets supply a simple boundary-motion posterior, while full HD in
+unit-diagonal coordinates supplies the matching mask geometry. Pooled HD95 remains a
 practical robust endpoint, but its percentile operation prevents the same metric
 argument.
 
@@ -132,17 +142,19 @@ of their random ratio under a declared coupling. Our count-dispersion theorem
 explains when those quantities are close, and the negative coupling ablations
 show why neither score consistently dominates in practice. The broader framework is not a
 claim that level sets dominate SDC for regional risk; it uses the same
-loss-indexed principle beyond Dice, with its clearest advantage under Hausdorff
+risk-alignment principle beyond Dice, with its clearest advantage under Hausdorff
 boundary risk.
 
 \subsection{Our Contributions}
 
-We contribute: (i) loss-indexed confidence and a shared-threshold estimator for
-any bounded segmentation loss; (ii) an nHD flagship specialization linking
+We contribute: (i) risk-aligned confidence and a shared-threshold estimator for
+any bounded metric-induced deployment cost; (ii) an HD flagship specialization linking
 coherent boundary motion to a constant-one surface-Wasserstein bound; (iii) a
 complete error chain from quadrature and posterior discrepancy to AURC regret,
-with nHD95 and Dice specializations, Exact Dice, and an SDC count-dispersion
-bound; and (iv) a locked five-dataset study with full cross-loss evaluation,
+with HD95 and Dice specializations, Exact Dice, and an SDC count-dispersion
+bound; and (iv) a locked six-dataset evaluation with full cross-risk evaluation,
 single-map baselines, paired uncertainty, action and checkpoint stress tests,
 separately labelled higher-budget posterior diagnostics, and a predeclared
-SegFormer/DUTS architecture--domain extension.
+SegFormer/DUTS architecture--domain extension. The original five-dataset
+confirmatory design remains fixed; a separately locked descriptive condition
+only completes the rectangular six-dataset target-model tables.

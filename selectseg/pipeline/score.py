@@ -3,7 +3,7 @@
 One invocation binds one immutable campaign lock, one frozen probability-map
 artifact, one estimator specification, one deployment threshold ``gamma``, one
 quadrature size ``M``, and one seed.  It never performs model inference.  The
-partial JSONL contains stable identity fields plus only the loss-indexed
+partial JSONL contains stable identity fields plus only the risk-aligned
 confidence fields belonging to the requested ``M``.  Risks, auxiliary values,
 and common baselines are produced once by :mod:`selectseg.pipeline.common`.
 

@@ -21,6 +21,7 @@ from selectseg.confidence import summarize_aurc
 MAIN_ARTIFACT_TYPE = "selectseg.binary_simulation_assembly"
 COUNT_ARTIFACT_TYPE = "selectseg.binary_dice_count_posterior"
 PARTITION_ARTIFACT_TYPE = "selectseg.binary_dice_partition_posterior"
+COPULA_ARTIFACT_TYPE = "selectseg.binary_dice_spatial_copula"
 METHODS = (
     ("confidence_dice_action_two_block_m32", "Dice two-block"),
     ("confidence_dice_m32", "Dice-M32"),
@@ -33,7 +34,9 @@ CONTROL_ABSOLUTE_TOLERANCE = 4 * np.finfo(np.float64).eps
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("count", "partition"), default="count")
+    parser.add_argument(
+        "--mode", choices=("count", "partition", "copula"), default="count"
+    )
     parser.add_argument(
         "--contract",
         default="configs/auxiliary/dice_count_result_analysis_v1.json",
@@ -41,6 +44,7 @@ def parse_args(argv=None):
     parser.add_argument("--main-root", default="outputs/binary_midpoint_main_v2/assembled")
     parser.add_argument("--count-root", default="outputs/dice_count_posterior_v1")
     parser.add_argument("--partition-root", default="outputs/dice_partition_ladder_v1")
+    parser.add_argument("--copula-root", default="outputs/spatial_copula_v1")
     parser.add_argument("--output")
     parser.add_argument("--bootstrap-resamples", type=int, default=None)
     return parser.parse_args(argv)
@@ -543,9 +547,282 @@ def analyze_partitions(
     }
 
 
+def _copula_variant_id(manifest: dict, variants: dict[str, dict]) -> str:
+    parameters = manifest.get("spatial_copula")
+    if not isinstance(parameters, dict):
+        raise ValueError("spatial-copula manifest lacks its parameter block")
+    matches = []
+    for variant_id, variant in variants.items():
+        if (
+            parameters.get("global_variance_weight")
+            == variant["global_variance_weight"]
+            and parameters.get("spatial_variance_weight")
+            == variant["spatial_variance_weight"]
+            and parameters.get("spatial_knot_spacing_diagonal")
+            == variant["spatial_knot_spacing_diagonal"]
+        ):
+            matches.append(variant_id)
+    if len(matches) != 1:
+        raise ValueError(
+            "spatial-copula manifest matches "
+            f"{len(matches)} declared variants instead of one"
+        )
+    return matches[0]
+
+
+def analyze_spatial_copula(
+    contract_path: Path,
+    main_root: Path,
+    copula_root: Path,
+    *,
+    bootstrap_resamples: int | None = None,
+) -> dict:
+    """Aggregate independent copula repeats and evaluate every declared variant."""
+
+    contract = _load_json(contract_path)
+    if contract.get("status") != "predeclared-before-reading-spatial-copula-outputs":
+        raise ValueError("spatial-copula analysis contract has an unexpected status")
+    score_binding = contract["score_contract"]
+    score_contract_path = Path(score_binding["path"])
+    if sha256_file(score_contract_path) != score_binding["sha256"]:
+        raise ValueError("bound spatial-copula scoring contract changed")
+    score_contract = _load_json(score_contract_path)
+    if score_contract.get("status") != "predeclared-before-computing-spatial-copula-scores":
+        raise ValueError("bound scoring contract is not a spatial-copula contract")
+
+    expected = {
+        (dataset, condition)
+        for dataset in contract["conditions"]["datasets"]
+        for condition in contract["conditions"]["models"]
+    }
+    if (
+        len(expected) != contract["conditions"]["count"]
+        or expected
+        != {
+            (dataset, condition)
+            for dataset in score_contract["conditions"]["datasets"]
+            for condition in score_contract["conditions"]["models"]
+        }
+    ):
+        raise ValueError("analysis and scoring contracts identify different conditions")
+    variants = {variant["id"]: variant for variant in score_contract["variants"]}
+    if len(variants) != len(score_contract["variants"]):
+        raise ValueError("spatial-copula variant ids are not unique")
+    repeat_indices = score_contract["numerics"]["repeat_indices"]
+    n_resamples = (
+        contract["reporting"]["bootstrap_resamples"]
+        if bootstrap_resamples is None
+        else bootstrap_resamples
+    )
+    if n_resamples <= 0:
+        raise ValueError("bootstrap resamples must be positive")
+    contract_sha256 = sha256_file(contract_path)
+    score_contract_sha256 = score_binding["sha256"]
+    primary_variant = contract["primary_comparison"]["variant_id"]
+    if primary_variant not in variants:
+        raise ValueError("primary spatial-copula variant is not declared")
+
+    conditions = []
+    primary_differences = []
+    for dataset, condition in sorted(expected):
+        main_path = _one_manifest(main_root, dataset, condition)
+        _, main_rows = _load_artifact(main_path, MAIN_ARTIFACT_TYPE)
+        main_by_id = {row["sample_id"]: row for row in main_rows}
+        sample_ids = [row["sample_id"] for row in main_rows]
+        risk = np.asarray([row["risk_dice"] for row in main_rows], dtype=float)
+
+        manifest_paths = sorted(
+            (copula_root / dataset / condition / "spatial_copula").glob(
+                "*/manifest.json"
+            )
+        )
+        expected_artifacts = len(variants) * len(repeat_indices)
+        if len(manifest_paths) != expected_artifacts:
+            raise ValueError(
+                f"expected {expected_artifacts} spatial-copula artifacts for "
+                f"{dataset}/{condition}, found {len(manifest_paths)}"
+            )
+        repeat_scores: dict[str, dict[int, np.ndarray]] = {
+            variant_id: {} for variant_id in variants
+        }
+        repeat_runtime: dict[str, dict[int, float]] = {
+            variant_id: {} for variant_id in variants
+        }
+        manifest_sha256: dict[str, dict[int, str]] = {
+            variant_id: {} for variant_id in variants
+        }
+        source_sha256 = set()
+        for manifest_path in manifest_paths:
+            manifest, rows = _load_artifact(manifest_path, COPULA_ARTIFACT_TYPE)
+            if manifest["analysis_contract_sha256"] != score_contract_sha256:
+                raise ValueError("copula artifact is bound to another score contract")
+            variant_id = _copula_variant_id(manifest, variants)
+            parameters = manifest["spatial_copula"]
+            repeat_index = parameters["repeat_index"]
+            if repeat_index not in repeat_indices:
+                raise ValueError("copula artifact has an undeclared repeat index")
+            if repeat_index in repeat_scores[variant_id]:
+                raise ValueError("duplicate copula variant/repeat artifact")
+            if (
+                parameters["posterior_draws"]
+                != score_contract["numerics"]["posterior_draws"]
+                or parameters["posterior_batch_size"]
+                != score_contract["numerics"]["posterior_batch_size"]
+                or manifest["master_seed"]
+                != score_contract["numerics"]["master_seed"]
+            ):
+                raise ValueError("copula artifact numerics differ from the contract")
+            rows_by_id = {row["sample_id"]: row for row in rows}
+            if set(rows_by_id) != set(main_by_id):
+                raise ValueError("copula artifact contains a different cohort")
+            for sample_id in sample_ids:
+                row = rows_by_id[sample_id]
+                main = main_by_id[sample_id]
+                if row["risk_dice"] != main["risk_dice"]:
+                    raise ValueError(f"copula risk mismatch for {sample_id}")
+                if row["image_index"] != main["image_index"]:
+                    raise ValueError(f"copula image-index mismatch for {sample_id}")
+            scores = np.asarray(
+                [
+                    rows_by_id[sample_id]["confidence_dice_spatial_copula"]
+                    for sample_id in sample_ids
+                ],
+                dtype=float,
+            )
+            if not np.isfinite(scores).all():
+                raise ValueError("copula artifact contains a non-finite score")
+            repeat_scores[variant_id][repeat_index] = scores
+            repeat_runtime[variant_id][repeat_index] = float(
+                sum(rows_by_id[key]["score_runtime_seconds"] for key in sample_ids)
+            )
+            manifest_sha256[variant_id][repeat_index] = sha256_file(manifest_path)
+            source_sha256.add(manifest["source_sha256"])
+        if len(source_sha256) != 1:
+            raise ValueError("copula repeats were produced by different source versions")
+
+        baseline_scores = {
+            "dice_m32": np.asarray(
+                [row["confidence_dice_m32"] for row in main_rows], dtype=float
+            ),
+            "sdc": np.asarray(
+                [row["confidence_sdc"] for row in main_rows], dtype=float
+            ),
+            "foreground_entropy": np.asarray(
+                [row["confidence_foreground_entropy"] for row in main_rows],
+                dtype=float,
+            ),
+        }
+        method_results = {
+            "dice_m32": _score_summary(baseline_scores["dice_m32"], risk, "Dice-M32"),
+            "sdc": _score_summary(baseline_scores["sdc"], risk, "SDC"),
+            "foreground_entropy": _score_summary(
+                baseline_scores["foreground_entropy"], risk, "Foreground entropy"
+            ),
+        }
+        diagnostics = {}
+        aggregate_scores = {}
+        for variant_id in variants:
+            observed_repeats = repeat_scores[variant_id]
+            if set(observed_repeats) != set(repeat_indices):
+                raise ValueError(f"{variant_id} does not contain every declared repeat")
+            matrix = np.stack(
+                [observed_repeats[index] for index in repeat_indices], axis=1
+            )
+            aggregate = matrix.mean(axis=1)
+            aggregate_scores[variant_id] = aggregate
+            method_results[variant_id] = _score_summary(
+                aggregate, risk, variants[variant_id]["id"]
+            )
+            repeat_aurcs = [
+                summarize_aurc(matrix[:, column], risk).aurc
+                for column in range(matrix.shape[1])
+            ]
+            diagnostics[variant_id] = {
+                "repeat_aurcs": repeat_aurcs,
+                "repeat_aurc_range": float(max(repeat_aurcs) - min(repeat_aurcs)),
+                "mean_per_image_repeat_standard_deviation": float(
+                    np.std(matrix, axis=1, ddof=0).mean()
+                ),
+                "total_score_runtime_seconds_by_repeat": repeat_runtime[variant_id],
+                "manifest_sha256_by_repeat": manifest_sha256[variant_id],
+            }
+
+        bootstrap = paired_cluster_bootstrap_aurc_test(
+            aggregate_scores[primary_variant],
+            baseline_scores["dice_m32"],
+            risk,
+            cluster_ids=sample_ids,
+            n_resamples=n_resamples,
+            seed=_partition_seed(
+                contract["reporting"]["bootstrap_seed"],
+                dataset,
+                condition,
+                primary_variant,
+                "dice_m32",
+            ),
+        )
+        primary_differences.append(bootstrap.difference)
+        conditions.append(
+            {
+                "dataset": dataset,
+                "condition": condition,
+                "num_images": len(sample_ids),
+                "main_manifest_sha256": sha256_file(main_path),
+                "copula_source_sha256": next(iter(source_sha256)),
+                "methods": method_results,
+                "diagnostics": diagnostics,
+                "primary_comparison": {
+                    "variant_id": primary_variant,
+                    "reference": "dice_m32",
+                    "difference_copula_minus_dice_m32": bootstrap.difference,
+                    "bootstrap": asdict(bootstrap),
+                },
+            }
+        )
+
+    differences = np.asarray(primary_differences)
+    gate = contract["primary_comparison"]["support_gate"]
+    summary = {
+        "primary_variant": primary_variant,
+        "mean_difference_copula_minus_dice_m32": float(differences.mean()),
+        "median_difference_copula_minus_dice_m32": float(np.median(differences)),
+        "copula_wins": int(np.count_nonzero(differences < 0)),
+        "dice_m32_wins": int(np.count_nonzero(differences > 0)),
+        "ties": int(np.count_nonzero(differences == 0)),
+    }
+    summary["directional_gate_passed"] = bool(
+        summary["copula_wins"] >= gate["required_condition_wins"]
+        and summary["mean_difference_copula_minus_dice_m32"] < 0
+    )
+    return {
+        "schema_version": 1,
+        "analysis_id": contract["analysis_id"],
+        "contract": {"path": str(contract_path), "sha256": contract_sha256},
+        "score_contract": score_binding,
+        "analysis": {
+            "tie_policy": contract["reporting"]["tie_policy"],
+            "bootstrap_resamples": n_resamples,
+            "aurc_scale_for_display": contract["reporting"]["aurc_scale"],
+            "selection_policy": "primary prespecified; all sensitivity variants reported",
+            "repeat_policy": "independent jobs aggregated only after strict validation",
+            "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        },
+        "conditions": conditions,
+        "summary": summary,
+    }
+
+
 def main(argv=None):
     args = parse_args(argv)
-    if args.mode == "partition":
+    if args.mode == "copula":
+        result = analyze_spatial_copula(
+            Path(args.contract),
+            Path(args.main_root),
+            Path(args.copula_root),
+            bootstrap_resamples=args.bootstrap_resamples,
+        )
+        output = Path(args.output or Path(args.copula_root) / "analysis.json")
+    elif args.mode == "partition":
         result = analyze_partitions(
             Path(args.contract),
             Path(args.main_root),

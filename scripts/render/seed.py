@@ -36,16 +36,16 @@ CONDITION_LABELS = {
     "deeplabv3-target": "DL-T",
 }
 CONTRAST_LABELS = {
-    "dice_vs_nhd_under_dice": r"Dice $-$ nHD (Dice risk)",
-    "dice_vs_nhd_under_nhd": r"Dice $-$ nHD (nHD risk)",
-    "nhd_vs_nhd95_under_nhd": r"nHD $-$ nHD95 (nHD risk)",
-    "nhd_vs_nhd95_under_nhd95": r"nHD $-$ nHD95 (nHD95 risk)",
+    "dice_vs_nhd_under_dice": r"Dice $-$ HD (Dice risk)",
+    "dice_vs_nhd_under_nhd": r"Dice $-$ HD (HD risk)",
+    "nhd_vs_nhd95_under_nhd": r"HD $-$ HD95 (HD risk)",
+    "nhd_vs_nhd95_under_nhd95": r"HD $-$ HD95 (HD95 risk)",
 }
 PLOT_CONTRAST_LABELS = {
-    "dice_vs_nhd_under_dice": "Dice - nHD | Dice risk",
-    "dice_vs_nhd_under_nhd": "Dice - nHD | nHD risk",
-    "nhd_vs_nhd95_under_nhd": "nHD - nHD95 | nHD risk",
-    "nhd_vs_nhd95_under_nhd95": "nHD - nHD95 | nHD95 risk",
+    "dice_vs_nhd_under_dice": "Dice - HD | Dice risk",
+    "dice_vs_nhd_under_nhd": "Dice - HD | HD risk",
+    "nhd_vs_nhd95_under_nhd": "HD - HD95 | HD risk",
+    "nhd_vs_nhd95_under_nhd95": "HD - HD95 | HD95 risk",
 }
 
 

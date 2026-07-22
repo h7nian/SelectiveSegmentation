@@ -1,4 +1,4 @@
-"""Focused loss-indexed evaluation for binary segmentation.
+"""Focused risk-aligned evaluation for binary segmentation.
 
 This evaluator writes exactly one row per image from a native binary dataset,
 including images whose foreground label is empty.  Multiclass one-vs-rest

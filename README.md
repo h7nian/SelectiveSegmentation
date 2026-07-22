@@ -1,6 +1,6 @@
 # Selective Segmentation
 
-Reference implementation and manuscript source for **Loss-Indexed Confidence for
+Reference implementation and manuscript source for **Risk-Aligned Confidence for
 Selective Segmentation**.
 
 The central idea is simple: confidence should predict the loss that matters at
@@ -13,7 +13,8 @@ masks and estimates
 C_L(x)=-\mathbb E_{Q_p}\!\left[L(Y,\widehat Y(x))\right].
 \]
 
-The flagship instance is normalized full Hausdorff distance (nHD): shared
+The flagship instance is full Hausdorff distance (HD) in unit-diagonal image
+coordinates: shared
 thresholds trace coherent nested boundary motion, and surface-Hausdorff geometry
 gives a constant-one Wasserstein posterior bound. Normalized HD95 is the robust,
 nonmetric boundary extension. Dice is retained as a regional contrast whose
@@ -23,7 +24,7 @@ count-law analysis explains why SDC remains competitive.
 
 ```text
 selectseg/          reusable library and command-line workers
-  pipeline/         freeze, shared scoring, and loss-indexed scoring
+  pipeline/         freeze, shared scoring, and risk-aligned scoring
   seed/             training-seed extension
   studies/          focused auxiliary studies
 scripts/            thin analysis, rendering, submission, and release CLIs
@@ -78,12 +79,20 @@ is declared in `configs/extension.json`; it adds SegFormer-B2 across the five
 existing datasets and compares SegFormer-B2 with DeepLabV3 on DUTS without
 altering the completed primary campaign.
 
+The separately locked `configs/table_completion.json` design adds only
+DUTS/CLIPSeg-Target and rebinds the seven frozen extension artifacts. It makes
+the three target-model tables rectangular: CLIP-T, DL-T, and SF-T each use the
+same six datasets, ten displayed methods, and three risk blocks. The original
+seven-condition extension remains the sole source of its predeclared
+28-comparison inference.
+
 ```bash
 python scripts/download.py --datasets duts
 python -m scripts.submit.main --config configs/extension.json --phase train
 python -m scripts.submit.main --config configs/extension.json --phase freeze
 # After locking, run common, score, assemble, and diagnose exactly as above.
 python -m scripts.analyze.main --design extension --help
+python -m scripts.analyze.main --design completion --help
 python -m scripts.render.paper --design extension --help
 python -m scripts.analyze.diagnostics --design extension --help
 ```
@@ -167,6 +176,9 @@ different.
 # Region/block coupling and component-count variants
 python -m scripts.submit.counts --config configs/auxiliary/dice_partition_ladder_v1.json
 
+# Marginal-preserving spatial copula: one condition × variant × repeat per job
+python -m scripts.submit.counts --config configs/auxiliary/spatial_copula_v1.json
+
 # Probability ensemble construction or ensemble baselines
 python -m scripts.submit.ensemble --phase build
 python -m scripts.submit.ensemble --phase baselines
@@ -203,7 +215,14 @@ python -m scripts.analyze.main --help
 python -m scripts.render.paper --help
 python -m scripts.analyze.counts --mode partition --help
 python -m scripts.render.counts --mode partition --help
+python -m scripts.analyze.counts --mode copula --help
+python -m scripts.render.counts --mode copula --help
 ```
+
+The spatial-copula planner writes 240 independent jobs for the locked
+10-condition, 6-variant, 4-repeat design. Filters such as `--condition`,
+`--variant-id`, and `--repeat-index` support pilots and exact retry cells
+without adding worker scripts or changing the artifact schema.
 
 Raw JSON stores AURC in its natural scale. Manuscript tables multiply AURC and
 AURC differences by 100 for readability. Generated tables should be rebuilt
@@ -296,7 +315,7 @@ it is not claimed to identify the true joint mask posterior. Marginal
 calibration alone cannot validate its pixel coupling. The theory therefore
 separates numerical integration error from loss-specific posterior discrepancy
 and carries their score error into selective-risk and AURC regret. Exact Dice
-removes the numerical term for the Dice instantiation, while nHD and nHD95 use
+removes the numerical term for the Dice instantiation, while HD and HD95 use
 the declared quadrature protocol.
 
 See `docs/README.md` for the manuscript-specific release record and

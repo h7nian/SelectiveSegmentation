@@ -7,7 +7,7 @@
 CLIP-T / DL-T. Values are medians over four Williams-balanced-order whole-panel
 measurements after one warm-up, using eight Python workers with one native
 numerical thread each.
-M2, M8, and M32 each compute Dice-, nHD-, and nHD95-indexed confidence jointly; Dice-Exact computes Dice alone. Selected arrays are preloaded, and no confidence or boundary-distance result is reused across timed methods. Model inference, artifact I/O, panel assembly,
+M2, M8, and M32 each compute Dice-, HD-, and HD95-indexed confidence jointly; Dice-Exact computes Dice alone. Selected arrays are preloaded, and no confidence or boundary-distance result is reused across timed methods. Model inference, artifact I/O, panel assembly,
 and serialization are excluded. Peak RSS is a process high-water mark and is
 not attributable to either method. Wall-clock values are hardware dependent:
 conditions may run on different nodes or CPU models, so the within-condition

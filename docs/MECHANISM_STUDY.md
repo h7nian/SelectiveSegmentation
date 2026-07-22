@@ -3,8 +3,8 @@
 ## What the existing data establish
 
 The current results establish an asymmetric empirical pattern, not yet its
-cause. Across the ten target conditions, nHD-M32 has higher Spearman agreement
-with realized nHD safety than Dice-M32 in every condition. For Dice safety,
+cause. Across the ten target conditions, HD-M32 has higher Spearman agreement
+with realized HD safety than Dice-M32 in every condition. For Dice safety,
 Dice-M32, SDC, and foreground entropy are usually close. In nine non-pathological
 cells, Dice-M32 and foreground entropy have score--score Spearman correlation
 between 0.916 and 0.960; FIVES/CLIP-T is the outlier at 0.535. Dice-Exact changes
@@ -12,14 +12,14 @@ the Dice-risk Spearman coefficient by at most about 0.004 relative to Dice-M32.
 
 These observations support three statements:
 
-1. the nHD result is not an integration-resolution artifact;
+1. the HD result is not an integration-resolution artifact;
 2. the Dice level-set score contains little rank information beyond strong
    single-map summaries in most cells;
 3. FIVES/CLIP-T is a qualitatively different failure regime and should be shown,
    not hidden.
 
 They do **not** by themselves prove that Dice errors are detection-level, that
-the true boundary posterior is nested, or that nHD superiority is geometrically
+the true boundary posterior is nested, or that HD superiority is geometrically
 inevitable.
 
 ## Locked decisive experiment: change the posterior, not the action
@@ -31,7 +31,7 @@ The only primary variable is the source of candidate masks:
 - `Ensemble-Q`: three masks obtained by thresholding the three member maps at
   0.5.
 
-For each of Dice, nHD, and nHD95, both scores average the same loss to the same
+For each of Dice, HD, and HD95, both scores average the same loss to the same
 fixed action. This separates posterior support from action quality. The analysis
 contract is stored in
 `configs/auxiliary/ensemble_posterior_analysis_v1.json`. Ten independent jobs
@@ -60,9 +60,9 @@ Anything else is inconclusive; it does not authorize replacing datasets.
 
 The Dice expressivity gate failed. Ensemble-Q was lower in only 1/10 Dice
 conditions; its mean and median AURC x100 differences relative to LevelSet-Q
-were +2.763 and +0.427. The nHD LevelSet-Q gate passed: LevelSet-Q was lower in
+were +2.763 and +0.427. The HD LevelSet-Q gate passed: LevelSet-Q was lower in
 10/10 conditions, with mean Ensemble-Q-minus-LevelSet-Q difference +3.820.
-For nHD95, LevelSet-Q was lower in 9/10, with mean difference +4.391. Therefore
+For HD95, LevelSet-Q was lower in 9/10, with mean difference +4.391. Therefore
 three hard masks from independently trained checkpoints are not a useful proxy
 for the conditional annotation posterior here. This negative result does not
 show that non-nested annotation support is irrelevant; it shows that raw
@@ -90,24 +90,24 @@ The mechanism is supported only if LevelSet-Q degrades as off-boundary/component
 error grows and Ensemble-Q disagreement captures those errors better. The
 stratified results are descriptive because strata use labels.
 
-## Additional experiment 2: does nHD add spatial information?
+## Additional experiment 2: does HD add spatial information?
 
-The claim is not merely that nHD-M32 correlates with nHD risk; it is that it adds
+The claim is not merely that HD-M32 correlates with HD risk; it is that it adds
 spatial-extreme information beyond pixel uncertainty.
 
-Use leave-one-dataset-out prediction of realized nHD safety with nested model
+Use leave-one-dataset-out prediction of realized HD safety with nested model
 families:
 
 1. entropy, mean maximum probability, SDC, foreground fraction, and action size;
-2. the same features plus nHD-M32.
+2. the same features plus HD-M32.
 
 Fit only on four datasets and evaluate rank correlation and AURC on the held-out
-dataset. A consistent held-out improvement from adding nHD-M32 supports
+dataset. A consistent held-out improvement from adding HD-M32 supports
 incremental spatial information without fitting and testing on the same images.
 Complement this with a synthetic matched-entropy intervention: hold the number
 and probability values of uncertain pixels fixed while moving their component
 progressively farther from the main object. Entropy should remain fixed while
-nHD-M32 and realized nHD change.
+HD-M32 and realized HD change.
 
 Present a five-fold held-out improvement forest plot and a three-panel synthetic
 example (near, intermediate, far).
@@ -120,7 +120,7 @@ any score change is not an action-quality effect.
 
 Before looking at test AURC, record temperature, validation NLL objective, test
 Brier/ECE, and the fixed list of scores. Then compare raw versus calibrated
-Dice-M32, nHD-M32, SDC, and entropy. If calibration improves Dice-M32 relative
+Dice-M32, HD-M32, SDC, and entropy. If calibration improves Dice-M32 relative
 to the baselines, the bottleneck was partly marginal calibration. If calibration
 improves ECE but not the relative Dice ranking, the posterior-support explanation
 becomes more credible.
@@ -131,7 +131,7 @@ raw and calibrated results on the test set.
 ## Additional experiment 4: qualitative disagreement cases
 
 Select cases algorithmically, not visually: the top three images per dataset by
-absolute normalized rank disagreement between nHD-M32 and foreground entropy,
+absolute normalized rank disagreement between HD-M32 and foreground entropy,
 plus the top three between Ensemble-Q-Dice and LevelSet-Q-Dice. Show image,
 truth, deployed mask, probability map, representative level sets, three ensemble
 masks, and the three realized losses. This makes “far-away boundary excursion”
@@ -257,6 +257,77 @@ the two-block and grid controls by a meaningful rank margin, stop adding
 handcrafted couplings and move to cross-fitted or multi-rater count-posterior
 estimation.
 
+## Controlled extension: a spatial Gaussian-copula posterior
+
+The partition ladder changes dependence by assigning one uniform threshold to
+each discrete block.  A complementary continuous family uses a standard-normal
+latent field,
+
+\[
+  Z_i=\sqrt{\alpha}\,G+\sqrt{\beta}\,U_i
+      +\sqrt{1-\alpha-\beta}\,\varepsilon_i,
+  \qquad
+  Y_i=\mathbf 1\!\left\{Z_i\leq\Phi^{-1}(p_i)\right\}.
+\]
+
+Here \(G\), every \(U_i\), and every \(\varepsilon_i\) have unit marginal
+variance, while (U\) is spatially correlated.  The square roots are essential:
+they make \(\alpha\) and \(\beta\) variance weights and guarantee
+\(\operatorname{Var}(Z_i)=1\).  Consequently every setting preserves the
+declared pixel marginals exactly, \(\Pr(Y_i=1)=p_i\).  The endpoints are the
+global shared-threshold posterior at \((\alpha,\beta)=(1,0)\) and independent
+Bernoulli sampling at \((0,0)\).
+
+The first implementation should use a coordinate-only, standardized bilinear
+Gaussian field whose knot spacing is expressed as a fraction of the image
+diagonal.  This keeps the one-probability-map information budget and avoids an
+unusable dense covariance matrix.  Image or encoder features are a separate,
+higher-information extension and must not be silently introduced into the
+matched-budget comparison.  Hard-fixing pixels outside an uncertainty band is
+also excluded from the marginal-preserving experiment: unless their
+probabilities are exactly zero or one, fixing them changes the marginals.
+
+This is an ablation, not an automatic replacement for the global posterior.
+It loses one-dimensional exact integration, introduces Monte Carlo error and
+requires validation-only choices of variance weights and spatial scale.  With
+single annotations, such choices optimize selective-ranking utility; they do
+not identify the true annotation posterior.  Promote the spatial posterior
+only if a prespecified setting improves matched Dice-risk AURC in at least
+7/10 target conditions with a non-negligible macro effect, stable repeat error,
+and acceptable runtime.  A null result strengthens the simpler global method.
+
+Each condition--setting--repeat is one independent Slurm job.  A repeat job
+records one fixed-seed Monte Carlo estimate; a separate aggregation step checks
+sample identities, source hashes, posterior parameters, and repeat indices
+before computing the mean and repeat standard deviation.  The same command is
+controlled by arguments for posterior draws, repeat index, variance weights,
+spatial knot spacing, device, and posterior batch size.  No setting-specific
+Python or Slurm scripts are allowed.
+
+## Baselines by information budget
+
+The headline table remains a matched one-map, no-fitted-quality-predictor
+comparison: SDC, mean maximum probability, mean pixel entropy, foreground
+entropy, foreground/volume summaries, simple threshold stability, and the
+risk-aligned scores.  Methods that consume more information are reported in
+separate panels:
+
+1. **One map plus validation fitting:** scalar temperature scaling, with the
+   deployed 0.5 action held fixed.
+2. **Multiple stochastic predictions or checkpoints:** MC dropout, test-time
+   augmentation, and deep-ensemble disagreement.  The three-checkpoint
+   Ensemble-Q experiment already belongs here.
+3. **Additional labeled training:** learned quality prediction, reverse
+   classification, or a learned stochastic segmentation posterior.
+
+This separation prevents a method from appearing stronger merely because it
+uses more forward passes, checkpoints, annotations, or fitted labels.  The
+temperature intervention is the highest-priority missing experiment because it
+changes probability calibration without changing the deployed action.  A
+multi-annotator dataset is the strongest posterior-validation experiment, but
+its annotation average estimates an empirical rater risk rather than the
+unobservable population ideal risk.
+
 ## What not to run yet
 
 - Do not replace FIVES, CLIP-T, or any adverse cell after seeing results.
@@ -272,8 +343,8 @@ estimation.
 
 ## Recommended paper order
 
-Keep the main result as loss-indexed selective ranking. State the asymmetry
-first: nHD gains are broad and stable, whereas Dice is competitive but redundant
+Keep the main result as risk-aligned selective ranking. State the asymmetry
+first: HD gains are broad and stable, whereas Dice is competitive but redundant
 with strong single-map summaries. Use the fixed-action posterior experiment to
 explain that asymmetry. Put calibration and morphology audits in the appendix
 unless either materially changes the interpretation.

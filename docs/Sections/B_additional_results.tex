@@ -113,14 +113,9 @@ silently enlarged after inspection.
 
 \subsection{Complete results and sensitivity analyses}
 
-\IfFileExists{Tables/seed_sensitivity_main.tex}{%
-  \noindent\textbf{Checkpoint-level direction reversals.}
-  \input{Tables/seed_sensitivity_main.tex}
-}{}
-
 \IfFileExists{Tables/results_complete.tex}{%
   \input{Tables/results_complete.tex}
-  \noindent\textbf{Complete matched and cross-loss results.}
+  \noindent\textbf{Complete matched and cross-risk results.}
 
   \input{Tables/full_target_results.tex}
   \input{Tables/complete_results.tex}
@@ -158,11 +153,14 @@ silently enlarged after inspection.
 }
 
 \IfFileExists{Tables/architecture_domain_extension_complete.tex}{%
+  \input{Tables/architecture_domain_extension.tex}
+
   \input{Tables/architecture_domain_extension_full.tex}
 }{%
   \noindent\textbf{Extension rendering guard.}
-  The complete three-risk table appears only after all seven independently
-  assembled extension conditions pass the immutable-lock and bootstrap checks.
+  The paired contrasts and complete three-risk table appear only after all
+  seven independently assembled extension conditions pass the immutable-lock
+  and bootstrap checks.
 }
 
 \clearpage
@@ -229,7 +227,7 @@ silently enlarged after inspection.
   These plots compare predicted working risk, \(-C_{L,Q_p}(x)\), with the one
   observed deployment loss available for each test image. Within each dataset,
   rows are CLIP-T and DL-T, while columns are Dice-Exact against Dice loss,
-  nHD-M32 against nHD loss, and nHD95-M32 against nHD95 loss. Images are sorted
+  HD-M32 against HD loss, and HD95-M32 against HD95 loss. Images are sorted
   by predicted risk and sample identifier before being split into ten fixed
   equal-count bins. Points are bin means and vertical bars are pointwise 95\%
   intervals from 2,000 within-bin image-bootstrap resamples with fixed seed
@@ -314,8 +312,8 @@ silently enlarged after inspection.
   mask-law TV ignores whether transported masks are close in the geometry used
   by the deployment loss. The machine-readable analysis therefore also reports
   empirical loss-pushforward Wasserstein distance for all three losses and
-  paired mask-transport upper bounds for Dice and nHD. No mask-Wasserstein
-  corollary is asserted for nHD95, and finite-posterior Monte Carlo standard
+  paired mask-transport upper bounds for Dice and HD. No mask-Wasserstein
+  corollary is asserted for HD95, and finite-posterior Monte Carlo standard
   errors are reported separately from misspecification.
 }{%
   \noindent\textbf{Known-posterior rendering guard.}
@@ -333,16 +331,6 @@ silently enlarged after inspection.
   \noindent\textbf{Runtime rendering guard.}
   Hardware-dependent timing appears only after all sixteen fixed-protocol
   runtime jobs pass the campaign-bound analyzer.
-}
-
-\IfFileExists{Tables/seed_robustness.tex}{%
-  \noindent\textbf{Training-seed sensitivity.}
-
-  \input{Tables/seed_robustness.tex}
-}{%
-  \noindent\textbf{Training-seed rendering guard.}
-  The three-seed table appears only after all twenty new checkpoints complete
-  the freeze, score, assembly, and strict cross-seed analysis pipeline.
 }
 
 \IfFileExists{Figures/qualitative_cases.tex}{%

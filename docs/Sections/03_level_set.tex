@@ -39,26 +39,26 @@ moves components independently, or is poorly represented by the probability map.
 Geometrically, the shared scalar makes uncertain surfaces move together through
 the probability landscape. This makes \(Q_p\) especially natural as a tractable
 boundary-motion model; it is not asserted to be equally well matched to every
-regional loss.
+regional criterion.
 \Cref{fig:framework} summarizes how the working posterior enters the
 selective pipeline without changing the deployed action.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{Figures/loss_indexed_framework.pdf}
-  \caption{Loss-indexed confidence from one probability map. The deployment rule
+  \caption{Risk-aligned confidence from one probability map. The deployment rule
   fixes \(\Yhat\) once. Shared thresholds sweep coherent nested boundaries;
-  every candidate is compared with the same action under the deployment loss.
+  every candidate is compared with the same action under the deployment cost.
   The weighted risk determines the selective ordering. Changing \(L\) changes
   the ranking target, not the deployed mask.}
   \label{fig:framework}
 \end{figure}
 
-\subsection{Expected loss as a threshold integral}
+\subsection{Expected deployment cost as a threshold integral}
 
 \begin{proposition}[Threshold-integral risk]
 \label{prop:integral}
-For any loss satisfying \Cref{eq:bounded-assumption},
+For any deployment cost satisfying \Cref{eq:bounded-assumption},
 \begin{equation*}
   r_{L,Q}(x)
   :=\Ex_{Y\sim Q_{p(x)}}\!\left[L_x(Y,\Yhat(x))\right]
@@ -84,14 +84,14 @@ dispersion, not conditional risk of the deployed action.
 
 Our default is equal-width midpoint quadrature:
 \(t_m=(m-1/2)/M\) and \(w_m=1/M\), for \(m=1,\ldots,M\).
-\Cref{alg:loss-indexed-confidence} shows the complete computation.
+\Cref{alg:risk-aligned-confidence} shows the complete computation.
 
 \begin{algorithm}[t]
-\caption{Uniform-midpoint loss-indexed confidence}
-\label{alg:loss-indexed-confidence}
+\caption{Uniform-midpoint risk-aligned confidence}
+\label{alg:risk-aligned-confidence}
 \small
 \begin{algorithmic}[1]
-\Require probability map \(p\), deployed rule \(A_\gamma\), loss \(L_x\), \(M\in\mathbb N_+\)
+\Require probability map \(p\), deployed rule \(A_\gamma\), deployment cost \(L_x\), \(M\in\mathbb N_+\)
 \Ensure scalar confidence \(C_{L,M}\), where a larger value means lower estimated risk
 \State \(\Yhat\gets A_\gamma(p)\) \Comment{fix the action once before integration}
 \State Construct uniform midpoint nodes \(t_m=(m-1/2)/M\), \(m=1,\ldots,M\)
@@ -99,7 +99,7 @@ Our default is equal-width midpoint quadrature:
 \For{\(m=1,\ldots,M\)}
   \State \(Y_m\gets\{i:p_i\geq t_m\}\) \Comment{form one nested candidate mask}
   \State \(\ell_m\gets L_x(Y_m,\Yhat)\) \Comment{evaluate the same deployed action}
-  \State \(r\gets r+\ell_m/M\) \Comment{average loss under the working posterior}
+  \State \(r\gets r+\ell_m/M\) \Comment{average cost under the working posterior}
 \EndFor
 \State \Return \(C_{L,M}\gets-r\) \Comment{negate risk so higher means safer}
 \end{algorithmic}
@@ -127,7 +127,7 @@ they optimize finite-sample AURC \citep{niederreiter1992}.
 \label{sec:error}
 
 Let \(P_x=\Prb(Y\in\cdot\mid X=x)\) denote the true label posterior. For the
-deployed action define the loss-specific discrepancy
+deployed action define the deployment-cost discrepancy
 \begin{equation}
   \Delta_{L,\Yhat}(x)
   :=
@@ -138,13 +138,13 @@ deployed action define the loss-specific discrepancy
   \right|.
   \label{eq:loss-discrepancy}
 \end{equation}
-This loss-functional discrepancy is weaker than total-variation (TV) control: if
+This cost-functional discrepancy is weaker than total-variation (TV) control: if
 \(\TV(P_x,Q_{p(x)})\leq\delta_x\), using the supremum-over-events convention,
 then \(\Delta_{L,\Yhat}(x)\leq B_x\delta_x\), while the converse need not hold.
 \Cref{app:lem:loss-pushforward} also controls it through the
-one-dimensional Wasserstein distance between the scalar loss laws induced by
-\(P_x\) and \(Q_{p(x)}\). This remains available for nHD95 without pretending
-that its percentile surface loss is a mask metric.
+one-dimensional Wasserstein distance between the scalar cost laws induced by
+\(P_x\) and \(Q_{p(x)}\). This remains available for HD95 without pretending
+that its percentile surface cost is a mask metric.
 
 \begin{proposition}[Conditional total-error bound]
 \label{prop:total-bound}

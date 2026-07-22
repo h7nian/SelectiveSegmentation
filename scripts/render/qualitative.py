@@ -49,8 +49,8 @@ HEADER_HEIGHT = 52
 ROW_HEIGHT = 326
 GAP = 14
 CASE_LABELS = {
-    "dice_vs_nhd_rank_disagreement": "Dice-M32 vs nHD-M32\nrank disagreement",
-    "nhd_vs_nhd95_rank_disagreement": "nHD-M32 vs nHD95-M32\nrank disagreement",
+    "dice_vs_nhd_rank_disagreement": "Dice-M32 vs HD-M32\nrank disagreement",
+    "nhd_vs_nhd95_rank_disagreement": "HD-M32 vs HD95-M32\nrank disagreement",
     "empty_action": "Deployed empty action",
     "confident_failure": "Confident failure",
 }

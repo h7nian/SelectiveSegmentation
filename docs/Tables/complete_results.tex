@@ -3,7 +3,7 @@
 % Status: COMPLETE FINAL ANALYSIS
 \begin{table*}[t]
 \centering
-\caption{Complete $17\times3$ general and external control results, panel for Normalized penalized Hausdorff risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$, with nAURC in parentheses and conditions identified by the stacked panel headings. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
+\caption{Complete $17\times3$ general and external control results, panel for HD risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$, with nAURC in parentheses and conditions identified by the stacked panel headings. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
 \label{tab:complete-results}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
@@ -23,12 +23,12 @@ Foreground entropy & 7.126 (0.7313) & 25.691 (0.5672) & 46.942 (0.6877) & \bestr
 \textbf{Dice-M2} & 7.047 (0.7131) & 34.146 (1.1351) & 54.565 (1.2405) & 97.391 (1.5628) & \bestresult{100.000 (--)} \\
 \textbf{Dice-M8} & 6.998 (0.7016) & 36.020 (1.2610) & 57.689 (1.4670) & 96.984 (1.5481) & \bestresult{100.000 (--)} \\
 \textbf{Dice-M32} & 6.965 (0.6941) & 34.957 (1.1896) & 57.251 (1.4353) & 97.125 (1.5532) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M2} & \bestresult{6.254 (0.5294)} & 30.422 (0.8850) & 53.644 (1.1737) & 97.333 (1.5607) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M8} & 6.330 (0.5468) & 31.395 (0.9503) & 51.550 (1.0218) & 96.824 (1.5423) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M32} & 6.471 (0.5796) & 30.167 (0.8679) & 51.952 (1.0510) & 97.018 (1.5493) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M2} & 6.384 (0.5594) & 30.748 (0.9068) & 53.618 (1.1718) & 97.345 (1.5612) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M8} & 6.498 (0.5859) & 31.029 (0.9258) & 51.309 (1.0044) & 96.353 (1.5252) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M32} & 6.746 (0.6434) & 29.877 (0.8484) & 51.539 (1.0210) & 96.712 (1.5382) & \bestresult{100.000 (--)} \\
+\textbf{HD-M2} & \bestresult{6.254 (0.5294)} & 30.422 (0.8850) & 53.644 (1.1737) & 97.333 (1.5607) & \bestresult{100.000 (--)} \\
+\textbf{HD-M8} & 6.330 (0.5468) & 31.395 (0.9503) & 51.550 (1.0218) & 96.824 (1.5423) & \bestresult{100.000 (--)} \\
+\textbf{HD-M32} & 6.471 (0.5796) & 30.167 (0.8679) & 51.952 (1.0510) & 97.018 (1.5493) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M2} & 6.384 (0.5594) & 30.748 (0.9068) & 53.618 (1.1718) & 97.345 (1.5612) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M8} & 6.498 (0.5859) & 31.029 (0.9258) & 51.309 (1.0044) & 96.353 (1.5252) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M32} & 6.746 (0.6434) & 29.877 (0.8484) & 51.539 (1.0210) & 96.712 (1.5382) & \bestresult{100.000 (--)} \\
 \bottomrule
 \end{tabular*}
 \par\smallskip
@@ -49,12 +49,12 @@ Foreground entropy & 6.357 (0.5423) \\
 \textbf{Dice-M2} & 7.114 (0.6994) \\
 \textbf{Dice-M8} & 6.397 (0.5505) \\
 \textbf{Dice-M32} & 6.379 (0.5468) \\
-\textbf{nHD-M2} & 6.463 (0.5643) \\
-\textbf{nHD-M8} & 5.650 (0.3955) \\
-\textbf{nHD-M32} & \bestresult{5.614 (0.3879)} \\
-\textbf{nHD95-M2} & 6.700 (0.6135) \\
-\textbf{nHD95-M8} & 5.899 (0.4471) \\
-\textbf{nHD95-M32} & 5.840 (0.4348) \\
+\textbf{HD-M2} & 6.463 (0.5643) \\
+\textbf{HD-M8} & 5.650 (0.3955) \\
+\textbf{HD-M32} & \bestresult{5.614 (0.3879)} \\
+\textbf{HD95-M2} & 6.700 (0.6135) \\
+\textbf{HD95-M8} & 5.899 (0.4471) \\
+\textbf{HD95-M32} & 5.840 (0.4348) \\
 \bottomrule
 \end{tabular*}
 }
@@ -62,7 +62,7 @@ Foreground entropy & 6.357 (0.5423) \\
 
 \begin{table*}[t]
 \centering
-\caption{Complete $17\times3$ general and external control results, panel for Normalized penalized HD95 risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$, with nAURC in parentheses and conditions identified by the stacked panel headings. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
+\caption{Complete $17\times3$ general and external control results, panel for HD95 risk. Methods are rows and datasets are columns; each entry is raw AURC $\times100$, with nAURC in parentheses and conditions identified by the stacked panel headings. Lower is better. Dark blue marks every lowest unrounded raw AURC within each condition.}
 \label{tab:complete-results-nhd95}
 {\scriptsize\setlength{\tabcolsep}{2pt}%
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l*{5}{c}@{}}
@@ -82,12 +82,12 @@ Foreground entropy & 4.344 (0.6505) & 20.369 (0.5427) & 40.900 (0.6691) & \bestr
 \textbf{Dice-M2} & 4.456 (0.6901) & 29.692 (1.1858) & 49.405 (1.2517) & 97.228 (1.5675) & \bestresult{100.000 (--)} \\
 \textbf{Dice-M8} & 4.254 (0.6190) & 31.656 (1.3213) & 52.920 (1.4924) & 96.794 (1.5524) & \bestresult{100.000 (--)} \\
 \textbf{Dice-M32} & 4.239 (0.6137) & 30.565 (1.2460) & 52.438 (1.4594) & 96.946 (1.5577) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M2} & 4.009 (0.5329) & 25.865 (0.9218) & 48.338 (1.1786) & 97.174 (1.5656) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M8} & \bestresult{3.923 (0.5027)} & 26.825 (0.9880) & 46.045 (1.0215) & 96.639 (1.5470) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M32} & 3.994 (0.5275) & 25.614 (0.9045) & 46.488 (1.0519) & 96.842 (1.5541) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M2} & 4.033 (0.5413) & 26.080 (0.9367) & 48.313 (1.1769) & 97.184 (1.5660) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M8} & 3.987 (0.5253) & 26.442 (0.9616) & 45.788 (1.0039) & 96.136 (1.5295) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M32} & 4.118 (0.5714) & 25.267 (0.8805) & 46.043 (1.0214) & 96.513 (1.5426) & \bestresult{100.000 (--)} \\
+\textbf{HD-M2} & 4.009 (0.5329) & 25.865 (0.9218) & 48.338 (1.1786) & 97.174 (1.5656) & \bestresult{100.000 (--)} \\
+\textbf{HD-M8} & \bestresult{3.923 (0.5027)} & 26.825 (0.9880) & 46.045 (1.0215) & 96.639 (1.5470) & \bestresult{100.000 (--)} \\
+\textbf{HD-M32} & 3.994 (0.5275) & 25.614 (0.9045) & 46.488 (1.0519) & 96.842 (1.5541) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M2} & 4.033 (0.5413) & 26.080 (0.9367) & 48.313 (1.1769) & 97.184 (1.5660) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M8} & 3.987 (0.5253) & 26.442 (0.9616) & 45.788 (1.0039) & 96.136 (1.5295) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M32} & 4.118 (0.5714) & 25.267 (0.8805) & 46.043 (1.0214) & 96.513 (1.5426) & \bestresult{100.000 (--)} \\
 \bottomrule
 \end{tabular*}
 \par\smallskip
@@ -108,12 +108,12 @@ Foreground entropy & 3.700 (0.4649) \\
 \textbf{Dice-M2} & 4.601 (0.7514) \\
 \textbf{Dice-M8} & 3.862 (0.5164) \\
 \textbf{Dice-M32} & 3.833 (0.5072) \\
-\textbf{nHD-M2} & 4.324 (0.6633) \\
-\textbf{nHD-M8} & 3.494 (0.3997) \\
-\textbf{nHD-M32} & 3.455 (0.3872) \\
-\textbf{nHD95-M2} & 4.328 (0.6646) \\
-\textbf{nHD95-M8} & 3.546 (0.4160) \\
-\textbf{nHD95-M32} & \bestresult{3.448 (0.3848)} \\
+\textbf{HD-M2} & 4.324 (0.6633) \\
+\textbf{HD-M8} & 3.494 (0.3997) \\
+\textbf{HD-M32} & 3.455 (0.3872) \\
+\textbf{HD95-M2} & 4.328 (0.6646) \\
+\textbf{HD95-M8} & 3.546 (0.4160) \\
+\textbf{HD95-M32} & \bestresult{3.448 (0.3848)} \\
 \bottomrule
 \end{tabular*}
 }
@@ -141,12 +141,12 @@ Foreground entropy & 8.473 (0.5716) & 38.652 (0.4651) & 87.326 (0.6738) & \bestr
 \textbf{Dice-M2} & 7.723 (0.3907) & 50.706 (0.9235) & 89.170 (0.9964) & 98.875 (1.3328) & \bestresult{100.000 (--)} \\
 \textbf{Dice-M8} & 8.073 (0.4750) & 54.170 (1.0552) & 89.963 (1.1352) & 98.663 (1.3184) & \bestresult{100.000 (--)} \\
 \textbf{Dice-M32} & 7.919 (0.4380) & 53.244 (1.0200) & 89.847 (1.1149) & 98.738 (1.3235) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M2} & 8.583 (0.5982) & 45.302 (0.7180) & 89.363 (1.0302) & 98.871 (1.3325) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M8} & 8.774 (0.6443) & 46.788 (0.7745) & 88.627 (0.9015) & 98.512 (1.3082) & \bestresult{100.000 (--)} \\
-\textbf{nHD-M32} & 8.697 (0.6256) & 45.574 (0.7284) & 88.680 (0.9108) & 98.646 (1.3173) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M2} & 8.602 (0.6028) & 45.639 (0.7308) & 89.320 (1.0227) & 98.888 (1.3337) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M8} & 8.840 (0.6602) & 46.917 (0.7794) & 88.564 (0.8904) & 98.278 (1.2924) & \bestresult{100.000 (--)} \\
-\textbf{nHD95-M32} & 8.785 (0.6469) & 45.664 (0.7318) & 88.560 (0.8897) & 98.492 (1.3068) & \bestresult{100.000 (--)} \\
+\textbf{HD-M2} & 8.583 (0.5982) & 45.302 (0.7180) & 89.363 (1.0302) & 98.871 (1.3325) & \bestresult{100.000 (--)} \\
+\textbf{HD-M8} & 8.774 (0.6443) & 46.788 (0.7745) & 88.627 (0.9015) & 98.512 (1.3082) & \bestresult{100.000 (--)} \\
+\textbf{HD-M32} & 8.697 (0.6256) & 45.574 (0.7284) & 88.680 (0.9108) & 98.646 (1.3173) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M2} & 8.602 (0.6028) & 45.639 (0.7308) & 89.320 (1.0227) & 98.888 (1.3337) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M8} & 8.840 (0.6602) & 46.917 (0.7794) & 88.564 (0.8904) & 98.278 (1.2924) & \bestresult{100.000 (--)} \\
+\textbf{HD95-M32} & 8.785 (0.6469) & 45.664 (0.7318) & 88.560 (0.8897) & 98.492 (1.3068) & \bestresult{100.000 (--)} \\
 \bottomrule
 \end{tabular*}
 \par\smallskip
@@ -167,12 +167,12 @@ Foreground entropy & 6.860 (0.2618) \\
 \textbf{Dice-M2} & 7.474 (0.3840) \\
 \textbf{Dice-M8} & 6.788 (0.2474) \\
 \textbf{Dice-M32} & 6.790 (0.2478) \\
-\textbf{nHD-M2} & 9.276 (0.7425) \\
-\textbf{nHD-M8} & 8.535 (0.5950) \\
-\textbf{nHD-M32} & 8.488 (0.5857) \\
-\textbf{nHD95-M2} & 9.510 (0.7891) \\
-\textbf{nHD95-M8} & 8.701 (0.6282) \\
-\textbf{nHD95-M32} & 8.597 (0.6074) \\
+\textbf{HD-M2} & 9.276 (0.7425) \\
+\textbf{HD-M8} & 8.535 (0.5950) \\
+\textbf{HD-M32} & 8.488 (0.5857) \\
+\textbf{HD95-M2} & 9.510 (0.7891) \\
+\textbf{HD95-M8} & 8.701 (0.6282) \\
+\textbf{HD95-M32} & 8.597 (0.6074) \\
 \bottomrule
 \end{tabular*}
 }

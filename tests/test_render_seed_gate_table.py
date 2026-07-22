@@ -86,7 +86,7 @@ def test_render_is_exactly_the_five_target_reversals():
         "DL-T & $\\bigl(+0.024/-0.067/-0.086\\bigr)^{\\dagger}$ & "
         "$\\bigl(-0.023/-0.047/+0.016\\bigr)$ & --" in payload
     )
-    assert "negative values favor nHD" in payload
+    assert "negative values favor HD" in payload
     assert "three independently trained checkpoints" in payload
 
 

@@ -76,11 +76,11 @@ SELECTION_RULES = {
         ),
         "empty_action": (
             "among rows with prediction_foreground_fraction exactly zero, maximize "
-            "the realized matched loss over Dice, nHD, and nHD95"
+            "the realized matched loss over Dice, HD, and HD95"
         ),
         "confident_failure": (
             "maximize observed matched loss minus predicted working risk over the "
-            "three M32 loss-indexed scores, where predicted risk=-confidence"
+            "three M32 risk-aligned scores, where predicted risk=-confidence"
         ),
     },
     "duplicate_policy": (
@@ -92,7 +92,7 @@ SELECTION_RULES = {
     "tie_breaks": (
         "after the descending selection objective: condition priority "
         "clipseg-target then deeplabv3-target, sample_id lexicographic order, "
-        "then matched-loss priority Dice, nHD, nHD95 when applicable"
+        "then matched-loss priority Dice, HD, HD95 when applicable"
     ),
     "missing_empty_action_policy": (
         "emit an unavailable case entry; never substitute a nonempty prediction"

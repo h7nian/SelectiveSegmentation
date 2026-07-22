@@ -42,8 +42,8 @@ TARGET_CONDITIONS = frozenset(
 )
 MATCHED_PAIRS = (
     ("confidence_dice_exact", "risk_dice", "Dice-Exact", "Dice"),
-    ("confidence_nhd_m32", "risk_nhd", "nHD-M32", "nHD"),
-    ("confidence_nhd95_m32", "risk_nhd95", "nHD95-M32", "nHD95"),
+    ("confidence_nhd_m32", "risk_nhd", "HD-M32", "HD"),
+    ("confidence_nhd95_m32", "risk_nhd95", "HD95-M32", "HD95"),
 )
 
 

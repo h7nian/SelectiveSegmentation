@@ -240,7 +240,7 @@ def test_renderer_is_deterministic_complete_and_explicitly_nonexact(tmp_path):
     assert "M128 is a numerical reference" in tex
     assert "not an exact integral" in tex
     assert "Dice: M128 vs Exact" in tex
-    assert "nHD95: M32 vs M128" in tex
+    assert "HD95: M32 vs M128" in tex
     assert tex.index("Oxford Pet") < tex.index("Kvasir-SEG") < tex.index("FIVES")
     reversed_report = copy.deepcopy(report)
     reversed_report["conditions"].reverse()
@@ -293,7 +293,7 @@ def test_renderer_is_deterministic_complete_and_explicitly_nonexact(tmp_path):
             }
         )
     series = threshold_aurc_series(primary, by_key)
-    assert set(series) == {"Dice", "nHD", "nHD95"}
+    assert set(series) == {"Dice", "HD", "HD95"}
     assert all(len(values["midpoint"]) == 4 for values in series.values())
     figure = render_threshold_figure(primary, by_key, tmp_path / "thresholds.pdf")
     assert figure.stat().st_size > 0

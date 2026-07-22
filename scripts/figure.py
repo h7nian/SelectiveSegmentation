@@ -1,4 +1,4 @@
-"""Render the manuscript's loss-indexed-confidence schematic as vector PDF."""
+"""Render the manuscript's risk-aligned-confidence schematic as vector PDF."""
 
 from __future__ import annotations
 
@@ -148,7 +148,7 @@ def render(output):
         figure,
         0.665,
         0.51,
-        r"integrate the chosen loss" "\n" r"$r_{L,M}=\sum_m w_m\ell_m$" "\n" r"$C_{L,M}=-r_{L,M}$",
+        r"integrate deployment cost" "\n" r"$r_{L,M}=\sum_m w_m\ell_m$" "\n" r"$C_{L,M}=-r_{L,M}$",
         fontsize=6.6,
     )
 
@@ -194,7 +194,7 @@ def render(output):
         bbox_inches="tight",
         pad_inches=0.01,
         metadata={
-            "Title": "Loss-indexed confidence framework",
+            "Title": "Risk-aligned confidence framework",
             "Author": "Anonymous",
             "Creator": "scripts/make_method_figure.py",
             "CreationDate": None,

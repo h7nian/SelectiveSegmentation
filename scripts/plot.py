@@ -3,10 +3,10 @@
 This is the plotting companion to :mod:`scripts.analyze.main`.  It accepts
 only an explicit list of assembled ``records.jsonl`` (or matching manifest)
 paths: it never discovers inputs with a glob.  For every dataset/condition it
-plots the matched M=32 loss-indexed confidence and SDC under each of Dice,
+plots the matched M=32 risk-aligned confidence and SDC under each of Dice,
 normalized Hausdorff, and normalized HD95 risk, together with oracle and
 random-order references.  ``--all-indexed`` overlays all three M=32 indexed
-scores under every risk for the complete cross-loss view.
+scores under every risk for the complete cross-risk view.
 
 Example::
 
@@ -52,7 +52,7 @@ ASSEMBLY_ARTIFACT_TYPE = "selectseg.binary_simulation_assembly"
 PDF_METADATA = {
     "Title": "Binary selective-segmentation risk-coverage curves",
     "Author": "Anonymous",
-    "Subject": "Tie-aware loss-indexed selective risk",
+    "Subject": "Tie-aware risk-aligned selective risk",
     "Keywords": "selective segmentation, risk coverage, AURC",
     "Creator": "scripts/plot.py",
     "Producer": "Matplotlib",
@@ -111,16 +111,16 @@ RISK_SPECS = (
     ),
     RiskSpec(
         "risk_nhd",
-        "Normalized HD risk",
+        "HD risk",
         "confidence_nhd_m32",
-        "nHD-M32 (matched)",
+        "HD-M32 (matched)",
         "#D55E00",
     ),
     RiskSpec(
         "risk_nhd95",
-        "Normalized HD95 risk",
+        "HD95 risk",
         "confidence_nhd95_m32",
-        "nHD95-M32 (matched)",
+        "HD95-M32 (matched)",
         "#CC79A7",
     ),
 )
@@ -163,7 +163,7 @@ def parse_args(argv: Sequence[str] | None = None):
         "--all-indexed",
         action="store_true",
         help=(
-            "overlay Dice-M32, nHD-M32, and nHD95-M32 under every risk; "
+            "overlay Dice-M32, HD-M32, and HD95-M32 under every risk; "
             "the default plots only the matched indexed score in each row"
         ),
     )

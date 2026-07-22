@@ -1,0 +1,85 @@
+{
+  "config_schema_version": 1,
+  "campaign_id": "target-table-completion-v1",
+  "protocol": {
+    "gamma_values": [0.5],
+    "m_values": [2, 8, 32],
+    "quadrature_rule": "midpoint-v1",
+    "seeds": [0]
+  },
+  "gpu_partitions": ["saffo-a100", "apollo_agate"],
+  "cpu_partitions": ["amdsmall", "agsmall", "msismall", "saffo-2tb"],
+  "estimator_spec": "configs/estimators/midpoint-v1.json",
+  "paths": {
+    "artifact_output_root": "outputs/table_completion/artifacts",
+    "common_output_root": "outputs/table_completion/common",
+    "simulation_output_root": "outputs/table_completion/simulations",
+    "assembly_output_root": "outputs/table_completion/assembled"
+  },
+  "conditions": [
+    {
+      "dataset": "pet",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "checkpoint": "outputs/extension/train/pet/segformer/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 3669
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "checkpoint": "outputs/extension/train/kvasir/segformer/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "fives",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "checkpoint": "outputs/extension/train/fives/segformer/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 200
+    },
+    {
+      "dataset": "isic",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "checkpoint": "outputs/extension/train/isic/segformer/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 1000
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "checkpoint": "outputs/extension/train/tn3k/segformer/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 614
+    },
+    {
+      "dataset": "duts",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "checkpoint": "outputs/extension/train/duts/segformer/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 5019
+    },
+    {
+      "dataset": "duts",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "checkpoint": "outputs/extension/train/duts/deeplabv3/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 5019
+    },
+    {
+      "dataset": "duts",
+      "condition": "clipseg-target",
+      "model": "clipseg",
+      "checkpoint": "outputs/table_completion/train/duts/clipseg/checkpoint.pt",
+      "batch_size": 8,
+      "expected_num_samples": 5019
+    }
+  ]
+}

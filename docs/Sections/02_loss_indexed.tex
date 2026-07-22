@@ -1,7 +1,7 @@
-\section{Loss-indexed selective segmentation}
+\section{Risk-aligned selective segmentation}
 \label{sec:setup}
 
-\noindent\textbf{Prediction and loss.}
+\noindent\textbf{Prediction, cost, and risk.}
 Let \(X\) take values in a standard Borel image space and let
 \(Y\in\mathcal Y:=2^\Omega\) be its binary mask on a finite pixel grid
 \(\Omega\). Fix a regular conditional label law
@@ -12,8 +12,10 @@ hard prediction \(\Yhat(X)\). For example,
 \(\Yhat(X)=\{i:p_i(X)\geq\gamma\}\) for a fixed threshold \(\gamma\), but the
 definitions apply to any deterministic deployed decision rule.
 
-Let \(L_x(A,B)\) be the loss incurred when \(B\) is deployed and \(A\) is the
-label. We assume that \((x,A,B)\mapsto L_x(A,B)\) is jointly measurable and
+Let \(L_x(A,B)\) be the per-case deployment cost incurred when \(B\) is deployed
+and \(A\) is the label. It is induced by the evaluation metric: Dice induces
+\(1-\Dice\), whereas normalized HD and HD95 are already costs to minimize. We
+assume that \((x,A,B)\mapsto L_x(A,B)\) is jointly measurable and
 uniformly bounded:
 \begin{equation}
   0\leq L_x(A,B)\leq B_x\leq B<\infty.
@@ -22,12 +24,12 @@ uniformly bounded:
 The uniform envelope ensures that all selective risks and AURCs below are
 finite.
 Boundedness is automatic for \(1-\Dice\) and one minus intersection-over-union
-(IoU), \(1-\IoU\). A surface loss that
+(IoU), \(1-\IoU\). A surface cost that
 is undefined for an empty mask must be extended before it enters the framework.
 The convention is part of \(L\) and must be shared by the confidence computation
 and selective-risk evaluation.
 
-\noindent\textbf{Risk and coverage are loss-indexed.}
+\noindent\textbf{Risk and coverage are deployment-specific.}
 A confidence \(g:\mathcal X\to\mathbb R\) is oriented so that larger values mean
 more confidence. At threshold \(\tau\), define
 \begin{equation}
@@ -42,15 +44,16 @@ denominator is positive. At a prescribed coverage, randomization within a tied
 confidence value attains the requested acceptance probability without imposing
 an arbitrary order. Writing \(R_L(c;g)\) for the resulting risk at coverage
 \(c\in(0,1]\), let \(\AURC_L(g)=\int_0^1 R_L(c;g)\,dc\).
-This is the loss-indexed version of the standard selective-prediction evaluation
+This is the risk-aligned version of the standard selective-prediction evaluation
 \citep{geifman2017selective,selectivenet}. The subscript matters:
 \(\AURC_{1-\Dice}\) and \(\AURC_{\HDF}\) evaluate different rankings of harm
 and have different semantics and scales. AURC depends on \(g\) only through its induced ranking,
 up to the declared tie rule.
 
-\begin{definition}[Ideal loss-indexed confidence]
+\begin{definition}[Ideal risk-aligned confidence]
 \label{def:ideal}
-For a fixed deployed predictor \(\Yhat\), define
+For a fixed deployed predictor \(\Yhat\), the metric-induced conditional
+deployment risk and its aligned confidence are
 \begin{equation*}
   \rho_L^\star(x)
   :=\Ex\!\left[L_x(Y,\Yhat(x))\mid X=x\right]
@@ -70,14 +73,14 @@ increasing order of \(\rho_L^\star(X)\) minimizes selective risk at every covera
 up to randomization among ties. Equivalently, ranking by \(C_L^\star\) minimizes
 \(\AURC_L\).
 \end{proposition}
-The result follows by conditioning the accepted loss on \(X\) and exchanging any
+The result follows by conditioning the accepted cost on \(X\) and exchanging any
 accepted point of higher conditional risk with a rejected point of lower conditional
 risk. \Cref{app:theory} gives the measure-theoretic statement and proof.
 
 \Cref{def:ideal} is \textbf{a target, not an available score}. Computing it
-requires the indicated loss-functional of the conditional law of \(Y\) given
+requires the indicated cost-functional of the conditional law of \(Y\) given
 \(x\); knowing the full law is sufficient but stronger than necessary. Even the
 true pixel marginals \(\pi_i(x):=\Prb(Y_i=1\mid X=x)\) do not identify how pixels
-vary jointly, and nonlinear losses such as nHD, nHD95, and Dice depend on that joint
+vary jointly, and nonlinear costs such as HD, HD95, and Dice depend on that joint
 structure. The model output \(p_i(x)\) need not equal \(\pi_i(x)\). We next make
 one working choice explicit.

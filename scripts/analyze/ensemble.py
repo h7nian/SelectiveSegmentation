@@ -23,11 +23,11 @@ BASELINE_ARTIFACT_TYPE = "selectseg.binary_ensemble_baselines"
 RISKS = ("risk_dice", "risk_nhd", "risk_nhd95")
 METHODS = (
     ("confidence_dice_m32", "LevelSet-Q Dice"),
-    ("confidence_nhd_m32", "LevelSet-Q nHD"),
-    ("confidence_nhd95_m32", "LevelSet-Q nHD95"),
+    ("confidence_nhd_m32", "LevelSet-Q HD"),
+    ("confidence_nhd95_m32", "LevelSet-Q HD95"),
     ("confidence_ensemble_q_dice", "Ensemble-Q Dice"),
-    ("confidence_ensemble_q_nhd", "Ensemble-Q nHD"),
-    ("confidence_ensemble_q_nhd95", "Ensemble-Q nHD95"),
+    ("confidence_ensemble_q_nhd", "Ensemble-Q HD"),
+    ("confidence_ensemble_q_nhd95", "Ensemble-Q HD95"),
     ("confidence_sdc", "SDC"),
     ("confidence_mean_max_probability", "Mean max probability"),
     ("confidence_negative_entropy", "Negative entropy"),

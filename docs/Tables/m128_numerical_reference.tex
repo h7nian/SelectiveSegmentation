@@ -2,7 +2,7 @@
 % Source analysis JSON SHA-256: 611f337735733bc0721f5b56bc464d66f94e6e5986f86a1c03c0752b233e98b5
 \begin{table*}[t]
 \centering
-\caption{High-resolution midpoint fidelity on the ten target-adapted conditions. M128 is a numerical reference for nHD and nHD95, not an exact integral; only the Dice level-set calculation is exact. Absolute score errors and rank agreement are computed per condition on the same frozen maps. AURC gaps are displayed on the $\times100$ scale and use the matched deployment risk and analytic averaging within score ties. Panel~(a) shows the boundary comparisons; panel~(b) summarizes all metrics, including the Dice numerical check. Ranges are descriptive and conditions are not independent replicates.}
+\caption{High-resolution midpoint fidelity on the ten target-adapted conditions. M128 is a numerical reference for HD and HD95, not an exact integral; only the Dice level-set calculation is exact. Absolute score errors and rank agreement are computed per condition on the same frozen maps. AURC gaps are displayed on the $\times100$ scale and use the matched deployment risk and analytic averaging within score ties. Panel~(a) shows the boundary comparisons; panel~(b) summarizes all metrics, including the Dice numerical check. Ranges are descriptive and conditions are not independent replicates.}
 \label{tab:m128-numerical-reference}
 \begin{minipage}{0.99\textwidth}
 \centering
@@ -10,7 +10,7 @@
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llcccccccc}
 \toprule
- & & \multicolumn{4}{c}{nHD: M32 vs M128} & \multicolumn{4}{c}{nHD95: M32 vs M128} \\
+ & & \multicolumn{4}{c}{HD: M32 vs M128} & \multicolumn{4}{c}{HD95: M32 vs M128} \\
 \cmidrule(lr){3-6}\cmidrule(lr){7-10}
 Dataset & Model & Mean/P95 $|\Delta C|$ & $\rho$ & $\tau_b$ & $100|\Delta\mathrm{AURC}|$ & Mean/P95 $|\Delta C|$ & $\rho$ & $\tau_b$ & $100|\Delta\mathrm{AURC}|$ \\
 \midrule
@@ -35,8 +35,8 @@ TN3K & DL-T & 0.0037/0.0129 & 0.992 & 0.934 & 0.044 & 0.0034/0.0132 & 0.988 & 0.
 Comparison & Mean $|\Delta C|$ & Median $|\Delta C|$ & P95 $|\Delta C|$ & Max $|\Delta C|$ & Spearman $\rho$ & Kendall $\tau_b$ & $100|\Delta\mathrm{AURC}|$ \\
 \midrule
 Dice: M128 vs Exact & $[8.9\!\times\!10^{-5},\,0.0010]$ & $[3.1\!\times\!10^{-5},\,0.0010]$ & $[0.0002,\,0.0020]$ & $[0.0007,\,0.0039]$ & $[1.000,\,1.000]$ & $[0.992,\,1.000]$ & $[3.1\!\times\!10^{-5},\,0.015]$ \\
-nHD: M32 vs M128 & $[0.0009,\,0.0051]$ & $[0.0005,\,0.0047]$ & $[0.0025,\,0.0143]$ & $[0.0129,\,0.0207]$ & $[0.973,\,0.998]$ & $[0.878,\,0.976]$ & $[0.002,\,0.456]$ \\
-nHD95: M32 vs M128 & $[0.0008,\,0.0054]$ & $[0.0004,\,0.0052]$ & $[0.0020,\,0.0145]$ & $[0.0101,\,0.0195]$ & $[0.951,\,0.996]$ & $[0.818,\,0.973]$ & $[0.001,\,0.324]$ \\
+HD: M32 vs M128 & $[0.0009,\,0.0051]$ & $[0.0005,\,0.0047]$ & $[0.0025,\,0.0143]$ & $[0.0129,\,0.0207]$ & $[0.973,\,0.998]$ & $[0.878,\,0.976]$ & $[0.002,\,0.456]$ \\
+HD95: M32 vs M128 & $[0.0008,\,0.0054]$ & $[0.0004,\,0.0052]$ & $[0.0020,\,0.0145]$ & $[0.0101,\,0.0195]$ & $[0.951,\,0.996]$ & $[0.818,\,0.973]$ & $[0.001,\,0.324]$ \\
 \bottomrule
 \end{tabular}%
 }

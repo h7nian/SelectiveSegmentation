@@ -26,10 +26,10 @@ MODELS = (
 )
 PANELS = (
     ("risk_dice", "Dice risk", "confidence_dice_m32", "confidence_ensemble_q_dice"),
-    ("risk_nhd", "Normalized HD risk", "confidence_nhd_m32", "confidence_ensemble_q_nhd"),
+    ("risk_nhd", "HD risk", "confidence_nhd_m32", "confidence_ensemble_q_nhd"),
     (
         "risk_nhd95",
-        "Normalized HD95 risk",
+        "HD95 risk",
         "confidence_nhd95_m32",
         "confidence_ensemble_q_nhd95",
     ),

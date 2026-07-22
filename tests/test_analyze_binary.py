@@ -23,6 +23,9 @@ from scripts.analyze.main import (
     LATEX_NAME,
     METHODS,
     RISKS,
+    TABLE_COMPLETION_CONDITIONS,
+    TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET,
+    TABLE_COMPLETION_HOLM_FAMILY_DEFINITIONS,
     analyze_conditions,
     holm_adjust,
     load_condition,
@@ -585,6 +588,29 @@ def test_architecture_domain_extension_is_a_separate_declared_design(tmp_path):
     assert family["num_hypotheses"] == 28
 
 
+def test_table_completion_is_a_separately_locked_eight_condition_design(tmp_path):
+    conditions = []
+    for dataset, condition_name in TABLE_COMPLETION_CONDITIONS:
+        jsonl, _ = _write_condition(
+            tmp_path / f"{dataset}-{condition_name}",
+            dataset=dataset,
+            condition=condition_name,
+        )
+        conditions.append(load_condition(jsonl))
+
+    result = analyze_conditions(
+        conditions,
+        bootstrap_samples=2,
+        expected_conditions=TABLE_COMPLETION_CONDITIONS,
+        holm_family_by_dataset=TABLE_COMPLETION_HOLM_FAMILY_BY_DATASET,
+        holm_family_definitions=TABLE_COMPLETION_HOLM_FAMILY_DEFINITIONS,
+    )
+    multiple = result["multiple_testing"]
+    family = multiple["families"]["target_table_completion"]
+    assert multiple["total_hypotheses"] == 32
+    assert family["num_hypotheses"] == 32
+
+
 def test_cli_explicit_inputs_write_deterministic_json_csv_and_latex(
     tmp_path, monkeypatch
 ):
@@ -661,8 +687,8 @@ def test_cli_explicit_inputs_write_deterministic_json_csv_and_latex(
     latex = (output_one / LATEX_NAME).read_text()
     assert r"\begin{table*}" in latex
     assert "Dice-M32" in latex
-    assert "nHD-M32" in latex
-    assert "nHD95-M32" in latex
+    assert "HD-M32" in latex
+    assert "HD95-M32" in latex
     assert r"AURC $\times100$" in latex
     assert "multiplied by 100 for display only" in latex
 

@@ -93,7 +93,7 @@ def render_table(values: dict[tuple[str, str], dict[str, float]]) -> str:
     rows = (
         ("dice_fg_redundancy", r"Dice--FGEnt score redundancy"),
         ("dice_minus_sdc", r"Dice minus SDC association"),
-        ("nhd_spatial_increment", r"nHD minus Dice association"),
+        ("nhd_spatial_increment", r"HD minus Dice association"),
         ("exact_m32_difference", r"Exact--M32 absolute difference"),
     )
     output = [
@@ -101,7 +101,7 @@ def render_table(values: dict[tuple[str, str], dict[str, float]]) -> str:
         r"\centering",
         r"\scriptsize",
         r"\setlength{\tabcolsep}{4pt}",
-        r"\caption{Descriptive mechanism clues from the ten target conditions. Each cell is CLIP-T/DL-T and every association is Spearman's $\rho$. Row 1 is $\rho(C_{\rm Dice},C_{\rm FGEnt})$; row 2 is the Dice-minus-SDC association with Dice safety; row 3 is the nHD-minus-Dice association with nHD safety; row 4 is the absolute Dice-Exact--M32 association difference under Dice safety. These correlations motivate, but do not prove, the posterior-support mechanism.}",
+        r"\caption{Descriptive mechanism clues from the ten target conditions. Each cell is CLIP-T/DL-T and every association is Spearman's $\rho$. Row 1 is $\rho(C_{\rm Dice},C_{\rm FGEnt})$; row 2 is the Dice-minus-SDC association with Dice safety; row 3 is the HD-minus-Dice association with HD safety; row 4 is the absolute Dice-Exact--M32 association difference under Dice safety. These correlations motivate, but do not prove, the posterior-support mechanism.}",
         r"\label{tab:mechanism-clues}",
         r"\begin{tabular}{lccccc}",
         r"\toprule",

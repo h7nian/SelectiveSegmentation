@@ -4,7 +4,7 @@ This analysis consumes the exact campaign-bound ``records.jsonl`` assemblies.
 It describes three different objects without conflating them:
 
 * hard-action quality under Dice, normalized HD, and normalized HD95;
-* ranking agreement among the three loss-indexed working-risk scores; and
+* ranking agreement among the three risk-aligned working-risk scores; and
 * population-level grouped agreement between each working-risk proxy and one
   realized held-out loss per image.
 
@@ -49,13 +49,13 @@ COVERAGES = (0.25, 0.5, 0.75)
 
 AGREEMENT_SCORES = (
     ("confidence_dice_m32", "Dice-M32"),
-    ("confidence_nhd_m32", "nHD-M32"),
-    ("confidence_nhd95_m32", "nHD95-M32"),
+    ("confidence_nhd_m32", "HD-M32"),
+    ("confidence_nhd95_m32", "HD95-M32"),
 )
 RELIABILITY_SCORES = (
     ("confidence_dice_exact", "risk_dice", "Dice-Exact"),
-    ("confidence_nhd_m32", "risk_nhd", "nHD-M32"),
-    ("confidence_nhd95_m32", "risk_nhd95", "nHD95-M32"),
+    ("confidence_nhd_m32", "risk_nhd", "HD-M32"),
+    ("confidence_nhd95_m32", "risk_nhd95", "HD95-M32"),
 )
 RISK_LABELS = (
     ("risk_dice", "Dice loss"),
@@ -613,10 +613,10 @@ def analyze(
             ),
             "agreement_score_policy": (
                 "ranking and accepted-set agreement compare the three primary M32 "
-                "loss-indexed scores"
+                "risk-aligned scores"
             ),
             "reliability_score_policy": (
-                "matched reliability uses Dice-Exact for Dice and M32 for nHD/nHD95; "
+                "matched reliability uses Dice-Exact for Dice and M32 for HD/HD95; "
                 "the Dice-Exact versus SDC identity remains a separate diagnostic"
             ),
             "accepted_set_definition": (

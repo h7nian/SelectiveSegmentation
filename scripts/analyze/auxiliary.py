@@ -42,7 +42,7 @@ LATEX_NAME = "auxiliary_tables.tex"
 
 RISKS = (
     ("risk_dice", "Dice risk"),
-    ("risk_nhd95", "nHD95 risk"),
+    ("risk_nhd95", "HD95 risk"),
 )
 RISK_FIELDS = frozenset(field for field, _ in RISKS)
 AUXILIARY_RISK_FIELDS = frozenset({"risk_hd95_pixels"})
@@ -57,18 +57,18 @@ PROBABILITY_ONLY_BASELINES = frozenset(
 PRIMARY_METHODS = (
     *BASELINES,
     ("confidence_dice_m32", "Dice-M32"),
-    ("confidence_nhd95_m32", "nHD95-M32"),
+    ("confidence_nhd95_m32", "HD95-M32"),
 )
 PRIMARY_SCORE_FIELDS = frozenset(
     field
     for field, _ in (
         *BASELINES,
         ("confidence_dice_m2", "Dice-M2"),
-        ("confidence_nhd95_m2", "nHD95-M2"),
+        ("confidence_nhd95_m2", "HD95-M2"),
         ("confidence_dice_m8", "Dice-M8"),
-        ("confidence_nhd95_m8", "nHD95-M8"),
+        ("confidence_nhd95_m8", "HD95-M8"),
         ("confidence_dice_m32", "Dice-M32"),
-        ("confidence_nhd95_m32", "nHD95-M32"),
+        ("confidence_nhd95_m32", "HD95-M32"),
     )
 )
 M128_SCORE_FIELDS = frozenset(
@@ -84,8 +84,8 @@ MATCHED_M_METHODS = {
         ("confidence_dice_m128", "Dice-M128", "m128"),
     ),
     "risk_nhd95": (
-        ("confidence_nhd95_m32", "nHD95-M32", "primary"),
-        ("confidence_nhd95_m128", "nHD95-M128", "m128"),
+        ("confidence_nhd95_m32", "HD95-M32", "primary"),
+        ("confidence_nhd95_m128", "HD95-M128", "m128"),
     ),
 }
 
@@ -892,7 +892,7 @@ def _write_m128_table(result):
         r"\label{tab:m128-ablation}",
         r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
         r"\resizebox{\textwidth}{!}{%",
-        *_header_lines(conditions, first_column="Loss-indexed method"),
+        *_header_lines(conditions, first_column="Risk-aligned method"),
     ]
     for risk_position, (risk_field, risk_label) in enumerate(RISKS):
         if risk_position:

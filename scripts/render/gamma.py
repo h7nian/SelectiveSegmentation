@@ -49,22 +49,28 @@ ORDERED_TARGET_CONDITIONS = tuple(
     key for key in EXPECTED_CONDITIONS if key in TARGET_CONDITIONS
 )
 CONTRAST_LABELS = {
-    "dice_vs_nhd_under_dice": r"Dice--nHD $\mid$ Dice",
-    "dice_vs_nhd_under_nhd": r"Dice--nHD $\mid$ nHD",
-    "nhd_vs_nhd95_under_nhd": r"nHD--nHD95 $\mid$ nHD",
-    "nhd_vs_nhd95_under_nhd95": r"nHD--nHD95 $\mid$ nHD95",
+    "dice_vs_nhd_under_dice": r"Dice--HD $\mid$ Dice",
+    "dice_vs_nhd_under_nhd": r"Dice--HD $\mid$ HD",
+    "nhd_vs_nhd95_under_nhd": r"HD--HD95 $\mid$ HD",
+    "nhd_vs_nhd95_under_nhd95": r"HD--HD95 $\mid$ HD95",
 }
 PLOT_CONTRAST_LABELS = {
-    "dice_vs_nhd_under_dice": "Dice - nHD | Dice risk",
-    "dice_vs_nhd_under_nhd": "Dice - nHD | nHD risk",
-    "nhd_vs_nhd95_under_nhd": "nHD - nHD95 | nHD risk",
-    "nhd_vs_nhd95_under_nhd95": "nHD - nHD95 | nHD95 risk",
+    "dice_vs_nhd_under_dice": "Dice - HD | Dice risk",
+    "dice_vs_nhd_under_nhd": "Dice - HD | HD risk",
+    "nhd_vs_nhd95_under_nhd": "HD - HD95 | HD risk",
+    "nhd_vs_nhd95_under_nhd95": "HD - HD95 | HD95 risk",
 }
 RISK_LABELS = {
     "risk_dice": "Mean Dice loss",
-    "risk_nhd": "Mean nHD loss",
-    "risk_nhd95": "Mean nHD95 loss",
+    "risk_nhd": "Mean HD loss",
+    "risk_nhd95": "Mean HD95 loss",
 }
+
+
+def _display_label(label: str) -> str:
+    """Map legacy normalized-coordinate labels to manuscript terminology."""
+
+    return label.replace("nHD95", "HD95").replace("nHD", "HD")
 TOP_LEVEL_KEYS = frozenset(
     {
         "schema_version",
@@ -545,7 +551,7 @@ def _render_contrast_table(by_key: Mapping[tuple[str, str], dict]) -> list[str]:
         r"\resizebox{\textwidth}{!}{%",
         r"\begin{tabular}{llcccc}",
         r"\toprule",
-        r"Dataset & Model & Dice--nHD $\mid$ Dice & Dice--nHD $\mid$ nHD & nHD--nHD95 $\mid$ nHD & nHD--nHD95 $\mid$ nHD95 \\",
+        r"Dataset & Model & Dice--HD $\mid$ Dice & Dice--HD $\mid$ HD & HD--HD95 $\mid$ HD & HD--HD95 $\mid$ HD95 \\",
         r"\midrule",
     ]
     for dataset, condition in ORDERED_TARGET_CONDITIONS:
@@ -613,7 +619,7 @@ def _render_stability_panel(headline: Mapping[str, Any]) -> list[str]:
                 rho = _range(correlation["range"])
                 if correlation["num_undefined"]:
                     rho += rf"$^{{\dagger {correlation['num_undefined']}}}$"
-            cells = [label, rf"${gamma:.1f}$ vs $.5$", rho]
+            cells = [_display_label(label), rf"${gamma:.1f}$ vs $.5$", rho]
             cells.extend(
                 _range(item["accepted_set_jaccard_ranges"][f"{coverage:.2f}"])
                 for coverage in COVERAGES

@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "analysis_id": "dice-spatial-copula-v1",
+  "status": "predeclared-before-computing-spatial-copula-scores",
+  "paths": {
+    "workspace_root": ".",
+    "campaign_lock": "outputs/binary_midpoint_main_v2/campaign.lock.json",
+    "output_root": "outputs/spatial_copula_v1"
+  },
+  "scheduler": {
+    "gpu_partition_candidates": ["saffo-a100", "apollo_agate"],
+    "cpu_partition_candidates": ["amdsmall", "agsmall", "msismall", "saffo-2tb"]
+  },
+  "conditions": {
+    "datasets": ["pet", "kvasir", "fives", "isic", "tn3k"],
+    "models": ["clipseg-target", "deeplabv3-target"],
+    "count": 10,
+    "source": "locked seed-0 single probability maps"
+  },
+  "fixed_action": "probability >= 0.5",
+  "marginal_property": "every variant satisfies Pr(Y_i=1)=p_i",
+  "variants": [
+    {
+      "id": "g50-s50-k05",
+      "coupling": "spatial-copula",
+      "global_variance_weight": 0.5,
+      "spatial_variance_weight": 0.5,
+      "spatial_knot_spacing_diagonal": 0.05,
+      "role": "prespecified primary"
+    },
+    {
+      "id": "g75-s25-k05",
+      "coupling": "spatial-copula",
+      "global_variance_weight": 0.75,
+      "spatial_variance_weight": 0.25,
+      "spatial_knot_spacing_diagonal": 0.05,
+      "role": "global-weight sensitivity"
+    },
+    {
+      "id": "g25-s75-k05",
+      "coupling": "spatial-copula",
+      "global_variance_weight": 0.25,
+      "spatial_variance_weight": 0.75,
+      "spatial_knot_spacing_diagonal": 0.05,
+      "role": "spatial-weight sensitivity"
+    },
+    {
+      "id": "g50-s50-k02",
+      "coupling": "spatial-copula",
+      "global_variance_weight": 0.5,
+      "spatial_variance_weight": 0.5,
+      "spatial_knot_spacing_diagonal": 0.02,
+      "role": "short-scale sensitivity"
+    },
+    {
+      "id": "g50-s50-k10",
+      "coupling": "spatial-copula",
+      "global_variance_weight": 0.5,
+      "spatial_variance_weight": 0.5,
+      "spatial_knot_spacing_diagonal": 0.1,
+      "role": "long-scale sensitivity"
+    },
+    {
+      "id": "g25-s50-i25-k05",
+      "coupling": "spatial-copula",
+      "global_variance_weight": 0.25,
+      "spatial_variance_weight": 0.5,
+      "spatial_knot_spacing_diagonal": 0.05,
+      "role": "independent-residual sensitivity"
+    }
+  ],
+  "numerics": {
+    "posterior_draws": 32,
+    "repeat_indices": [0, 1, 2, 3],
+    "posterior_batch_size": 4,
+    "master_seed": 20260722
+  },
+  "runtime_pilot": {
+    "conditions": ["pet/clipseg-target", "fives/clipseg-target"],
+    "variant_ids": ["g50-s50-k05"],
+    "repeat_indices": [0],
+    "restriction": "inspect runtime and numerical validity only before submitting the full grid"
+  },
+  "primary_comparison": {
+    "risk": "dice",
+    "left": "confidence_dice_spatial_copula_g50_s50_k05",
+    "right": "confidence_dice_m32",
+    "estimand": "left AURC minus right AURC",
+    "support_gate": {
+      "required_condition_wins": 7,
+      "required_mean_aurc_difference_direction": "negative",
+      "require_repeat_stability": true
+    }
+  },
+  "interpretation_limits": [
+    "Sensitivity variants are all reported and are never selected by test AURC.",
+    "Single-label test data assess ranking utility but do not identify a true mask posterior.",
+    "The coordinate-only field uses no image features beyond the frozen probability map.",
+    "Each condition, variant, and repeat is an independent non-array Slurm job."
+  ]
+}
