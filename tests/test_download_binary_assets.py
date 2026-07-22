@@ -7,7 +7,7 @@ from types import ModuleType
 from scripts import download as assets
 
 
-def test_model_download_pins_both_clipseg_components(monkeypatch, tmp_path):
+def test_model_download_pins_hugging_face_components(monkeypatch, tmp_path):
     calls = []
 
     # ``download_models`` intentionally redirects the process-wide caches to
@@ -28,9 +28,21 @@ def test_model_download_pins_both_clipseg_components(monkeypatch, tmp_path):
         def from_pretrained(cls, model_id, **kwargs):
             calls.append(("processor", model_id, kwargs))
 
+    class FakeSegFormerModel:
+        @classmethod
+        def from_pretrained(cls, model_id, **kwargs):
+            calls.append(("segformer-model", model_id, kwargs))
+
+    class FakeSegFormerProcessor:
+        @classmethod
+        def from_pretrained(cls, model_id, **kwargs):
+            calls.append(("segformer-processor", model_id, kwargs))
+
     transformers = ModuleType("transformers")
     transformers.CLIPSegForImageSegmentation = FakeCLIPSegModel
     transformers.CLIPSegProcessor = FakeCLIPSegProcessor
+    transformers.SegformerForSemanticSegmentation = FakeSegFormerModel
+    transformers.SegformerImageProcessor = FakeSegFormerProcessor
 
     segmentation = ModuleType("torchvision.models.segmentation")
 
@@ -60,5 +72,19 @@ def test_model_download_pins_both_clipseg_components(monkeypatch, tmp_path):
         ("model", "CIDAS/clipseg-rd64-refined", expected),
         ("processor", "CIDAS/clipseg-rd64-refined", expected),
     ]
-    assert calls[2] == ("deeplabv3", "locked-deeplabv3-weights", {})
+    segformer = {"revision": "de01bae28967510f9ddd496c60a969357195400c"}
+    assert calls[2:4] == [
+        (
+            "segformer-model",
+            "nvidia/segformer-b2-finetuned-ade-512-512",
+            segformer,
+        ),
+        (
+            "segformer-processor",
+            "nvidia/segformer-b2-finetuned-ade-512-512",
+            segformer,
+        ),
+    ]
+    assert calls[4] == ("deeplabv3", "locked-deeplabv3-weights", {})
     assert assets.CLIPSEG_REVISION == expected["revision"]
+    assert assets.SEGFORMER_REVISION == segformer["revision"]

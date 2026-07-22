@@ -1,7 +1,9 @@
 """Aggregate explicit held-out binary diagnostics under one campaign lock.
 
-The canonical run requires exactly the 16 predeclared ``diagnostics.json``
-paths and the immutable campaign lock that names their source artifacts.
+The primary run requires exactly its 16 predeclared ``diagnostics.json`` paths;
+``--design extension`` selects the separately locked seven-condition
+architecture/domain study. Both consume the immutable campaign lock that names
+their source artifacts.
 ``--allow-incomplete`` permits a nonempty declared subset only for pipeline
 smoke tests.  Inputs are never discovered from directories or globs.
 
@@ -28,7 +30,10 @@ from typing import Mapping, Sequence
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.analyze.main import EXPECTED_CONDITIONS  # noqa: E402
+from scripts.analyze.main import (  # noqa: E402
+    EXPECTED_CONDITIONS,
+    EXTENSION_CONDITIONS,
+)
 from scripts.submit.main import load_campaign_lock  # noqa: E402
 from selectseg.studies.diagnostics import (  # noqa: E402
     DEFAULT_ECE_BINS,
@@ -46,6 +51,7 @@ EXPECTED_CAMPAIGN_IDS = frozenset(
         "binary-midpoint-main-v2",
     }
 )
+EXTENSION_CAMPAIGN_IDS = frozenset({"architecture-domain-extension-v1"})
 JSON_NAME = "diagnostics_analysis.json"
 TEX_NAME = "binary_diagnostics.tex"
 EXPECTED_SAMPLE_COUNTS = {
@@ -75,6 +81,61 @@ CONDITION_LABELS = {
     "deeplabv3-target": "DL-T",
     "deeplabv3-external": "DL-E",
 }
+
+
+@dataclass(frozen=True)
+class DiagnosticsDesign:
+    expected_conditions: tuple[tuple[str, str], ...]
+    campaign_ids: frozenset[str]
+    sample_counts: Mapping[str, int]
+    dataset_order: tuple[str, ...]
+    dataset_labels: Mapping[str, str]
+    condition_order: tuple[str, ...]
+    condition_labels: Mapping[str, str]
+    tex_name: str
+    table_label: str
+    caption_prefix: str
+
+
+DESIGNS = {
+    "primary": DiagnosticsDesign(
+        expected_conditions=EXPECTED_CONDITIONS,
+        campaign_ids=EXPECTED_CAMPAIGN_IDS,
+        sample_counts=EXPECTED_SAMPLE_COUNTS,
+        dataset_order=DATASET_ORDER,
+        dataset_labels=DATASET_LABELS,
+        condition_order=CONDITION_ORDER,
+        condition_labels=CONDITION_LABELS,
+        tex_name=TEX_NAME,
+        table_label="tab:binary-diagnostics",
+        caption_prefix="Fixed held-out diagnostics",
+    ),
+    "extension": DiagnosticsDesign(
+        expected_conditions=EXTENSION_CONDITIONS,
+        campaign_ids=EXTENSION_CAMPAIGN_IDS,
+        sample_counts={**EXPECTED_SAMPLE_COUNTS, "duts": 5_019},
+        dataset_order=(*DATASET_ORDER, "duts"),
+        dataset_labels={**DATASET_LABELS, "duts": "DUTS"},
+        condition_order=("segformer-target", "deeplabv3-target"),
+        condition_labels={
+            "segformer-target": "SF-T",
+            "deeplabv3-target": "DL-T",
+        },
+        tex_name="architecture_domain_diagnostics.tex",
+        table_label="tab:architecture-domain-diagnostics",
+        caption_prefix="Architecture and domain extension diagnostics",
+    ),
+}
+
+
+def _sample_counts(design):
+    """Keep the primary compatibility constant patchable in contract tests."""
+
+    return (
+        EXPECTED_SAMPLE_COUNTS if design is DESIGNS["primary"] else design.sample_counts
+    )
+
+
 METRIC_KEYS = (
     "brier_score",
     "ece",
@@ -128,6 +189,12 @@ class DiagnosticInput:
 
 def parse_args(argv: Sequence[str] | None = None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--design",
+        choices=tuple(DESIGNS),
+        default="primary",
+        help="validate the primary campaign or architecture/domain extension",
+    )
     parser.add_argument(
         "--campaign-lock",
         required=True,
@@ -217,15 +284,15 @@ def _require_number(value, *, location, minimum=0.0, maximum=1.0):
     return result
 
 
-def _validate_lock_scope(lock, *, allow_incomplete):
+def _validate_lock_scope(lock, *, allow_incomplete, design):
     artifacts = lock["artifacts"]
     keys = [(item["dataset"], item["condition"]) for item in artifacts]
     observed = set(keys)
-    expected = set(EXPECTED_CONDITIONS)
-    if not allow_incomplete and lock["campaign_id"] not in EXPECTED_CAMPAIGN_IDS:
+    expected = set(design.expected_conditions)
+    if not allow_incomplete and lock["campaign_id"] not in design.campaign_ids:
         raise ValueError(
             "canonical diagnostics require one of the sealed campaign IDs: "
-            f"{sorted(EXPECTED_CAMPAIGN_IDS)}"
+            f"{sorted(design.campaign_ids)}"
         )
     if (
         lock["estimator"]["estimator_id"] != "midpoint-v1"
@@ -240,14 +307,16 @@ def _validate_lock_scope(lock, *, allow_incomplete):
     if allow_incomplete:
         if not observed:
             raise ValueError("smoke-test campaign lock cannot be empty")
-    elif observed != expected or len(artifacts) != len(EXPECTED_CONDITIONS):
+    elif observed != expected or len(artifacts) != len(design.expected_conditions):
         raise ValueError(
-            "canonical diagnostics require the exact 16-condition campaign lock; "
+            "canonical diagnostics require the exact "
+            f"{len(design.expected_conditions)}-condition campaign lock; "
             f"missing={sorted(expected - observed)}"
         )
     if not allow_incomplete:
+        sample_counts = _sample_counts(design)
         for artifact in artifacts:
-            expected_count = EXPECTED_SAMPLE_COUNTS[artifact["dataset"]]
+            expected_count = sample_counts[artifact["dataset"]]
             if artifact["num_samples"] != expected_count:
                 raise ValueError(
                     "canonical cohort count mismatch for "
@@ -299,20 +368,31 @@ def _validate_diagnostic_against_lock(loaded, lock_artifact, *, gamma):
         raise ValueError(f"diagnostic ladder must use M={LADDER_M} for {key}")
 
 
-def load_inputs(campaign_lock, diagnostic_paths, *, allow_incomplete=False):
+def load_inputs(
+    campaign_lock,
+    diagnostic_paths,
+    *,
+    allow_incomplete=False,
+    design=DESIGNS["primary"],
+):
     """Load one lock and explicit, one-per-condition diagnostic summaries."""
 
     lock_path, lock_sha256, lock = load_campaign_lock(campaign_lock)
-    lock_by_key = _validate_lock_scope(lock, allow_incomplete=allow_incomplete)
+    lock_by_key = _validate_lock_scope(
+        lock,
+        allow_incomplete=allow_incomplete,
+        design=design,
+    )
     raw_paths = list(diagnostic_paths)
     if not raw_paths:
         raise ValueError("at least one explicit diagnostics.json is required")
     resolved = [Path(path).resolve() for path in raw_paths]
     if len(resolved) != len(set(resolved)):
         raise ValueError("diagnostics.json inputs must be distinct")
-    if not allow_incomplete and len(resolved) != len(EXPECTED_CONDITIONS):
+    if not allow_incomplete and len(resolved) != len(design.expected_conditions):
         raise ValueError(
-            f"canonical diagnostics require exactly {len(EXPECTED_CONDITIONS)} "
+            "canonical diagnostics require exactly "
+            f"{len(design.expected_conditions)} "
             f"explicit diagnostics.json inputs; got {len(resolved)}"
         )
 
@@ -401,16 +481,24 @@ def _condition_result(item: DiagnosticInput):
     }
 
 
-def analyze(campaign_lock, diagnostic_paths, *, allow_incomplete=False):
+def analyze(
+    campaign_lock,
+    diagnostic_paths,
+    *,
+    allow_incomplete=False,
+    design=DESIGNS["primary"],
+):
     lock_path, lock_sha256, lock, inputs = load_inputs(
         campaign_lock,
         diagnostic_paths,
         allow_incomplete=allow_incomplete,
+        design=design,
     )
     analyzed_keys = {item.key for item in inputs}
-    complete = analyzed_keys == set(EXPECTED_CONDITIONS) and all(
+    sample_counts = _sample_counts(design)
+    complete = analyzed_keys == set(design.expected_conditions) and all(
         item.lock_artifact["num_samples"]
-        == EXPECTED_SAMPLE_COUNTS[item.lock_artifact["dataset"]]
+        == sample_counts[item.lock_artifact["dataset"]]
         for item in inputs
     )
     result = {
@@ -454,11 +542,11 @@ def analyze(campaign_lock, diagnostic_paths, *, allow_incomplete=False):
         },
         "conditions": [_condition_result(item) for item in inputs],
     }
-    validate_analysis(result)
+    validate_analysis(result, design=design)
     return result
 
 
-def validate_analysis(result):
+def validate_analysis(result, *, design=DESIGNS["primary"]):
     """Validate the exact aggregate schema before JSON or TeX publication."""
 
     _require_exact_mapping(result, ANALYSIS_KEYS, location="analysis")
@@ -600,35 +688,34 @@ def validate_analysis(result):
         raise ValueError(
             "analysis.conditions must be unique and deterministically sorted"
         )
-    undeclared = sorted(set(keys) - set(EXPECTED_CONDITIONS))
+    undeclared = sorted(set(keys) - set(design.expected_conditions))
     if undeclared:
         raise ValueError(
             f"analysis.conditions contains undeclared entries: {undeclared}"
         )
     if campaign["complete_predeclared_campaign"]:
-        if set(keys) != set(EXPECTED_CONDITIONS):
-            raise ValueError(
-                "complete campaign must contain all 16 declared conditions"
-            )
+        if set(keys) != set(design.expected_conditions):
+            raise ValueError("complete campaign must contain all declared conditions")
+        sample_counts = _sample_counts(design)
         for condition in conditions:
-            expected_count = EXPECTED_SAMPLE_COUNTS[condition["dataset"]]
+            expected_count = sample_counts[condition["dataset"]]
             if condition["num_images"] != expected_count:
                 raise ValueError("complete campaign has a noncanonical cohort count")
     return result
 
 
-def _json_bytes(result) -> bytes:
-    validate_analysis(result)
+def _json_bytes(result, *, design) -> bytes:
+    validate_analysis(result, design=design)
     return (
         json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n"
     ).encode()
 
 
-def _latex_cell(entries, metric_key):
+def _latex_cell(entries, metric_key, *, design):
     if not entries:
         return "--"
     lines = []
-    for condition in CONDITION_ORDER:
+    for condition in design.condition_order:
         item = entries.get(condition)
         if item is None:
             continue
@@ -644,14 +731,21 @@ def _latex_cell(entries, metric_key):
             formatted = f"{value:.2f}"
         else:
             formatted = f"{value:.4f}"
-        lines.append(rf"\textsc{{{CONDITION_LABELS[condition]}}}: {formatted}")
+        lines.append(rf"\textsc{{{design.condition_labels[condition]}}}: {formatted}")
     return r"\shortstack[l]{" + r" \\ ".join(lines) + "}"
 
 
-def render_latex(result, *, analysis_sha256):
-    validate_analysis(result)
+def render_latex(
+    result,
+    *,
+    analysis_sha256,
+    design=DESIGNS["primary"],
+):
+    validate_analysis(result, design=design)
     observed_datasets = {item["dataset"] for item in result["conditions"]}
-    datasets = [dataset for dataset in DATASET_ORDER if dataset in observed_datasets]
+    datasets = [
+        dataset for dataset in design.dataset_order if dataset in observed_datasets
+    ]
     by_dataset = {dataset: {} for dataset in datasets}
     for item in result["conditions"]:
         by_dataset[item["dataset"]][item["condition"]] = item
@@ -673,7 +767,7 @@ def render_latex(result, *, analysis_sha256):
         r"\centering",
         r"\small",
         (
-            r"\caption{Fixed held-out diagnostics, reported separately for "
+            rf"\caption{{{design.caption_prefix}, reported separately for "
             r"each dataset--condition with no cross-condition pooling. Brier score "
             r"and ECE diagnose marginal pixel probabilities; M32 ladder statistics "
             r"describe candidate-mask diversity. Neither identifies a joint mask "
@@ -681,17 +775,20 @@ def render_latex(result, *, analysis_sha256):
             r"only for the displayed descriptive aggregates, never confidence-score "
             r"fitting or sample selection.}"
         ),
-        r"\label{tab:binary-diagnostics}",
+        rf"\label{{{design.table_label}}}",
         r"\resizebox{\textwidth}{!}{%",
         rf"\begin{{tabular}}{{{column_spec}}}",
         r"\toprule",
         "Diagnostic & "
-        + " & ".join(DATASET_LABELS[dataset] for dataset in datasets)
+        + " & ".join(design.dataset_labels[dataset] for dataset in datasets)
         + r" \\",
         r"\midrule",
     ]
     for metric_index, metric_key in enumerate(METRIC_KEYS):
-        cells = [_latex_cell(by_dataset[dataset], metric_key) for dataset in datasets]
+        cells = [
+            _latex_cell(by_dataset[dataset], metric_key, design=design)
+            for dataset in datasets
+        ]
         lines.append(metric_labels[metric_key] + " & " + " & ".join(cells) + r" \\")
         if metric_index + 1 < len(METRIC_KEYS):
             lines.append(r"\addlinespace[2pt]")
@@ -724,13 +821,23 @@ def _atomic_write(path, payload: bytes):
         temporary.unlink(missing_ok=True)
 
 
-def write_outputs(result, output_dir, *, paper_table=None):
+def write_outputs(
+    result,
+    output_dir,
+    *,
+    paper_table=None,
+    design=DESIGNS["primary"],
+):
     output_dir = Path(output_dir)
-    json_payload = _json_bytes(result)
+    json_payload = _json_bytes(result, design=design)
     json_sha256 = hashlib.sha256(json_payload).hexdigest()
-    latex_payload = render_latex(result, analysis_sha256=json_sha256).encode()
+    latex_payload = render_latex(
+        result,
+        analysis_sha256=json_sha256,
+        design=design,
+    ).encode()
     json_path = output_dir / JSON_NAME
-    tex_path = output_dir / TEX_NAME
+    tex_path = output_dir / design.tex_name
     paper_path = None if paper_table is None else Path(paper_table)
     if paper_path is not None and paper_path.resolve() in {
         json_path.resolve(),
@@ -748,15 +855,18 @@ def write_outputs(result, output_dir, *, paper_table=None):
 
 def main(argv: Sequence[str] | None = None):
     args = parse_args(argv)
+    design = DESIGNS[args.design]
     result = analyze(
         args.campaign_lock,
         args.inputs,
         allow_incomplete=args.allow_incomplete,
+        design=design,
     )
     outputs = write_outputs(
         result,
         args.output_dir,
         paper_table=args.paper_table,
+        design=design,
     )
     for path in outputs:
         print(f"saved {path}")

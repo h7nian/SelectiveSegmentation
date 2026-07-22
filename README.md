@@ -71,6 +71,22 @@ python -m scripts.submit.main --config configs/binary_midpoint_main_v2.json --ph
 python -m scripts.submit.main --config configs/binary_midpoint_main_v2.json --phase diagnose
 ```
 
+For a new target-model campaign, the same planner can first submit one training
+job per target condition with `--phase train`. The architecture/domain extension
+is declared in `configs/extension.json`; it adds SegFormer-B2 across the five
+existing datasets and compares SegFormer-B2 with DeepLabV3 on DUTS without
+altering the completed primary campaign.
+
+```bash
+python scripts/download.py --datasets duts
+python -m scripts.submit.main --config configs/extension.json --phase train
+python -m scripts.submit.main --config configs/extension.json --phase freeze
+# After locking, run common, score, assemble, and diagnose exactly as above.
+python -m scripts.analyze.main --design extension --help
+python -m scripts.render.paper --design extension --help
+python -m scripts.analyze.diagnostics --design extension --help
+```
+
 All submission commands are dry runs unless `--submit` is provided. A real
 submission also requires an append-only receipt, for example:
 
@@ -177,6 +193,9 @@ Kvasir-SEG, FIVES, ISIC 2018, and TN3K. Its portable bundle in `results/`
 contains manifests, per-image records, analyses, and redacted provenance. The
 historical schema-v1 evidence is immutable; current code can reproduce or
 analyze it but does not rewrite old receipts to claim newer scheduler policy.
+The separate architecture/domain extension is intentionally reported only after
+all seven declared cells complete; partial cells are never merged into the
+primary result bundle.
 
 ## Manuscript
 

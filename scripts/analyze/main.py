@@ -87,12 +87,25 @@ EXPECTED_CONDITIONS = (
     ("tn3k", "clipseg-target"),
     ("tn3k", "deeplabv3-target"),
 )
+EXTENSION_CONDITIONS = (
+    ("pet", "segformer-target"),
+    ("kvasir", "segformer-target"),
+    ("fives", "segformer-target"),
+    ("isic", "segformer-target"),
+    ("tn3k", "segformer-target"),
+    ("duts", "segformer-target"),
+    ("duts", "deeplabv3-target"),
+)
 HOLM_FAMILY_BY_DATASET = {
     "pet": "core",
     "kvasir": "core",
     "fives": "core",
     "isic": "extension",
     "tn3k": "extension",
+}
+EXTENSION_HOLM_FAMILY_BY_DATASET = {
+    dataset: "architecture_domain_extension"
+    for dataset, _ in EXTENSION_CONDITIONS
 }
 HOLM_FAMILY_DEFINITIONS = {
     "core": (
@@ -103,6 +116,12 @@ HOLM_FAMILY_DEFINITIONS = {
         "ISIC 2018 and TN3K conditions across the four predeclared "
         "adjacent-geometry contrasts"
     ),
+}
+EXTENSION_HOLM_FAMILY_DEFINITIONS = {
+    "architecture_domain_extension": (
+        "SegFormer architecture and DUTS domain extension across the four "
+        "predeclared adjacent-geometry contrasts"
+    )
 }
 RISKS = (
     ("risk_dice", "Dice risk"),
@@ -269,11 +288,17 @@ def parse_args():
     parser.add_argument("--confidence-level", type=float, default=0.95)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
+        "--design",
+        choices=("primary", "extension"),
+        default="primary",
+        help="declared condition set and multiplicity family (default: primary)",
+    )
+    parser.add_argument(
         "--allow-incomplete",
         action="store_true",
         help=(
             "allow a nonempty declared subset for draft analysis; by default "
-            "the exact 16-condition benchmark is required"
+            "the complete selected design is required"
         ),
     )
     return parser.parse_args()
@@ -571,7 +596,7 @@ def load_condition(jsonl_path) -> ConditionData:
     )
 
 
-def load_analysis_campaign_lock(path):
+def load_analysis_campaign_lock(path, *, expected_conditions=EXPECTED_CONDITIONS):
     """Load the portable immutable lock without requiring frozen payloads."""
 
     path = Path(path)
@@ -610,8 +635,10 @@ def load_analysis_campaign_lock(path):
     _digest(estimator.get("spec_sha256"), location=f"{path}.estimator.spec_sha256")
 
     artifacts = lock.get("artifacts")
-    if not isinstance(artifacts, list) or len(artifacts) != len(EXPECTED_CONDITIONS):
-        raise ValueError("campaign lock must contain exactly 16 artifacts")
+    if not isinstance(artifacts, list) or len(artifacts) != len(expected_conditions):
+        raise ValueError(
+            "campaign lock artifact count differs from the declared design"
+        )
     by_key = {}
     for index, artifact in enumerate(artifacts):
         location = f"{path}.artifacts[{index}]"
@@ -638,16 +665,18 @@ def load_analysis_campaign_lock(path):
         for field in ("manifest_path", "artifact_id", "model", "split"):
             _required_string(artifact, field, location=location)
         by_key[key] = artifact
-    if set(by_key) != set(EXPECTED_CONDITIONS):
+    if set(by_key) != set(expected_conditions):
         raise ValueError("campaign lock conditions differ from the declared benchmark")
     return path, _sha256(path), campaign_id, config, by_key
 
 
-def validate_campaign_bound_conditions(conditions, campaign_lock):
+def validate_campaign_bound_conditions(
+    conditions, campaign_lock, *, expected_conditions=EXPECTED_CONDITIONS
+):
     """Require final assemblies and bind each one to its locked source artifact."""
 
     lock_path, lock_sha, campaign_id, config, locked = load_analysis_campaign_lock(
-        campaign_lock
+        campaign_lock, expected_conditions=expected_conditions
     )
     observed = {(item.dataset, item.condition) for item in conditions}
     if observed != set(locked) or len(conditions) != len(locked):
@@ -916,6 +945,9 @@ def analyze_conditions(
     seed=0,
     bootstrap_workers=4,
     allow_incomplete=False,
+    expected_conditions=EXPECTED_CONDITIONS,
+    holm_family_by_dataset=HOLM_FAMILY_BY_DATASET,
+    holm_family_definitions=HOLM_FAMILY_DEFINITIONS,
 ):
     if not conditions:
         raise ValueError("at least one condition is required")
@@ -938,7 +970,7 @@ def analyze_conditions(
     if len(identifiers) != len(set(identifiers)):
         raise ValueError("each dataset/condition pair must appear exactly once")
     observed = set(identifiers)
-    expected = set(EXPECTED_CONDITIONS)
+    expected = set(expected_conditions)
     undeclared = sorted(observed - expected)
     if undeclared:
         raise ValueError(f"undeclared dataset/condition pairs: {undeclared}")
@@ -948,7 +980,8 @@ def analyze_conditions(
     elif observed != expected:
         missing = sorted(expected - observed)
         raise ValueError(
-            "complete analysis requires exactly the 16 declared conditions; "
+            f"complete analysis requires exactly the {len(expected)} declared "
+            "conditions; "
             f"missing={missing}"
         )
 
@@ -987,7 +1020,7 @@ def analyze_conditions(
     }
     family_sizes = {}
     for dataset, _ in identifiers:
-        family = HOLM_FAMILY_BY_DATASET[dataset]
+        family = holm_family_by_dataset[dataset]
         family_sizes[family] = family_sizes.get(family, 0) + len(CONTRASTS)
     comparison_records = []
     for data in conditions:
@@ -1057,7 +1090,7 @@ def analyze_conditions(
             with ThreadPoolExecutor(max_workers=worker_count) as executor:
                 contrast_results = list(executor.map(compute_contrast, CONTRASTS))
         for contrast, bootstrap in contrast_results:
-            holm_family = HOLM_FAMILY_BY_DATASET[data.dataset]
+            holm_family = holm_family_by_dataset[data.dataset]
             comparison = {
                 "name": contrast.name,
                 "risk": contrast.risk,
@@ -1082,7 +1115,7 @@ def analyze_conditions(
         result["conditions"].append(condition_result)
 
     families = {}
-    for family in HOLM_FAMILY_DEFINITIONS:
+    for family in holm_family_definitions:
         records = [
             record
             for _, _, _, record_family, record in comparison_records
@@ -1095,7 +1128,7 @@ def analyze_conditions(
         for record, adjusted_p in zip(records, adjusted):
             record["holm_adjusted_p_value"] = adjusted_p
         families[family] = {
-            "definition": HOLM_FAMILY_DEFINITIONS[family],
+            "definition": holm_family_definitions[family],
             "num_hypotheses": len(records),
             "raw_bootstrap_p_values": raw_p_values,
             "holm_adjusted_p_values": adjusted,
@@ -1331,6 +1364,14 @@ def write_outputs(result, output_dir):
 
 def main():
     args = parse_args()
+    if args.design == "primary":
+        expected_conditions = EXPECTED_CONDITIONS
+        holm_family_by_dataset = HOLM_FAMILY_BY_DATASET
+        holm_family_definitions = HOLM_FAMILY_DEFINITIONS
+    else:
+        expected_conditions = EXTENSION_CONDITIONS
+        holm_family_by_dataset = EXTENSION_HOLM_FAMILY_BY_DATASET
+        holm_family_definitions = EXTENSION_HOLM_FAMILY_DEFINITIONS
     if args.bootstrap_samples <= 0:
         raise ValueError("bootstrap sample count must be positive")
     if args.bootstrap_workers <= 0:
@@ -1338,7 +1379,9 @@ def main():
     if not 0 < args.confidence_level < 1:
         raise ValueError("--confidence-level must lie strictly between 0 and 1")
     if not args.allow_incomplete and args.inputs is None:
-        raise ValueError("complete analysis requires 16 explicit --inputs")
+        raise ValueError(
+            "complete analysis requires one explicit --input per declared condition"
+        )
     if not args.allow_incomplete and args.campaign_lock is None:
         raise ValueError("complete analysis requires --campaign-lock")
     if args.inputs is None:
@@ -1358,7 +1401,11 @@ def main():
     conditions = [load_condition(path) for path in inputs]
     provenance = None
     if args.campaign_lock is not None:
-        provenance = validate_campaign_bound_conditions(conditions, args.campaign_lock)
+        provenance = validate_campaign_bound_conditions(
+            conditions,
+            args.campaign_lock,
+            expected_conditions=expected_conditions,
+        )
     result = analyze_conditions(
         conditions,
         bootstrap_samples=args.bootstrap_samples,
@@ -1366,6 +1413,9 @@ def main():
         seed=args.seed,
         bootstrap_workers=args.bootstrap_workers,
         allow_incomplete=args.allow_incomplete,
+        expected_conditions=expected_conditions,
+        holm_family_by_dataset=holm_family_by_dataset,
+        holm_family_definitions=holm_family_definitions,
     )
     if provenance is not None:
         result["provenance"] = provenance

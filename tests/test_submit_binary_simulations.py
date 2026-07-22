@@ -26,6 +26,7 @@ from scripts.submit.main import (
     plan_diagnose_jobs,
     plan_freeze_jobs,
     plan_score_jobs,
+    plan_training_jobs,
     recover_configured_submission,
     reconcile_configured_plan,
     write_campaign_lock,
@@ -331,6 +332,43 @@ def test_freeze_and_score_plans_are_one_job_per_cartesian_row(tmp_path):
 
     with pytest.raises(FileNotFoundError, match="scoring outputs are incomplete"):
         plan_assemble_jobs(config, lock_path)
+
+
+def test_segformer_target_condition_is_supported_but_external_is_rejected(tmp_path):
+    base = _write_config(tmp_path)
+    payload = json.loads(base.path.read_text())
+    payload["conditions"] = [
+        {
+            "dataset": "duts",
+            "condition": "segformer-target",
+            "model": "segformer",
+            "checkpoint": "outputs/train/duts/segformer/checkpoint.pt",
+            "batch_size": 8,
+            "expected_num_samples": 5019,
+        }
+    ]
+    path = tmp_path / "segformer-target.json"
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    config = load_config(path)
+    training_job = plan_training_jobs(config)[0]
+    training_command = list(training_job.command)
+    assert training_job.key[:2] == ("duts", "segformer-target")
+    assert training_command[training_command.index("--partition") + 1] == (
+        "saffo-a100,apollo_agate"
+    )
+    assert training_command[training_command.index("--output-dir") + 1].endswith(
+        "outputs/train/duts/segformer"
+    )
+    job = plan_freeze_jobs(config)[0]
+    assert job.key[:2] == ("duts", "segformer-target")
+    assert "--checkpoint" in job.command
+
+    payload["conditions"][0].update(
+        condition="segformer-external", checkpoint=None
+    )
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+    with pytest.raises(ValueError, match="unsupported model/checkpoint"):
+        load_config(path)
 
 
 def test_candidate_partition_mode_keeps_one_experiment_per_independent_job(tmp_path):

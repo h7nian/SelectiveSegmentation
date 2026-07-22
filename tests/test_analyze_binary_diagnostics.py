@@ -10,6 +10,7 @@ import scripts.analyze.diagnostics as diagnostic_analysis
 from scripts.analyze.main import EXPECTED_CONDITIONS
 from scripts.analyze.diagnostics import (
     ANALYSIS_ARTIFACT_TYPE,
+    DESIGNS,
     JSON_NAME,
     METRIC_KEYS,
     TEX_NAME,
@@ -44,7 +45,7 @@ def _estimator(path):
 
 
 def _artifact(root, dataset, condition, *, count=2, offset=0):
-    model = "deeplabv3" if condition.startswith("deeplabv3") else "clipseg"
+    model = condition.split("-", 1)[0]
     sample_ids = [f"{dataset}-{condition}-{index}" for index in range(count)]
     samples = []
     for index, sample_id in enumerate(sample_ids):
@@ -138,7 +139,7 @@ def _campaign(
             offset=offset_base + index,
         )
         manifests.append(manifest)
-        model = "deeplabv3" if condition.startswith("deeplabv3") else "clipseg"
+        model = condition.split("-", 1)[0]
         conditions.append(
             {
                 "dataset": dataset,
@@ -214,6 +215,30 @@ def test_incomplete_smoke_analysis_is_lock_bound_deterministic_and_descriptive(
     assert "\\textsc{DL-T}" in table
     assert "joint mask posterior" in table
     assert "% Generated from diagnostics_analysis.json SHA-256:" in table
+
+
+def test_extension_diagnostics_use_the_same_analyzer_with_design_argument(tmp_path):
+    design = DESIGNS["extension"]
+    keys = [("pet", "segformer-target"), ("duts", "deeplabv3-target")]
+    lock, summaries = _campaign(
+        tmp_path,
+        keys,
+        campaign_id="architecture-domain-extension-v1",
+    )
+
+    result = analyze(
+        lock,
+        summaries,
+        allow_incomplete=True,
+        design=design,
+    )
+    outputs = write_outputs(result, tmp_path / "extension", design=design)
+
+    assert outputs[1].name == "architecture_domain_diagnostics.tex"
+    table = outputs[1].read_text()
+    assert r"\label{tab:architecture-domain-diagnostics}" in table
+    assert "Oxford Pet" in table and "DUTS" in table
+    assert r"\textsc{SF-T}" in table and r"\textsc{DL-T}" in table
 
 
 def test_canonical_mode_requires_exact_16_inputs_and_canonical_counts(tmp_path):

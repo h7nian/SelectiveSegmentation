@@ -1,4 +1,4 @@
-"""Model wrappers exposing one interface for all four benchmark conditions.
+"""Model wrappers exposing one interface for every benchmark condition.
 
 Both wrappers take images as float tensors in [0, 1] (normalization happens
 inside the wrapper, since CLIPSeg and DeepLabV3 use different statistics)
@@ -13,16 +13,25 @@ from torchvision.models.segmentation import (
     DeepLabV3_ResNet50_Weights,
     deeplabv3_resnet50,
 )
-from transformers import CLIPSegForImageSegmentation, CLIPSegProcessor
+from transformers import (
+    CLIPSegForImageSegmentation,
+    CLIPSegProcessor,
+    SegformerConfig,
+    SegformerForSemanticSegmentation,
+    SegformerImageProcessor,
+)
 
 from selectseg.data import IGNORE_INDEX
 
 CLIPSEG_CHECKPOINT = "CIDAS/clipseg-rd64-refined"
 CLIPSEG_REVISION = "999e0328d9e10b484360c477313983f9afdd7050"
 DEEPLABV3_WEIGHTS = DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1
+SEGFORMER_CHECKPOINT = "nvidia/segformer-b2-finetuned-ade-512-512"
+SEGFORMER_REVISION = "de01bae28967510f9ddd496c60a969357195400c"
 CONDITION_NAMES = {
     "clipseg": ("clipseg-general", "clipseg-target"),
     "deeplabv3": ("deeplabv3-external", "deeplabv3-target"),
+    "segformer": ("segformer-external", "segformer-target"),
 }
 
 
@@ -221,8 +230,72 @@ class DeepLabV3Model(SegmentationModel):
         )
 
 
+class SegFormerModel(SegmentationModel):
+    """SegFormer-B2 target model with an ImageNet/ADE-pretrained backbone."""
+
+    image_size = 512
+
+    def __init__(self, spec, finetuned, init_weights=True):
+        super().__init__()
+        if not finetuned:
+            raise ValueError("SegFormer is supported only as a target-adapted model")
+        id2label = {index: name for index, name in enumerate(spec.class_names)}
+        label2id = {name: index for index, name in enumerate(spec.class_names)}
+        if init_weights:
+            self.model = SegformerForSemanticSegmentation.from_pretrained(
+                SEGFORMER_CHECKPOINT,
+                revision=SEGFORMER_REVISION,
+                num_labels=spec.num_classes,
+                id2label=id2label,
+                label2id=label2id,
+                ignore_mismatched_sizes=True,
+                local_files_only=True,
+            )
+        else:
+            config = SegformerConfig.from_pretrained(
+                SEGFORMER_CHECKPOINT,
+                revision=SEGFORMER_REVISION,
+                local_files_only=True,
+            )
+            config.num_labels = spec.num_classes
+            config.id2label = id2label
+            config.label2id = label2id
+            self.model = SegformerForSemanticSegmentation(config)
+        processor = SegformerImageProcessor.from_pretrained(
+            SEGFORMER_CHECKPOINT,
+            revision=SEGFORMER_REVISION,
+            local_files_only=True,
+        )
+        self.register_buffer(
+            "mean", torch.tensor(processor.image_mean).view(3, 1, 1), persistent=False
+        )
+        self.register_buffer(
+            "std", torch.tensor(processor.image_std).view(3, 1, 1), persistent=False
+        )
+
+    def _upsampled_logits(self, images):
+        logits = self.model(pixel_values=self._normalize(images)).logits
+        return F.interpolate(
+            logits, size=images.shape[-2:], mode="bilinear", align_corners=False
+        )
+
+    def compute_loss(self, images, masks, prompt_indices):
+        del prompt_indices
+        return F.cross_entropy(
+            self._upsampled_logits(images), masks, ignore_index=IGNORE_INDEX
+        )
+
+    def predict_probs(self, images):
+        return self._upsampled_logits(images).softmax(dim=1)
+
+    def configure_optimizer(self, lr, weight_decay):
+        return torch.optim.AdamW(
+            self.trainable_parameters(), lr=lr, weight_decay=weight_decay
+        )
+
+
 def build_model(name, spec, finetuned, init_weights=True):
-    """Build a wrapper for ``name`` in {"clipseg", "deeplabv3"}.
+    """Build a supported segmentation-model wrapper.
 
     ``finetuned`` selects the target-adapted architecture (e.g. a
     dataset-sized DeepLabV3 head). ``init_weights=False`` skips downloading
@@ -233,4 +306,6 @@ def build_model(name, spec, finetuned, init_weights=True):
         return CLIPSegModel(spec)
     if name == "deeplabv3":
         return DeepLabV3Model(spec, finetuned=finetuned, init_weights=init_weights)
+    if name == "segformer":
+        return SegFormerModel(spec, finetuned=finetuned, init_weights=init_weights)
     raise ValueError(f"unknown model: {name}")

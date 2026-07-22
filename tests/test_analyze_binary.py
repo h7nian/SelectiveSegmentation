@@ -15,6 +15,9 @@ from selectseg.confidence import tie_aware_expected_aurc
 from scripts.analyze.main import (
     CONTRASTS,
     CSV_NAME,
+    EXTENSION_CONDITIONS,
+    EXTENSION_HOLM_FAMILY_BY_DATASET,
+    EXTENSION_HOLM_FAMILY_DEFINITIONS,
     EXPECTED_CONDITIONS,
     JSON_NAME,
     LATEX_NAME,
@@ -557,6 +560,29 @@ def test_complete_analysis_uses_separate_core_and_extension_holm_families(tmp_pa
         for condition in result["conditions"]
         for comparison in condition["comparisons"].values()
     )
+
+
+def test_architecture_domain_extension_is_a_separate_declared_design(tmp_path):
+    conditions = []
+    for dataset, condition_name in EXTENSION_CONDITIONS:
+        jsonl, _ = _write_condition(
+            tmp_path / f"{dataset}-{condition_name}",
+            dataset=dataset,
+            condition=condition_name,
+        )
+        conditions.append(load_condition(jsonl))
+
+    result = analyze_conditions(
+        conditions,
+        bootstrap_samples=2,
+        expected_conditions=EXTENSION_CONDITIONS,
+        holm_family_by_dataset=EXTENSION_HOLM_FAMILY_BY_DATASET,
+        holm_family_definitions=EXTENSION_HOLM_FAMILY_DEFINITIONS,
+    )
+    multiple = result["multiple_testing"]
+    family = multiple["families"]["architecture_domain_extension"]
+    assert multiple["total_hypotheses"] == 28
+    assert family["num_hypotheses"] == 28
 
 
 def test_cli_explicit_inputs_write_deterministic_json_csv_and_latex(

@@ -40,6 +40,15 @@ Outside FIVES/CLIPSeg-Target, Dice-M32 and foreground entropy correlate
 .916--.960. Dice-M32 and Dice-Exact have \(\rho\geq.9992\),
 \(\tau_b\geq.9791\), and at most .363 displayed AURC difference, so numerical
 integration is not the limiting issue.
+The parity with SDC is also \textbf{not explained by poorly calibrated CLIPSeg
+maps alone}. FIVES/CLIPSeg-Target, where SDC has its largest advantage
+(5.110 AURC \(\times100\)), has 15-bin pixel ECE .0071. Across the ten target
+conditions, the descriptive Spearman correlation between ECE and
+Dice-M32-minus-SDC AURC is \(-.855\): worse ECE is associated with a shift
+toward Dice-M32, the opposite of that simple explanation. This small,
+pixel-weighted diagnostic does not make calibration irrelevant; it instead
+supports the count-dispersion account, under which two distinct functionals of
+the same map can remain close even when its marginals are well calibrated.
 
 \subsection{Ablation studies}
 

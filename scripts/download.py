@@ -2,7 +2,7 @@
 
 Examples::
 
-    python scripts/download.py --datasets pet kvasir fives isic tn3k
+    python scripts/download.py --datasets pet kvasir fives isic tn3k duts
     python scripts/download.py --models-only
 
 FIVES is distributed as a RAR archive, so extraction requires an ``unrar``
@@ -57,8 +57,22 @@ TN3K_URL = (
     "id=1reHyY5eTZ5uePXMVMzFOq5j3eFOSp50F&export=download&confirm=t"
 )
 TN3K_SHA256 = "0ba1770076dab01b1f8fd661a227d80982168bc433de61c80fd266427b20cf60"
+DUTS_ARCHIVES = {
+    "DUTS-TR.zip": (
+        "https://saliencydetection.net/duts/download/DUTS-TR.zip",
+        "ce61e023c8f59d022b4d46981cf16813b83d089242e6489a45630d83962ea058",
+        "DUTS-TR",
+    ),
+    "DUTS-TE.zip": (
+        "https://saliencydetection.net/duts/download/DUTS-TE.zip",
+        "d9905c33307e1d35c397604a701ed87f019acf060033076eec633f13a2eb8104",
+        "DUTS-TE",
+    ),
+}
 CLIPSEG_MODEL_ID = "CIDAS/clipseg-rd64-refined"
 CLIPSEG_REVISION = "999e0328d9e10b484360c477313983f9afdd7050"
+SEGFORMER_MODEL_ID = "nvidia/segformer-b2-finetuned-ade-512-512"
+SEGFORMER_REVISION = "de01bae28967510f9ddd496c60a969357195400c"
 
 
 def _sha256(path):
@@ -158,6 +172,20 @@ def download_tn3k():
     _safe_extract_zip(archive, target / "extracted")
 
 
+def download_duts():
+    """Download the corrected official DUTS train and test releases."""
+
+    target = DATA_ROOT / "DUTS"
+    target.mkdir(exist_ok=True)
+    for archive_name, (url, digest, directory_name) in DUTS_ARCHIVES.items():
+        if (target / directory_name).is_dir():
+            print(f"[cached] data/DUTS/{directory_name}")
+            continue
+        archive = DATA_ROOT / archive_name
+        _download(url, archive, digest)
+        _safe_extract_zip(archive, target)
+
+
 def download_models():
     # Set cache locations before importing either model library.
     os.environ["HF_HOME"] = str(DATA_ROOT / "cache" / "huggingface")
@@ -166,7 +194,12 @@ def download_models():
         DeepLabV3_ResNet50_Weights,
         deeplabv3_resnet50,
     )
-    from transformers import CLIPSegForImageSegmentation, CLIPSegProcessor
+    from transformers import (
+        CLIPSegForImageSegmentation,
+        CLIPSegProcessor,
+        SegformerForSemanticSegmentation,
+        SegformerImageProcessor,
+    )
 
     # Match the immutable base-model identity recorded by the public
     # provenance and seed-extension lock.  Resolving the model name at the
@@ -176,6 +209,12 @@ def download_models():
         CLIPSEG_MODEL_ID, revision=CLIPSEG_REVISION
     )
     CLIPSegProcessor.from_pretrained(CLIPSEG_MODEL_ID, revision=CLIPSEG_REVISION)
+    SegformerForSemanticSegmentation.from_pretrained(
+        SEGFORMER_MODEL_ID, revision=SEGFORMER_REVISION
+    )
+    SegformerImageProcessor.from_pretrained(
+        SEGFORMER_MODEL_ID, revision=SEGFORMER_REVISION
+    )
     deeplabv3_resnet50(weights=DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1)
 
 
@@ -184,8 +223,8 @@ def parse_args():
     parser.add_argument(
         "--datasets",
         nargs="*",
-        choices=("pet", "kvasir", "fives", "isic", "tn3k"),
-        default=("pet", "kvasir", "fives", "isic", "tn3k"),
+        choices=("pet", "kvasir", "fives", "isic", "tn3k", "duts"),
+        default=("pet", "kvasir", "fives", "isic", "tn3k", "duts"),
     )
     parser.add_argument(
         "--skip-models", action="store_true", help="do not populate model caches"
@@ -206,6 +245,7 @@ def main():
             "fives": download_fives,
             "isic": download_isic,
             "tn3k": download_tn3k,
+            "duts": download_duts,
         }
         for name in args.datasets:
             print(f"[{name}]")

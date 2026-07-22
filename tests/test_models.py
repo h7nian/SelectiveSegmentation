@@ -54,7 +54,7 @@ def test_zero_shot_predict_probs(name, dataset):
     assert probs.min() >= 0.0 and probs.max() <= 1.0
 
 
-@pytest.mark.parametrize("name", ["clipseg", "deeplabv3"])
+@pytest.mark.parametrize("name", ["clipseg", "deeplabv3", "segformer"])
 def test_finetuned_loss_grads_and_checkpoint_roundtrip(name):
     dataset = "pet"
     spec = SPECS[dataset]
@@ -95,3 +95,8 @@ def test_clipseg_fully_ignored_mask_gives_zero_loss():
 def test_deeplab_external_class_maps():
     pet_model = build_model("deeplabv3", SPECS["pet"], finetuned=False)
     assert pet_model.class_map == [[8, 12]]  # cat, dog in the checkpoint vocabulary
+
+
+def test_segformer_rejects_unadapted_binary_head():
+    with pytest.raises(ValueError, match="target-adapted"):
+        build_model("segformer", SPECS["pet"], finetuned=False)

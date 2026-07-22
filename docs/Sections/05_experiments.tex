@@ -17,6 +17,18 @@ condition receives the same native-resolution map and action. Empty references
 remain. \Cref{app:benchmark-protocol} fixes splits, training, cohorts,
 and provenance.
 
+\noindent\textbf{Architecture and domain extension.}
+We do not replace conditions after seeing their results. Instead, a separately
+locked extension asks whether the conclusions survive a different probability-map
+family and a new visual domain. We target-adapt SegFormer-B2
+\citep{xie2021segformer} on each of the five original datasets, pairing it with
+the existing DeepLabV3 target condition. We then add the Diverse Unsupervised
+Saliency (DUTS) benchmark \citep{wang2017duts}, training both SegFormer-B2 and
+DeepLabV3 on its 10,553-image training split and evaluating the fixed 5,019-image
+test split. These seven new conditions retain the same 40-epoch, seed-0 protocol,
+form their own multiplicity family, and are never pooled into the primary
+sixteen-condition analysis.
+
 \noindent\textbf{One action and three losses.}
 We fix \(\Yhat=\{i:p_i\geq0.5\}\). Integration thresholds change candidates,
 not this action. Besides \(1-\Dice\), let \(D(A,B)\) pool both directed nearest

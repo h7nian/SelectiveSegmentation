@@ -114,6 +114,14 @@ SPECS = {
         train_split="train",
         eval_split="test",
     ),
+    "duts": DatasetSpec(
+        name="duts",
+        class_names=("background", "salient object"),
+        prompts=("salient object",),
+        prompt_classes=(1,),
+        train_split="train",
+        eval_split="test",
+    ),
     "voc": DatasetSpec(
         name="voc",
         class_names=VOC_CLASS_NAMES,
@@ -552,6 +560,18 @@ class TN3KSegmentation(_StrictPairedBinarySegmentation):
         return base / f"{release_split}-image", base / f"{release_split}-mask"
 
 
+class DutsSegmentation(_StrictPairedBinarySegmentation):
+    """DUTS salient-object masks with its official train/test protocol."""
+
+    _DATASET_NAME = "DUTS"
+    _DOWNLOAD_HINT = "run scripts/download.py --datasets duts"
+
+    def _split_directories(self, root, split):
+        release_split = "DUTS-TR" if split == "train" else "DUTS-TE"
+        base = root / "DUTS" / release_split
+        return base / f"{release_split}-Image", base / f"{release_split}-Mask"
+
+
 def _base_dataset(spec, root, split, *, verified_file_reader=None):
     if spec.name == "pet":
         return PetSegmentation(
@@ -571,6 +591,10 @@ def _base_dataset(spec, root, split, *, verified_file_reader=None):
         )
     if spec.name == "tn3k":
         return TN3KSegmentation(
+            root, split, verified_file_reader=verified_file_reader
+        )
+    if spec.name == "duts":
+        return DutsSegmentation(
             root, split, verified_file_reader=verified_file_reader
         )
     if spec.name == "voc":

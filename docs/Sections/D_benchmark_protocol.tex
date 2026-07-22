@@ -48,6 +48,15 @@ fixed CLIPSeg prompts are \texttt{cat}/\texttt{dog}, \texttt{polyp},
 bilinear probability-map resizing to the native image grid; masks are never
 interpolated for evaluation.
 
+\noindent\textbf{DUTS extension.}
+The separately locked saliency extension uses the official Diverse Unsupervised
+Saliency (DUTS) split: 10,553 training images and 5,019 test images
+\citep{wang2017duts}. Image and mask stems are paired exactly within the
+\texttt{DUTS-TR} and \texttt{DUTS-TE} releases, and every nonzero mask value is
+foreground. DUTS is not used to replace or select among the five primary
+cohorts; it tests whether the same score ordering transfers to natural-image
+salient-object segmentation.
+
 \subsection{Prediction models and frozen training schedules}
 
 We use \texttt{CIDAS/clipseg-rd64-refined} \citep{clipseg} at
@@ -65,6 +74,14 @@ weight decay \(10^{-4}\), and batch size 16. The Pet-only
 \textsc{DeepLabV3-External} condition maps the released cat and dog
 probabilities to foreground.
 
+The architecture extension adds target-adapted SegFormer-B2 initialized from
+its released ADE20K checkpoint \citep{xie2021segformer}. Its decoder classifier
+is replaced by a two-class head and the full model is optimized at
+\(512\times512\) for 40 epochs using cross-entropy and AdamW, with learning rate
+\(6\times10^{-5}\), weight decay \(10^{-4}\), and batch size 16. We apply this
+schedule to all five primary datasets and DUTS; the DUTS comparison also trains
+DeepLabV3-Target under the unchanged schedule above.
+
 In the primary campaign, both target-adapted schedules use the per-step
 multiplier \((1-s/S)^{0.9}\), gradient clipping at 1, and seed 0. The target-only
 descriptive extension changes the seed to 1 or 2 and nothing else in the
@@ -73,6 +90,11 @@ model-resolution crop with padded pixels excluded from loss, and a horizontal
 flip with probability \(0.5\). We retain the final epoch under this fixed
 schedule. Frozen manifests record the checkpoint, source, cohort,
 configuration, package, and device hashes or identifiers.
+
+The SegFormer/DUTS study likewise fixes seed 0, the same polynomial multiplier,
+augmentation, gradient clipping, and final-epoch rule. Its seven conditions
+form a separate analysis and multiplicity family; no extension result changes
+the primary set or its predeclared comparisons.
 
 \subsection{Single-map entropy comparators}
 

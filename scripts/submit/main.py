@@ -1,8 +1,9 @@
 """Plan or submit one Slurm job per binary simulation.
 
-``freeze`` plans one GPU inference job per model condition.  Once those jobs
-finish, ``lock`` consumes an explicit list of frozen artifact manifests and
-writes an immutable campaign lock.  ``common`` then plans one M-independent
+``train`` plans one GPU job per target-adapted model condition, and ``freeze``
+plans one GPU inference job per model condition.  Once those jobs finish,
+``lock`` consumes an explicit list of frozen artifact manifests and writes an
+immutable campaign lock.  ``common`` then plans one M-independent
 CPU scoring job per artifact, while ``score`` expands the locked Cartesian
 product ``artifact x gamma x M x seed`` into independent M-specific CPU jobs.
 After scoring, ``assemble`` derives each condition's four content-addressed
@@ -311,7 +312,15 @@ def parse_args(argv=None):
     parser.add_argument("--config", default="configs/binary_midpoint_main.json")
     parser.add_argument(
         "--phase",
-        choices=("freeze", "lock", "common", "score", "assemble", "diagnose"),
+        choices=(
+            "train",
+            "freeze",
+            "lock",
+            "common",
+            "score",
+            "assemble",
+            "diagnose",
+        ),
         default="freeze",
     )
     parser.add_argument(
@@ -701,14 +710,21 @@ def load_config(path):
                     f"{location}.freeze_limit must equal expected_num_samples and "
                     "not exceed expected_dataset_samples"
                 )
-        if condition["model"] not in {"clipseg", "deeplabv3"}:
+        if condition["model"] not in {"clipseg", "deeplabv3", "segformer"}:
             raise ValueError(f"{location}.model is unsupported")
-        expected_condition = {
+        condition_key = (condition["model"], condition["checkpoint"] is not None)
+        expected_conditions = {
             ("clipseg", False): "clipseg-general",
             ("clipseg", True): "clipseg-target",
             ("deeplabv3", False): "deeplabv3-external",
             ("deeplabv3", True): "deeplabv3-target",
-        }[(condition["model"], condition["checkpoint"] is not None)]
+            ("segformer", True): "segformer-target",
+        }
+        if condition_key not in expected_conditions:
+            raise ValueError(
+                f"{location} has an unsupported model/checkpoint combination"
+            )
+        expected_condition = expected_conditions[condition_key]
         if condition["condition"] != expected_condition:
             raise ValueError(
                 f"{location}.condition must be {expected_condition!r} for its "
@@ -808,6 +824,56 @@ def _load_estimator(config):
     if spec != expected:
         raise ValueError("the main campaign requires the frozen midpoint-v1 spec")
     return path, _sha256_bytes(raw), spec
+
+
+def plan_training_jobs(config):
+    """Plan one independent GPU training job per target-model condition."""
+
+    seeds = config.data["protocol"]["seeds"]
+    if len(seeds) != 1:
+        raise ValueError("training requires exactly one configured seed")
+    seed = seeds[0]
+    jobs = []
+    for condition in config.data["conditions"]:
+        if condition["checkpoint"] is None:
+            continue
+        checkpoint = _project_path(config.path, condition["checkpoint"])
+        if checkpoint.name != "checkpoint.pt":
+            raise ValueError(
+                "target-model checkpoint paths must end in checkpoint.pt"
+            )
+        partition_request = _gpu_partition_request(config, len(jobs))
+        key = (condition["dataset"], condition["condition"], partition_request)
+        job_name = f"selseg-train-{condition['dataset']}-{condition['model']}"
+        command = slurm_command(
+            job_name=_scheduler_job_name(config, job_name),
+            partition=partition_request,
+            cpus=8,
+            memory="64g",
+            time_limit="24:00:00",
+            gres="gpu:a100:1",
+            argv=(
+                "python",
+                "-m",
+                "selectseg.train",
+                "--model",
+                condition["model"],
+                "--dataset",
+                condition["dataset"],
+                "--output-dir",
+                str(checkpoint.parent),
+                "--epochs",
+                "40",
+                "--num-workers",
+                "8",
+                "--seed",
+                str(seed),
+            ),
+        )
+        jobs.append(PlannedJob(phase="train", key=key, command=command))
+    if len({job.key for job in jobs}) != len(jobs):
+        raise RuntimeError("training-job expansion produced duplicate identities")
+    return tuple(jobs)
 
 
 def plan_freeze_jobs(config):
@@ -2884,10 +2950,15 @@ def main(argv=None):
             retry_submission_failures=args.retry_submission_failure,
         )
 
-    if args.phase == "freeze":
+    if args.phase in {"train", "freeze"}:
         if args.artifact_manifest or args.campaign_lock or args.write_lock:
-            raise ValueError("freeze phase does not accept lock/artifact inputs")
-        return dispatch(plan_freeze_jobs(config))
+            raise ValueError(f"{args.phase} phase does not accept lock/artifact inputs")
+        jobs = (
+            plan_training_jobs(config)
+            if args.phase == "train"
+            else plan_freeze_jobs(config)
+        )
+        return dispatch(jobs)
     if args.phase == "lock":
         if args.submit:
             raise ValueError("lock phase never invokes sbatch; omit --submit")

@@ -23,6 +23,7 @@ from selectseg.models import build_model
 TRAIN_DEFAULTS = {
     "clipseg": {"lr": 1e-4, "batch_size": 32},
     "deeplabv3": {"lr": 5e-3, "batch_size": 16},
+    "segformer": {"lr": 6e-5, "batch_size": 16},
 }
 
 

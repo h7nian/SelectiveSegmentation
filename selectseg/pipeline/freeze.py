@@ -27,6 +27,7 @@ from selectseg.models import (
     CLIPSEG_CHECKPOINT,
     CONDITION_NAMES,
     DEEPLABV3_WEIGHTS,
+    SEGFORMER_CHECKPOINT,
     build_model,
 )
 from selectseg.provenance import (
@@ -327,11 +328,11 @@ def main(argv=None):
         checkpoint=checkpoint,
         base_model={
             "name": args.model,
-            "source": (
-                CLIPSEG_CHECKPOINT
-                if args.model == "clipseg"
-                else str(DEEPLABV3_WEIGHTS)
-            ),
+            "source": {
+                "clipseg": CLIPSEG_CHECKPOINT,
+                "deeplabv3": str(DEEPLABV3_WEIGHTS),
+                "segformer": SEGFORMER_CHECKPOINT,
+            }[args.model],
         },
         source_sha256=source_sha256,
         environment={

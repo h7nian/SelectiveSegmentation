@@ -157,6 +157,15 @@ EXPECTED_CONDITIONS = (
     ("tn3k", "clipseg-target"),
     ("tn3k", "deeplabv3-target"),
 )
+ARCHITECTURE_DOMAIN_CONDITIONS = (
+    ("pet", "segformer-target"),
+    ("kvasir", "segformer-target"),
+    ("fives", "segformer-target"),
+    ("isic", "segformer-target"),
+    ("tn3k", "segformer-target"),
+    ("duts", "segformer-target"),
+    ("duts", "deeplabv3-target"),
+)
 TARGET_CONDITIONS = tuple(
     key
     for key in EXPECTED_CONDITIONS
@@ -171,6 +180,10 @@ HOLM_FAMILY_BY_DATASET = {
     "fives": "core",
     "isic": "extension",
     "tn3k": "extension",
+}
+ARCHITECTURE_DOMAIN_HOLM_FAMILY_BY_DATASET = {
+    dataset: "architecture_domain_extension"
+    for dataset, _ in ARCHITECTURE_DOMAIN_CONDITIONS
 }
 CORE_CONDITIONS = tuple(
     key for key in EXPECTED_CONDITIONS if HOLM_FAMILY_BY_DATASET[key[0]] == "core"
@@ -191,12 +204,14 @@ CONDITION_ABBREVIATIONS = {
     "clipseg-target": "CLIP-T",
     "deeplabv3-target": "DL-T",
     "deeplabv3-external": "DL-E",
+    "segformer-target": "SF-T",
 }
 CONDITION_PANEL_LABELS = {
     "clipseg-general": "CLIPSeg general (CLIP-G)",
     "clipseg-target": "CLIPSeg target (CLIP-T)",
     "deeplabv3-target": "DeepLabV3 target (DL-T)",
     "deeplabv3-external": "DeepLabV3 external (DL-E)",
+    "segformer-target": "SegFormer-B2 target (SF-T)",
 }
 DATASET_LABELS = {
     "pet": "Oxford Pet",
@@ -204,6 +219,7 @@ DATASET_LABELS = {
     "fives": "FIVES",
     "isic": "ISIC 2018",
     "tn3k": "TN3K",
+    "duts": "DUTS",
 }
 
 OUTPUT_NAMES = (
@@ -215,12 +231,23 @@ OUTPUT_NAMES = (
     "statistical_tests.tex",
 )
 COMPLETION_MARKER = "results_complete.tex"
+EXTENSION_OUTPUT_NAMES = (
+    "architecture_domain_extension.tex",
+    "architecture_domain_extension_full.tex",
+)
+EXTENSION_COMPLETION_MARKER = "architecture_domain_extension_complete.tex"
 
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis", required=True, help="validated analysis.json")
     parser.add_argument("--output-dir", default="docs/Tables")
+    parser.add_argument(
+        "--design",
+        choices=("primary", "extension"),
+        default="primary",
+        help="render the primary benchmark or architecture/domain extension",
+    )
     parser.add_argument(
         "--allow-incomplete",
         action="store_true",
@@ -447,7 +474,7 @@ def _sha256_string(value, location):
     return value
 
 
-def _validate_provenance(value, *, allow_incomplete):
+def _validate_provenance(value, *, allow_incomplete, expected_input_count):
     location = "provenance"
     value = _mapping(value, location)
     binding = _string(value.get("binding"), f"{location}.binding")
@@ -484,8 +511,10 @@ def _validate_provenance(value, *, allow_incomplete):
     _string(lock["logical_name"], f"{location}.campaign_lock.logical_name")
     _sha256_string(lock["sha256"], f"{location}.campaign_lock.sha256")
     inputs = _sequence(value["inputs"], f"{location}.inputs")
-    if not allow_incomplete and len(inputs) != len(EXPECTED_CONDITIONS):
-        raise ValueError("final provenance must bind exactly 16 inputs")
+    if not allow_incomplete and len(inputs) != expected_input_count:
+        raise ValueError(
+            f"final provenance must bind exactly {expected_input_count} inputs"
+        )
     by_key = {}
     for index, item in enumerate(inputs):
         item_location = f"{location}.inputs[{index}]"
@@ -649,8 +678,26 @@ def _validate_comparison(
     )
 
 
-def validate_analysis(result, *, allow_incomplete=False):
+def validate_analysis(result, *, allow_incomplete=False, design="primary"):
     """Validate and canonically order the exact analysis-v2 contract."""
+
+    if design == "primary":
+        expected_conditions = EXPECTED_CONDITIONS
+        family_by_dataset = HOLM_FAMILY_BY_DATASET
+        expected_family_sizes = EXPECTED_HOLM_FAMILY_SIZES
+    elif design == "extension":
+        expected_conditions = ARCHITECTURE_DOMAIN_CONDITIONS
+        family_by_dataset = ARCHITECTURE_DOMAIN_HOLM_FAMILY_BY_DATASET
+        expected_family_sizes = {
+            "architecture_domain_extension": (
+                len(CONTRASTS) * len(ARCHITECTURE_DOMAIN_CONDITIONS)
+            )
+        }
+    else:
+        raise ValueError(f"unsupported design {design!r}")
+    condition_order = {
+        key: index for index, key in enumerate(expected_conditions)
+    }
 
     result = _mapping(result, "analysis root")
     version = result.get("schema_version")
@@ -670,7 +717,9 @@ def validate_analysis(result, *, allow_incomplete=False):
         "analysis root",
     )
     provenance_by_key = _validate_provenance(
-        result["provenance"], allow_incomplete=allow_incomplete
+        result["provenance"],
+        allow_incomplete=allow_incomplete,
+        expected_input_count=len(expected_conditions),
     )
     analysis = _mapping(result["analysis"], "analysis")
     _exact_keys(
@@ -728,10 +777,16 @@ def validate_analysis(result, *, allow_incomplete=False):
 
     conditions = _sequence(result["conditions"], "conditions")
     if allow_incomplete:
-        if not 0 < len(conditions) <= len(EXPECTED_CONDITIONS):
-            raise ValueError("incomplete analysis must contain 1--16 conditions")
-    elif len(conditions) != len(EXPECTED_CONDITIONS):
-        raise ValueError("complete analysis must contain exactly 16 conditions")
+        if not 0 < len(conditions) <= len(expected_conditions):
+            raise ValueError(
+                "incomplete analysis must contain 1--"
+                f"{len(expected_conditions)} conditions"
+            )
+    elif len(conditions) != len(expected_conditions):
+        raise ValueError(
+            f"complete analysis must contain exactly {len(expected_conditions)} "
+            "conditions"
+        )
     observed_keys = []
     for index, condition in enumerate(conditions):
         location = f"conditions[{index}]"
@@ -764,7 +819,7 @@ def validate_analysis(result, *, allow_incomplete=False):
         key = (dataset, name)
         if key in observed_keys:
             raise ValueError(f"duplicate dataset/condition pair {key!r}")
-        if key not in CONDITION_ORDER:
+        if key not in condition_order:
             raise ValueError(f"undeclared dataset/condition pair {key!r}")
         observed_keys.append(key)
         if condition["split"] != "test":
@@ -827,7 +882,7 @@ def validate_analysis(result, *, allow_incomplete=False):
                     random=random,
                 )
 
-    expected_keys = set(EXPECTED_CONDITIONS)
+    expected_keys = set(expected_conditions)
     if not allow_incomplete and set(observed_keys) != expected_keys:
         raise ValueError("complete analysis is missing declared conditions")
     if provenance_by_key and set(provenance_by_key) != set(observed_keys):
@@ -841,7 +896,7 @@ def validate_analysis(result, *, allow_incomplete=False):
         raise ValueError("final analysis requires numerical_validation everywhere")
     family_sizes = {}
     for dataset, _ in observed_keys:
-        family = HOLM_FAMILY_BY_DATASET[dataset]
+        family = family_by_dataset[dataset]
         family_sizes[family] = family_sizes.get(family, 0) + len(CONTRASTS)
     by_key = {
         (condition["dataset"], condition["condition"]): condition
@@ -860,8 +915,8 @@ def validate_analysis(result, *, allow_incomplete=False):
                 confidence_level=confidence_level,
                 observations=condition["num_rows"],
                 clusters=condition["num_image_clusters"],
-                family=HOLM_FAMILY_BY_DATASET[key[0]],
-                family_size=family_sizes[HOLM_FAMILY_BY_DATASET[key[0]]],
+                family=family_by_dataset[key[0]],
+                family_size=family_sizes[family_by_dataset[key[0]]],
             )
 
     multiple = _mapping(result["multiple_testing"], "multiple_testing")
@@ -977,7 +1032,7 @@ def validate_analysis(result, *, allow_incomplete=False):
         for field in ("risk", "left", "right"):
             if hypothesis[field] != getattr(spec, field):
                 raise ValueError(f"{location}.{field} is inconsistent")
-        family = HOLM_FAMILY_BY_DATASET[key[0]]
+        family = family_by_dataset[key[0]]
         if hypothesis["holm_family"] != family:
             raise ValueError(f"{location}.holm_family is inconsistent")
         if (
@@ -1025,13 +1080,11 @@ def validate_analysis(result, *, allow_incomplete=False):
             ):
                 raise ValueError(f"hypothesis {key!r} has inconsistent Holm p-value")
 
-    if not allow_incomplete and family_sizes != EXPECTED_HOLM_FAMILY_SIZES:
-        raise ValueError(
-            "final tables require separate 40-test core and 24-test extension families"
-        )
+    if not allow_incomplete and family_sizes != expected_family_sizes:
+        raise ValueError("final tables have unexpected multiplicity-family sizes")
     return sorted(
         conditions,
-        key=lambda item: CONDITION_ORDER[(item["dataset"], item["condition"])],
+        key=lambda item: condition_order[(item["dataset"], item["condition"])],
     )
 
 
@@ -1586,6 +1639,44 @@ def render_tables(result, *, source_hash, allow_incomplete=False):
     }
 
 
+def render_extension_tables(result, *, source_hash, allow_incomplete=False):
+    """Render a compact main-text summary and complete extension results."""
+
+    conditions = validate_analysis(
+        result,
+        allow_incomplete=allow_incomplete,
+        design="extension",
+    )
+    header = _generated_header(source_hash, incomplete=allow_incomplete)
+    summary = _contrast_table(
+        conditions,
+        header=header,
+        declared=ARCHITECTURE_DOMAIN_CONDITIONS,
+        label="tab:architecture-domain-extension",
+        caption=(
+            r"\caption{Architecture and domain extension. Rows are the four "
+            r"predeclared adjacent-geometry contrasts and datasets are columns. "
+            r"Each entry is $100\Delta$ with its pointwise 95\% paired "
+            r"image-bootstrap interval; negative values favor the left score. "
+            r"SF-T denotes target-adapted SegFormer-B2 and DL-T denotes "
+            r"target-adapted DeepLabV3. DUTS reports both models in one column.}"
+        ),
+    )
+    full = _complete_results_table(
+        conditions,
+        header=header,
+        declared=ARCHITECTURE_DOMAIN_CONDITIONS,
+        label="tab:architecture-domain-extension-full",
+        caption_prefix=(
+            r"Complete architecture and domain extension, panel for"
+        ),
+    )
+    return {
+        "architecture_domain_extension.tex": "\n".join(summary),
+        "architecture_domain_extension_full.tex": full,
+    }
+
+
 def _atomic_write(path, text):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1606,16 +1697,23 @@ def _atomic_write(path, text):
         raise
 
 
-def write_tables(tables, output_dir, *, source_hash):
-    if set(tables) != set(OUTPUT_NAMES):
-        raise ValueError(f"expected exactly the table artifacts {OUTPUT_NAMES}")
+def write_tables(
+    tables,
+    output_dir,
+    *,
+    source_hash,
+    output_names=OUTPUT_NAMES,
+    completion_marker=COMPLETION_MARKER,
+):
+    if set(tables) != set(output_names):
+        raise ValueError(f"expected exactly the table artifacts {output_names}")
     output_dir = Path(output_dir)
-    marker = output_dir / COMPLETION_MARKER
+    marker = output_dir / completion_marker
     marker.unlink(missing_ok=True)
-    for name in OUTPUT_NAMES:
+    for name in output_names:
         _atomic_write(output_dir / name, tables[name])
     expected_header = f"% Source analysis.json SHA-256: {source_hash}\n"
-    for name in OUTPUT_NAMES:
+    for name in output_names:
         if expected_header not in (output_dir / name).read_text():
             raise RuntimeError(f"generated table {name} has a different source hash")
     _atomic_write(
@@ -1624,7 +1722,7 @@ def write_tables(tables, output_dir, *, source_hash):
         f"% Source analysis.json SHA-256: {source_hash}\n"
         rf"\def\FinalResultsAnalysisSHA{{{source_hash}}}" + "\n",
     )
-    return tuple(output_dir / name for name in OUTPUT_NAMES)
+    return tuple(output_dir / name for name in output_names)
 
 
 def main(argv=None):
@@ -1632,14 +1730,31 @@ def main(argv=None):
     analysis_path = Path(args.analysis)
     result = load_analysis(analysis_path)
     source_hash = hashlib.sha256(analysis_path.read_bytes()).hexdigest()
-    tables = render_tables(
-        result,
+    if args.design == "primary":
+        tables = render_tables(
+            result,
+            source_hash=source_hash,
+            allow_incomplete=args.allow_incomplete,
+        )
+        output_names = OUTPUT_NAMES
+        completion_marker = COMPLETION_MARKER
+    else:
+        tables = render_extension_tables(
+            result,
+            source_hash=source_hash,
+            allow_incomplete=args.allow_incomplete,
+        )
+        output_names = EXTENSION_OUTPUT_NAMES
+        completion_marker = EXTENSION_COMPLETION_MARKER
+    for path in write_tables(
+        tables,
+        args.output_dir,
         source_hash=source_hash,
-        allow_incomplete=args.allow_incomplete,
-    )
-    for path in write_tables(tables, args.output_dir, source_hash=source_hash):
+        output_names=output_names,
+        completion_marker=completion_marker,
+    ):
         print(f"saved {path}")
-    print(f"saved {Path(args.output_dir) / COMPLETION_MARKER}")
+    print(f"saved {Path(args.output_dir) / completion_marker}")
 
 
 if __name__ == "__main__":

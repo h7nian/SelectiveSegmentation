@@ -6,6 +6,8 @@ import json
 import pytest
 
 from scripts.render.paper import (
+    ARCHITECTURE_DOMAIN_CONDITIONS,
+    ARCHITECTURE_DOMAIN_HOLM_FAMILY_BY_DATASET,
     COMPLETION_MARKER,
     CONTRASTS,
     CONTROL_CONDITIONS,
@@ -21,6 +23,7 @@ from scripts.render.paper import (
     load_analysis,
     main,
     render_tables,
+    render_extension_tables,
     validate_analysis,
 )
 
@@ -35,11 +38,19 @@ def _holm(values):
     return adjusted
 
 
-def _analysis(*, condition_count=16, samples=10_000):
-    selected = EXPECTED_CONDITIONS[:condition_count]
+def _analysis(
+    *,
+    condition_count=None,
+    samples=10_000,
+    expected_conditions=EXPECTED_CONDITIONS,
+    family_by_dataset=HOLM_FAMILY_BY_DATASET,
+):
+    if condition_count is None:
+        condition_count = len(expected_conditions)
+    selected = expected_conditions[:condition_count]
     family_sizes = {}
     for dataset, _ in selected:
-        family = HOLM_FAMILY_BY_DATASET[dataset]
+        family = family_by_dataset[dataset]
         family_sizes[family] = family_sizes.get(family, 0) + len(CONTRASTS)
 
     conditions = []
@@ -76,7 +87,7 @@ def _analysis(*, condition_count=16, samples=10_000):
                 "random_aurc": random,
             }
 
-        family = HOLM_FAMILY_BY_DATASET[dataset]
+        family = family_by_dataset[dataset]
         comparisons = {}
         for contrast_index, spec in enumerate(CONTRASTS):
             methods = risks[spec.risk]["methods"]
@@ -285,6 +296,32 @@ def test_complete_render_has_declared_artifacts_and_main_orientation():
     assert main.count(r"\begin{tabular*}") == 2
     assert "significant" not in main.lower()
     assert "significance" not in main.lower()
+
+
+def test_extension_render_is_separate_compact_and_dataset_oriented():
+    result = _analysis(
+        expected_conditions=ARCHITECTURE_DOMAIN_CONDITIONS,
+        family_by_dataset=ARCHITECTURE_DOMAIN_HOLM_FAMILY_BY_DATASET,
+    )
+
+    ordered = validate_analysis(result, design="extension")
+    tables = render_extension_tables(result, source_hash="7" * 64)
+
+    assert len(ordered) == 7
+    assert set(tables) == {
+        "architecture_domain_extension.tex",
+        "architecture_domain_extension_full.tex",
+    }
+    summary = tables["architecture_domain_extension.tex"]
+    assert r"\label{tab:architecture-domain-extension}" in summary
+    assert "Adjacent-geometry contrast" in summary
+    assert "Oxford Pet" in summary and "DUTS" in summary
+    assert "SF-T:" in summary and "DL-T:" in summary
+    assert summary.count(r"\shortstack{") == len(CONTRASTS) * 6
+    full = tables["architecture_domain_extension_full.tex"]
+    assert "SegFormer-B2 target (SF-T)" in full
+    assert "DeepLabV3 target (DL-T)" in full
+    assert full.count(r"\begin{table*}[t]") == len(RISKS)
 
 
 def test_top1_highlight_uses_the_exact_unrounded_minimum():

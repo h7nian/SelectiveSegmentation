@@ -19,6 +19,9 @@
   urlcolor=linkblue
 }
 \usepackage[capitalise,noabbrev,nameinlink]{cleveref}
+\makeatletter
+\renewcommand*{\theHALG@line}{\thealgorithm.\arabic{ALG@line}}
+\makeatother
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}

@@ -12,6 +12,7 @@ import torch
 from PIL import Image
 
 from selectseg.data import (
+    DutsSegmentation,
     FivesSegmentation,
     IGNORE_INDEX,
     ISICSegmentation,
@@ -48,6 +49,11 @@ requires_tn3k = pytest.mark.skipif(
         / "trainval-image"
     ).is_dir(),
     reason="TN3K not downloaded; run scripts/download.py",
+)
+
+requires_duts = pytest.mark.skipif(
+    not (DATA_ROOT / "DUTS" / "DUTS-TR" / "DUTS-TR-Image").is_dir(),
+    reason="DUTS not downloaded; run scripts/download.py",
 )
 
 
@@ -108,6 +114,19 @@ def _write_tn3k_sample(
     mask.putpixel((1, 1), (0, 255, 0))
     mask.putpixel((2, 1), (0, 0, 1))
     mask.putpixel((3, 1), (128, 0, 0))
+    mask.save(masks / f"{stem}.png")
+
+
+def _write_duts_sample(root, split, stem, image_size=(9, 7), mask_size=None):
+    label = "DUTS-TR" if split == "train" else "DUTS-TE"
+    base = root / "DUTS" / label
+    images = base / f"{label}-Image"
+    masks = base / f"{label}-Mask"
+    images.mkdir(parents=True, exist_ok=True)
+    masks.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", image_size, color=(20, 40, 60)).save(images / f"{stem}.jpg")
+    mask = Image.new("L", mask_size or image_size, color=0)
+    mask.putpixel((1, 1), 255)
     mask.save(masks / f"{stem}.png")
 
 
@@ -363,6 +382,42 @@ def test_tn3k_accepts_downloaded_extraction_layout(tmp_path):
     assert len(dataset) == 1 and dataset.sample_id(0) == "0000"
 
 
+def test_duts_uses_official_splits_and_native_binary_masks(tmp_path):
+    _write_duts_sample(tmp_path, "train", "train_b")
+    _write_duts_sample(tmp_path, "train", "train_a")
+    _write_duts_sample(tmp_path, "test", "test_a")
+
+    train = DutsSegmentation(tmp_path, "train")
+    test = DutsSegmentation(tmp_path, "test")
+    assert [train.sample_id(index) for index in range(len(train))] == [
+        "train_a",
+        "train_b",
+    ]
+    assert test.sample_id(0) == "test_a"
+    image, mask, prompt = test[0]
+    assert image.mode == "RGB" and image.size == (9, 7)
+    assert mask.shape == (1, 7, 9) and set(mask.unique().tolist()) == {0, 1}
+    assert mask[0, 1, 1] == 1 and prompt == 0
+
+    dataset = SegDataset(SPECS["duts"], tmp_path, train=False, image_size=16)
+    resized_image, native_mask = dataset[0]
+    assert resized_image.shape == (3, 16, 16)
+    assert native_mask.shape == (7, 9)
+
+
+def test_duts_rejects_unpaired_files_and_size_mismatch(tmp_path):
+    _write_duts_sample(tmp_path, "train", "unpaired")
+    next(tmp_path.rglob("unpaired.png")).unlink()
+    with pytest.raises(ValueError, match="not paired"):
+        DutsSegmentation(tmp_path, "train")
+
+    _write_duts_sample(
+        tmp_path, "test", "bad_size", image_size=(8, 6), mask_size=(7, 6)
+    )
+    with pytest.raises(ValueError, match="DUTS.*size mismatch"):
+        DutsSegmentation(tmp_path, "test")
+
+
 @pytest.mark.parametrize(
     ("writer", "dataset", "name"),
     [
@@ -446,6 +501,22 @@ def test_tn3k_actual_release_counts_pairing_and_sample():
     assert train_ids == sorted(set(train_ids))
     assert test_ids == sorted(set(test_ids))
     # TN3K numbers each official split independently, so stems may overlap.
+    image, mask, prompt = test[0]
+    assert image.size == (mask.shape[-1], mask.shape[-2])
+    assert image.mode == "RGB" and mask.dtype == torch.long and prompt == 0
+    assert set(mask.unique().tolist()) <= {0, 1}
+
+
+@requires_duts
+def test_duts_actual_release_counts_pairing_and_sample():
+    train = DutsSegmentation(DATA_ROOT, "train")
+    test = DutsSegmentation(DATA_ROOT, "test")
+    assert (len(train), len(test)) == (10553, 5019)
+    train_ids = [train.sample_id(index) for index in range(len(train))]
+    test_ids = [test.sample_id(index) for index in range(len(test))]
+    assert train_ids == sorted(set(train_ids))
+    assert test_ids == sorted(set(test_ids))
+    assert set(train_ids).isdisjoint(test_ids)
     image, mask, prompt = test[0]
     assert image.size == (mask.shape[-1], mask.shape[-2])
     assert image.mode == "RGB" and mask.dtype == torch.long and prompt == 0
