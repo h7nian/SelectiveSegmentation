@@ -329,6 +329,16 @@ def parse_args(argv=None):
         default=[],
         help="explicit frozen manifest; repeat once per configured condition",
     )
+    parser.add_argument(
+        "--condition",
+        action="append",
+        default=[],
+        metavar="DATASET/CONDITION",
+        help=(
+            "restrict train or freeze to an exact configured condition; repeat "
+            "as needed, then omit to fill the remaining receipt entries"
+        ),
+    )
     parser.add_argument("--campaign-lock")
     parser.add_argument(
         "--write-lock",
@@ -397,6 +407,38 @@ def parse_args(argv=None):
         ),
     )
     return parser.parse_args(argv)
+
+
+def _filter_condition_jobs(jobs, requested):
+    """Select exact dataset/condition jobs without changing their identities."""
+
+    jobs = tuple(jobs)
+    if not requested:
+        return jobs
+    parsed = []
+    for index, value in enumerate(requested):
+        if not isinstance(value, str) or value.count("/") != 1:
+            raise ValueError(
+                f"--condition value {index} must have form DATASET/CONDITION"
+            )
+        dataset, condition = value.split("/", 1)
+        if not dataset or not condition:
+            raise ValueError(
+                f"--condition value {index} must have form DATASET/CONDITION"
+            )
+        parsed.append((dataset, condition))
+    if len(parsed) != len(set(parsed)):
+        raise ValueError("--condition values must be unique")
+    available = {(job.key[0], job.key[1]) for job in jobs}
+    unknown = set(parsed) - available
+    if unknown:
+        raise ValueError(
+            f"--condition is not configured for this phase: {sorted(unknown)}"
+        )
+    requested_set = set(parsed)
+    return tuple(
+        job for job in jobs if (job.key[0], job.key[1]) in requested_set
+    )
 
 
 def _reject_constant(value):
@@ -2958,7 +3000,9 @@ def main(argv=None):
             if args.phase == "train"
             else plan_freeze_jobs(config)
         )
-        return dispatch(jobs)
+        return dispatch(_filter_condition_jobs(jobs, args.condition))
+    if args.condition:
+        raise ValueError("--condition is available only for train and freeze")
     if args.phase == "lock":
         if args.submit:
             raise ValueError("lock phase never invokes sbatch; omit --submit")

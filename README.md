@@ -87,6 +87,16 @@ python -m scripts.render.paper --design extension --help
 python -m scripts.analyze.diagnostics --design extension --help
 ```
 
+Completed training conditions can be frozen immediately without creating a
+second config. Repeat `--condition DATASET/CONDITION` to submit a reviewed
+subset, then rerun the same command without the filter: the shared receipt
+skips earlier jobs and fills only the remaining conditions.
+
+```bash
+python -m scripts.submit.main --config configs/extension.json --phase freeze \
+  --condition pet/segformer-target --condition kvasir/segformer-target
+```
+
 All submission commands are dry runs unless `--submit` is provided. A real
 submission also requires an append-only receipt, for example:
 

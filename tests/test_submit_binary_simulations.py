@@ -116,6 +116,35 @@ def _write_candidate_config(tmp_path):
     return load_config(path)
 
 
+def test_condition_argument_filters_jobs_without_changing_identity(tmp_path):
+    config = _write_config(tmp_path)
+    payload = json.loads(config.path.read_text())
+    second = dict(payload["conditions"][0])
+    second.update(dataset="kvasir", expected_num_samples=3)
+    payload["conditions"].append(second)
+    config.path.write_text(json.dumps(payload, indent=2) + "\n")
+    config = load_config(config.path)
+
+    jobs = plan_freeze_jobs(config)
+    selected = submit_binary_simulations._filter_condition_jobs(
+        jobs, ["kvasir/clipseg-general"]
+    )
+    assert len(selected) == 1
+    assert selected[0] is jobs[1]
+    assert submit_binary_simulations._filter_condition_jobs(jobs, []) == jobs
+
+    with pytest.raises(ValueError, match="must have form"):
+        submit_binary_simulations._filter_condition_jobs(jobs, ["kvasir"])
+    with pytest.raises(ValueError, match="must be unique"):
+        submit_binary_simulations._filter_condition_jobs(
+            jobs, ["kvasir/clipseg-general", "kvasir/clipseg-general"]
+        )
+    with pytest.raises(ValueError, match="not configured"):
+        submit_binary_simulations._filter_condition_jobs(
+            jobs, ["isic/clipseg-general"]
+        )
+
+
 def _execute_candidate_runtime(
     config,
     jobs,
