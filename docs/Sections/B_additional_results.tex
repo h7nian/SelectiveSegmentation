@@ -38,6 +38,12 @@ receipts, and schema-v2 replay lock provide the additional private provenance.
 The two closures are checked separately rather than implying that private maps
 or scheduler records are distributed to reviewers.
 
+The architecture--domain extension follows the same separation under its own
+immutable lock. Its public closure contains seven assembled condition pairs,
+the 10,000-resample analysis, and aggregate calibration diagnostics; it is kept
+distinct from the sixteen-condition primary closure so neither design is
+silently enlarged after inspection.
+
 \subsection{Posterior and coupling mechanisms}
 
 \IfFileExists{Tables/mechanism_evidence.tex}{%
@@ -133,13 +139,9 @@ or scheduler records are distributed to reviewers.
     artifacts pass the campaign-bound validator.
   }
 
-  \noindent\textbf{Pointwise paired uncertainty.}
-
   \input{Tables/statistical_tests.tex}
 
   \IfFileExists{Tables/gamma_sensitivity.tex}{%
-    \noindent\textbf{Deployment-threshold sensitivity.}
-
     \input{Tables/gamma_sensitivity.tex}
 
   }{%
@@ -155,6 +157,15 @@ or scheduler records are distributed to reviewers.
   deliberately excluded from the compiled manuscript.
 }
 
+\IfFileExists{Tables/architecture_domain_extension_complete.tex}{%
+  \input{Tables/architecture_domain_extension_full.tex}
+}{%
+  \noindent\textbf{Extension rendering guard.}
+  The complete three-risk table appears only after all seven independently
+  assembled extension conditions pass the immutable-lock and bootstrap checks.
+}
+
+\clearpage
 \subsection{Calibration, support, and ranking diagnostics}
 
 \IfFileExists{Tables/binary_diagnostics.tex}{%
@@ -167,6 +178,24 @@ or scheduler records are distributed to reviewers.
   validator receives the immutable lock and sixteen explicit
   \texttt{diagnostics.json} files. Marginal calibration and ladder diversity
   are not treated as validation of the joint mask posterior.
+}
+
+\IfFileExists{Tables/architecture_domain_diagnostics.tex}{%
+  \noindent\textbf{Architecture and domain extension diagnostics.}
+
+  \input{Tables/architecture_domain_diagnostics.tex}
+  Across the seven extension conditions, 15-bin pixel expected calibration
+  error (ECE) ranges from .0082 to .0416, while the \(M=32\) ladder retains on
+  average 31.45--31.99 distinct masks. On DUTS, SegFormer-B2 has lower Brier
+  score and ECE than DeepLabV3 (.0234/.0154 versus
+  .0312/.0190), yet both ladders remain similarly nondegenerate. These facts
+  rule out an empty threshold ladder as an explanation for any ranking result;
+  they do not establish the correctness of its shared-threshold coupling.
+}{%
+  \noindent\textbf{Extension-diagnostics rendering guard.}
+  This table appears only after all seven separately locked SegFormer/DUTS
+  diagnostic artifacts pass the same cohort and provenance checks as the
+  primary study.
 }
 
 \IfFileExists{Tables/cardinality_diagnostics.tex}{%

@@ -11,8 +11,9 @@ show where it can break.
 Full nHD is sensitive to one extreme surface point. Pooled nHD95 is more robust
 but nonmetric and empirically sensitive to checkpoint and action threshold.
 Surface extraction, spacing, normalization, pooling, and empty-mask penalties
-must therefore be fixed as deployment choices. Our five binary datasets, two
-model families, primary seed, and image bootstrap do not cover site,
+must therefore be fixed as deployment choices. Our five-dataset primary study
+and separate SegFormer/DUTS extension broaden architecture and domain coverage,
+but one primary seed and an image bootstrap do not cover site,
 multi-rater, patient-cluster, or training uncertainty. Learned detectors,
 calibrated annotation posteriors, multiclass actions, and absolute risk
 calibration remain future work; \Cref{app:limitations} gives details.
@@ -23,7 +24,8 @@ Selective segmentation begins by \textbf{naming the failure that should trigger
 abstention}. Loss indexing supplies the target, but the working posterior must
 also encode how that failure occurs. Shared thresholds model coherent boundary
 motion, and normalized full Hausdorff loss yields the clearest theory and
-empirical ranking. nHD95 exposes the value and sensitivity of a robust endpoint;
+empirical ranking across both the primary and architecture--domain studies.
+nHD95 exposes the value and sensitivity of a robust endpoint;
 Dice shows parity between level-set and count-oriented SDC across the target
 conditions, consistent with the count-dispersion analysis.
 \textbf{Confidence is not universal or metric-free}: it is a declared model of how a

@@ -50,6 +50,45 @@ pixel-weighted diagnostic does not make calibration irrelevant; it instead
 supports the count-dispersion account, under which two distinct functionals of
 the same map can remain close even when its marginals are well calibrated.
 
+\subsection{Architecture and domain extension}
+
+\IfFileExists{Tables/architecture_domain_extension_complete.tex}{%
+  \input{Tables/architecture_domain_extension.tex}
+
+  \noindent\textbf{The flagship result survives both interventions.}
+  Under nHD risk, nHD-M32 improves on Dice-M32 in \textbf{all seven extension
+  conditions}; every pointwise interval excludes zero and every approximate
+  bootstrap tail probability remains below .01 after Holm adjustment within
+  the 28-comparison extension family. This includes SegFormer-B2 on all five
+  original datasets and both SegFormer-B2 and DeepLabV3 on the new DUTS domain.
+  Among the same ten primary methods, nHD-M32 is lowest in five conditions and
+  a boundary-indexed M32 score is lowest in six; MMMC-Entropy on Kvasir-SEG is
+  the exception. \Cref{tab:architecture-domain-extension-full} reports all 17
+  scores. The primary finding is therefore neither specific to CLIPSeg nor
+  confined to the original domains.
+
+  \noindent\textbf{The robust endpoint remains a smaller distinction.}
+  nHD95-M32 is lower than nHD-M32 in all seven conditions under nHD95 risk and
+  is the lowest displayed method in six. Conversely, nHD-M32 is lower in six
+  under nHD risk. Only two intervals in the first comparison and three in the
+  second exclude zero, so this matched-direction pattern is suggestive but much
+  less decisive than nHD versus Dice.
+
+  \noindent\textbf{Dice still supports parity, not dominance.}
+  SDC is lower than Dice-M32 in five of seven extension conditions, while Dice-M32
+  is lower in two; foreground entropy has the lowest macro-average Dice-risk
+  AURC. The extension correlation between pixel ECE and Dice-M32-minus-SDC AURC
+  is again negative (Spearman \(-.571\)), opposing the claim that SDC looks
+  strong only because the new maps are poorly calibrated. With seven
+  non-independent conditions this correlation is descriptive, but its direction
+  agrees with the primary diagnostic.
+}{%
+  \noindent\textbf{Extension rendering guard.}
+  This subsection is populated only after all seven separately locked
+  architecture/domain conditions pass assembly, 10,000-resample analysis, and
+  final-table validation.
+}
+
 \subsection{Ablation studies}
 
 \noindent\textbf{How many threshold nodes are needed?}

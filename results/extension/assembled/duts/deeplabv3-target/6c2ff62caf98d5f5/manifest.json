@@ -1,0 +1,226 @@
+{
+  "schema_version": 2,
+  "artifact_type": "selectseg.binary_simulation_assembly",
+  "run_id": "6c2ff62caf98d5f5",
+  "condition": "deeplabv3-target",
+  "model": "deeplabv3",
+  "dataset": "duts",
+  "split": "test",
+  "num_images": 5019,
+  "checkpoint": {
+    "path": "outputs/extension/train/duts/deeplabv3/checkpoint.pt",
+    "sha256": "db74441861398f3eb138215eb949244631f9099480b311fa6e1f3a7d21a3df2e",
+    "size_bytes": 168339051
+  },
+  "base_model": {
+    "name": "deeplabv3",
+    "source": "DeepLabV3_ResNet50_Weights.COCO_WITH_VOC_LABELS_V1"
+  },
+  "source_sha256": "ad843d76e1eb30abc1c14d3c7f90c737491fc0ec713f5795504b03449100d08a",
+  "environment": {
+    "packages": {
+      "python": "3.12.4",
+      "numpy": "2.5.1",
+      "scipy": "1.18.0"
+    },
+    "device": "cpu"
+  },
+  "cohort": "all images from a native binary segmentation split",
+  "decision_rule": {
+    "form": "foreground_probability >= gamma",
+    "gamma": 0.5
+  },
+  "preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "losses": {
+    "dice": "foreground 1-Dice; empty-empty=0; one-sided-empty=1",
+    "nhd": "full bidirectional digital-surface Hausdorff / image diagonal; empty-empty=0; one-sided-empty=1",
+    "nhd95": "pooled bidirectional HD95 / image diagonal; empty-empty=0; one-sided-empty=1"
+  },
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd",
+    "risk_nhd95"
+  ],
+  "auxiliary_fields": [
+    "risk_hd_pixels",
+    "risk_hd95_pixels"
+  ],
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_exact",
+    "confidence_qfr_entropy",
+    "confidence_plm10_entropy",
+    "confidence_mmmc_entropy",
+    "confidence_foreground_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd_m32",
+    "confidence_nhd95_m32"
+  ],
+  "void_policy": "total binary domain; void labels are forbidden",
+  "sdc_empty_convention": "published SDC baseline: confidence 0 when p and hard mask are empty",
+  "sample_id_sha256": "08db531389e566b924d5f55faad3ad83f0bd7db7ead72939f6f0f019c035b090",
+  "command": [
+    "python",
+    "-m",
+    "scripts.assemble"
+  ],
+  "num_rows": 5019,
+  "quadrature": {
+    "2": {
+      "rule": "midpoint",
+      "nodes": [
+        0.25,
+        0.75
+      ],
+      "weights": [
+        0.5,
+        0.5
+      ]
+    },
+    "8": {
+      "rule": "midpoint",
+      "nodes": [
+        0.0625,
+        0.1875,
+        0.3125,
+        0.4375,
+        0.5625,
+        0.6875,
+        0.8125,
+        0.9375
+      ],
+      "weights": [
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125
+      ]
+    },
+    "32": {
+      "rule": "midpoint",
+      "nodes": [
+        0.015625,
+        0.046875,
+        0.078125,
+        0.109375,
+        0.140625,
+        0.171875,
+        0.203125,
+        0.234375,
+        0.265625,
+        0.296875,
+        0.328125,
+        0.359375,
+        0.390625,
+        0.421875,
+        0.453125,
+        0.484375,
+        0.515625,
+        0.546875,
+        0.578125,
+        0.609375,
+        0.640625,
+        0.671875,
+        0.703125,
+        0.734375,
+        0.765625,
+        0.796875,
+        0.828125,
+        0.859375,
+        0.890625,
+        0.921875,
+        0.953125,
+        0.984375
+      ],
+      "weights": [
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125
+      ]
+    }
+  },
+  "jsonl_sha256": "a84b8f1be2aece89a3c316c407f53bfb2bd13b98230a6ce9d855037a6750b495",
+  "assembly": {
+    "assembly_schema_version": 2,
+    "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+    "campaign_lock_sha256": "362fb550fbe0abeb4228fec2ae9569784ca170a2f4710fa48097e7b483b5fc4f",
+    "artifact_id": "6b91487d4a2b5032",
+    "artifact_manifest_sha256": "ecb13d0fb687b68f0c73e1e21a042c81af7cb05272e92ddc9537bb7fdee04409",
+    "artifact_source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+    "common_manifest_sha256": "75f22b53f58714da87980bd8c3de356877f43f955e2904cf477e7a72ceafb4f8",
+    "common_jsonl_sha256": "95612df64f6ae57e7864a62c92fcc7e0f1058d73dfe2d983ffa4e7bc708ca279",
+    "simulation_manifests": {
+      "2": {
+        "path": "outputs/extension/simulations/duts/deeplabv3-target/013729d5dec0df1c/manifest.json",
+        "sha256": "cea64b019e32280c19f611832b39517a7c38c78291b85a27b6cd70e2ce3544f7",
+        "jsonl_sha256": "55b3368cede605ca0bf2465e1af3ec565873393586fe018978ae481c2b744cee"
+      },
+      "8": {
+        "path": "outputs/extension/simulations/duts/deeplabv3-target/ea102169e8cfa963/manifest.json",
+        "sha256": "1095990f13033b258712deddb52b8f52be830745b37db674f6b6511891e717d4",
+        "jsonl_sha256": "db83bb9c4ddd21dbaa1b82cc29c42450e27281906bb85b4d2371a2855a893700"
+      },
+      "32": {
+        "path": "outputs/extension/simulations/duts/deeplabv3-target/811347be52c0124e/manifest.json",
+        "sha256": "4d96b7a1a76b1f692434660051b12c92dd5a117f59a6525be64c28641ff1f5ec",
+        "jsonl_sha256": "8d165946c8f2132d65df700d30a5495a55b52862d8f93a53a17c5582d27d664c"
+      }
+    },
+    "simulation_jsonl": {
+      "2": "55b3368cede605ca0bf2465e1af3ec565873393586fe018978ae481c2b744cee",
+      "8": "db83bb9c4ddd21dbaa1b82cc29c42450e27281906bb85b4d2371a2855a893700",
+      "32": "8d165946c8f2132d65df700d30a5495a55b52862d8f93a53a17c5582d27d664c"
+    },
+    "campaign_id": "architecture-domain-extension-v1",
+    "campaign_lock_path": "outputs/extension/campaign.lock.json",
+    "common_manifest": {
+      "path": "outputs/extension/common/duts/deeplabv3-target/cfec4151e7af5820/manifest.json",
+      "sha256": "75f22b53f58714da87980bd8c3de356877f43f955e2904cf477e7a72ceafb4f8",
+      "jsonl_sha256": "95612df64f6ae57e7864a62c92fcc7e0f1058d73dfe2d983ffa4e7bc708ca279"
+    }
+  }
+}

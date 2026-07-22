@@ -1,0 +1,226 @@
+{
+  "schema_version": 2,
+  "artifact_type": "selectseg.binary_simulation_assembly",
+  "run_id": "10ae39efb93cd7d9",
+  "condition": "segformer-target",
+  "model": "segformer",
+  "dataset": "tn3k",
+  "split": "test",
+  "num_images": 614,
+  "checkpoint": {
+    "path": "outputs/extension/train/tn3k/segformer/checkpoint.pt",
+    "sha256": "e76cf2dabf27e9c5d7b73d26e561bca115204ce8d2cb05b11568fc68d96fafc3",
+    "size_bytes": 109558931
+  },
+  "base_model": {
+    "name": "segformer",
+    "source": "nvidia/segformer-b2-finetuned-ade-512-512"
+  },
+  "source_sha256": "ad843d76e1eb30abc1c14d3c7f90c737491fc0ec713f5795504b03449100d08a",
+  "environment": {
+    "packages": {
+      "python": "3.12.4",
+      "numpy": "2.5.1",
+      "scipy": "1.18.0"
+    },
+    "device": "cpu"
+  },
+  "cohort": "all images from a native binary segmentation split",
+  "decision_rule": {
+    "form": "foreground_probability >= gamma",
+    "gamma": 0.5
+  },
+  "preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "losses": {
+    "dice": "foreground 1-Dice; empty-empty=0; one-sided-empty=1",
+    "nhd": "full bidirectional digital-surface Hausdorff / image diagonal; empty-empty=0; one-sided-empty=1",
+    "nhd95": "pooled bidirectional HD95 / image diagonal; empty-empty=0; one-sided-empty=1"
+  },
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd",
+    "risk_nhd95"
+  ],
+  "auxiliary_fields": [
+    "risk_hd_pixels",
+    "risk_hd95_pixels"
+  ],
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_exact",
+    "confidence_qfr_entropy",
+    "confidence_plm10_entropy",
+    "confidence_mmmc_entropy",
+    "confidence_foreground_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd_m32",
+    "confidence_nhd95_m32"
+  ],
+  "void_policy": "total binary domain; void labels are forbidden",
+  "sdc_empty_convention": "published SDC baseline: confidence 0 when p and hard mask are empty",
+  "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9",
+  "command": [
+    "python",
+    "-m",
+    "scripts.assemble"
+  ],
+  "num_rows": 614,
+  "quadrature": {
+    "2": {
+      "rule": "midpoint",
+      "nodes": [
+        0.25,
+        0.75
+      ],
+      "weights": [
+        0.5,
+        0.5
+      ]
+    },
+    "8": {
+      "rule": "midpoint",
+      "nodes": [
+        0.0625,
+        0.1875,
+        0.3125,
+        0.4375,
+        0.5625,
+        0.6875,
+        0.8125,
+        0.9375
+      ],
+      "weights": [
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125
+      ]
+    },
+    "32": {
+      "rule": "midpoint",
+      "nodes": [
+        0.015625,
+        0.046875,
+        0.078125,
+        0.109375,
+        0.140625,
+        0.171875,
+        0.203125,
+        0.234375,
+        0.265625,
+        0.296875,
+        0.328125,
+        0.359375,
+        0.390625,
+        0.421875,
+        0.453125,
+        0.484375,
+        0.515625,
+        0.546875,
+        0.578125,
+        0.609375,
+        0.640625,
+        0.671875,
+        0.703125,
+        0.734375,
+        0.765625,
+        0.796875,
+        0.828125,
+        0.859375,
+        0.890625,
+        0.921875,
+        0.953125,
+        0.984375
+      ],
+      "weights": [
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125
+      ]
+    }
+  },
+  "jsonl_sha256": "661f8a46d1c52ccfd4a78b6a9c5a42619837098ab7998b181ef73ba4ded6aafd",
+  "assembly": {
+    "assembly_schema_version": 2,
+    "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+    "campaign_lock_sha256": "362fb550fbe0abeb4228fec2ae9569784ca170a2f4710fa48097e7b483b5fc4f",
+    "artifact_id": "96cd985f2d40193f",
+    "artifact_manifest_sha256": "07313328e413c514de4d85ab0bbdeb4b121134380e071297fb43ec66aed2143f",
+    "artifact_source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+    "common_manifest_sha256": "1b25a3eeb0319c33569dc440751c945db375513ca7580c479b0fbfdd8f683b45",
+    "common_jsonl_sha256": "71db5d3c5c5d334ddcc44c8d072f653d4c9fdcbfe7fdb9871ae1c6ae765b2ab2",
+    "simulation_manifests": {
+      "2": {
+        "path": "outputs/extension/simulations/tn3k/segformer-target/a8d9978f0dff6238/manifest.json",
+        "sha256": "a766b0cf5b546121ce73f52e5bcff917f27a85ac840e3337ac1d6577e878ba75",
+        "jsonl_sha256": "c7a9ce4db2cb207d53ca238087d4745f6421a50b76e25032d413affc6e3bd491"
+      },
+      "8": {
+        "path": "outputs/extension/simulations/tn3k/segformer-target/6ea97b44fc1d1897/manifest.json",
+        "sha256": "43f83f7f84abfb4c3691b0b9cbe51f0c9fcbe6366340af5799c0dbc5dd997c9c",
+        "jsonl_sha256": "7f14c3156008ae7618b9661ffdb2b78aef91d7cf1eda46a8d2db9648dac5e1e6"
+      },
+      "32": {
+        "path": "outputs/extension/simulations/tn3k/segformer-target/759a6f26a2198f4b/manifest.json",
+        "sha256": "0a0616eaf51cb7f7f871e48a0216cd872e924bb8a8052cdf282a39f8209a5d3e",
+        "jsonl_sha256": "5a230acac86287124372d1d9257cf9b5335258f4426a48d77f2e9590d393ec4e"
+      }
+    },
+    "simulation_jsonl": {
+      "2": "c7a9ce4db2cb207d53ca238087d4745f6421a50b76e25032d413affc6e3bd491",
+      "8": "7f14c3156008ae7618b9661ffdb2b78aef91d7cf1eda46a8d2db9648dac5e1e6",
+      "32": "5a230acac86287124372d1d9257cf9b5335258f4426a48d77f2e9590d393ec4e"
+    },
+    "campaign_id": "architecture-domain-extension-v1",
+    "campaign_lock_path": "outputs/extension/campaign.lock.json",
+    "common_manifest": {
+      "path": "outputs/extension/common/tn3k/segformer-target/b55b37cd7c8c113c/manifest.json",
+      "sha256": "1b25a3eeb0319c33569dc440751c945db375513ca7580c479b0fbfdd8f683b45",
+      "jsonl_sha256": "71db5d3c5c5d334ddcc44c8d072f653d4c9fdcbfe7fdb9871ae1c6ae765b2ab2"
+    }
+  }
+}

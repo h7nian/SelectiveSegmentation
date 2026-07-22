@@ -1,0 +1,127 @@
+{
+  "lock_schema_version": 1,
+  "campaign_id": "architecture-domain-extension-v1",
+  "config": {
+    "path": "configs/extension.json",
+    "sha256": "46ac08ca394d8c57bd46935ea2040acfe33a7f3e0c143fd020908306fdd4b56e"
+  },
+  "protocol": {
+    "gamma_values": [
+      0.5
+    ],
+    "m_values": [
+      2,
+      8,
+      32
+    ],
+    "quadrature_rule": "midpoint-v1",
+    "seeds": [
+      0
+    ]
+  },
+  "estimator": {
+    "spec_path": "configs/estimators/midpoint-v1.json",
+    "spec_sha256": "ec7853c8dac78c0dc02bab833fba2545c7712b2ec5cc1803cf5ae8fc14167a84",
+    "estimator_id": "midpoint-v1",
+    "target_measure": "uniform-threshold"
+  },
+  "paths": {
+    "artifact_output_root": "outputs/extension/artifacts",
+    "common_output_root": "outputs/extension/common",
+    "simulation_output_root": "outputs/extension/simulations",
+    "assembly_output_root": "outputs/extension/assembled"
+  },
+  "artifacts": [
+    {
+      "manifest_path": "outputs/extension/artifacts/pet/segformer-target/6c00573a383468bf/manifest.json",
+      "manifest_sha256": "efa6fb6e16b2e34fc07acd8d6c3cc6d4212580bbc7eac7b4eeaf2e9c2fb8ca41",
+      "artifact_id": "6c00573a383468bf",
+      "dataset": "pet",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "split": "test",
+      "checkpoint_sha256": "fc762f686b3e9fc87905d55e63a1eed908e2dca4ac74bfef4e33a0a2d271a03f",
+      "source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+      "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d",
+      "num_samples": 3669
+    },
+    {
+      "manifest_path": "outputs/extension/artifacts/kvasir/segformer-target/602755a79b517160/manifest.json",
+      "manifest_sha256": "00fa309a51d6e7f4523f902fcf9293a7e65be1ea86c8387ea5ee18ef17fc6bf4",
+      "artifact_id": "602755a79b517160",
+      "dataset": "kvasir",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "split": "test",
+      "checkpoint_sha256": "27b46a134137e9374f609f8a438b371b9198d5a794869160f7383537f778c300",
+      "source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+      "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f",
+      "num_samples": 200
+    },
+    {
+      "manifest_path": "outputs/extension/artifacts/fives/segformer-target/67370fce9d095f3d/manifest.json",
+      "manifest_sha256": "e19c639b126fdf9e30dc5f15253b5edd93f8493b171281b67aa545a7895ba73b",
+      "artifact_id": "67370fce9d095f3d",
+      "dataset": "fives",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "split": "test",
+      "checkpoint_sha256": "0111ece6dbe7fbced27f72080dc6c1d9aced7aa908322d66980a84fe776fbeca",
+      "source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+      "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d",
+      "num_samples": 200
+    },
+    {
+      "manifest_path": "outputs/extension/artifacts/isic/segformer-target/14c269e9953f3c7d/manifest.json",
+      "manifest_sha256": "9440ff66da4b0fd6630321991d5b3657b8abf1241b1805f3666ecda6016b2780",
+      "artifact_id": "14c269e9953f3c7d",
+      "dataset": "isic",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "split": "test",
+      "checkpoint_sha256": "68d26de2451b3f00f494be0df1c2a48b444a8eab3fe0d2c39651b9cbf1a16390",
+      "source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+      "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6",
+      "num_samples": 1000
+    },
+    {
+      "manifest_path": "outputs/extension/artifacts/tn3k/segformer-target/96cd985f2d40193f/manifest.json",
+      "manifest_sha256": "07313328e413c514de4d85ab0bbdeb4b121134380e071297fb43ec66aed2143f",
+      "artifact_id": "96cd985f2d40193f",
+      "dataset": "tn3k",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "split": "test",
+      "checkpoint_sha256": "e76cf2dabf27e9c5d7b73d26e561bca115204ce8d2cb05b11568fc68d96fafc3",
+      "source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+      "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9",
+      "num_samples": 614
+    },
+    {
+      "manifest_path": "outputs/extension/artifacts/duts/segformer-target/930cffd5e46b1ca9/manifest.json",
+      "manifest_sha256": "34b297fde2bab3fdfd0b247956618bc4a1fe33d9bc27d0165b80f4a10175cde2",
+      "artifact_id": "930cffd5e46b1ca9",
+      "dataset": "duts",
+      "condition": "segformer-target",
+      "model": "segformer",
+      "split": "test",
+      "checkpoint_sha256": "4c069662608fb75a6d5db1a44e12f7bf43f3ec0d0da22789c11f8c346fbfb36d",
+      "source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+      "sample_id_sha256": "08db531389e566b924d5f55faad3ad83f0bd7db7ead72939f6f0f019c035b090",
+      "num_samples": 5019
+    },
+    {
+      "manifest_path": "outputs/extension/artifacts/duts/deeplabv3-target/6b91487d4a2b5032/manifest.json",
+      "manifest_sha256": "ecb13d0fb687b68f0c73e1e21a042c81af7cb05272e92ddc9537bb7fdee04409",
+      "artifact_id": "6b91487d4a2b5032",
+      "dataset": "duts",
+      "condition": "deeplabv3-target",
+      "model": "deeplabv3",
+      "split": "test",
+      "checkpoint_sha256": "db74441861398f3eb138215eb949244631f9099480b311fa6e1f3a7d21a3df2e",
+      "source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+      "sample_id_sha256": "08db531389e566b924d5f55faad3ad83f0bd7db7ead72939f6f0f019c035b090",
+      "num_samples": 5019
+    }
+  ]
+}

@@ -182,20 +182,27 @@ Increasing \(M\) \textbf{shrinks only the quadrature term}; it leaves \(p\), its
 and posterior discrepancy unchanged.
 
 \noindent\textbf{From score error to AURC.}
-Let \(e_M\) denote the right-hand side of
-\Cref{cor:population-bound}, which bounds the mean absolute score error.
-With randomized ties, \(R_L(c;C_L^\star)=R_L^\star(c)\), and
-\Cref{app:theory} proves
-\begin{align*}
+Separate the actual mean score error from its decomposable upper bound:
+\(\eta_M:=\Ex|C_{L,M}(X)-C_L^\star(X)|\) and
+\(e_M:=\Ex[V(H_{L,X})]/(2M)+\Ex[\Delta_{L,\Yhat}(X)]\), so
+\(\eta_M\leq e_M\) by \Cref{cor:population-bound}. With randomized ties,
+\(C_L^\star\) gives the optimal coverage-\(c\) selector, and
+\Cref{app:theory} proves the transparent plug-in bound
+\begin{equation*}
   0\leq R_L(c;C_{L,M})-R_L^\star(c)
-  &\leq\min\{B,e_M/c\},\\
+  \leq\min\{B,\eta_M/c\}
+  \leq\min\{B,e_M/c\}.
+\end{equation*}
+Integrating over coverage gives
+\begin{equation*}
   0\leq\AURC_L(C_{L,M})-\AURC_L(C_L^\star)
-  &\leq\Psi_B(e_M),
-\end{align*}
-where \(\Psi_B(0)=0\), \(\Psi_B(z)=z[1+\log(B/z)]\) for \(0<z<B\), and
-\(\Psi_B(z)=B\) for \(z\geq B\). Thus the combined error \textbf{controls
-population AURC regret}; the coverage-wise bound is most sensitive at low
-coverage, while integration yields the finite logarithmic envelope above.
-The appendix also gives the uniform-error bound
-\(\min\{B,2\epsilon\}\); the factor-one \(L^1\) result sharpens the usual
-argument that bounds errors on the two selected sets separately.
+  \leq\Psi_B(\eta_M)\leq\Psi_B(e_M),
+\end{equation*}
+where \(\Psi_B(z)=z[1+\log(B/z)]\) for \(0<z<B\), with
+\(\Psi_B(0)=0\) and \(\Psi_B(z)=B\) for \(z\geq B\). Thus quadrature and
+posterior errors control \textbf{population AURC regret}: low coverage is the
+most sensitive pointwise regime, yet its integral remains finite. The appendix
+also proves the coverage-independent bound \(\min\{B,2\epsilon\}\) under
+uniform score error \(\epsilon\). The factor one in the \(L^1\) bound is not a
+missing factor: it follows from comparing the two randomized selectors before
+applying the absolute-value bound.

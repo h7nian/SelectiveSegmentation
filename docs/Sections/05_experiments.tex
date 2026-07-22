@@ -76,5 +76,7 @@ We use \textbf{exact tie-aware AURC}. Displayed AURCs and contrasts are multipli
 100; normalized excess AURC (nAURC) and computation remain unscaled. Each of 64 fixed condition-level
 contrasts receives a pointwise 95\% interval from 10,000 paired image-bootstrap
 resamples \citep{efron1993}. These are neither simultaneous tests nor inference
-over training randomness. The hindsight oracle orders realized losses and is
-not \(C_L^\star\).
+over training randomness. Fifteen-bin pixel expected calibration error (ECE)
+and level-set ladder diversity are descriptive diagnostics, not tests of the
+joint mask posterior. The hindsight oracle orders realized losses and is not
+\(C_L^\star\).

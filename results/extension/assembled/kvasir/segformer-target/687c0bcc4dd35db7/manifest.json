@@ -1,0 +1,226 @@
+{
+  "schema_version": 2,
+  "artifact_type": "selectseg.binary_simulation_assembly",
+  "run_id": "687c0bcc4dd35db7",
+  "condition": "segformer-target",
+  "model": "segformer",
+  "dataset": "kvasir",
+  "split": "test",
+  "num_images": 200,
+  "checkpoint": {
+    "path": "outputs/extension/train/kvasir/segformer/checkpoint.pt",
+    "sha256": "27b46a134137e9374f609f8a438b371b9198d5a794869160f7383537f778c300",
+    "size_bytes": 109558931
+  },
+  "base_model": {
+    "name": "segformer",
+    "source": "nvidia/segformer-b2-finetuned-ade-512-512"
+  },
+  "source_sha256": "ad843d76e1eb30abc1c14d3c7f90c737491fc0ec713f5795504b03449100d08a",
+  "environment": {
+    "packages": {
+      "python": "3.12.4",
+      "numpy": "2.5.1",
+      "scipy": "1.18.0"
+    },
+    "device": "cpu"
+  },
+  "cohort": "all images from a native binary segmentation split",
+  "decision_rule": {
+    "form": "foreground_probability >= gamma",
+    "gamma": 0.5
+  },
+  "preprocessing": {
+    "model_input": "square resize with antialiasing",
+    "probability_to_native_mask": "bilinear interpolation with align_corners=False"
+  },
+  "losses": {
+    "dice": "foreground 1-Dice; empty-empty=0; one-sided-empty=1",
+    "nhd": "full bidirectional digital-surface Hausdorff / image diagonal; empty-empty=0; one-sided-empty=1",
+    "nhd95": "pooled bidirectional HD95 / image diagonal; empty-empty=0; one-sided-empty=1"
+  },
+  "risk_fields": [
+    "risk_dice",
+    "risk_nhd",
+    "risk_nhd95"
+  ],
+  "auxiliary_fields": [
+    "risk_hd_pixels",
+    "risk_hd95_pixels"
+  ],
+  "score_fields": [
+    "confidence_sdc",
+    "confidence_mean_max_probability",
+    "confidence_negative_entropy",
+    "confidence_dice_exact",
+    "confidence_qfr_entropy",
+    "confidence_plm10_entropy",
+    "confidence_mmmc_entropy",
+    "confidence_foreground_entropy",
+    "confidence_dice_m2",
+    "confidence_nhd_m2",
+    "confidence_nhd95_m2",
+    "confidence_dice_m8",
+    "confidence_nhd_m8",
+    "confidence_nhd95_m8",
+    "confidence_dice_m32",
+    "confidence_nhd_m32",
+    "confidence_nhd95_m32"
+  ],
+  "void_policy": "total binary domain; void labels are forbidden",
+  "sdc_empty_convention": "published SDC baseline: confidence 0 when p and hard mask are empty",
+  "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f",
+  "command": [
+    "python",
+    "-m",
+    "scripts.assemble"
+  ],
+  "num_rows": 200,
+  "quadrature": {
+    "2": {
+      "rule": "midpoint",
+      "nodes": [
+        0.25,
+        0.75
+      ],
+      "weights": [
+        0.5,
+        0.5
+      ]
+    },
+    "8": {
+      "rule": "midpoint",
+      "nodes": [
+        0.0625,
+        0.1875,
+        0.3125,
+        0.4375,
+        0.5625,
+        0.6875,
+        0.8125,
+        0.9375
+      ],
+      "weights": [
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125,
+        0.125
+      ]
+    },
+    "32": {
+      "rule": "midpoint",
+      "nodes": [
+        0.015625,
+        0.046875,
+        0.078125,
+        0.109375,
+        0.140625,
+        0.171875,
+        0.203125,
+        0.234375,
+        0.265625,
+        0.296875,
+        0.328125,
+        0.359375,
+        0.390625,
+        0.421875,
+        0.453125,
+        0.484375,
+        0.515625,
+        0.546875,
+        0.578125,
+        0.609375,
+        0.640625,
+        0.671875,
+        0.703125,
+        0.734375,
+        0.765625,
+        0.796875,
+        0.828125,
+        0.859375,
+        0.890625,
+        0.921875,
+        0.953125,
+        0.984375
+      ],
+      "weights": [
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125,
+        0.03125
+      ]
+    }
+  },
+  "jsonl_sha256": "579e781379b3e4ce26eb6e719b488c5903bbd630d3c3669dbe2924902f756044",
+  "assembly": {
+    "assembly_schema_version": 2,
+    "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+    "campaign_lock_sha256": "362fb550fbe0abeb4228fec2ae9569784ca170a2f4710fa48097e7b483b5fc4f",
+    "artifact_id": "602755a79b517160",
+    "artifact_manifest_sha256": "00fa309a51d6e7f4523f902fcf9293a7e65be1ea86c8387ea5ee18ef17fc6bf4",
+    "artifact_source_sha256": "d4cf63d1043d5147378d0cae963e2a6de3b1b3e688bbb0269698f149036444a2",
+    "common_manifest_sha256": "fbf5161cf93d68b4ab20c4396871009cf5555762c795d166d633cd6f5aebad17",
+    "common_jsonl_sha256": "a07f76297caebe5a125b9e5fda6ac7f6dfba2be3b620b9de57ce2b3413efe843",
+    "simulation_manifests": {
+      "2": {
+        "path": "outputs/extension/simulations/kvasir/segformer-target/6f1dfe2d39dc3dce/manifest.json",
+        "sha256": "5d563da39613bf38de4e3aab6c68a1de0bcfbb89569555031df6a879fc08a8e1",
+        "jsonl_sha256": "614c953e7023c03b03bd788d63effc61ffefed3657504f8151224f5596a79d9c"
+      },
+      "8": {
+        "path": "outputs/extension/simulations/kvasir/segformer-target/dd082401bf5bd0c9/manifest.json",
+        "sha256": "7c49a959949ef3d1535d1a4cb2098e024974a4ae4f75c935acb622428a594fd4",
+        "jsonl_sha256": "0f387c4af94c4e9f37183cf87e8602b0e0d0cbcde54b7a84bc4c7f7c71202e0c"
+      },
+      "32": {
+        "path": "outputs/extension/simulations/kvasir/segformer-target/5c05792f9415413d/manifest.json",
+        "sha256": "95519b516f709461af3585904f2d69fca7ffcb32294a4a0c5bf4fcba5644d786",
+        "jsonl_sha256": "c87097ed50dbd41bb478401d5cb52512b0c919df577d098d0e5205ca4fa535d6"
+      }
+    },
+    "simulation_jsonl": {
+      "2": "614c953e7023c03b03bd788d63effc61ffefed3657504f8151224f5596a79d9c",
+      "8": "0f387c4af94c4e9f37183cf87e8602b0e0d0cbcde54b7a84bc4c7f7c71202e0c",
+      "32": "c87097ed50dbd41bb478401d5cb52512b0c919df577d098d0e5205ca4fa535d6"
+    },
+    "campaign_id": "architecture-domain-extension-v1",
+    "campaign_lock_path": "outputs/extension/campaign.lock.json",
+    "common_manifest": {
+      "path": "outputs/extension/common/kvasir/segformer-target/e061d6c427d4dcc3/manifest.json",
+      "sha256": "fbf5161cf93d68b4ab20c4396871009cf5555762c795d166d633cd6f5aebad17",
+      "jsonl_sha256": "a07f76297caebe5a125b9e5fda6ac7f6dfba2be3b620b9de57ce2b3413efe843"
+    }
+  }
+}

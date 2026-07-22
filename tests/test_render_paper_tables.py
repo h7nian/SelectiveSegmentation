@@ -18,6 +18,7 @@ from scripts.render.paper import (
     OUTPUT_NAMES,
     RISKS,
     TARGET_CONDITIONS,
+    _contrast_label,
     _is_best,
     _method_label,
     load_analysis,
@@ -318,6 +319,10 @@ def test_extension_render_is_separate_compact_and_dataset_oriented():
     assert "Oxford Pet" in summary and "DUTS" in summary
     assert "SF-T:" in summary and "DL-T:" in summary
     assert summary.count(r"\shortstack{") == len(CONTRASTS) * 6
+    assert summary.count(r"\resizebox{\textwidth}{!}") == 2
+    assert summary.count(r"\begin{tabular}") == 2
+    assert r"\begin{tabular*}" not in summary
+    assert summary.count("Adjacent-geometry contrast") == 2
     full = tables["architecture_domain_extension_full.tex"]
     assert "SegFormer-B2 target (SF-T)" in full
     assert "DeepLabV3 target (DL-T)" in full
@@ -352,7 +357,7 @@ def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
     for dataset_label in ("Oxford Pet", "Kvasir-SEG", "FIVES", "ISIC 2018", "TN3K"):
         assert target.count(dataset_label) == 2 * len(RISKS)
     assert target.count(r"\bestresult{") == len(TARGET_CONDITIONS) * len(RISKS)
-    assert r"raw AURC $\times100$ (nAURC)" in target
+    assert r"raw AURC $\times100$, with nAURC in parentheses" in target
 
     control = tables["complete_results.tex"]
     assert control.count(r"\begin{table*}[t]") == len(RISKS)
@@ -372,7 +377,7 @@ def test_appendix_tables_cover_17_by_3_and_full_3_by_3_without_pooling():
     for dataset_label in ("Kvasir-SEG", "FIVES", "ISIC 2018", "TN3K"):
         assert control.count(dataset_label) == len(RISKS)
     assert control.count(r"\bestresult{") == len(CONTROL_CONDITIONS) * len(RISKS)
-    assert r"raw AURC $\times100$ (nAURC)" in control
+    assert r"raw AURC $\times100$, with nAURC in parentheses" in control
 
     cross = tables["cross_loss_results.tex"]
     assert "Full $3\\times3$" in cross
@@ -471,10 +476,7 @@ def test_full_contrast_table_reports_four_contrasts_and_all_64_conditions():
     assert r"\label{tab:statistical-tests-extension}" in table
     assert table.count(r"\shortstack{") == len(CONTRASTS) * 5
     for spec in CONTRASTS:
-        row = (
-            f"{_method_label(spec.left)} $-$ {_method_label(spec.right)} / "
-            f"{RISKS[spec.risk]}"
-        )
+        row = _contrast_label(spec)
         assert table.count(f"\n{row} &") == 2
     assert "pointwise 95\\% paired" in table
     assert "Holm" not in table

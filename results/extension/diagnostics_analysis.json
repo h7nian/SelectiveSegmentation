@@ -1,0 +1,220 @@
+{
+  "aggregation": {
+    "calibration_weighting": "pixel-weighted within each condition",
+    "cohort_binding": "source-manifest SHA-256 plus ordered sample-ID SHA-256 and locked image count",
+    "ece_bins": 15,
+    "ladder": "uniform-midpoint M=32",
+    "metric_keys": [
+      "brier_score",
+      "ece",
+      "truth_empty_mask_ratio",
+      "prediction_empty_mask_ratio",
+      "m32_mean_distinct_mask_count",
+      "m32_zero_change_pair_ratio",
+      "m32_mean_adjacent_changed_pixel_fraction"
+    ],
+    "pooling": "none across datasets or model conditions",
+    "unit": "one locked dataset-condition artifact"
+  },
+  "artifact_type": "selectseg.diagnostics_analysis",
+  "campaign": {
+    "campaign_id": "architecture-domain-extension-v1",
+    "complete_predeclared_campaign": true,
+    "diagnostics_source_sha256": "38ec601960c88db9256260742c68a94e7ce8ebbcbc34e26edfd07813bb68e75a",
+    "lock_path": "outputs/extension/campaign.lock.json",
+    "lock_sha256": "362fb550fbe0abeb4228fec2ae9569784ca170a2f4710fa48097e7b483b5fc4f",
+    "num_analyzed_conditions": 7,
+    "num_locked_conditions": 7
+  },
+  "conditions": [
+    {
+      "condition": "deeplabv3-target",
+      "dataset": "duts",
+      "diagnostic_id": "7d3719aeb745c374",
+      "diagnostics_path": "outputs/extension/diagnostics/duts/deeplabv3-target/6b91487d4a2b5032/7d3719aeb745c374/diagnostics.json",
+      "diagnostics_sha256": "4073c5f3272fdc7b2d2fa8d8dbaf141aa0ffbfee98c84917426c412f81812e02",
+      "metrics": {
+        "brier_score": 0.031228413363314028,
+        "ece": 0.01903230247479219,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.004917439723013598,
+        "m32_mean_distinct_mask_count": 31.567842199641362,
+        "m32_zero_change_pair_ratio": 0.013940574205117328,
+        "prediction_empty_mask_ratio": 0.009563658099222952,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "deeplabv3",
+      "num_images": 5019,
+      "num_pixels": 609204800,
+      "source_artifact": {
+        "artifact_id": "6b91487d4a2b5032",
+        "manifest_sha256": "ecb13d0fb687b68f0c73e1e21a042c81af7cb05272e92ddc9537bb7fdee04409",
+        "num_samples": 5019,
+        "sample_id_sha256": "08db531389e566b924d5f55faad3ad83f0bd7db7ead72939f6f0f019c035b090"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "segformer-target",
+      "dataset": "duts",
+      "diagnostic_id": "f02d702458e46d70",
+      "diagnostics_path": "outputs/extension/diagnostics/duts/segformer-target/930cffd5e46b1ca9/f02d702458e46d70/diagnostics.json",
+      "diagnostics_sha256": "9ad73b8e62f8eeafdee000bc9d9c7d5ae2c5785d068f7dd630286e5f1f2ba78a",
+      "metrics": {
+        "brier_score": 0.023443261912108722,
+        "ece": 0.015439959393383376,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.0026881565293544302,
+        "m32_mean_distinct_mask_count": 31.676031081888823,
+        "m32_zero_change_pair_ratio": 0.010450610261650888,
+        "prediction_empty_mask_ratio": 0.008965929468021518,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "segformer",
+      "num_images": 5019,
+      "num_pixels": 609204800,
+      "source_artifact": {
+        "artifact_id": "930cffd5e46b1ca9",
+        "manifest_sha256": "34b297fde2bab3fdfd0b247956618bc4a1fe33d9bc27d0165b80f4a10175cde2",
+        "num_samples": 5019,
+        "sample_id_sha256": "08db531389e566b924d5f55faad3ad83f0bd7db7ead72939f6f0f019c035b090"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "segformer-target",
+      "dataset": "fives",
+      "diagnostic_id": "d9df2aadd66e9643",
+      "diagnostics_path": "outputs/extension/diagnostics/fives/segformer-target/67370fce9d095f3d/d9df2aadd66e9643/diagnostics.json",
+      "diagnostics_sha256": "29279aae2f39166599001d16f39ee7cee7e8989d28938d78cbe6b21b02614c94",
+      "metrics": {
+        "brier_score": 0.03458400406025369,
+        "ece": 0.013823624923024356,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.007102830525367491,
+        "m32_mean_distinct_mask_count": 31.925,
+        "m32_zero_change_pair_ratio": 0.0024193548387096775,
+        "prediction_empty_mask_ratio": 0.0,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "segformer",
+      "num_images": 200,
+      "num_pixels": 838860800,
+      "source_artifact": {
+        "artifact_id": "67370fce9d095f3d",
+        "manifest_sha256": "e19c639b126fdf9e30dc5f15253b5edd93f8493b171281b67aa545a7895ba73b",
+        "num_samples": 200,
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "segformer-target",
+      "dataset": "isic",
+      "diagnostic_id": "6b7620ddddde1a9b",
+      "diagnostics_path": "outputs/extension/diagnostics/isic/segformer-target/14c269e9953f3c7d/6b7620ddddde1a9b/diagnostics.json",
+      "diagnostics_sha256": "88d2974b06e97eb7010ed8d38d2e3976e0794c5813c21ba8d153386c34849677",
+      "metrics": {
+        "brier_score": 0.050144636773398074,
+        "ece": 0.041575827198799514,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.005476524284891638,
+        "m32_mean_distinct_mask_count": 31.863,
+        "m32_zero_change_pair_ratio": 0.004419354838709678,
+        "prediction_empty_mask_ratio": 0.002,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "segformer",
+      "num_images": 1000,
+      "num_pixels": 6615437579,
+      "source_artifact": {
+        "artifact_id": "14c269e9953f3c7d",
+        "manifest_sha256": "9440ff66da4b0fd6630321991d5b3657b8abf1241b1805f3666ecda6016b2780",
+        "num_samples": 1000,
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "segformer-target",
+      "dataset": "kvasir",
+      "diagnostic_id": "da3dd03a05d504c8",
+      "diagnostics_path": "outputs/extension/diagnostics/kvasir/segformer-target/602755a79b517160/da3dd03a05d504c8/diagnostics.json",
+      "diagnostics_sha256": "d9c2b99559dc31656d937443062d9c057d601e44178615f2fdb122794d2257b3",
+      "metrics": {
+        "brier_score": 0.02098012443958758,
+        "ece": 0.013058161843226355,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.002521101514865805,
+        "m32_mean_distinct_mask_count": 31.785,
+        "m32_zero_change_pair_ratio": 0.006935483870967742,
+        "prediction_empty_mask_ratio": 0.005,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "segformer",
+      "num_images": 200,
+      "num_pixels": 66651381,
+      "source_artifact": {
+        "artifact_id": "602755a79b517160",
+        "manifest_sha256": "00fa309a51d6e7f4523f902fcf9293a7e65be1ea86c8387ea5ee18ef17fc6bf4",
+        "num_samples": 200,
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "segformer-target",
+      "dataset": "pet",
+      "diagnostic_id": "bee2890d7f39fbb0",
+      "diagnostics_path": "outputs/extension/diagnostics/pet/segformer-target/6c00573a383468bf/bee2890d7f39fbb0/diagnostics.json",
+      "diagnostics_sha256": "5545e1dcddbd910391fca9575e5e900247dfa69ef87e95f3e38ff200830a259e",
+      "metrics": {
+        "brier_score": 0.02376089024899278,
+        "ece": 0.009904591603641981,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.003946005888390961,
+        "m32_mean_distinct_mask_count": 31.992641046606703,
+        "m32_zero_change_pair_ratio": 0.00023738559333210245,
+        "prediction_empty_mask_ratio": 0.0,
+        "truth_empty_mask_ratio": 0.0019078768056691197
+      },
+      "model": "segformer",
+      "num_images": 3669,
+      "num_pixels": 654813722,
+      "source_artifact": {
+        "artifact_id": "6c00573a383468bf",
+        "manifest_sha256": "efa6fb6e16b2e34fc07acd8d6c3cc6d4212580bbc7eac7b4eeaf2e9c2fb8ca41",
+        "num_samples": 3669,
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      "split": "test"
+    },
+    {
+      "condition": "segformer-target",
+      "dataset": "tn3k",
+      "diagnostic_id": "01996d4584be9688",
+      "diagnostics_path": "outputs/extension/diagnostics/tn3k/segformer-target/96cd985f2d40193f/01996d4584be9688/diagnostics.json",
+      "diagnostics_sha256": "fd0b271add09152cb7523f8f87dbd8c10924f2fe86d0c7fd399d5ead04aa3bb0",
+      "metrics": {
+        "brier_score": 0.019528701159676892,
+        "ece": 0.008195062426057666,
+        "m32_mean_adjacent_changed_pixel_fraction": 0.0034965165019953423,
+        "m32_mean_distinct_mask_count": 31.45439739413681,
+        "m32_zero_change_pair_ratio": 0.017600084060102973,
+        "prediction_empty_mask_ratio": 0.013029315960912053,
+        "truth_empty_mask_ratio": 0.0
+      },
+      "model": "segformer",
+      "num_images": 614,
+      "num_pixels": 165729396,
+      "source_artifact": {
+        "artifact_id": "96cd985f2d40193f",
+        "manifest_sha256": "07313328e413c514de4d85ab0bbdeb4b121134380e071297fb43ec66aed2143f",
+        "num_samples": 614,
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      },
+      "split": "test"
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "descriptor_policy": "descriptor integrity is validated when present, but no per-image failure case is selected or reported",
+    "label_use": "labels enter only predeclared aggregate Brier/ECE and truth-empty descriptions; they never fit, tune, or select a confidence score",
+    "posterior_limitation": "marginal calibration and M32 ladder diversity do not identify a joint mask posterior or validate shared-threshold coupling",
+    "purpose": "held-out descriptive diagnostics; not confidence fitting"
+  }
+}

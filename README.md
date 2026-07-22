@@ -33,7 +33,8 @@ scripts/            thin analysis, rendering, submission, and release CLIs
   maintenance/      reproducibility and release utilities
   slurm/run.sbatch  the only generic Slurm worker wrapper
 configs/            reviewed experiment specifications and immutable locks
-results/            checked-in, portable, publication-facing result bundle
+results/            checked-in, portable, publication-facing result bundles
+  extension/        seven-condition SegFormer/DUTS extension evidence
 outputs/            local runtime artifacts and receipts; ignored by Git
 docs/               canonical manuscript source
 overleaf/           local Overleaf checkout; ignored by Git
@@ -213,9 +214,33 @@ Kvasir-SEG, FIVES, ISIC 2018, and TN3K. Its portable bundle in `results/`
 contains manifests, per-image records, analyses, and redacted provenance. The
 historical schema-v1 evidence is immutable; current code can reproduce or
 analyze it but does not rewrite old receipts to claim newer scheduler policy.
-The separate architecture/domain extension is intentionally reported only after
-all seven declared cells complete; partial cells are never merged into the
-primary result bundle.
+The separate architecture/domain extension is complete. Its portable bundle in
+`results/extension/` contains the immutable lock, seven assembled
+manifest/record pairs, the 10,000-resample analysis, the long-form result table,
+and aggregate diagnostics. It remains separate from the primary bundle so that
+the original 16-condition design is never silently redefined. Recompute its
+analysis and paper tables with:
+
+```bash
+python -m scripts.analyze.main \
+  --design extension \
+  --inputs \
+    results/extension/assembled/pet/segformer-target/937b390f22382cfd/records.jsonl \
+    results/extension/assembled/kvasir/segformer-target/687c0bcc4dd35db7/records.jsonl \
+    results/extension/assembled/fives/segformer-target/05979a7fc5f8eadc/records.jsonl \
+    results/extension/assembled/isic/segformer-target/c93e814c00d6df3b/records.jsonl \
+    results/extension/assembled/tn3k/segformer-target/10ae39efb93cd7d9/records.jsonl \
+    results/extension/assembled/duts/segformer-target/c64ff75aa1c30d74/records.jsonl \
+    results/extension/assembled/duts/deeplabv3-target/6c2ff62caf98d5f5/records.jsonl \
+  --campaign-lock results/extension/campaign.lock.json \
+  --bootstrap-samples 10000 \
+  --bootstrap-workers 8 \
+  --output-dir /tmp/selectseg-extension-analysis
+python -m scripts.render.paper \
+  --design extension \
+  --analysis /tmp/selectseg-extension-analysis/analysis.json \
+  --output-dir /tmp/selectseg-extension-tables
+```
 
 ## Manuscript
 
@@ -226,7 +251,7 @@ Build without placing auxiliary files in `docs/`:
 
 ```bash
 mkdir -p /tmp/selectseg-paper
-latexmk -pdf -interaction=nonstopmode -halt-on-error \
+latexmk -cd -pdf -interaction=nonstopmode -halt-on-error \
   -output-directory=/tmp/selectseg-paper docs/main.tex
 ```
 

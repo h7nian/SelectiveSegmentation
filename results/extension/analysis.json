@@ -1,0 +1,4616 @@
+{
+  "analysis": {
+    "bootstrap_p_value": "two-sided approximate equal-tail confidence-curve tail probability from the same paired image-cluster bootstrap draws as the percentile interval; despite the compatibility field name, this is not claimed to be an exact null-calibrated p-value",
+    "bootstrap_samples": 10000,
+    "bootstrap_workers": 8,
+    "comparisons": "four predeclared adjacent-geometry contrasts; every reported difference is AURC(left) - AURC(right)",
+    "confidence_level": 0.95,
+    "contrast_definitions": [
+      {
+        "left": "confidence_dice_m32",
+        "name": "dice_vs_nhd_under_dice",
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "left": "confidence_dice_m32",
+        "name": "dice_vs_nhd_under_nhd",
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "left": "confidence_nhd_m32",
+        "name": "nhd_vs_nhd95_under_nhd",
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "left": "confidence_nhd_m32",
+        "name": "nhd_vs_nhd95_under_nhd95",
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      }
+    ],
+    "cross_loss_policy": "all method-by-risk AURCs are reported descriptively; only the four declared adjacent-geometry contrasts receive bootstrap intervals and the multiplicity-aware Holm transform",
+    "normalized_aurc": "(AURC - oracle AURC) / (random AURC - oracle AURC)",
+    "seed": 0,
+    "tie_policy": "analytic expectation over random within-tie order"
+  },
+  "conditions": [
+    {
+      "comparisons": {
+        "dice_vs_nhd_under_dice": {
+          "bootstrap": {
+            "ci_high": 0.002227977162215361,
+            "ci_low": -0.0058818279110102074,
+            "confidence_level": 0.95,
+            "difference": -0.001989537735001698,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.3447655234476552,
+            "seed": 1375950861
+          },
+          "difference_left_minus_right": -0.001989537735001698,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_dice",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_dice"
+        },
+        "dice_vs_nhd_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.023581233979746787,
+            "ci_low": 0.018896224980787052,
+            "confidence_level": 0.95,
+            "difference": 0.0211738071844204,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 442706201
+          },
+          "difference_left_minus_right": 0.0211738071844204,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_nhd",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd": {
+          "bootstrap": {
+            "ci_high": -0.0007996272331558152,
+            "ci_low": -0.002884493899416744,
+            "confidence_level": 0.95,
+            "difference": -0.0018623028244537931,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.000999900009999,
+            "seed": 3968581547
+          },
+          "difference_left_minus_right": -0.0018623028244537931,
+          "holm_adjusted_p_value": 0.015998400159984,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd95": {
+          "bootstrap": {
+            "ci_high": 0.0031186404643695526,
+            "ci_low": 0.0011712744121045067,
+            "confidence_level": 0.95,
+            "difference": 0.002098659356116722,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 1565132452
+          },
+          "difference_left_minus_right": 0.002098659356116722,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd95",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd95"
+        }
+      },
+      "condition": "deeplabv3-target",
+      "dataset": "duts",
+      "jsonl": "duts/deeplabv3-target/6c2ff62caf98d5f5/records.jsonl",
+      "jsonl_sha256": "a84b8f1be2aece89a3c316c407f53bfb2bd13b98230a6ce9d855037a6750b495",
+      "manifest": "duts/deeplabv3-target/6c2ff62caf98d5f5/manifest.json",
+      "manifest_sha256": "edcf1d7b44ea68851182876058a4f26cc9595d19a20f0720c8d473f4185ab569",
+      "num_image_clusters": 5019,
+      "num_rows": 5019,
+      "numerical_validation": {
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "dice_quadrature": {
+          "confidence_dice_m2": {
+            "absolute_error": {
+              "max": 0.24519474804401398,
+              "mean": 0.025136880348130112,
+              "median": 0.016827981226520752,
+              "p95": 0.07164784120989612
+            },
+            "exact_match_fraction": 0.0,
+            "m": 2,
+            "num_images": 5019,
+            "rank_agreement": {
+              "kendall_tau_b": 0.8919443766241936,
+              "spearman_rho": 0.97305959123977
+            }
+          },
+          "confidence_dice_m32": {
+            "absolute_error": {
+              "max": 0.015435218811035156,
+              "mean": 0.0016757414193262876,
+              "median": 0.001480911449257341,
+              "p95": 0.0034792887840366347
+            },
+            "exact_match_fraction": 0.0,
+            "m": 32,
+            "num_images": 5019,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9900495829420535,
+              "spearman_rho": 0.9997764885635905
+            }
+          },
+          "confidence_dice_m8": {
+            "absolute_error": {
+              "max": 0.06185507774353027,
+              "mean": 0.006583534455492963,
+              "median": 0.0052937007449032625,
+              "p95": 0.014821533680399391
+            },
+            "exact_match_fraction": 0.0,
+            "m": 8,
+            "num_images": 5019,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9663928472446116,
+              "spearman_rho": 0.9974675511927871
+            }
+          }
+        },
+        "exact_match_definition": "fraction with exact floating-point equality and no tolerance",
+        "rank_agreement_definition": "Spearman correlation of average ranks and Kendall tau-b over image-level confidences; null when either ranking is constant",
+        "reference": "confidence_dice_exact"
+      },
+      "risks": {
+        "risk_dice": {
+          "label": "Dice risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.08542418687845783,
+              "excess_aurc": 0.03136959791731962,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.26526317170765357,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.11177322338587406,
+              "excess_aurc": 0.05771863442473585,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.48807217977399586,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.08567524133413633,
+              "excess_aurc": 0.03162065237299812,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.2673861030043868,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.0934544362134611,
+              "excess_aurc": 0.03939984725232289,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.3331674341027468,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.08014805543059456,
+              "excess_aurc": 0.026093466469456345,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.22064789273928695,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.15751639384392305,
+              "excess_aurc": 0.10346180488278484,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.8748791293449549,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.12064184092273506,
+              "excess_aurc": 0.06658725196159684,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.5630657331721096,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.14706487324844855,
+              "excess_aurc": 0.09301028428731034,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.7865004542458794,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.1102863858803917,
+              "excess_aurc": 0.05623179691925349,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.4754993940609731,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.08170882240690945,
+              "excess_aurc": 0.02765423344577124,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.23384583042165902,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.09095612835550215,
+              "excess_aurc": 0.03690153939436394,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.31204159538300813,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.11888408942539525,
+              "excess_aurc": 0.06482950046425703,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.5482020827521339,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.08766477906913803,
+              "excess_aurc": 0.033610190107999816,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.28420975153216194,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.09673141567126979,
+              "excess_aurc": 0.04267682671013158,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.36087776583509035,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.1380641148597342,
+              "excess_aurc": 0.08400952589859598,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.7103895100043395,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.08626713983233374,
+              "excess_aurc": 0.032212550871195525,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.27239123164437345,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            },
+            "confidence_sdc": {
+              "aurc": 0.08548171313443521,
+              "excess_aurc": 0.031427124173297,
+              "label": "SDC",
+              "normalized_aurc": 0.2657496171239208,
+              "oracle_aurc": 0.05405458896113821,
+              "random_aurc": 0.1723129876501656
+            }
+          },
+          "oracle_aurc": 0.05405458896113821,
+          "random_aurc": 0.1723129876501656
+        },
+        "risk_nhd": {
+          "label": "Normalized penalized Hausdorff risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.08950292141591448,
+              "excess_aurc": 0.044702307754434734,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.5318721819780259,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.1141295941942567,
+              "excess_aurc": 0.06932898053277695,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.8248826067961115,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.08949736148394813,
+              "excess_aurc": 0.04469674782246838,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.5318060293945208,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.09676953974401385,
+              "excess_aurc": 0.0519689260825341,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.6183310772771015,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.08838352010862599,
+              "excess_aurc": 0.04358290644714624,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.5185534419459182,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.1108935973374624,
+              "excess_aurc": 0.06609298367598265,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.7863804176350504,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.09066603128541545,
+              "excess_aurc": 0.0458654176239357,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.5457109705159685,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.10188015890465732,
+              "excess_aurc": 0.05707954524317757,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.6791376955654042,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.09673105848299979,
+              "excess_aurc": 0.05193044482152004,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.6178732236832053,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.07018585712398152,
+              "excess_aurc": 0.025385243462501775,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.30203596880531935,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.07811706945720194,
+              "excess_aurc": 0.03331645579572219,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.39640226489397,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.09424445516262525,
+              "excess_aurc": 0.0494438415011455,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.5882873879588695,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.06832355429952773,
+              "excess_aurc": 0.02352294063804798,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.2798781179805414,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.07599410394174232,
+              "excess_aurc": 0.031193490280262567,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.3711430253223934,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.11221931650024973,
+              "excess_aurc": 0.06741870283876998,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.8021539465471417,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.08964223569118729,
+              "excess_aurc": 0.04484162202970754,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.5335297560786088,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            },
+            "confidence_sdc": {
+              "aurc": 0.08792737613882533,
+              "excess_aurc": 0.04312676247734558,
+              "label": "SDC",
+              "normalized_aurc": 0.5131261989085624,
+              "oracle_aurc": 0.04480061366147975,
+              "random_aurc": 0.12884770104286417
+            }
+          },
+          "oracle_aurc": 0.04480061366147975,
+          "random_aurc": 0.12884770104286417
+        },
+        "risk_nhd95": {
+          "label": "Normalized penalized HD95 risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.05365302098462096,
+              "excess_aurc": 0.03190002803750119,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.467484683825301,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.0789487099153892,
+              "excess_aurc": 0.05719571696826943,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.8381848953750106,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.05364272805110021,
+              "excess_aurc": 0.03188973510398044,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.46733384418444157,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.06118032712848857,
+              "excess_aurc": 0.039427334181368796,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.5777949421293197,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.05136753299403799,
+              "excess_aurc": 0.02961454004691822,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.43399159004468835,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.0841300899830376,
+              "excess_aurc": 0.06237709703591783,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.9141163591297073,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.058729756275709304,
+              "excess_aurc": 0.03697676332858953,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.5418826119283475,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.07493046485179217,
+              "excess_aurc": 0.053177471904672396,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.7792988022066931,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.06751148780509782,
+              "excess_aurc": 0.045758494857978046,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.6705760720917276,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.03941766795711425,
+              "excess_aurc": 0.017664675009994482,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.25887014902356914,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.048064142413470956,
+              "excess_aurc": 0.026311149466351186,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.3855814601447265,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.06881388358057221,
+              "excess_aurc": 0.04706089063345244,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.6896622646366777,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.041516327313230975,
+              "excess_aurc": 0.019763334366111204,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.2896253290628431,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.049514053791568355,
+              "excess_aurc": 0.027761060844448585,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.40682944655300624,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.08377663629437562,
+              "excess_aurc": 0.06202364334725585,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.90893660863868,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.054095308753414034,
+              "excess_aurc": 0.032342315806294264,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.47396626928067936,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            },
+            "confidence_sdc": {
+              "aurc": 0.05199412978067758,
+              "excess_aurc": 0.030241136833557808,
+              "label": "SDC",
+              "normalized_aurc": 0.44317416506762564,
+              "oracle_aurc": 0.02175299294711977,
+              "random_aurc": 0.08999058262914286
+            }
+          },
+          "oracle_aurc": 0.02175299294711977,
+          "random_aurc": 0.08999058262914286
+        }
+      },
+      "split": "test"
+    },
+    {
+      "comparisons": {
+        "dice_vs_nhd_under_dice": {
+          "bootstrap": {
+            "ci_high": 0.013421124218037303,
+            "ci_low": 0.0025465408711585376,
+            "confidence_level": 0.95,
+            "difference": 0.007899387512236455,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.0027997200279972004,
+            "seed": 3940681034
+          },
+          "difference_left_minus_right": 0.007899387512236455,
+          "holm_adjusted_p_value": 0.041995800419958006,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_dice",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_dice"
+        },
+        "dice_vs_nhd_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.02755976345472015,
+            "ci_low": 0.021155598207517064,
+            "confidence_level": 0.95,
+            "difference": 0.024269913678365118,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 2861485317
+          },
+          "difference_left_minus_right": 0.024269913678365118,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_nhd",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd": {
+          "bootstrap": {
+            "ci_high": -0.0015507013384403723,
+            "ci_low": -0.0040622452930148874,
+            "confidence_level": 0.95,
+            "difference": -0.0027645226047778512,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 3557775346
+          },
+          "difference_left_minus_right": -0.0027645226047778512,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd95": {
+          "bootstrap": {
+            "ci_high": 0.00180827240542658,
+            "ci_low": -0.00010306870079714995,
+            "confidence_level": 0.95,
+            "difference": 0.0008731028329178499,
+            "n_clusters": 5019,
+            "n_observations": 5019,
+            "n_resamples": 10000,
+            "p_value": 0.0817918208179182,
+            "seed": 1200142858
+          },
+          "difference_left_minus_right": 0.0008731028329178499,
+          "holm_adjusted_p_value": 0.9815018498150185,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd95",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd95"
+        }
+      },
+      "condition": "segformer-target",
+      "dataset": "duts",
+      "jsonl": "duts/segformer-target/c64ff75aa1c30d74/records.jsonl",
+      "jsonl_sha256": "b774a47632e97dc468a08bec20abdd5502806f166713f2194ecf3f676e7119f3",
+      "manifest": "duts/segformer-target/c64ff75aa1c30d74/manifest.json",
+      "manifest_sha256": "bcb17369a316549d1d55d8dc86cb7e60d02d4e2425ca4ae9b2d46050fe8f8b22",
+      "num_image_clusters": 5019,
+      "num_rows": 5019,
+      "numerical_validation": {
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "dice_quadrature": {
+          "confidence_dice_m2": {
+            "absolute_error": {
+              "max": 0.24583090841770172,
+              "mean": 0.017008183782569946,
+              "median": 0.010885166464443874,
+              "p95": 0.05090951546421058
+            },
+            "exact_match_fraction": 0.0,
+            "m": 2,
+            "num_images": 5019,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9085404341492116,
+              "spearman_rho": 0.9722486060331837
+            }
+          },
+          "confidence_dice_m32": {
+            "absolute_error": {
+              "max": 0.015082299709320068,
+              "mean": 0.0012387612807552878,
+              "median": 0.0009969923292603433,
+              "p95": 0.0026735843065050944
+            },
+            "exact_match_fraction": 0.0,
+            "m": 32,
+            "num_images": 5019,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9915855624285091,
+              "spearman_rho": 0.9998268738045915
+            }
+          },
+          "confidence_dice_m8": {
+            "absolute_error": {
+              "max": 0.06164753437042236,
+              "mean": 0.0046127552352952595,
+              "median": 0.00341213049485882,
+              "p95": 0.011211666220392363
+            },
+            "exact_match_fraction": 0.0,
+            "m": 8,
+            "num_images": 5019,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9729036334607738,
+              "spearman_rho": 0.997611617785777
+            }
+          }
+        },
+        "exact_match_definition": "fraction with exact floating-point equality and no tolerance",
+        "rank_agreement_definition": "Spearman correlation of average ranks and Kendall tau-b over image-level confidences; null when either ranking is constant",
+        "reference": "confidence_dice_exact"
+      },
+      "risks": {
+        "risk_dice": {
+          "label": "Dice risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.07458029019847053,
+              "excess_aurc": 0.037772161783735055,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.4161906212966851,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.10378904772441917,
+              "excess_aurc": 0.0669809193096837,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.7380258133524235,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.0752259833565171,
+              "excess_aurc": 0.03841785494178163,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.42330515813873953,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.08143076620372067,
+              "excess_aurc": 0.044622637788985196,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.4916722387144839,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.06993440106870154,
+              "excess_aurc": 0.03312627265396607,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.3650001309439015,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.14547309870416048,
+              "excess_aurc": 0.10866497028942501,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.197319384494852,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.0833648092178942,
+              "excess_aurc": 0.04655668080315873,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.5129823921627307,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.13799447088119624,
+              "excess_aurc": 0.10118634246646077,
+              "label": "Negative entropy",
+              "normalized_aurc": 1.1149165085909782,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.09432245712807101,
+              "excess_aurc": 0.05751432871333554,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.6337186719075288,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.061937118470243586,
+              "excess_aurc": 0.025128990055508116,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.27688248408021016,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.06867352756204496,
+              "excess_aurc": 0.031865399147309494,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.35110726108073426,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.10104496713254509,
+              "excess_aurc": 0.06423683871780961,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.7077903025294229,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.06732659584428065,
+              "excess_aurc": 0.030518467429545178,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.3362661632460339,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.074569129037878,
+              "excess_aurc": 0.037761000623142534,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.4160676426229203,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.11800779490146325,
+              "excess_aurc": 0.08119966648672777,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.8946943475908494,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.07444024021814027,
+              "excess_aurc": 0.037632111803404804,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.41464748779376404,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            },
+            "confidence_sdc": {
+              "aurc": 0.07439095430093923,
+              "excess_aurc": 0.037582825886203756,
+              "label": "SDC",
+              "normalized_aurc": 0.41410443345076603,
+              "oracle_aurc": 0.03680812841473547,
+              "random_aurc": 0.12756500723639647
+            }
+          },
+          "oracle_aurc": 0.03680812841473547,
+          "random_aurc": 0.12756500723639647
+        },
+        "risk_nhd": {
+          "label": "Normalized penalized Hausdorff risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.0728374409453722,
+              "excess_aurc": 0.04342350170659329,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.682768336137905,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.10020956314571099,
+              "excess_aurc": 0.07079562390693207,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.1131532106136333,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.07306239223171004,
+              "excess_aurc": 0.04364845299293113,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.6863053520267376,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.07864534499397101,
+              "excess_aurc": 0.049231405755192095,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.7740887692642898,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.07110737394942518,
+              "excess_aurc": 0.041693434710646265,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.6555656712719692,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.09819019666375536,
+              "excess_aurc": 0.06877625742497645,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.0814017525609505,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.0693234069740651,
+              "excess_aurc": 0.03990946773528618,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.627515511436365,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.09105713077210012,
+              "excess_aurc": 0.06164319153332121,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.9692451705488644,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.08229177951394256,
+              "excess_aurc": 0.05287784027516365,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.8314233906603062,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.05155700115812278,
+              "excess_aurc": 0.022143061919343864,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.3481658767600831,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.05747375137363632,
+              "excess_aurc": 0.028059812134857406,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.44119774985235344,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.07882461387639575,
+              "excess_aurc": 0.049410674637616836,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.7769074990249959,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.048792478553344926,
+              "excess_aurc": 0.019378539314566012,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.3046979751653758,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.05449005473939586,
+              "excess_aurc": 0.025076115500616947,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.39428367092188094,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.09494153990398267,
+              "excess_aurc": 0.06552760066520376,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 1.030321579765573,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.0728459126163921,
+              "excess_aurc": 0.04343197337761319,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.6829015402439591,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            },
+            "confidence_sdc": {
+              "aurc": 0.0718508613129437,
+              "excess_aurc": 0.04243692207416479,
+              "label": "SDC",
+              "normalized_aurc": 0.6672558761190835,
+              "oracle_aurc": 0.029413939238778913,
+              "random_aurc": 0.0930131124989499
+            }
+          },
+          "oracle_aurc": 0.029413939238778913,
+          "random_aurc": 0.0930131124989499
+        },
+        "risk_nhd95": {
+          "label": "Normalized penalized HD95 risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.043184962662171186,
+              "excess_aurc": 0.0304700291719147,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.6140898586983072,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.07137941930166296,
+              "excess_aurc": 0.05866448581140647,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.1823180607828627,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.04342907894137191,
+              "excess_aurc": 0.03071414545111542,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.6190097532791271,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.04916556028995903,
+              "excess_aurc": 0.03645062679970255,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.7346222130146876,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.04112312387240285,
+              "excess_aurc": 0.028408190382146363,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.5725357701241294,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.07768270784701226,
+              "excess_aurc": 0.06496777435675577,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.309353894923647,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.04112969732570177,
+              "excess_aurc": 0.028414763835445285,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.5726682508311454,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.0704682886183245,
+              "excess_aurc": 0.05775335512806802,
+              "label": "Negative entropy",
+              "normalized_aurc": 1.1639552259647483,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.05869363000520681,
+              "excess_aurc": 0.045978696514950325,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.9266499577894541,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.02724087199612672,
+              "excess_aurc": 0.014525938505870233,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.292754282386846,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.03356609743934071,
+              "excess_aurc": 0.020851163949084227,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.4202322305287032,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.058947974954563484,
+              "excess_aurc": 0.046233041464307,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.93177599994484,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.02811397482904457,
+              "excess_aurc": 0.015399041338788083,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.3103507077880338,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.03409171111268846,
+              "excess_aurc": 0.021376777622431974,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.4308253948665151,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.07265874442968075,
+              "excess_aurc": 0.05994381093942426,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 1.2081014488676294,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.04326591952201984,
+              "excess_aurc": 0.03055098603176335,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.6157214549906711,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            },
+            "confidence_sdc": {
+              "aurc": 0.04218390884039578,
+              "excess_aurc": 0.029468975350139294,
+              "label": "SDC",
+              "normalized_aurc": 0.5939147221240999,
+              "oracle_aurc": 0.012714933490256486,
+              "random_aurc": 0.06233312656138511
+            }
+          },
+          "oracle_aurc": 0.012714933490256486,
+          "random_aurc": 0.06233312656138511
+        }
+      },
+      "split": "test"
+    },
+    {
+      "comparisons": {
+        "dice_vs_nhd_under_dice": {
+          "bootstrap": {
+            "ci_high": 0.0013921904845802557,
+            "ci_low": -0.012645776581126896,
+            "confidence_level": 0.95,
+            "difference": -0.006582401718189385,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.0933906609339066,
+            "seed": 380020249
+          },
+          "difference_left_minus_right": -0.006582401718189385,
+          "holm_adjusted_p_value": 0.9815018498150185,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_dice",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_dice"
+        },
+        "dice_vs_nhd_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.014766198387920867,
+            "ci_low": 0.003946177955773195,
+            "confidence_level": 0.95,
+            "difference": 0.009127765452104739,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.00039996000399960006,
+            "seed": 422135538
+          },
+          "difference_left_minus_right": 0.009127765452104739,
+          "holm_adjusted_p_value": 0.006799320067993201,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_nhd",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.009378305539291655,
+            "ci_low": -0.006289347174889674,
+            "confidence_level": 0.95,
+            "difference": 0.0013052768646003438,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.8815118488151185,
+            "seed": 2482784073
+          },
+          "difference_left_minus_right": 0.0013052768646003438,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd95": {
+          "bootstrap": {
+            "ci_high": 0.010685933000936784,
+            "ci_low": -0.0018140808784457862,
+            "confidence_level": 0.95,
+            "difference": 0.004086561298721363,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.43315668433156684,
+            "seed": 1248228399
+          },
+          "difference_left_minus_right": 0.004086561298721363,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd95",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd95"
+        }
+      },
+      "condition": "segformer-target",
+      "dataset": "fives",
+      "jsonl": "fives/segformer-target/05979a7fc5f8eadc/records.jsonl",
+      "jsonl_sha256": "0d6626e8892a06814e0205b17921308bb2b1f8e34d63f3ad654a6aa79a688ee4",
+      "manifest": "fives/segformer-target/05979a7fc5f8eadc/manifest.json",
+      "manifest_sha256": "3bf3e3f97ec707a2867ba027c28770641035f1c6acbe6a64c8c2cc88246528db",
+      "num_image_clusters": 200,
+      "num_rows": 200,
+      "numerical_validation": {
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "dice_quadrature": {
+          "confidence_dice_m2": {
+            "absolute_error": {
+              "max": 0.09629386241385673,
+              "mean": 0.04462139257232285,
+              "median": 0.04431358049919515,
+              "p95": 0.051565779118848305
+            },
+            "exact_match_fraction": 0.0,
+            "m": 2,
+            "num_images": 200,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9322579024071561,
+              "spearman_rho": 0.9906007579695177
+            }
+          },
+          "confidence_dice_m32": {
+            "absolute_error": {
+              "max": 0.0044096027300215,
+              "mean": 0.001458296832049346,
+              "median": 0.0014303707279657712,
+              "p95": 0.0023472307442243294
+            },
+            "exact_match_fraction": 0.0,
+            "m": 32,
+            "num_images": 200,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9942710688979346,
+              "spearman_rho": 0.9998379958283926
+            }
+          },
+          "confidence_dice_m8": {
+            "absolute_error": {
+              "max": 0.013655388592933554,
+              "mean": 0.009565773923077177,
+              "median": 0.009872767084511194,
+              "p95": 0.011828077357282495
+            },
+            "exact_match_fraction": 0.0,
+            "m": 8,
+            "num_images": 200,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9855269109000452,
+              "spearman_rho": 0.9994929869444139
+            }
+          }
+        },
+        "exact_match_definition": "fraction with exact floating-point equality and no tolerance",
+        "rank_agreement_definition": "Spearman correlation of average ranks and Kendall tau-b over image-level confidences; null when either ranking is constant",
+        "reference": "confidence_dice_exact"
+      },
+      "risks": {
+        "risk_dice": {
+          "label": "Dice risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.22113615154057237,
+              "excess_aurc": 0.032754307280940725,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.6703766335602359,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.22159257288819137,
+              "excess_aurc": 0.03321072862855973,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.6797181288291618,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.22128910167443852,
+              "excess_aurc": 0.03290725741480688,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.673507036989755,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.22136112144553116,
+              "excess_aurc": 0.03297927718589952,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.6749810529498775,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.22269814492446918,
+              "excess_aurc": 0.03431630066483754,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.7023456768179273,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.2874748881873308,
+              "excess_aurc": 0.09909304392769916,
+              "label": "Mean max probability",
+              "normalized_aurc": 2.0281198630673543,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.24013161546544834,
+              "excess_aurc": 0.0517497712058167,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 1.0591534454051643,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.2871427202604513,
+              "excess_aurc": 0.09876087600081965,
+              "label": "Negative entropy",
+              "normalized_aurc": 2.0213214406587157,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.22623442991532497,
+              "excess_aurc": 0.03785258565569333,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.7747221983894561,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.20871644064739514,
+              "excess_aurc": 0.0203345963877635,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.4161845999157248,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.2219516653274086,
+              "excess_aurc": 0.03356982106777695,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.6870676104858675,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.23149301413851212,
+              "excess_aurc": 0.04311116987888047,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.8823487147616845,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.2278715033926279,
+              "excess_aurc": 0.03948965913299626,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.808227892684621,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.2285529223748201,
+              "excess_aurc": 0.04017107811518847,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.8221743748803187,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.24812483175609146,
+              "excess_aurc": 0.059742987496459815,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 1.2227491942720068,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.22163820070522625,
+              "excess_aurc": 0.033256356445594604,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.6806519853176592,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            },
+            "confidence_sdc": {
+              "aurc": 0.2195720152321577,
+              "excess_aurc": 0.03119017097252605,
+              "label": "SDC",
+              "normalized_aurc": 0.638363731444168,
+              "oracle_aurc": 0.18838184425963164,
+              "random_aurc": 0.23724140415656475
+            }
+          },
+          "oracle_aurc": 0.18838184425963164,
+          "random_aurc": 0.23724140415656475
+        },
+        "risk_nhd": {
+          "label": "Normalized penalized Hausdorff risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.07682468069632697,
+              "excess_aurc": 0.027489871700536406,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.9874516903318664,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.07822874057233575,
+              "excess_aurc": 0.028893931576545184,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.03788631269007,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.07689494639300318,
+              "excess_aurc": 0.02756013739721261,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.989975673772426,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.0772579145358525,
+              "excess_aurc": 0.02792310554006193,
+              "label": "Dice-M8",
+              "normalized_aurc": 1.0030136941057908,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.07823688579939204,
+              "excess_aurc": 0.028902076803601476,
+              "label": "Foreground entropy",
+              "normalized_aurc": 1.0381788938382284,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.10603499976465575,
+              "excess_aurc": 0.05670019076886518,
+              "label": "Mean max probability",
+              "normalized_aurc": 2.0367028201067487,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.07920204609341173,
+              "excess_aurc": 0.029867237097621166,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 1.0728479957588586,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.10516903294977274,
+              "excess_aurc": 0.05583422395398217,
+              "label": "Negative entropy",
+              "normalized_aurc": 2.0055968038822045,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.07574791194499655,
+              "excess_aurc": 0.026413102949205985,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.9487735496995473,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.0664619040762981,
+              "excess_aurc": 0.017127095080507526,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.6152149115847545,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.07201795645586645,
+              "excess_aurc": 0.02268314746007588,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.8147914455730927,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.06973761237462452,
+              "excess_aurc": 0.020402803378833947,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.7328802005120008,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.06776718094089844,
+              "excess_aurc": 0.01843237194510787,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.6621011924790934,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.06815133858169388,
+              "excess_aurc": 0.01881652958590331,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.6759003515253671,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.08469295821297189,
+              "excess_aurc": 0.03535814921718132,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 1.270084654881484,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.07800359601606922,
+              "excess_aurc": 0.028668787020278655,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 1.0297989932919926,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            },
+            "confidence_sdc": {
+              "aurc": 0.07323969144086531,
+              "excess_aurc": 0.023904882445074743,
+              "label": "SDC",
+              "normalized_aurc": 0.8586768550510556,
+              "oracle_aurc": 0.04933480899579057,
+              "random_aurc": 0.07717401568275012
+            }
+          },
+          "oracle_aurc": 0.04933480899579057,
+          "random_aurc": 0.07717401568275012
+        },
+        "risk_nhd95": {
+          "label": "Normalized penalized HD95 risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.023624321082736058,
+              "excess_aurc": 0.01450891814308762,
+              "label": "Dice-Exact",
+              "normalized_aurc": 1.077828137133469,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.02480889327244113,
+              "excess_aurc": 0.015693490332792694,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.1658267889928575,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.02367092209465409,
+              "excess_aurc": 0.014555519155005654,
+              "label": "Dice-M32",
+              "normalized_aurc": 1.0812899997871004,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.02380703221297229,
+              "excess_aurc": 0.014691629273323854,
+              "label": "Dice-M8",
+              "normalized_aurc": 1.0914012509379531,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.02454369163048459,
+              "excess_aurc": 0.015428288690836154,
+              "label": "Foreground entropy",
+              "normalized_aurc": 1.1461256790344327,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.04309167622047381,
+              "excess_aurc": 0.03397627328082537,
+              "label": "Mean max probability",
+              "normalized_aurc": 2.524005096441774,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.024019486789489827,
+              "excess_aurc": 0.01490408384984139,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 1.1071839246132107,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.042241463366340194,
+              "excess_aurc": 0.03312606042669176,
+              "label": "Negative entropy",
+              "normalized_aurc": 2.4608450918363065,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.02400576950685236,
+              "excess_aurc": 0.014890366567203921,
+              "label": "nHD95-M2",
+              "normalized_aurc": 1.106164904928499,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.016248304566686834,
+              "excess_aurc": 0.007132901627038397,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.5298838960429207,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.02123166541706434,
+              "excess_aurc": 0.012116262477415905,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.9000842437914683,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.021159740803138934,
+              "excess_aurc": 0.012044337863490497,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.8947411594982951,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.020334865865408197,
+              "excess_aurc": 0.01121946292575976,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.833463439909948,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.02064680382504946,
+              "excess_aurc": 0.011531400885401024,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.8566364640200564,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.02944610111375425,
+              "excess_aurc": 0.020330698174105814,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 1.5103123695035212,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.024695319501797045,
+              "excess_aurc": 0.015579916562148608,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 1.1573897019245252,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            },
+            "confidence_sdc": {
+              "aurc": 0.02176206851008939,
+              "excess_aurc": 0.012646665570440953,
+              "label": "SDC",
+              "normalized_aurc": 0.9394864495277644,
+              "oracle_aurc": 0.009115402939648437,
+              "random_aurc": 0.022576656773376252
+            }
+          },
+          "oracle_aurc": 0.009115402939648437,
+          "random_aurc": 0.022576656773376252
+        }
+      },
+      "split": "test"
+    },
+    {
+      "comparisons": {
+        "dice_vs_nhd_under_dice": {
+          "bootstrap": {
+            "ci_high": -0.008349640068979201,
+            "ci_low": -0.019214194115491176,
+            "confidence_level": 0.95,
+            "difference": -0.014405574416528538,
+            "n_clusters": 1000,
+            "n_observations": 1000,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 2087755822
+          },
+          "difference_left_minus_right": -0.014405574416528538,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_dice",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_dice"
+        },
+        "dice_vs_nhd_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.020498573111282944,
+            "ci_low": 0.013402949002438165,
+            "confidence_level": 0.95,
+            "difference": 0.01670891546230797,
+            "n_clusters": 1000,
+            "n_observations": 1000,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 201037690
+          },
+          "difference_left_minus_right": 0.01670891546230797,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_nhd",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.0004062331565571299,
+            "ci_low": -0.0007304930860839324,
+            "confidence_level": 0.95,
+            "difference": -9.528766765554142e-05,
+            "n_clusters": 1000,
+            "n_observations": 1000,
+            "n_resamples": 10000,
+            "p_value": 0.793920607939206,
+            "seed": 1178920993
+          },
+          "difference_left_minus_right": -9.528766765554142e-05,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd95": {
+          "bootstrap": {
+            "ci_high": 0.0008372681751859177,
+            "ci_low": 0.00012355686185474196,
+            "confidence_level": 0.95,
+            "difference": 0.0005094966977052147,
+            "n_clusters": 1000,
+            "n_observations": 1000,
+            "n_resamples": 10000,
+            "p_value": 0.012998700129987,
+            "seed": 1812698021
+          },
+          "difference_left_minus_right": 0.0005094966977052147,
+          "holm_adjusted_p_value": 0.18198180181981802,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd95",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd95"
+        }
+      },
+      "condition": "segformer-target",
+      "dataset": "isic",
+      "jsonl": "isic/segformer-target/c93e814c00d6df3b/records.jsonl",
+      "jsonl_sha256": "42c06a6057e11d8d051aa9465f8d6972b804f13484a0589f915c78ac3326425c",
+      "manifest": "isic/segformer-target/c93e814c00d6df3b/manifest.json",
+      "manifest_sha256": "7638c6c8b506d6ef423f65ceab8b027c58e35b6161810cd7d101a3c207c7b2ae",
+      "num_image_clusters": 1000,
+      "num_rows": 1000,
+      "numerical_validation": {
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "dice_quadrature": {
+          "confidence_dice_m2": {
+            "absolute_error": {
+              "max": 0.1602463722229004,
+              "mean": 0.010709240309113192,
+              "median": 0.008956094383396736,
+              "p95": 0.01968270914867229
+            },
+            "exact_match_fraction": 0.0,
+            "m": 2,
+            "num_images": 1000,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9413253253253253,
+              "spearman_rho": 0.9892895572895574
+            }
+          },
+          "confidence_dice_m32": {
+            "absolute_error": {
+              "max": 0.005839183926582336,
+              "mean": 0.0008127487349934945,
+              "median": 0.0006998850039321488,
+              "p95": 0.0015629414979250503
+            },
+            "exact_match_fraction": 0.0,
+            "m": 32,
+            "num_images": 1000,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9935055055055056,
+              "spearman_rho": 0.999883995883996
+            }
+          },
+          "confidence_dice_m8": {
+            "absolute_error": {
+              "max": 0.03524637222290039,
+              "mean": 0.0029782311287966886,
+              "median": 0.0025352088628671637,
+              "p95": 0.00557444752390473
+            },
+            "exact_match_fraction": 0.0,
+            "m": 8,
+            "num_images": 1000,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9831871871871872,
+              "spearman_rho": 0.9994842754842757
+            }
+          }
+        },
+        "exact_match_definition": "fraction with exact floating-point equality and no tolerance",
+        "rank_agreement_definition": "Spearman correlation of average ranks and Kendall tau-b over image-level confidences; null when either ranking is constant",
+        "reference": "confidence_dice_exact"
+      },
+      "risks": {
+        "risk_dice": {
+          "label": "Dice risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.06762058974962692,
+              "excess_aurc": 0.016324266360090628,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.2534548196582524,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.0758497194386228,
+              "excess_aurc": 0.024553396049086504,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.38122243476945555,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.06785953376918781,
+              "excess_aurc": 0.016563210379651513,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.2571647268632881,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.06817156827083977,
+              "excess_aurc": 0.016875244881303472,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.2620094559677274,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.06469249186671135,
+              "excess_aurc": 0.01339616847717505,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.20799240778102068,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.09588424349554901,
+              "excess_aurc": 0.044587920106012716,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.692283683696477,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.08697736195077804,
+              "excess_aurc": 0.035681038561241746,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.5539931163992885,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.09418595824642086,
+              "excess_aurc": 0.04288963485688456,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.6659156637162114,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.08789923595463654,
+              "excess_aurc": 0.036602912565100246,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.5683063727650888,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.07789308677397633,
+              "excess_aurc": 0.02659676338444003,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.4129482892766909,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.07826585615177484,
+              "excess_aurc": 0.02696953276223854,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.41873600391819077,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.09202463779609818,
+              "excess_aurc": 0.04072831440656188,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.632358438363685,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.08226510818571635,
+              "excess_aurc": 0.03096878479618005,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.48082943468385475,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.08295990430281906,
+              "excess_aurc": 0.031663580913282766,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.4916170205192616,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.09637284369449907,
+              "excess_aurc": 0.04507652030496277,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.6998698178955998,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.06796189481381965,
+              "excess_aurc": 0.01666557142428335,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.25875401115545205,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            },
+            "confidence_sdc": {
+              "aurc": 0.06830025932169273,
+              "excess_aurc": 0.017003935932156433,
+              "label": "SDC",
+              "normalized_aurc": 0.2640075468078346,
+              "oracle_aurc": 0.0512963233895363,
+              "random_aurc": 0.11570333045336553
+            }
+          },
+          "oracle_aurc": 0.0512963233895363,
+          "random_aurc": 0.11570333045336553
+        },
+        "risk_nhd": {
+          "label": "Normalized penalized Hausdorff risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.045170259964800535,
+              "excess_aurc": 0.021156211976633723,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.5685752152310704,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.05295390281752887,
+              "excess_aurc": 0.028939854829362056,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.7777613594784287,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.0454718902247648,
+              "excess_aurc": 0.021457842236597986,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.576681557243941,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.04564800222114363,
+              "excess_aurc": 0.02163395423297682,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.5814145839481762,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.03973274966739325,
+              "excess_aurc": 0.015718701679226437,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.42244160723526714,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.03541236164897634,
+              "excess_aurc": 0.011398313660809529,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.30633076706377477,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.03461482641313661,
+              "excess_aurc": 0.010600778424969797,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.28489693151359374,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.03346583635565487,
+              "excess_aurc": 0.00945178836748806,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.2540177141020566,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.03763558191128831,
+              "excess_aurc": 0.013621533923121498,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.3660800237145505,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.02885826243011237,
+              "excess_aurc": 0.004844214441945556,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.13018872527826245,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.029028306642271885,
+              "excess_aurc": 0.005014258654105073,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.13475867970272076,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.037813544083748186,
+              "excess_aurc": 0.013799496095581374,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.37086277407747553,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.028762974762456827,
+              "excess_aurc": 0.004748926774290015,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.12762786011932217,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.029064654133380576,
+              "excess_aurc": 0.005050606145213764,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.13573552199391442,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.04572084229614678,
+              "excess_aurc": 0.021706794307979966,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.5833721679130233,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.04619857030944216,
+              "excess_aurc": 0.022184522321275348,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.5962111538468631,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            },
+            "confidence_sdc": {
+              "aurc": 0.04609957633974336,
+              "excess_aurc": 0.02208552835157655,
+              "label": "SDC",
+              "normalized_aurc": 0.5935506814669191,
+              "oracle_aurc": 0.024014047988166812,
+              "random_aurc": 0.0612232182261551
+            }
+          },
+          "oracle_aurc": 0.024014047988166812,
+          "random_aurc": 0.0612232182261551
+        },
+        "risk_nhd95": {
+          "label": "Normalized penalized HD95 risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.031028981035984844,
+              "excess_aurc": 0.013472335243939471,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.4507867048350118,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.03886779111114903,
+              "excess_aurc": 0.02131114531910366,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.7130746675102547,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.03124291288033563,
+              "excess_aurc": 0.013686267088290256,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.45794490194249166,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.031395880138507685,
+              "excess_aurc": 0.013839234346462313,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.4630632132827657,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.027090849424124465,
+              "excess_aurc": 0.009534203632079092,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.31901612903110776,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.028037209241896358,
+              "excess_aurc": 0.010480563449850985,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.3506814948431382,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.026393363971512363,
+              "excess_aurc": 0.00883671817946699,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.29567814321348146,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.026223558795451248,
+              "excess_aurc": 0.008666913003405875,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.28999643218161314,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.02970984137993068,
+              "excess_aurc": 0.012153195587885308,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.4066480601232607,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.021298587955974557,
+              "excess_aurc": 0.0037419421639291843,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.12520604239859942,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.02149333409461047,
+              "excess_aurc": 0.003936688302565099,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.1317222824212427,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.030659696355956903,
+              "excess_aurc": 0.01310305056391153,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.43843037454470574,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.021808084653679772,
+              "excess_aurc": 0.004251438861634399,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.1422538914406705,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.022099174121608684,
+              "excess_aurc": 0.004542528329563311,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.151993796192438,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.037557086251091144,
+              "excess_aurc": 0.02000044045904577,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.6692182525548354,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.03176107338120855,
+              "excess_aurc": 0.014204427589163179,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.47528264336109544,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            },
+            "confidence_sdc": {
+              "aurc": 0.03171658889386551,
+              "excess_aurc": 0.01415994310182014,
+              "label": "SDC",
+              "normalized_aurc": 0.47379418459707645,
+              "oracle_aurc": 0.017556645792045373,
+              "random_aurc": 0.04744292038585877
+            }
+          },
+          "oracle_aurc": 0.017556645792045373,
+          "random_aurc": 0.04744292038585877
+        }
+      },
+      "split": "test"
+    },
+    {
+      "comparisons": {
+        "dice_vs_nhd_under_dice": {
+          "bootstrap": {
+            "ci_high": -0.005266079356383931,
+            "ci_low": -0.021912250716143784,
+            "confidence_level": 0.95,
+            "difference": -0.01150618500329087,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 3019061902
+          },
+          "difference_left_minus_right": -0.01150618500329087,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_dice",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_dice"
+        },
+        "dice_vs_nhd_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.07580793877839576,
+            "ci_low": 0.028070465313151285,
+            "confidence_level": 0.95,
+            "difference": 0.05047498878218315,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 493959460
+          },
+          "difference_left_minus_right": 0.05047498878218315,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_nhd",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.0005045433602035796,
+            "ci_low": -0.012605633544212284,
+            "confidence_level": 0.95,
+            "difference": -0.005089238292163414,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.08399160083991601,
+            "seed": 1982139661
+          },
+          "difference_left_minus_right": -0.005089238292163414,
+          "holm_adjusted_p_value": 0.9815018498150185,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd95": {
+          "bootstrap": {
+            "ci_high": 0.0018875369515371438,
+            "ci_low": -0.00014563653282606648,
+            "confidence_level": 0.95,
+            "difference": 0.0006606471044479159,
+            "n_clusters": 200,
+            "n_observations": 200,
+            "n_resamples": 10000,
+            "p_value": 0.12238776122387761,
+            "seed": 256989936
+          },
+          "difference_left_minus_right": 0.0006606471044479159,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd95",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd95"
+        }
+      },
+      "condition": "segformer-target",
+      "dataset": "kvasir",
+      "jsonl": "kvasir/segformer-target/687c0bcc4dd35db7/records.jsonl",
+      "jsonl_sha256": "579e781379b3e4ce26eb6e719b488c5903bbd630d3c3669dbe2924902f756044",
+      "manifest": "kvasir/segformer-target/687c0bcc4dd35db7/manifest.json",
+      "manifest_sha256": "7a7bc550149b0d54e38570549118678853cf96b55452eb4e57d94967bdbe76ea",
+      "num_image_clusters": 200,
+      "num_rows": 200,
+      "numerical_validation": {
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "dice_quadrature": {
+          "confidence_dice_m2": {
+            "absolute_error": {
+              "max": 0.10580287935244115,
+              "mean": 0.013024322044425463,
+              "median": 0.010469128599777172,
+              "p95": 0.03017083014176801
+            },
+            "exact_match_fraction": 0.0,
+            "m": 2,
+            "num_images": 200,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9238190954773867,
+              "spearman_rho": 0.9891922298057453
+            }
+          },
+          "confidence_dice_m32": {
+            "absolute_error": {
+              "max": 0.011654000729322433,
+              "mean": 0.0021948456756367453,
+              "median": 0.0019931545628828554,
+              "p95": 0.0036033757781962434
+            },
+            "exact_match_fraction": 0.0,
+            "m": 32,
+            "num_images": 200,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9849246231155778,
+              "spearman_rho": 0.9994464861621541
+            }
+          },
+          "confidence_dice_m8": {
+            "absolute_error": {
+              "max": 0.01872635850423708,
+              "mean": 0.005000031359283492,
+              "median": 0.004357599904597928,
+              "p95": 0.009452031705800818
+            },
+            "exact_match_fraction": 0.0,
+            "m": 8,
+            "num_images": 200,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9696482412060302,
+              "spearman_rho": 0.9982689567239182
+            }
+          }
+        },
+        "exact_match_definition": "fraction with exact floating-point equality and no tolerance",
+        "rank_agreement_definition": "Spearman correlation of average ranks and Kendall tau-b over image-level confidences; null when either ranking is constant",
+        "reference": "confidence_dice_exact"
+      },
+      "risks": {
+        "risk_dice": {
+          "label": "Dice risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.0643324663918828,
+              "excess_aurc": 0.03512952824490129,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.5474098363900517,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.06590582032900734,
+              "excess_aurc": 0.03670288218202583,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.5719268015852788,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.06417008585170049,
+              "excess_aurc": 0.03496714770471898,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.544879523306584,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.06432445648165261,
+              "excess_aurc": 0.0351215183346711,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.547285021060394,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.03635297101224996,
+              "excess_aurc": 0.007150032865268455,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.11141619362702876,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.08707603013548017,
+              "excess_aurc": 0.05787309198849866,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.9018139838359074,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.05406672251595876,
+              "excess_aurc": 0.02486378436897725,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.38744272449587536,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.08634417226196259,
+              "excess_aurc": 0.05714123411498108,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.8904097259702706,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.0742801119798673,
+              "excess_aurc": 0.045077173832885786,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.7024201458318008,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.07170578301585455,
+              "excess_aurc": 0.04250284486887304,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.6623053743728666,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.07156154117262398,
+              "excess_aurc": 0.04235860302564247,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.6600577095806442,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.07943795732378935,
+              "excess_aurc": 0.05023501917680784,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.7827928526941925,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.07567627085499136,
+              "excess_aurc": 0.04647333270800985,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.7241759489862912,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.07455457742667156,
+              "excess_aurc": 0.04535163927969005,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.7066970346155735,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.07796480802257306,
+              "excess_aurc": 0.04876186987559156,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.7598373375408125,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.06433584919984728,
+              "excess_aurc": 0.03513291105286577,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.5474625493767297,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            },
+            "confidence_sdc": {
+              "aurc": 0.03702465086577433,
+              "excess_aurc": 0.007821712718792825,
+              "label": "SDC",
+              "normalized_aurc": 0.12188272070820684,
+              "oracle_aurc": 0.029202938146981508,
+              "random_aurc": 0.09337702839820249
+            }
+          },
+          "oracle_aurc": 0.029202938146981508,
+          "random_aurc": 0.09337702839820249
+        },
+        "risk_nhd": {
+          "label": "Normalized penalized Hausdorff risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.14002500357363915,
+              "excess_aurc": 0.1145200522512218,
+              "label": "Dice-Exact",
+              "normalized_aurc": 1.3005124963773105,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.14187748684730545,
+              "excess_aurc": 0.1163725355248881,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.3215496649724485,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.1405244354877747,
+              "excess_aurc": 0.11501948416535737,
+              "label": "Dice-M32",
+              "normalized_aurc": 1.3061841445529339,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.14111268502072613,
+              "excess_aurc": 0.11560773369830879,
+              "label": "Dice-M8",
+              "normalized_aurc": 1.3128644232775122,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.10439225347297787,
+              "excess_aurc": 0.07888730215056053,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.8958598973325397,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.09520847593253143,
+              "excess_aurc": 0.06970352461011409,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.7915670925309906,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.06965474980598452,
+              "excess_aurc": 0.044149798483567176,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.5013738948919014,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.09456393369171932,
+              "excess_aurc": 0.06905898236930198,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.7842475426168817,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.09386893513742336,
+              "excess_aurc": 0.06836398381500602,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.7763550007688979,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.09513868499775498,
+              "excess_aurc": 0.06963373367533764,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.790774532791221,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.09098804659748627,
+              "excess_aurc": 0.06548309527506893,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.7436390573755137,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.08981703574321127,
+              "excess_aurc": 0.06431208442079393,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.7303408251494464,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.09004944670559156,
+              "excess_aurc": 0.06454449538317422,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.7329801302748719,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.08668628842436508,
+              "excess_aurc": 0.061181337101947744,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.6947874357550071,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.09184656552245517,
+              "excess_aurc": 0.06634161420003783,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.7533885690841634,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.1402692804258739,
+              "excess_aurc": 0.11476432910345655,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 1.303286552908564,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            },
+            "confidence_sdc": {
+              "aurc": 0.11667897506531609,
+              "excess_aurc": 0.09117402374289875,
+              "label": "SDC",
+              "normalized_aurc": 1.0353903520977163,
+              "oracle_aurc": 0.02550495132241734,
+              "random_aurc": 0.11356258442492675
+            }
+          },
+          "oracle_aurc": 0.02550495132241734,
+          "random_aurc": 0.11356258442492675
+        },
+        "risk_nhd95": {
+          "label": "Normalized penalized HD95 risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.04982404302326812,
+              "excess_aurc": 0.038935854375029624,
+              "label": "Dice-Exact",
+              "normalized_aurc": 1.080961561046832,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.0505038740417568,
+              "excess_aurc": 0.0396156853935183,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.099835455322152,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.04956710241302268,
+              "excess_aurc": 0.03867891376478419,
+              "label": "Dice-M32",
+              "normalized_aurc": 1.0738282149932943,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.04971234088971281,
+              "excess_aurc": 0.03882415224147431,
+              "label": "Dice-M8",
+              "normalized_aurc": 1.0778604164951497,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.01985198673937292,
+              "excess_aurc": 0.008963798091134425,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.24885857349300577,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.04857111015000417,
+              "excess_aurc": 0.03768292150176568,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.0461768543462933,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.02270565459601339,
+              "excess_aurc": 0.011817465947774896,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.32808388678166284,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.048454910976540415,
+              "excess_aurc": 0.037566722328301924,
+              "label": "Negative entropy",
+              "normalized_aurc": 1.0429508601577522,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.04612777933500647,
+              "excess_aurc": 0.03523959068676798,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.9783435748580803,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.0455425346642655,
+              "excess_aurc": 0.034654346016027,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.9620956459752299,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.04500181656150579,
+              "excess_aurc": 0.0341136279132673,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.9470838915440685,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.0472842229855946,
+              "excess_aurc": 0.03639603433735611,
+              "label": "nHD-M2",
+              "normalized_aurc": 1.0104494873612908,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.046203181768713415,
+              "excess_aurc": 0.035314993120474925,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.9804369444207851,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.04543679491744463,
+              "excess_aurc": 0.03454860626920614,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.9591600329362239,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.04646002751525078,
+              "excess_aurc": 0.03557183886701229,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.9875676568086794,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.04989426601366105,
+              "excess_aurc": 0.03900607736542255,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 1.082911135662182,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            },
+            "confidence_sdc": {
+              "aurc": 0.022226041171660684,
+              "excess_aurc": 0.01133785252342219,
+              "label": "SDC",
+              "normalized_aurc": 0.3147685586808929,
+              "oracle_aurc": 0.010888188648238494,
+              "random_aurc": 0.0469078361344295
+            }
+          },
+          "oracle_aurc": 0.010888188648238494,
+          "random_aurc": 0.0469078361344295
+        }
+      },
+      "split": "test"
+    },
+    {
+      "comparisons": {
+        "dice_vs_nhd_under_dice": {
+          "bootstrap": {
+            "ci_high": 0.002883776009919936,
+            "ci_low": -0.005074095082695438,
+            "confidence_level": 0.95,
+            "difference": -0.0016046843668806113,
+            "n_clusters": 3669,
+            "n_observations": 3669,
+            "n_resamples": 10000,
+            "p_value": 0.38516148385161486,
+            "seed": 3673607535
+          },
+          "difference_left_minus_right": -0.0016046843668806113,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_dice",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_dice"
+        },
+        "dice_vs_nhd_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.015510526083179606,
+            "ci_low": 0.007467158442447776,
+            "confidence_level": 0.95,
+            "difference": 0.0111044550077945,
+            "n_clusters": 3669,
+            "n_observations": 3669,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 2360815960
+          },
+          "difference_left_minus_right": 0.0111044550077945,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_nhd",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd": {
+          "bootstrap": {
+            "ci_high": -0.0003417267701337308,
+            "ci_low": -0.0033052552907459577,
+            "confidence_level": 0.95,
+            "difference": -0.0018897683685401567,
+            "n_clusters": 3669,
+            "n_observations": 3669,
+            "n_resamples": 10000,
+            "p_value": 0.014598540145985401,
+            "seed": 3590490903
+          },
+          "difference_left_minus_right": -0.0018897683685401567,
+          "holm_adjusted_p_value": 0.1897810218978102,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd95": {
+          "bootstrap": {
+            "ci_high": 0.0016027098362922222,
+            "ci_low": -0.000853033249990944,
+            "confidence_level": 0.95,
+            "difference": 0.00033046973482491956,
+            "n_clusters": 3669,
+            "n_observations": 3669,
+            "n_resamples": 10000,
+            "p_value": 0.48195180481951805,
+            "seed": 4188762288
+          },
+          "difference_left_minus_right": 0.00033046973482491956,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd95",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd95"
+        }
+      },
+      "condition": "segformer-target",
+      "dataset": "pet",
+      "jsonl": "pet/segformer-target/937b390f22382cfd/records.jsonl",
+      "jsonl_sha256": "5bbe0290e8488a685b05e50bcb9c8a45171ff357165f4ce5271d881248054a1c",
+      "manifest": "pet/segformer-target/937b390f22382cfd/manifest.json",
+      "manifest_sha256": "8c5fceb4a746ae1ca76ae859c9fd7ed57953bb1bf772122f71a8658cc7c49e64",
+      "num_image_clusters": 3669,
+      "num_rows": 3669,
+      "numerical_validation": {
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "dice_quadrature": {
+          "confidence_dice_m2": {
+            "absolute_error": {
+              "max": 0.07928096335601392,
+              "mean": 0.005638820989169725,
+              "median": 0.005214264410105255,
+              "p95": 0.010313755807303595
+            },
+            "exact_match_fraction": 0.0,
+            "m": 2,
+            "num_images": 3669,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9504121447846363,
+              "spearman_rho": 0.9956806482005319
+            }
+          },
+          "confidence_dice_m32": {
+            "absolute_error": {
+              "max": 0.0034753118641894093,
+              "mean": 0.0005585114224686181,
+              "median": 0.0004913525444896656,
+              "p95": 0.0011504678982785506
+            },
+            "exact_match_fraction": 0.0,
+            "m": 32,
+            "num_images": 3669,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9930012813299437,
+              "spearman_rho": 0.9999174230873851
+            }
+          },
+          "confidence_dice_m8": {
+            "absolute_error": {
+              "max": 0.009517356559522905,
+              "mean": 0.0017222533160548485,
+              "median": 0.0015684842889397664,
+              "p95": 0.0033025040071241307
+            },
+            "exact_match_fraction": 0.0,
+            "m": 8,
+            "num_images": 3669,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9838093514199697,
+              "spearman_rho": 0.9995681828752315
+            }
+          }
+        },
+        "exact_match_definition": "fraction with exact floating-point equality and no tolerance",
+        "rank_agreement_definition": "Spearman correlation of average ranks and Kendall tau-b over image-level confidences; null when either ranking is constant",
+        "reference": "confidence_dice_exact"
+      },
+      "risks": {
+        "risk_dice": {
+          "label": "Dice risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.0317347703324586,
+              "excess_aurc": 0.010537871731022205,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.6067730931591723,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.03198137991512751,
+              "excess_aurc": 0.01078448131369112,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.6209729300046142,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.03172742564043095,
+              "excess_aurc": 0.010530527038994555,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.6063501840923633,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.031742514137245686,
+              "excess_aurc": 0.010545615535809294,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.6072189832310404,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.030597805942845054,
+              "excess_aurc": 0.009400907341408662,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.5413064204659832,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.039884473132375295,
+              "excess_aurc": 0.018687574530938902,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.0760348665470458,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.029248913135626078,
+              "excess_aurc": 0.008052014534189685,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.4636368604383226,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.03886654432020625,
+              "excess_aurc": 0.01766964571876986,
+              "label": "Negative entropy",
+              "normalized_aurc": 1.0174222899527265,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.036892612089225826,
+              "excess_aurc": 0.015695713487789434,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.9037628152456457,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.035102851436369674,
+              "excess_aurc": 0.013905952834933281,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.8007079826316637,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.035742892518453605,
+              "excess_aurc": 0.014545993917017212,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.8375616962692787,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.03581370305476008,
+              "excess_aurc": 0.014616804453323688,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.8416389833382086,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.03333211000731156,
+              "excess_aurc": 0.012135211405875167,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.6987482813257851,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.03509192966680812,
+              "excess_aurc": 0.013895031065371724,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.8000791046125729,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.035620510966928344,
+              "excess_aurc": 0.014423612365491952,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.830514938208446,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.031363611796849565,
+              "excess_aurc": 0.010166713195413173,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.5854016987778065,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            },
+            "confidence_sdc": {
+              "aurc": 0.03177853010484663,
+              "excess_aurc": 0.010581631503410238,
+              "label": "SDC",
+              "normalized_aurc": 0.6092927909810447,
+              "oracle_aurc": 0.021196898601436392,
+              "random_aurc": 0.03856397016381671
+            }
+          },
+          "oracle_aurc": 0.021196898601436392,
+          "random_aurc": 0.03856397016381671
+        },
+        "risk_nhd": {
+          "label": "Normalized penalized Hausdorff risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.04913280655122075,
+              "excess_aurc": 0.02730122005871605,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.8474898938331661,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.04939705559783334,
+              "excess_aurc": 0.02756546910532864,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.8556927652058586,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.04912815108220063,
+              "excess_aurc": 0.02729656458969593,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.8473453778394808,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.049167138315447896,
+              "excess_aurc": 0.027335551822943196,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.8485556272750194,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.04748692777211708,
+              "excess_aurc": 0.025655341279612377,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.7963981979761703,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.04624954194420277,
+              "excess_aurc": 0.02441795545169807,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.7579870214179649,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.04310823780505293,
+              "excess_aurc": 0.021276651312548227,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.6604740346115069,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.04513102850834336,
+              "excess_aurc": 0.023299442015838657,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.7232659052565342,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.042688779393952186,
+              "excess_aurc": 0.020857192901447486,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.64745312332891,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.039913464442946286,
+              "excess_aurc": 0.018081877950441586,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.5613012455694879,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.040429184260574014,
+              "excess_aurc": 0.018597597768069313,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.5773103225465971,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.040066493453017646,
+              "excess_aurc": 0.018234906960512946,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.5660516024846679,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.03802369607440613,
+              "excess_aurc": 0.01619210958190143,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.5026386806519151,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.038701264436912526,
+              "excess_aurc": 0.016869677944407826,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.5236718922948479,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.044472445427678337,
+              "excess_aurc": 0.022640858935173636,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.7028220385021278,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.04882814966392169,
+              "excess_aurc": 0.02699656317141699,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.8380326742467398,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            },
+            "confidence_sdc": {
+              "aurc": 0.049226800858326786,
+              "excess_aurc": 0.027395214365822085,
+              "label": "SDC",
+              "normalized_aurc": 0.8504076837773112,
+              "oracle_aurc": 0.0218315864925047,
+              "random_aurc": 0.05404579961454397
+            }
+          },
+          "oracle_aurc": 0.0218315864925047,
+          "random_aurc": 0.05404579961454397
+        },
+        "risk_nhd95": {
+          "label": "Normalized penalized HD95 risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.02802763561675835,
+              "excess_aurc": 0.016547725245090947,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.9345593877892853,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.028203616965784273,
+              "excess_aurc": 0.01672370659411687,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.9444982174091927,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.02802790316334712,
+              "excess_aurc": 0.01654799279167972,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.9345744979130337,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.028053444189636026,
+              "excess_aurc": 0.016573533817968625,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.9360169684362345,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.02660601867427965,
+              "excess_aurc": 0.015126108302612249,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.8542712853609526,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.026915664986555617,
+              "excess_aurc": 0.015435754614888214,
+              "label": "Mean max probability",
+              "normalized_aurc": 0.8717590586799884,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.022396131811368142,
+              "excess_aurc": 0.01091622143970074,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.6165111563406868,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.025983677608341665,
+              "excess_aurc": 0.014503767236674263,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.8191235730944779,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.02345440137828507,
+              "excess_aurc": 0.011974491006617667,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.6762786315631386,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.021846355456179096,
+              "excess_aurc": 0.010366445084511693,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.5854616527795297,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.022304168483488124,
+              "excess_aurc": 0.010824258111820721,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.6113173795448028,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.023289339609138898,
+              "excess_aurc": 0.011809429237471495,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.6669565027728733,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.022176825191004015,
+              "excess_aurc": 0.010696914819336613,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.6041254623658343,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.022920821482827498,
+              "excess_aurc": 0.011440911111160095,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.646143849105143,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.024229272604060107,
+              "excess_aurc": 0.012749362232392704,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.7200407298364758,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.027684846490850384,
+              "excess_aurc": 0.01620493611918298,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.9151998207850885,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            },
+            "confidence_sdc": {
+              "aurc": 0.028088446399881468,
+              "excess_aurc": 0.016608536028214063,
+              "label": "SDC",
+              "normalized_aurc": 0.9379937745345804,
+              "oracle_aurc": 0.011479910371667403,
+              "random_aurc": 0.02918635627687076
+            }
+          },
+          "oracle_aurc": 0.011479910371667403,
+          "random_aurc": 0.02918635627687076
+        }
+      },
+      "split": "test"
+    },
+    {
+      "comparisons": {
+        "dice_vs_nhd_under_dice": {
+          "bootstrap": {
+            "ci_high": -0.01283819055657003,
+            "ci_low": -0.02411354623406893,
+            "confidence_level": 0.95,
+            "difference": -0.018336722360419028,
+            "n_clusters": 614,
+            "n_observations": 614,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 1224143066
+          },
+          "difference_left_minus_right": -0.018336722360419028,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_dice",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_dice"
+        },
+        "dice_vs_nhd_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.016652841765218803,
+            "ci_low": 0.008651628019153822,
+            "confidence_level": 0.95,
+            "difference": 0.012504847107068829,
+            "n_clusters": 614,
+            "n_observations": 614,
+            "n_resamples": 10000,
+            "p_value": 0.00019998000199980003,
+            "seed": 1583942515
+          },
+          "difference_left_minus_right": 0.012504847107068829,
+          "holm_adjusted_p_value": 0.005599440055994401,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_dice_m32",
+          "name": "dice_vs_nhd_under_nhd",
+          "right": "confidence_nhd_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd": {
+          "bootstrap": {
+            "ci_high": 0.000431674198880515,
+            "ci_low": -0.000674925957004339,
+            "confidence_level": 0.95,
+            "difference": -0.00012202309758562943,
+            "n_clusters": 614,
+            "n_observations": 614,
+            "n_resamples": 10000,
+            "p_value": 0.6473352664733527,
+            "seed": 3477147187
+          },
+          "difference_left_minus_right": -0.00012202309758562943,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd"
+        },
+        "nhd_vs_nhd95_under_nhd95": {
+          "bootstrap": {
+            "ci_high": 0.000758421547168061,
+            "ci_low": -0.0002061592451507359,
+            "confidence_level": 0.95,
+            "difference": 0.00025777703939836374,
+            "n_clusters": 614,
+            "n_observations": 614,
+            "n_resamples": 10000,
+            "p_value": 0.29017098290170984,
+            "seed": 288760164
+          },
+          "difference_left_minus_right": 0.00025777703939836374,
+          "holm_adjusted_p_value": 1.0,
+          "holm_family": "architecture_domain_extension",
+          "holm_family_size": 28,
+          "left": "confidence_nhd_m32",
+          "name": "nhd_vs_nhd95_under_nhd95",
+          "right": "confidence_nhd95_m32",
+          "risk": "risk_nhd95"
+        }
+      },
+      "condition": "segformer-target",
+      "dataset": "tn3k",
+      "jsonl": "tn3k/segformer-target/10ae39efb93cd7d9/records.jsonl",
+      "jsonl_sha256": "661f8a46d1c52ccfd4a78b6a9c5a42619837098ab7998b181ef73ba4ded6aafd",
+      "manifest": "tn3k/segformer-target/10ae39efb93cd7d9/manifest.json",
+      "manifest_sha256": "a3dc9d6c7eac2391357b08c9932f1dc29b6e4df36c11a7b86f8718defc001753",
+      "num_image_clusters": 614,
+      "num_rows": 614,
+      "numerical_validation": {
+        "absolute_error_definition": "per-image |C_Dice,M - C_Dice,Exact|",
+        "dice_quadrature": {
+          "confidence_dice_m2": {
+            "absolute_error": {
+              "max": 0.23137447237968445,
+              "mean": 0.025754789487682055,
+              "median": 0.018581080836856154,
+              "p95": 0.06580262608646126
+            },
+            "exact_match_fraction": 0.0,
+            "m": 2,
+            "num_images": 614,
+            "rank_agreement": {
+              "kendall_tau_b": 0.920726944698398,
+              "spearman_rho": 0.9780053964389638
+            }
+          },
+          "confidence_dice_m32": {
+            "absolute_error": {
+              "max": 0.012624472379684448,
+              "mean": 0.0017371521043940475,
+              "median": 0.0014368478496238901,
+              "p95": 0.003540436328862972
+            },
+            "exact_match_fraction": 0.0,
+            "m": 32,
+            "num_images": 614,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9926563189694912,
+              "spearman_rho": 0.9997862705770968
+            }
+          },
+          "confidence_dice_m8": {
+            "absolute_error": {
+              "max": 0.05918046832084656,
+              "mean": 0.006933205329686043,
+              "median": 0.0055222668052797436,
+              "p95": 0.014956487512556689
+            },
+            "exact_match_fraction": 0.0,
+            "m": 8,
+            "num_images": 614,
+            "rank_agreement": {
+              "kendall_tau_b": 0.9768555298932927,
+              "spearman_rho": 0.9981353010387228
+            }
+          }
+        },
+        "exact_match_definition": "fraction with exact floating-point equality and no tolerance",
+        "rank_agreement_definition": "Spearman correlation of average ranks and Kendall tau-b over image-level confidences; null when either ranking is constant",
+        "reference": "confidence_dice_exact"
+      },
+      "risks": {
+        "risk_dice": {
+          "label": "Dice risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.07623870223768692,
+              "excess_aurc": 0.016147819552081638,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.16533893181154513,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.10982844219715442,
+              "excess_aurc": 0.04973755951154914,
+              "label": "Dice-M2",
+              "normalized_aurc": 0.5092672068838285,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.0760449255696354,
+              "excess_aurc": 0.015954042884030115,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.16335483561810524,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.07533035441205697,
+              "excess_aurc": 0.015239471726451695,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.15603827925479583,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.07441021903377873,
+              "excess_aurc": 0.01431933634817345,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.14661693291909658,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.17170444673669472,
+              "excess_aurc": 0.11161356405108944,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.1428210103764542,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.13379344085034506,
+              "excess_aurc": 0.07370255816473978,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.7546469168442898,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.15667325230410314,
+              "excess_aurc": 0.09658236961849787,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.9889153004866036,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.13448401762531745,
+              "excess_aurc": 0.07439313493971217,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.7617177926327846,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.0911040178149759,
+              "excess_aurc": 0.031013135129370623,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.3175461936442204,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.09483829012951128,
+              "excess_aurc": 0.034747407443906,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.35578173334587093,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.13834109648632487,
+              "excess_aurc": 0.07825021380071959,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.8012107592673818,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.09438164793005442,
+              "excess_aurc": 0.03429076524444914,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.3511061340654381,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.09769900569177423,
+              "excess_aurc": 0.03760812300616895,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.38507284932321323,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.1511143905001526,
+              "excess_aurc": 0.09102350781454732,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 0.9319976299745685,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.07842967366039236,
+              "excess_aurc": 0.018338790974787078,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.1877724791701444,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            },
+            "confidence_sdc": {
+              "aurc": 0.07398167659377497,
+              "excess_aurc": 0.01389079390816969,
+              "label": "SDC",
+              "normalized_aurc": 0.14222904952483356,
+              "oracle_aurc": 0.06009088268560528,
+              "random_aurc": 0.15775583899781295
+            }
+          },
+          "oracle_aurc": 0.06009088268560528,
+          "random_aurc": 0.15775583899781295
+        },
+        "risk_nhd": {
+          "label": "Normalized penalized Hausdorff risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.04346128174566282,
+              "excess_aurc": 0.02398621558517203,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.48700096183855895,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.07693006699827956,
+              "excess_aurc": 0.057455000837788775,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.1665300251756103,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.04316414067173164,
+              "excess_aurc": 0.02368907451124085,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.48096799726803774,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.042201320757302686,
+              "excess_aurc": 0.022726254596811896,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.46141951023225525,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.0414253350960478,
+              "excess_aurc": 0.021950268935557012,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.445664387792779,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.07286985409006294,
+              "excess_aurc": 0.053394787929572154,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.0840940283611238,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.049492519141851585,
+              "excess_aurc": 0.030017452981360795,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.6094553941599447,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.05816419287893259,
+              "excess_aurc": 0.038689126718441796,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.7855195771784318,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.06764196456386684,
+              "excess_aurc": 0.048166898403376054,
+              "label": "nHD95-M2",
+              "normalized_aurc": 0.9779502634723798,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.03078131666224844,
+              "excess_aurc": 0.01130625050175765,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.22955496458338762,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.03053931775619899,
+              "excess_aurc": 0.011064251595708199,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.22464157173942362,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.06763695741511831,
+              "excess_aurc": 0.048161891254627526,
+              "label": "nHD-M2",
+              "normalized_aurc": 0.9778486014887315,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.03065929356466281,
+              "excess_aurc": 0.01118422740417202,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.22707748472918926,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.030234612332215225,
+              "excess_aurc": 0.010759546171724435,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.2184550253861401,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.07805561485334148,
+              "excess_aurc": 0.05858054869285069,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 1.189382437473169,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.04576954021747762,
+              "excess_aurc": 0.026294474056986827,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.5338663830199114,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            },
+            "confidence_sdc": {
+              "aurc": 0.040613412487006305,
+              "excess_aurc": 0.021138346326515515,
+              "label": "SDC",
+              "normalized_aurc": 0.4291796242777659,
+              "oracle_aurc": 0.01947506616049079,
+              "random_aurc": 0.06872797829975566
+            }
+          },
+          "oracle_aurc": 0.01947506616049079,
+          "random_aurc": 0.06872797829975566
+        },
+        "risk_nhd95": {
+          "label": "Normalized penalized HD95 risk",
+          "methods": {
+            "confidence_dice_exact": {
+              "aurc": 0.035482895777036644,
+              "excess_aurc": 0.01989356196862103,
+              "label": "Dice-Exact",
+              "normalized_aurc": 0.4431634030319613,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_dice_m2": {
+              "aurc": 0.06937842409640085,
+              "excess_aurc": 0.053789090287985244,
+              "label": "Dice-M2",
+              "normalized_aurc": 1.198244755545369,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_dice_m32": {
+              "aurc": 0.035197897479911554,
+              "excess_aurc": 0.01960856367149594,
+              "label": "Dice-M32",
+              "normalized_aurc": 0.43681457443045246,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_dice_m8": {
+              "aurc": 0.034283680301819136,
+              "excess_aurc": 0.018694346493403523,
+              "label": "Dice-M8",
+              "normalized_aurc": 0.41644881004935425,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_foreground_entropy": {
+              "aurc": 0.033308089969838486,
+              "excess_aurc": 0.017718756161422874,
+              "label": "Foreground entropy",
+              "normalized_aurc": 0.39471585281587424,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_mean_max_probability": {
+              "aurc": 0.06877803577978747,
+              "excess_aurc": 0.05318870197137186,
+              "label": "Mean max probability",
+              "normalized_aurc": 1.1848700703104824,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_mmmc_entropy": {
+              "aurc": 0.04294254655361658,
+              "excess_aurc": 0.02735321274520097,
+              "label": "MMMC-Entropy",
+              "normalized_aurc": 0.6093399896479543,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_negative_entropy": {
+              "aurc": 0.05400304956326499,
+              "excess_aurc": 0.03841371575484938,
+              "label": "Negative entropy",
+              "normalized_aurc": 0.8557317701009751,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_nhd95_m2": {
+              "aurc": 0.0631835631848862,
+              "excess_aurc": 0.04759422937647059,
+              "label": "nHD95-M2",
+              "normalized_aurc": 1.0602435445411835,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_nhd95_m32": {
+              "aurc": 0.025646300935195314,
+              "excess_aurc": 0.010056967126779701,
+              "label": "nHD95-M32",
+              "normalized_aurc": 0.22403628787616245,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_nhd95_m8": {
+              "aurc": 0.025667296402206278,
+              "excess_aurc": 0.010077962593790665,
+              "label": "nHD95-M8",
+              "normalized_aurc": 0.22450399811445462,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_nhd_m2": {
+              "aurc": 0.06345320323393072,
+              "excess_aurc": 0.04786386942551511,
+              "label": "nHD-M2",
+              "normalized_aurc": 1.0662502416785167,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_nhd_m32": {
+              "aurc": 0.025904077974593678,
+              "excess_aurc": 0.010314744166178065,
+              "label": "nHD-M32",
+              "normalized_aurc": 0.229778716013641,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_nhd_m8": {
+              "aurc": 0.025689765752424033,
+              "excess_aurc": 0.01010043194400842,
+              "label": "nHD-M8",
+              "normalized_aurc": 0.22500454164316627,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_plm10_entropy": {
+              "aurc": 0.0737081033159746,
+              "excess_aurc": 0.058118769507558996,
+              "label": "PLM-10/PLA-10-Entropy",
+              "normalized_aurc": 1.294695827505715,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_qfr_entropy": {
+              "aurc": 0.03779562405077338,
+              "excess_aurc": 0.022206290242357766,
+              "label": "QFR-Entropy",
+              "normalized_aurc": 0.4946834140633718,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            },
+            "confidence_sdc": {
+              "aurc": 0.032485882885619856,
+              "excess_aurc": 0.016896549077204243,
+              "label": "SDC",
+              "normalized_aurc": 0.3763997719644885,
+              "oracle_aurc": 0.015589333808415613,
+              "random_aurc": 0.06047923634214603
+            }
+          },
+          "oracle_aurc": 0.015589333808415613,
+          "random_aurc": 0.06047923634214603
+        }
+      },
+      "split": "test"
+    }
+  ],
+  "multiple_testing": {
+    "confidence_intervals": "unadjusted equal-tail percentile intervals from the same paired bootstrap draws; the Holm transform applies only within the named family",
+    "families": {
+      "architecture_domain_extension": {
+        "definition": "SegFormer architecture and DUTS domain extension across the four predeclared adjacent-geometry contrasts",
+        "holm_adjusted_p_values": [
+          1.0,
+          0.005599440055994401,
+          0.015998400159984,
+          0.005599440055994401,
+          0.041995800419958006,
+          0.005599440055994401,
+          0.005599440055994401,
+          0.9815018498150185,
+          0.9815018498150185,
+          0.006799320067993201,
+          1.0,
+          1.0,
+          0.005599440055994401,
+          0.005599440055994401,
+          1.0,
+          0.18198180181981802,
+          0.005599440055994401,
+          0.005599440055994401,
+          0.9815018498150185,
+          1.0,
+          1.0,
+          0.005599440055994401,
+          0.1897810218978102,
+          1.0,
+          0.005599440055994401,
+          0.005599440055994401,
+          1.0,
+          1.0
+        ],
+        "num_hypotheses": 28,
+        "raw_bootstrap_p_values": [
+          0.3447655234476552,
+          0.00019998000199980003,
+          0.000999900009999,
+          0.00019998000199980003,
+          0.0027997200279972004,
+          0.00019998000199980003,
+          0.00019998000199980003,
+          0.0817918208179182,
+          0.0933906609339066,
+          0.00039996000399960006,
+          0.8815118488151185,
+          0.43315668433156684,
+          0.00019998000199980003,
+          0.00019998000199980003,
+          0.793920607939206,
+          0.012998700129987,
+          0.00019998000199980003,
+          0.00019998000199980003,
+          0.08399160083991601,
+          0.12238776122387761,
+          0.38516148385161486,
+          0.00019998000199980003,
+          0.014598540145985401,
+          0.48195180481951805,
+          0.00019998000199980003,
+          0.00019998000199980003,
+          0.6473352664733527,
+          0.29017098290170984
+        ]
+      }
+    },
+    "family_policy": "core and extension experiments are distinct predeclared families; approximate tail probabilities are never pooled across them",
+    "hypotheses": [
+      {
+        "condition": "deeplabv3-target",
+        "contrast": "dice_vs_nhd_under_dice",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.3447655234476552,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "contrast": "dice_vs_nhd_under_nhd",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "contrast": "nhd_vs_nhd95_under_nhd",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 0.015998400159984,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.000999900009999,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "deeplabv3-target",
+        "contrast": "nhd_vs_nhd95_under_nhd95",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_dice",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 0.041995800419958006,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.0027997200279972004,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_nhd",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd95",
+        "dataset": "duts",
+        "holm_adjusted_p_value": 0.9815018498150185,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.0817918208179182,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_dice",
+        "dataset": "fives",
+        "holm_adjusted_p_value": 0.9815018498150185,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.0933906609339066,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_nhd",
+        "dataset": "fives",
+        "holm_adjusted_p_value": 0.006799320067993201,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00039996000399960006,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd",
+        "dataset": "fives",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.8815118488151185,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd95",
+        "dataset": "fives",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.43315668433156684,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_dice",
+        "dataset": "isic",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_nhd",
+        "dataset": "isic",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd",
+        "dataset": "isic",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.793920607939206,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd95",
+        "dataset": "isic",
+        "holm_adjusted_p_value": 0.18198180181981802,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.012998700129987,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_dice",
+        "dataset": "kvasir",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_nhd",
+        "dataset": "kvasir",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd",
+        "dataset": "kvasir",
+        "holm_adjusted_p_value": 0.9815018498150185,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.08399160083991601,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd95",
+        "dataset": "kvasir",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.12238776122387761,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_dice",
+        "dataset": "pet",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.38516148385161486,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_nhd",
+        "dataset": "pet",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd",
+        "dataset": "pet",
+        "holm_adjusted_p_value": 0.1897810218978102,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.014598540145985401,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd95",
+        "dataset": "pet",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.48195180481951805,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_dice",
+        "dataset": "tn3k",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_dice"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "dice_vs_nhd_under_nhd",
+        "dataset": "tn3k",
+        "holm_adjusted_p_value": 0.005599440055994401,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_dice_m32",
+        "raw_bootstrap_p_value": 0.00019998000199980003,
+        "right": "confidence_nhd_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd",
+        "dataset": "tn3k",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.6473352664733527,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd"
+      },
+      {
+        "condition": "segformer-target",
+        "contrast": "nhd_vs_nhd95_under_nhd95",
+        "dataset": "tn3k",
+        "holm_adjusted_p_value": 1.0,
+        "holm_family": "architecture_domain_extension",
+        "holm_family_size": 28,
+        "left": "confidence_nhd_m32",
+        "raw_bootstrap_p_value": 0.29017098290170984,
+        "right": "confidence_nhd95_m32",
+        "risk": "risk_nhd95"
+      }
+    ],
+    "procedure": "Holm step-down transform of approximate bootstrap tail probabilities, applied separately within each family; no exact finite-sample FWER control is claimed",
+    "significance_calls": "not made by this analysis",
+    "total_hypotheses": 28
+  },
+  "provenance": {
+    "analysis_source_sha256": "8c50e35d2e016f1ea1ca4ae49d58f710ebd93a7b5c30d61e02f881a446081455",
+    "binding": "campaign-lock",
+    "campaign_id": "architecture-domain-extension-v1",
+    "campaign_lock": {
+      "logical_name": "campaign.lock.json",
+      "sha256": "362fb550fbe0abeb4228fec2ae9569784ca170a2f4710fa48097e7b483b5fc4f"
+    },
+    "config_sha256": "46ac08ca394d8c57bd46935ea2040acfe33a7f3e0c143fd020908306fdd4b56e",
+    "inputs": [
+      {
+        "artifact_id": "6b91487d4a2b5032",
+        "assembly_run_id": "6c2ff62caf98d5f5",
+        "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+        "condition": "deeplabv3-target",
+        "dataset": "duts",
+        "logical_id": "duts/deeplabv3-target/6c2ff62caf98d5f5",
+        "manifest_sha256": "edcf1d7b44ea68851182876058a4f26cc9595d19a20f0720c8d473f4185ab569",
+        "num_samples": 5019,
+        "records_sha256": "a84b8f1be2aece89a3c316c407f53bfb2bd13b98230a6ce9d855037a6750b495",
+        "sample_id_sha256": "08db531389e566b924d5f55faad3ad83f0bd7db7ead72939f6f0f019c035b090"
+      },
+      {
+        "artifact_id": "930cffd5e46b1ca9",
+        "assembly_run_id": "c64ff75aa1c30d74",
+        "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+        "condition": "segformer-target",
+        "dataset": "duts",
+        "logical_id": "duts/segformer-target/c64ff75aa1c30d74",
+        "manifest_sha256": "bcb17369a316549d1d55d8dc86cb7e60d02d4e2425ca4ae9b2d46050fe8f8b22",
+        "num_samples": 5019,
+        "records_sha256": "b774a47632e97dc468a08bec20abdd5502806f166713f2194ecf3f676e7119f3",
+        "sample_id_sha256": "08db531389e566b924d5f55faad3ad83f0bd7db7ead72939f6f0f019c035b090"
+      },
+      {
+        "artifact_id": "67370fce9d095f3d",
+        "assembly_run_id": "05979a7fc5f8eadc",
+        "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+        "condition": "segformer-target",
+        "dataset": "fives",
+        "logical_id": "fives/segformer-target/05979a7fc5f8eadc",
+        "manifest_sha256": "3bf3e3f97ec707a2867ba027c28770641035f1c6acbe6a64c8c2cc88246528db",
+        "num_samples": 200,
+        "records_sha256": "0d6626e8892a06814e0205b17921308bb2b1f8e34d63f3ad654a6aa79a688ee4",
+        "sample_id_sha256": "c7bc6f6dd09efa5462a34b7e887270c7d931c5acd8f1442ca60af839405f567d"
+      },
+      {
+        "artifact_id": "14c269e9953f3c7d",
+        "assembly_run_id": "c93e814c00d6df3b",
+        "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+        "condition": "segformer-target",
+        "dataset": "isic",
+        "logical_id": "isic/segformer-target/c93e814c00d6df3b",
+        "manifest_sha256": "7638c6c8b506d6ef423f65ceab8b027c58e35b6161810cd7d101a3c207c7b2ae",
+        "num_samples": 1000,
+        "records_sha256": "42c06a6057e11d8d051aa9465f8d6972b804f13484a0589f915c78ac3326425c",
+        "sample_id_sha256": "4f65fc694bcbd7c3b8d1c362dc454c98b34138d3572f2855b5c8b6b58b9141e6"
+      },
+      {
+        "artifact_id": "602755a79b517160",
+        "assembly_run_id": "687c0bcc4dd35db7",
+        "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+        "condition": "segformer-target",
+        "dataset": "kvasir",
+        "logical_id": "kvasir/segformer-target/687c0bcc4dd35db7",
+        "manifest_sha256": "7a7bc550149b0d54e38570549118678853cf96b55452eb4e57d94967bdbe76ea",
+        "num_samples": 200,
+        "records_sha256": "579e781379b3e4ce26eb6e719b488c5903bbd630d3c3669dbe2924902f756044",
+        "sample_id_sha256": "6ea41547eae0c9d5df5b7291b8bd0d3ce649e327a7acbbe0c54dea0216a3ea8f"
+      },
+      {
+        "artifact_id": "6c00573a383468bf",
+        "assembly_run_id": "937b390f22382cfd",
+        "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+        "condition": "segformer-target",
+        "dataset": "pet",
+        "logical_id": "pet/segformer-target/937b390f22382cfd",
+        "manifest_sha256": "8c5fceb4a746ae1ca76ae859c9fd7ed57953bb1bf772122f71a8658cc7c49e64",
+        "num_samples": 3669,
+        "records_sha256": "5bbe0290e8488a685b05e50bcb9c8a45171ff357165f4ce5271d881248054a1c",
+        "sample_id_sha256": "34934ebcb0a3d363c8a5dae851dda32ff1f8f4a893485501324862ec1b361a0d"
+      },
+      {
+        "artifact_id": "96cd985f2d40193f",
+        "assembly_run_id": "10ae39efb93cd7d9",
+        "assembly_source_sha256": "a0b60caf0b867c6ee4d8423fef4fc2025b371bea34ba929a54b5c4482d488a8d",
+        "condition": "segformer-target",
+        "dataset": "tn3k",
+        "logical_id": "tn3k/segformer-target/10ae39efb93cd7d9",
+        "manifest_sha256": "a3dc9d6c7eac2391357b08c9932f1dc29b6e4df36c11a7b86f8718defc001753",
+        "num_samples": 614,
+        "records_sha256": "661f8a46d1c52ccfd4a78b6a9c5a42619837098ab7998b181ef73ba4ded6aafd",
+        "sample_id_sha256": "56ae1f35efe328505b2a38318c98c39b3aa84bc8223b5db2131c2784ba4d33a9"
+      }
+    ]
+  },
+  "schema_version": 2
+}

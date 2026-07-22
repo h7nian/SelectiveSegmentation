@@ -138,6 +138,11 @@ CONTRASTS = (
     ),
 )
 CONTRAST_BY_NAME = {contrast.name: contrast for contrast in CONTRASTS}
+CONTRAST_RISK_LABELS = {
+    "risk_dice": "Dice risk",
+    "risk_nhd": "nHD risk",
+    "risk_nhd95": "nHD95 risk",
+}
 
 EXPECTED_CONDITIONS = (
     ("pet", "clipseg-general"),
@@ -1322,7 +1327,7 @@ def _baseline_table(conditions, *, header):
 def _contrast_label(spec):
     return (
         f"{_method_label(spec.left)} $-$ {_method_label(spec.right)} / "
-        f"{RISKS[spec.risk]}"
+        f"{CONTRAST_RISK_LABELS[spec.risk]}"
     )
 
 
@@ -1358,6 +1363,50 @@ def _contrast_table(conditions, *, header, declared, label, caption):
     return lines
 
 
+def _split_contrast_table(
+    conditions, *, header, declared, label, caption, columns_per_panel=3
+):
+    """Render wide paired intervals as readable stacked dataset panels."""
+
+    groups = _groups(conditions, declared)
+    panels = [
+        groups[start : start + columns_per_panel]
+        for start in range(0, len(groups), columns_per_panel)
+    ]
+    lines = [
+        header.rstrip(),
+        r"\begin{table*}[t]",
+        r"\centering",
+        caption,
+        rf"\label{{{label}}}",
+        r"{\scriptsize\setlength{\tabcolsep}{3pt}%",
+    ]
+    for panel_index, panel in enumerate(panels):
+        if panel_index:
+            lines.append(r"\par\smallskip")
+        lines.extend(
+            [
+                r"\resizebox{\textwidth}{!}{%",
+                rf"\begin{{tabular}}{{l*{{{len(panel)}}}{{c}}}}",
+                r"\toprule",
+                " & ".join(
+                    [
+                        "Adjacent-geometry contrast",
+                        *(DATASET_LABELS[dataset] for dataset, _ in panel),
+                    ]
+                )
+                + r" \\",
+                r"\midrule",
+            ]
+        )
+        for spec in CONTRASTS:
+            cells = [_comparison_cell(group, spec) for _, group in panel]
+            lines.append(" & ".join([_contrast_label(spec), *cells]) + r" \\")
+        lines.extend([r"\bottomrule", r"\end{tabular}", r"}"])
+    lines.extend([r"}", r"\end{table*}", ""])
+    return lines
+
+
 def render_main_results(conditions, *, header):
     return "\n".join(_baseline_table(conditions, header=header))
 
@@ -1373,8 +1422,9 @@ def _complete_results_table(conditions, *, header, declared, label, caption_pref
                 r"\begin{table*}[t]",
                 r"\centering",
                 rf"\caption{{{caption_prefix} {risk_label}. Methods are rows and "
-                r"datasets are columns; each entry is raw AURC $\times100$ (nAURC), with "
-                r"conditions identified by the stacked panel headings. Lower is better. "
+                r"datasets are columns; each entry is raw AURC $\times100$, with nAURC "
+                r"in parentheses and conditions identified by the stacked panel headings. "
+                r"Lower is better. "
                 r"Dark blue marks every "
                 r"lowest unrounded raw AURC within each condition.}",
                 rf"\label{{{panel_label}}}",
@@ -1437,7 +1487,8 @@ def render_cross_loss_results(conditions, *, header):
         r"\caption{Full $3\times3$ loss-indexed $M=32$ cross-loss matrix over all "
         r"16 unpooled conditions. Confidence methods are rows and evaluation risks "
         r"form blocks; datasets are columns and conditions are identified by the "
-        r"stacked panel headings. Each entry is raw AURC $\times100$ (nAURC). "
+        r"stacked panel headings. Each entry is raw AURC $\times100$, with nAURC "
+        r"in parentheses. "
         r"Lower is better. Dark blue marks every lowest "
         r"unrounded raw AURC among the three indexed scores within each condition "
         r"and risk block. These cells are descriptive; paired inference is restricted "
@@ -1648,7 +1699,7 @@ def render_extension_tables(result, *, source_hash, allow_incomplete=False):
         design="extension",
     )
     header = _generated_header(source_hash, incomplete=allow_incomplete)
-    summary = _contrast_table(
+    summary = _split_contrast_table(
         conditions,
         header=header,
         declared=ARCHITECTURE_DOMAIN_CONDITIONS,
@@ -1659,7 +1710,8 @@ def render_extension_tables(result, *, source_hash, allow_incomplete=False):
             r"Each entry is $100\Delta$ with its pointwise 95\% paired "
             r"image-bootstrap interval; negative values favor the left score. "
             r"SF-T denotes target-adapted SegFormer-B2 and DL-T denotes "
-            r"target-adapted DeepLabV3. DUTS reports both models in one column.}"
+            r"target-adapted DeepLabV3. DUTS reports both models in one column; "
+            r"the two stacked panels are one predeclared analysis.}"
         ),
     )
     full = _complete_results_table(

@@ -18,7 +18,10 @@ algorithm and count-dispersion bound explain why level-set Dice and Soft Dice
 Confidence (SDC) can behave similarly. Across five binary datasets and 16 frozen conditions, the
 32-node nHD score lowers nHD-risk AURC relative to Dice-M32 in all ten target
 conditions, with every pointwise interval excluding zero; a boundary-indexed
-score is best among the displayed methods in nine. The nHD--nHD95 ordering is
+score is best among the displayed methods in nine. A separately locked
+seven-condition SegFormer-B2/Diverse Unsupervised Saliency (DUTS) extension
+reproduces the nHD-over-Dice result in all seven conditions, again with every
+interval excluding zero. The nHD--nHD95 ordering is
 smaller and sensitive to checkpoint and deployment threshold. \textbf{Reliable
 selection requires both a declared loss and a working-posterior geometry matched
 to how that loss measures error.}

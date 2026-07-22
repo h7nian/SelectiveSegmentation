@@ -1,0 +1,28 @@
+% Generated from diagnostics_analysis.json SHA-256: 2b8d130afa7656e19c0a1e2faced992ff1196020f00570f73669990e484cf57f
+\begin{table*}[t]
+\centering
+\small
+\caption{Architecture and domain extension diagnostics, reported separately for each dataset--condition with no cross-condition pooling. Brier score and ECE diagnose marginal pixel probabilities; M32 ladder statistics describe candidate-mask diversity. Neither identifies a joint mask posterior nor validates shared-threshold coupling. Labels are used only for the displayed descriptive aggregates, never confidence-score fitting or sample selection.}
+\label{tab:architecture-domain-diagnostics}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+Diagnostic & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K & DUTS \\
+\midrule
+Pixelwise Brier score & \shortstack[l]{\textsc{SF-T}: 0.0238} & \shortstack[l]{\textsc{SF-T}: 0.0210} & \shortstack[l]{\textsc{SF-T}: 0.0346} & \shortstack[l]{\textsc{SF-T}: 0.0501} & \shortstack[l]{\textsc{SF-T}: 0.0195} & \shortstack[l]{\textsc{SF-T}: 0.0234 \\ \textsc{DL-T}: 0.0312} \\
+\addlinespace[2pt]
+Fixed-bin ECE (15 bins) & \shortstack[l]{\textsc{SF-T}: 0.0099} & \shortstack[l]{\textsc{SF-T}: 0.0131} & \shortstack[l]{\textsc{SF-T}: 0.0138} & \shortstack[l]{\textsc{SF-T}: 0.0416} & \shortstack[l]{\textsc{SF-T}: 0.0082} & \shortstack[l]{\textsc{SF-T}: 0.0154 \\ \textsc{DL-T}: 0.0190} \\
+\addlinespace[2pt]
+Truth-empty rate & \shortstack[l]{\textsc{SF-T}: 0.2\%} & \shortstack[l]{\textsc{SF-T}: 0.0\%} & \shortstack[l]{\textsc{SF-T}: 0.0\%} & \shortstack[l]{\textsc{SF-T}: 0.0\%} & \shortstack[l]{\textsc{SF-T}: 0.0\%} & \shortstack[l]{\textsc{SF-T}: 0.0\% \\ \textsc{DL-T}: 0.0\%} \\
+\addlinespace[2pt]
+Prediction-empty rate & \shortstack[l]{\textsc{SF-T}: 0.0\%} & \shortstack[l]{\textsc{SF-T}: 0.5\%} & \shortstack[l]{\textsc{SF-T}: 0.0\%} & \shortstack[l]{\textsc{SF-T}: 0.2\%} & \shortstack[l]{\textsc{SF-T}: 1.3\%} & \shortstack[l]{\textsc{SF-T}: 0.9\% \\ \textsc{DL-T}: 1.0\%} \\
+\addlinespace[2pt]
+Mean distinct M32 masks & \shortstack[l]{\textsc{SF-T}: 31.99} & \shortstack[l]{\textsc{SF-T}: 31.79} & \shortstack[l]{\textsc{SF-T}: 31.93} & \shortstack[l]{\textsc{SF-T}: 31.86} & \shortstack[l]{\textsc{SF-T}: 31.45} & \shortstack[l]{\textsc{SF-T}: 31.68 \\ \textsc{DL-T}: 31.57} \\
+\addlinespace[2pt]
+Zero-change transition ratio & \shortstack[l]{\textsc{SF-T}: 0.0\%} & \shortstack[l]{\textsc{SF-T}: 0.7\%} & \shortstack[l]{\textsc{SF-T}: 0.2\%} & \shortstack[l]{\textsc{SF-T}: 0.4\%} & \shortstack[l]{\textsc{SF-T}: 1.8\%} & \shortstack[l]{\textsc{SF-T}: 1.0\% \\ \textsc{DL-T}: 1.4\%} \\
+\addlinespace[2pt]
+Mean adjacent changed-pixel fraction & \shortstack[l]{\textsc{SF-T}: 0.4\%} & \shortstack[l]{\textsc{SF-T}: 0.3\%} & \shortstack[l]{\textsc{SF-T}: 0.7\%} & \shortstack[l]{\textsc{SF-T}: 0.5\%} & \shortstack[l]{\textsc{SF-T}: 0.3\%} & \shortstack[l]{\textsc{SF-T}: 0.3\% \\ \textsc{DL-T}: 0.5\%} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
