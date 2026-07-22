@@ -11,6 +11,7 @@ from scripts.render.paper import (
     CONTROL_CONDITIONS,
     EXPECTED_CONDITIONS,
     HOLM_FAMILY_BY_DATASET,
+    MAIN_METHODS,
     METHODS,
     OUTPUT_NAMES,
     RISKS,
@@ -259,29 +260,18 @@ def test_complete_render_has_declared_artifacts_and_main_orientation():
 
     main = tables["main_results.tex"]
     assert r"\label{tab:main-results}" in main
+    assert r"\label{tab:main-results-dl}" in main
     assert r"\label{tab:adjacent-geometry-contrasts}" not in main
     assert (
         "Confidence method & Oxford Pet & Kvasir-SEG & FIVES & ISIC 2018 & TN3K" in main
     )
     assert "Dataset & Model condition" not in main
+    assert main.count(r"\begin{table*}[t]") == 2
     # Two model-panel headings plus three symmetric risk headings per panel.
     assert main.count(r"\multicolumn{6}{l}{\textit{") == 2 + 2 * len(RISKS)
-    for method_field in (
-        "confidence_sdc",
-        "confidence_mean_max_probability",
-        "confidence_negative_entropy",
-        "confidence_dice_m32",
-        "confidence_nhd_m32",
-        "confidence_nhd95_m32",
-    ):
+    for method_field in MAIN_METHODS:
         assert main.count(f"\n{_method_label(method_field)} &") == 2 * len(RISKS)
-    for omitted in (
-        "QFR-Entropy",
-        "PLM-10/PLA-10-Entropy",
-        "MMMC-Entropy",
-        "Foreground entropy",
-    ):
-        assert omitted not in main
+    assert "all seven matched-budget baselines" in main
     for spec in CONTRASTS:
         assert spec.name not in main
         assert f"{METHODS[spec.left]} $-$ {METHODS[spec.right]}" not in main

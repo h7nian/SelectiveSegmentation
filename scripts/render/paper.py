@@ -60,6 +60,10 @@ MAIN_METHODS = (
     "confidence_sdc",
     "confidence_mean_max_probability",
     "confidence_negative_entropy",
+    "confidence_qfr_entropy",
+    "confidence_plm10_entropy",
+    "confidence_mmmc_entropy",
+    "confidence_foreground_entropy",
 )
 LOSS_INDEXED_M32 = (
     "confidence_dice_m32",
@@ -1216,23 +1220,24 @@ def _table_end(*, resize=True):
 
 def _baseline_table(conditions, *, header):
     panels = _condition_panels(conditions, TARGET_CONDITIONS)
-    lines = [
-        header.rstrip(),
-        r"\begin{table*}[t]",
-        r"\centering",
-        r"\caption{Primary target-adapted results, led by the two boundary risks. "
-        r"Methods are rows and datasets "
-        r"are columns, with separate CLIP-T and DL-T panels. Every risk block uses "
-        r"the same six confidence methods and reports raw AURC $\times100$. The "
-        r"complete 17-score panels are in the appendix. Lower is better. Dark blue "
-        r"marks every exactly lowest unrounded AURC among the six displayed methods "
-        r"within each model, dataset, and risk block.}",
-        r"\label{tab:main-results}",
-        r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
-    ]
+    lines = [header.rstrip()]
     for panel_index, (condition_name, groups) in enumerate(panels):
-        if panel_index:
-            lines.append(r"\par\smallskip")
+        panel_label = "tab:main-results" if panel_index == 0 else "tab:main-results-dl"
+        lines.extend(
+            [
+                r"\begin{table*}[t]",
+                r"\centering",
+                rf"\caption{{Primary target-adapted results for "
+                rf"{CONDITION_PANEL_LABELS[condition_name]}. Methods are rows and "
+                r"datasets are columns. Every risk block uses the same three primary "
+                r"M32 scores and all seven matched-budget baselines, and reports raw "
+                r"AURC $\times100$. Lower is better. Dark blue marks every exactly "
+                r"lowest unrounded AURC among the ten displayed methods within each "
+                r"dataset and risk block.}",
+                rf"\label{{{panel_label}}}",
+                r"{\scriptsize\setlength{\tabcolsep}{2pt}%",
+            ]
+        )
         lines.extend(
             _condition_panel_start(
                 condition_name, groups, row_label="Confidence method"
@@ -1257,7 +1262,7 @@ def _baseline_table(conditions, *, header):
                 ]
                 lines.append(" & ".join([_method_label(method_field), *cells]) + r" \\")
         lines.extend(_condition_panel_end())
-    lines.extend([r"}", r"\end{table*}", ""])
+        lines.extend([r"}", r"\end{table*}", ""])
     return lines
 
 

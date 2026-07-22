@@ -38,8 +38,10 @@ receipts, and schema-v2 replay lock provide the additional private provenance.
 The two closures are checked separately rather than implying that private maps
 or scheduler records are distributed to reviewers.
 
+\subsection{Posterior and coupling mechanisms}
+
 \IfFileExists{Tables/mechanism_evidence.tex}{%
-  \subsection{Descriptive clues for the posterior-support mechanism}
+  \noindent\textbf{Descriptive clues for posterior support.}
 
   \input{Tables/mechanism_evidence.tex}
 }{%
@@ -49,7 +51,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Tables/dice_count_posterior.tex}{%
-  \subsection{Paired uncertainty for the Dice count coupling}
+  \noindent\textbf{Paired uncertainty for the Dice count coupling.}
 
   \Cref{tab:dice-count-posterior} reports the corresponding AURCs in the
   main text. The forest plot below reports the paired intervals.
@@ -69,7 +71,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Tables/dice_partition_ladder.tex}{%
-  \subsection{Spatial-partition Dice coupling}
+  \noindent\textbf{Spatial-partition Dice coupling.}
 
   \input{Tables/dice_partition_ladder.tex}
   No component variant passes the frozen two-part directional gate. The table
@@ -85,7 +87,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Tables/ensemble_posterior.tex}{%
-  \subsection{Fixed-action three-checkpoint posterior test}
+  \noindent\textbf{Fixed-action three-checkpoint posterior test.}
 
   \input{Tables/ensemble_posterior.tex}
   \begin{figure}[t]
@@ -103,20 +105,22 @@ or scheduler records are distributed to reviewers.
   member-mask artifacts pass the predeclared analyzer.
 }
 
+\subsection{Complete results and sensitivity analyses}
+
 \IfFileExists{Tables/seed_sensitivity_main.tex}{%
-  \subsection{Checkpoint-level direction reversals}
+  \noindent\textbf{Checkpoint-level direction reversals.}
   \input{Tables/seed_sensitivity_main.tex}
 }{}
 
 \IfFileExists{Tables/results_complete.tex}{%
   \input{Tables/results_complete.tex}
-  \subsection{Complete matched and cross-loss results}
+  \noindent\textbf{Complete matched and cross-loss results.}
 
   \input{Tables/full_target_results.tex}
   \input{Tables/complete_results.tex}
   \input{Tables/cross_loss_results.tex}
 
-  \subsection{Numerical-resolution and Exact-Dice validation}
+  \noindent\textbf{Numerical-resolution and Exact-Dice validation.}
 
   \input{Tables/quadrature_ablation.tex}
 
@@ -129,12 +133,12 @@ or scheduler records are distributed to reviewers.
     artifacts pass the campaign-bound validator.
   }
 
-  \subsection{Pointwise paired uncertainty}
+  \noindent\textbf{Pointwise paired uncertainty.}
 
   \input{Tables/statistical_tests.tex}
 
   \IfFileExists{Tables/gamma_sensitivity.tex}{%
-    \subsection{Deployment-threshold sensitivity}
+    \noindent\textbf{Deployment-threshold sensitivity.}
 
     \input{Tables/gamma_sensitivity.tex}
 
@@ -151,8 +155,10 @@ or scheduler records are distributed to reviewers.
   deliberately excluded from the compiled manuscript.
 }
 
+\subsection{Calibration, support, and ranking diagnostics}
+
 \IfFileExists{Tables/binary_diagnostics.tex}{%
-  \subsection{Marginal calibration and level-set diversity diagnostics}
+  \noindent\textbf{Marginal calibration and level-set diversity.}
 
   \input{Tables/binary_diagnostics.tex}
 }{%
@@ -164,7 +170,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Tables/cardinality_diagnostics.tex}{%
-  \subsection{Exact shared-threshold cardinality implications}
+  \noindent\textbf{Exact shared-threshold cardinality implications.}
 
   \input{Tables/cardinality_diagnostics.tex}
 }{%
@@ -176,7 +182,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Tables/working_risk_diagnostics.tex}{%
-  \subsection{Action quality, ranking disagreement, and proxy--outcome agreement}
+  \noindent\textbf{Action quality, ranking disagreement, and proxy--outcome agreement.}
 
   \input{Tables/working_risk_diagnostics.tex}
 }{%
@@ -189,7 +195,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Figures/matched_risk_reliability_pet.pdf}{%
-  \subsection{Matched-risk reliability curves}
+  \noindent\textbf{Matched-risk reliability curves.}
 
   These plots compare predicted working risk, \(-C_{L,Q_p}(x)\), with the one
   observed deployment loss available for each test image. Within each dataset,
@@ -255,7 +261,7 @@ or scheduler records are distributed to reviewers.
 }{}
 
 \IfFileExists{Tables/synthetic_posterior_summary.tex}{%
-  \subsection{Known-posterior mechanism stress test}
+  \noindent\textbf{Known-posterior mechanism stress test.}
 
   \input{Tables/synthetic_posterior_summary.tex}
 
@@ -288,8 +294,10 @@ or scheduler records are distributed to reviewers.
   cells pass the strict complete analyzer.
 }
 
+\subsection{Runtime, robustness, and qualitative audit}
+
 \IfFileExists{Tables/binary_runtime.tex}{%
-  \subsection{Confidence-computation runtime}
+  \noindent\textbf{Confidence-computation runtime.}
 
   \input{Tables/binary_runtime.tex}
 }{%
@@ -299,7 +307,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Tables/seed_robustness.tex}{%
-  \subsection{Training-seed sensitivity}
+  \noindent\textbf{Training-seed sensitivity.}
 
   \input{Tables/seed_robustness.tex}
 }{%
@@ -309,7 +317,7 @@ or scheduler records are distributed to reviewers.
 }
 
 \IfFileExists{Figures/qualitative_cases.tex}{%
-  \subsection{Mechanically selected failure and disagreement cases}
+  \noindent\textbf{Mechanically selected failure and disagreement cases.}
 
   Selection is a post-analysis diagnostic over the two target-adapted
   conditions per dataset. The script applies stated numerical rules before any
@@ -329,9 +337,10 @@ or scheduler records are distributed to reviewers.
   publish their content-addressed artifacts.
 }
 
+\subsection{Complete risk--coverage curves}
+
 \IfFileExists{Figures/risk_coverage_complete.tex}{%
   \input{Figures/risk_coverage_complete.tex}
-  \subsection{Complete risk--coverage curves}
 
   \Crefrange{fig:rc-pet}{fig:rc-tn3k} plot the three indexed \(M=32\)
   scores, SDC, oracle, and random references under every risk. Exact confidence
