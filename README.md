@@ -97,6 +97,16 @@ python -m scripts.submit.main --config configs/extension.json --phase freeze \
   --condition pet/segformer-target --condition kvasir/segformer-target
 ```
 
+For training jobs that are still active, bind each freeze to its own scheduler
+dependency instead of polling or serializing the wave. The dependency is part
+of the receipt-bound command, so later invocations must preserve it.
+
+```bash
+python -m scripts.submit.main --config configs/extension.json --phase freeze \
+  --afterok duts/segformer-target=TRAIN_JOB_ID \
+  --afterok duts/deeplabv3-target=TRAIN_JOB_ID
+```
+
 All submission commands are dry runs unless `--submit` is provided. A real
 submission also requires an append-only receipt, for example:
 

@@ -145,6 +145,38 @@ def test_condition_argument_filters_jobs_without_changing_identity(tmp_path):
         )
 
 
+def test_afterok_argument_changes_only_the_named_freeze_command(tmp_path):
+    config = _write_config(tmp_path)
+    payload = json.loads(config.path.read_text())
+    second = dict(payload["conditions"][0])
+    second.update(dataset="kvasir", expected_num_samples=3)
+    payload["conditions"].append(second)
+    config.path.write_text(json.dumps(payload, indent=2) + "\n")
+    jobs = plan_freeze_jobs(load_config(config.path))
+
+    dependent = submit_binary_simulations._apply_afterok_dependencies(
+        jobs, ["kvasir/clipseg-general=123456"]
+    )
+    assert dependent[0] is jobs[0]
+    assert dependent[1].key == jobs[1].key
+    assert "--dependency" not in dependent[0].command
+    dependency_index = dependent[1].command.index("--dependency")
+    assert dependent[1].command[dependency_index + 1] == "afterok:123456"
+    assert dependency_index < dependent[1].command.index("scripts/slurm/run.sbatch")
+
+    with pytest.raises(ValueError, match="must have form"):
+        submit_binary_simulations._apply_afterok_dependencies(jobs, ["kvasir=x"])
+    with pytest.raises(ValueError, match="must be unique"):
+        submit_binary_simulations._apply_afterok_dependencies(
+            jobs,
+            ["kvasir/clipseg-general=1", "kvasir/clipseg-general=2"],
+        )
+    with pytest.raises(ValueError, match="not planned"):
+        submit_binary_simulations._apply_afterok_dependencies(
+            jobs, ["isic/clipseg-general=123456"]
+        )
+
+
 def _execute_candidate_runtime(
     config,
     jobs,

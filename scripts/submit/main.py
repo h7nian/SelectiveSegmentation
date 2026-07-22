@@ -339,6 +339,16 @@ def parse_args(argv=None):
             "as needed, then omit to fill the remaining receipt entries"
         ),
     )
+    parser.add_argument(
+        "--afterok",
+        action="append",
+        default=[],
+        metavar="DATASET/CONDITION=JOB_ID",
+        help=(
+            "add a condition-specific Slurm afterok dependency during freeze; "
+            "repeat for independently finishing training jobs"
+        ),
+    )
     parser.add_argument("--campaign-lock")
     parser.add_argument(
         "--write-lock",
@@ -439,6 +449,52 @@ def _filter_condition_jobs(jobs, requested):
     return tuple(
         job for job in jobs if (job.key[0], job.key[1]) in requested_set
     )
+
+
+def _apply_afterok_dependencies(jobs, requested):
+    """Attach exact Slurm dependencies without changing unrelated commands."""
+
+    jobs = tuple(jobs)
+    if not requested:
+        return jobs
+    dependencies = {}
+    for index, value in enumerate(requested):
+        if not isinstance(value, str) or value.count("=") != 1:
+            raise ValueError(
+                f"--afterok value {index} must have form DATASET/CONDITION=JOB_ID"
+            )
+        condition_value, job_id = value.split("=", 1)
+        if condition_value.count("/") != 1:
+            raise ValueError(
+                f"--afterok value {index} must have form DATASET/CONDITION=JOB_ID"
+            )
+        dataset, condition = condition_value.split("/", 1)
+        key = (dataset, condition)
+        if not dataset or not condition or not SLURM_JOB_ID_PATTERN.fullmatch(job_id):
+            raise ValueError(
+                f"--afterok value {index} must have form DATASET/CONDITION=JOB_ID"
+            )
+        if key in dependencies:
+            raise ValueError("--afterok conditions must be unique")
+        dependencies[key] = job_id
+    available = {(job.key[0], job.key[1]) for job in jobs}
+    unknown = set(dependencies) - available
+    if unknown:
+        raise ValueError(f"--afterok condition is not planned: {sorted(unknown)}")
+
+    result = []
+    for job in jobs:
+        dependency = dependencies.get((job.key[0], job.key[1]))
+        if dependency is None:
+            result.append(job)
+            continue
+        command = list(job.command)
+        runner_index = command.index(SLURM_RUNNER)
+        command[runner_index:runner_index] = ["--dependency", f"afterok:{dependency}"]
+        result.append(
+            PlannedJob(phase=job.phase, key=job.key, command=tuple(command))
+        )
+    return tuple(result)
 
 
 def _reject_constant(value):
@@ -3000,9 +3056,14 @@ def main(argv=None):
             if args.phase == "train"
             else plan_freeze_jobs(config)
         )
-        return dispatch(_filter_condition_jobs(jobs, args.condition))
-    if args.condition:
-        raise ValueError("--condition is available only for train and freeze")
+        jobs = _filter_condition_jobs(jobs, args.condition)
+        if args.phase == "freeze":
+            jobs = _apply_afterok_dependencies(jobs, args.afterok)
+        elif args.afterok:
+            raise ValueError("--afterok is available only for freeze")
+        return dispatch(jobs)
+    if args.condition or args.afterok:
+        raise ValueError("--condition and --afterok apply only to train/freeze")
     if args.phase == "lock":
         if args.submit:
             raise ValueError("lock phase never invokes sbatch; omit --submit")
