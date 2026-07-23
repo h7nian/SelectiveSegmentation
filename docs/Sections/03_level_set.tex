@@ -33,13 +33,13 @@ constructions appear in uncertain-contour analysis \citep{poethkow,bolin}.
 
 \Cref{eq:levelset-marginals} is \textbf{an identity internal to \(Q_p\)},
 not evidence that \(p_i\) equals the true marginal or that true labels are
-comonotone. The working posterior is attractive because it generates coherent,
-nested candidates cheaply; it can be inaccurate when ambiguity changes topology,
-moves components independently, or is poorly represented by the probability map.
-Geometrically, the shared scalar makes uncertain surfaces move together through
-the probability landscape. This makes \(Q_p\) especially natural as a tractable
-boundary-motion model; it is not asserted to be equally well matched to every
-regional criterion.
+comonotone. The working posterior is attractive because it generates nested
+candidates cheaply; it can be inaccurate when ambiguity changes topology,
+moves components independently, or is poorly represented by the probability
+map. Geometrically, the shared scalar sweeps a coordinated family of candidate
+surfaces through the probability landscape. This makes \(Q_p\) a tractable
+probe of boundary sensitivity, not a uniquely correct boundary posterior and
+not a construction equally suited to every regional criterion.
 \Cref{fig:framework} summarizes how the working posterior enters the
 selective pipeline without changing the deployed action.
 
@@ -47,7 +47,7 @@ selective pipeline without changing the deployed action.
   \centering
   \includegraphics[width=\linewidth]{Figures/loss_indexed_framework.pdf}
   \caption{Risk-aligned confidence from one probability map. The deployment rule
-  fixes \(\Yhat\) once. Shared thresholds sweep coherent nested boundaries;
+  fixes \(\Yhat\) once. Shared thresholds sweep nested candidate boundaries;
   every candidate is compared with the same action under the deployment cost.
   The weighted risk determines the selective ordering. Changing \(L\) changes
   the ranking target, not the deployed mask.}
@@ -141,10 +141,12 @@ deployed action define the deployment-cost discrepancy
 This cost-functional discrepancy is weaker than total-variation (TV) control: if
 \(\TV(P_x,Q_{p(x)})\leq\delta_x\), using the supremum-over-events convention,
 then \(\Delta_{L,\Yhat}(x)\leq B_x\delta_x\), while the converse need not hold.
-\Cref{app:lem:loss-pushforward} also controls it through the
-one-dimensional Wasserstein distance between the scalar cost laws induced by
-\(P_x\) and \(Q_{p(x)}\). This remains available for HD95 without pretending
-that its percentile surface cost is a mask metric.
+For a fixed action \(A\), let
+\(\mu_{x,A}=(L_x(\cdot,A))_\#P_x\) and
+\(\nu_{x,A}=(L_x(\cdot,A))_\#Q_{p(x)}\) be the induced scalar cost laws.
+\Cref{app:lem:loss-pushforward} gives the concrete bound
+\(\Delta_{L,A}(x)\leq W_1(\mu_{x,A},\nu_{x,A})\). This remains available for
+HD95 without pretending that its percentile surface cost is a mask metric.
 
 \begin{proposition}[Conditional total-error bound]
 \label{prop:total-bound}

@@ -6,16 +6,32 @@ The shared-threshold construction selects one coupling from many with the same p
 marginals. Marginal calibration, even if exact, does not identify expected nonlinear
 geometric loss. Repeated annotations or another source of label variability would be
 needed to validate this coupling directly; one reference mask per image cannot
-separate marginal calibration error from dependence-model error.
+separate marginal calibration error from dependence-model error. Consequently,
+\(W_{1,d}(P_x,Q_{p(x)})\) is generally unobservable in the present datasets:
+the transport bounds structure model error but are not computable deployment
+certificates. They can be evaluated directly only with a known synthetic
+posterior or sufficiently rich repeated annotations.
+
+\noindent\textbf{Geometry compatibility does not validate the posterior.}
+The Dice--Jaccard and HD--surface results show that their respective costs are
+Lipschitz in the stated ground geometries. They do not show that
+\(Q_{p(x)}\) is close to \(P_x\) in either geometry. Likewise, Exact Dice
+removes quadrature error only after \(Q_p\) has been chosen. Mask-space total
+variation is a formally valid fallback but can be nearly one when two discrete
+laws have different support even if their masks are geometrically close.
 
 \noindent\textbf{The loss convention is substantive.}
 Dice is naturally bounded, but surface distances require an explicit empty-mask
 rule. Assigning a one-sided empty comparison the image diagonal, a fixed cap, or an
 application-specific cost produces different losses and can change the ranking. Our
-normalized penalized full HD and HD95 are two fixed choices. The published SDC baseline's
+penalized HD and HD95 in unit-diagonal coordinates are two fixed choices. The published SDC baseline's
 empty--empty Dice value also differs from ours, so its theoretical approximation
 guarantee does not automatically cover empty deployed masks under our loss.
 Dropping undefined cases would change the target population and is not equivalent.
+The SDC count-dispersion bound also scales as \(1/|\Yhat|\), so it can be loose
+for small predicted objects or diffuse foreground probability outside the
+action; it explains when SDC is close to expected Dice rather than guaranteeing
+uniform closeness.
 
 \noindent\textbf{Quadrature control is not posterior control.}
 \Cref{eq:decomp} separates numerical and posterior terms but does not make
@@ -39,7 +55,7 @@ calibrated as a probability or an absolute forecast of loss.
 \noindent\textbf{Empirical generality and training variability.}
 Even the fixed five-dataset primary design and the separately locked
 SegFormer/DUTS extension
-cannot establish that metric-aligned
+cannot establish that risk-aligned
 confidence will dominate across architectures, shifts, or annotation protocols.
 Our paired comparisons deliberately condition on each fixed probability map and
 therefore isolate confidence ranking, not segmentation-model accuracy. The paired

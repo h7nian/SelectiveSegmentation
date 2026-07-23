@@ -4,7 +4,8 @@ Reference implementation and manuscript source for **Risk-Aligned Confidence for
 Selective Segmentation**.
 
 The central idea is simple: confidence should predict the loss that matters at
-deployment, using a working posterior whose mask geometry matches that loss.
+deployment, using an explicit working posterior whose adequacy can be separated
+from loss--geometry compatibility and numerical integration error.
 Given a deployed hard mask \(\widehat Y\), a probability map \(p\), and a
 segmentation loss \(L\), the code constructs a declared posterior over candidate
 masks and estimates
@@ -14,9 +15,10 @@ C_L(x)=-\mathbb E_{Q_p}\!\left[L(Y,\widehat Y(x))\right].
 \]
 
 The flagship instance is full Hausdorff distance (HD) in unit-diagonal image
-coordinates: shared
-thresholds trace coherent nested boundary motion, and surface-Hausdorff geometry
-gives a constant-one Wasserstein posterior bound. Normalized HD95 is the robust,
+coordinates: shared thresholds sweep nested candidate boundaries, and
+surface-Hausdorff geometry gives a constant-one conditional Wasserstein
+discrepancy bound. This compatibility result does not assert that the working
+posterior is the true label posterior. HD95 is the robust,
 nonmetric boundary extension. Dice is retained as a regional contrast whose
 count-law analysis explains why SDC remains competitive.
 

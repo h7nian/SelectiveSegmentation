@@ -6,13 +6,13 @@ metric-agnostic confidence score}. A single probability map also supplies only
 pixel marginals, not the joint mask law required by nonlinear deployment costs.
 We address both gaps by fixing the deployed mask and metric-defined cost, then declaring a
 shared-threshold level-set law as a \emph{working posterior}. Its nested
-candidates model coherent boundary motion, and their cost against the fixed
+candidates provide a tractable boundary-sensitivity probe, and their cost against the fixed
 action yields a one-dimensional risk integral. Our theory separates numerical
 quadrature from posterior discrepancy and propagates both to area under the
 risk--coverage curve (AURC) regret. Full Hausdorff distance (HD), evaluated in
 image-diagonal-normalized coordinates with a fixed one-sided-empty penalty, is
 the flagship criterion: its surface geometry gives a constant-one Wasserstein
-posterior bound. HD95 replaces the maximum by the 95th percentile of pooled bidirectional surface distances and
+posterior-discrepancy bound, conditional on closeness in that geometry. HD95 replaces the maximum by the 95th percentile of pooled bidirectional surface distances and
 is a robust nonmetric extension. Dice provides a regional contrast whose exact
 algorithm and count-dispersion bound explain why level-set Dice and Soft Dice
 Confidence (SDC) can behave similarly. Across five binary datasets and 16 frozen conditions, the
@@ -25,6 +25,6 @@ interval excluding zero. The HD--HD95 ordering is
 smaller and sensitive to checkpoint and deployment threshold. A prespecified
 marginal-preserving spatial copula produces large Dice gains in some datasets
 but wins only 5/10 conditions, failing its directional gate. \textbf{Reliable
-selection requires risk-aligned confidence and a working-posterior geometry
-matched to how the deployment metric measures error.}
+selection requires a metric-specific risk target and an explicit, auditable
+working-posterior geometry.}
 \end{abstract}

@@ -46,7 +46,11 @@ Equivalently, these are ordinary HD and HD95 after scaling the image coordinate
 system to unit diagonal. This convention is necessary because native diagonals
 vary by up to an order of magnitude within several datasets; raw pixel HD would
 otherwise prioritize image size. Empty--empty costs zero and a one-sided empty
-pair costs one. HD is the
+pair costs one. We compute HD95 using
+\(\operatorname{numpy.percentile}(D(A,B),95)\), i.e., NumPy's default linear
+empirical-quantile interpolation, after pooling the two directed surface
+distance arrays. The subscript \(x\) records the image-dependent coordinate
+normalizer and surface geometry; Dice needs no such geometric scale. HD is the
 flagship worst-surface endpoint; HD95 suppresses its extreme five-percent tail;
 Dice is the regional contrast.
 
@@ -76,8 +80,11 @@ member IoU/Dice, mutual information, and variance remain extension baselines
 The fixed-map Dice audit first replaces one global threshold by independent
 thresholds over the action, connected components, or matched grids. Its
 continuous counterpart evaluates six prespecified spatial-copula settings:
-global and spatial variance weights, one optional independent component, and
-three coordinate-knot spacings. Each condition--setting--repeat is a separate
+nonnegative global and spatial variance weights whose sum is at most one, with
+the residual assigned to independent variance. The spatial field uses iid
+Gaussian knots, corner-aligned bilinear interpolation, and pointwise analytic
+variance standardization at three coordinate-knot spacings. Each
+condition--setting--repeat is a separate
 GPU job; four fixed-seed repeats with 32 antithetic posterior draws are averaged
 only after strict identity, parameter, and source-hash checks. The primary
 setting is declared before reading results and must improve over Dice-M32 in at

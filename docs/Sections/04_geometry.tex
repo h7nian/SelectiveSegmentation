@@ -1,6 +1,16 @@
 \section{Risk alignment through mask geometry}
 \label{sec:theory}
 
+\noindent\textbf{Three distinct layers.}
+The analysis separates (i) \textbf{cost--geometry compatibility}, which asks
+how sensitively \(L(Y,A)\) changes when \(Y\) moves in a chosen mask geometry;
+(ii) \textbf{working-posterior adequacy}, which asks whether the declared
+\(Q_{p(x)}\) is close to the unknown \(P_x\) in that geometry; and
+(iii) \textbf{numerical accuracy}, which asks how well a finite rule integrates
+the expectation under \(Q_{p(x)}\). A Lipschitz transport theorem establishes
+the first layer, not the second; exact integration removes the third layer,
+not posterior discrepancy.
+
 \noindent\textbf{Flagship instance: full surface Hausdorff.}
 Let \(d_{H,x}\) be the full Hausdorff distance between inner digital surfaces,
 normalized by the image diagonal and extended with zero empty--empty cost and
@@ -18,12 +28,13 @@ and the general transport lemma in \Cref{app:theory} therefore yields
   \leq W_{1,d_{H,x}}(P_x,Q_{p(x)})
   \leq \TV(P_x,Q_{p(x)}).
 \end{equation*}
-This is the \textbf{main geometry-aware guarantee}. Under \(Q_p\), one scalar level moves
-the candidate surface coherently through the probability landscape; under HD,
-the cost records the most displaced point of that surface. The construction and
-deployment risk are thus aligned at the level of boundary motion. Combining this display
-with \Cref{sec:framework} controls HD score error and then HD AURC
-regret.
+This is the \textbf{main metric-compatibility guarantee}. Under \(Q_p\), one
+scalar level sweeps a coordinated candidate surface; HD records its most
+displaced point. The shared-threshold probe and deployment cost therefore use
+compatible boundary geometries. The result is conditional: it controls how
+posterior discrepancy propagates if \(P_x\) and \(Q_{p(x)}\) are close in
+\(d_{H,x}\), but does not establish that closeness. Combining it with
+\Cref{sec:framework} controls HD score error and then HD AURC regret.
 
 \noindent\textbf{Robust extension: pooled HD95.}
 Replacing the maximum pooled surface distance by its 95th percentile suppresses
@@ -33,7 +44,7 @@ transport bound, and AURC theorem all apply. It is not a mask metric, however:
 percentile costs can jump when the fraction of distant surface points crosses
 five percent and need not satisfy a triangle inequality. Consequently HD95 is
 a \textbf{practical robust extension} of the boundary experiment, not a corollary of the
-constant-one HD Wasserstein theorem. \Cref{app:theory} gives an explicit
+constant-one HD Wasserstein theorem. \Cref{app:rem:hd95-nonmetric} gives an explicit
 quantile-jump construction.
 
 \noindent\textbf{Regional contrast: Dice.}
@@ -47,8 +58,8 @@ distance \(d_J\), \Cref{app:theory} proves
 \end{equation*}
 Thus Dice and HD instantiate the \textbf{same Lipschitz--Wasserstein template} under
 different, noninterchangeable mask geometries. Dice does not, however, make the
-comonotone level-set coupling uniquely natural in the way coordinated surface
-motion motivates it for HD.
+comonotone level-set coupling privileged; coordinated surface sweeps merely
+provide a clearer modeling motivation for HD than for Dice.
 
 \Cref{eq:quad} estimates expected Dice under \(Q_p\). Because level
 sets change only at probability knots, sorting tied groups gives the exact
@@ -74,18 +85,25 @@ not generally equal. For a nonempty action of size \(m\), however,
   \leq \frac{2}{m}\sqrt{\Var_Q |Y\cap\Yhat|}
        +\frac{1}{2m}\sqrt{\Var_Q |Y\setminus\Yhat|}.
 \end{equation*}
-SDC is therefore the \textbf{count-mean plug-in approximation}: spatial coupling affects
-posterior Dice only through the induced overlap/outside-count law, and its
-deviation from SDC is controlled by count dispersion. Published SDC theory
-connects the ratio to a product-Bernoulli target under exact marginals and
-conditional pixel independence \citep{sdc}; our level-set score is exact under
-the different, comonotone \(Q_p\). Neither assumption dominates the other.
+SDC is therefore the \textbf{count-mean plug-in approximation}: for a fixed
+action, spatial coupling affects posterior Dice only through the
+\emph{joint} overlap/outside-count law, and its deviation from SDC is
+controlled by count dispersion. The \(1/m\) factors can make this explanatory
+bound loose for small predicted objects or diffuse outside probability. The
+empty action is treated separately because Dice then reduces to the event
+\(\{Y=\varnothing\}\) and the displayed bound is undefined. Published SDC
+theory derives near-optimality for the ideal Dice confidence under
+conditionally independent Bernoulli labels with exact marginals, and then
+studies plug-in marginal estimates \citep{sdc}; our level-set score is exact
+under the different, comonotone \(Q_p\). Neither assumption dominates the
+other.
 
 \noindent\textbf{A marginal-preserving coupling extension.}
 To test whether Dice needs non-nested regional variation, we embed the global
-level-set law in a spatial Gaussian-copula family. For independent standard
-normal \(G,\varepsilon_i\) and a unit-variance spatial Gaussian field \(U\),
-we sample
+level-set law in a spatial Gaussian-copula family. Let
+\(\alpha,\beta\geq0\) with \(\alpha+\beta\leq1\). Let \(G\), the field \(U\),
+and the iid \(\varepsilon_i\)'s be mutually independent, with
+\(G,\varepsilon_i,U_i\sim\mathcal N(0,1)\) marginally. We sample
 \begin{equation*}
   Z_i=\sqrt{\alpha}G+\sqrt{\beta}U_i+\sqrt{1-\alpha-\beta}\,\varepsilon_i,
   \qquad Y_i=\mathbf 1\{Z_i\leq\Phi^{-1}(p_i)\}.
@@ -93,7 +111,12 @@ we sample
 Every \(Z_i\) is standard normal, hence \(\Pr(Y_i=1)=p_i\) exactly. The family
 connects the global shared-threshold endpoint \((\alpha,\beta)=(1,0)\), smooth
 non-nested masks, and independent Bernoulli sampling at \((0,0)\). We implement
-\(U\) as a standardized bilinear coordinate field, avoiding a dense covariance
-matrix. This is a \textbf{coupling-sensitivity experiment}, not a recovered true
-posterior: it introduces spatial-scale choices and Monte Carlo error, while the
-global method remains parameter-free and exactly integrable.
+\(U\) by drawing iid Gaussian coefficients on a coarse coordinate grid whose
+knot spacing is \(kD_x\), bilinearly interpolating with image corners aligned,
+and dividing each pixel by the analytic interpolation standard deviation.
+The result is Gaussian with unit marginal variance; its correlation is
+generally nonstationary within coordinate cells. This avoids a dense covariance
+matrix. It is an \textbf{experimental coupling-sensitivity extension}, not a
+recovered true posterior: it changes dependence while preserving every pixel
+marginal, introduces spatial-scale choices and Monte Carlo error, and cannot
+identify which coupling generated the labels.

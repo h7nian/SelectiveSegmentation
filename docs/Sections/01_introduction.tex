@@ -19,8 +19,10 @@ how mask pixels vary jointly.
 We separate the objects that are often conflated. An evaluation metric induces
 a per-case deployment cost \(L\); its conditional expectation
 \(\rho_L^\star(x)\) is deployment risk; and the ideal confidence is
-\(C_L^\star(x)=-\rho_L^\star(x)\). We call a score \textbf{risk-aligned} when it
-targets this quantity rather than generic uncertainty or posterior spread.
+\(C_L^\star(x)=-\rho_L^\star(x)\). We call a score \textbf{risk-aligned} when
+its estimand is this metric-induced conditional risk rather than generic
+uncertainty or posterior spread. This names the target; it does not assert that
+a chosen working posterior recovers the true label posterior.
 
 The risk remains unavailable from one probability map, so we make a second
 choice explicit. We freeze the deployed hard mask, draw a shared threshold
@@ -35,8 +37,9 @@ Throughout, HD and HD95 are computed after scaling each image coordinate system
 to unit diagonal; this avoids confounding boundary risk with the widely varying
 native image sizes. Full HD is the flagship criterion. It records the worst
 relative surface displacement and penalizes a one-sided empty mask.
-Here coherent level-set motion and the deployment cost share surface geometry,
-yielding a constant-one Wasserstein posterior bound. We then propagate score
+Here the level-set sweep and the deployment cost use compatible surface
+geometries, yielding a constant-one conditional Wasserstein bound. We then
+propagate score
 error to area under the risk--coverage curve (AURC) regret. HD95 replaces the maximum with the 95th percentile of pooled
 bidirectional surface distances; it is a robust practical endpoint, but its
 percentile operation is nonmetric. Dice supplies the regional contrast, while
@@ -132,7 +135,7 @@ unit-diagonal coordinates supplies the matching mask geometry. Pooled HD95 remai
 practical robust endpoint, but its percentile operation prevents the same metric
 argument.
 
-\noindent\textbf{The closest metric-aligned predecessor.}
+\noindent\textbf{The closest risk-specific predecessor.}
 Soft Dice Confidence (SDC) directly aligns a one-map score with Dice by computing
 soft Dice between \(p\) and \(\Yhat\), together with a Dice-specific
 approximation analysis \citep{sdc}. It is our closest predecessor and a strong
@@ -149,7 +152,7 @@ boundary risk.
 
 We contribute: (i) risk-aligned confidence and a shared-threshold estimator for
 any bounded metric-induced deployment cost; (ii) an HD flagship specialization linking
-coherent boundary motion to a constant-one surface-Wasserstein bound; (iii) a
+a nested surface sweep to a constant-one conditional surface-Wasserstein bound; (iii) a
 complete error chain from quadrature and posterior discrepancy to AURC regret,
 with HD95 and Dice specializations, Exact Dice, and an SDC count-dispersion
 bound; and (iv) a locked six-dataset evaluation with full cross-risk evaluation,

@@ -9,7 +9,9 @@ $p:\mathcal X\to[0,1]^\Omega$ and
 $\widehat Y:\mathcal X\to\mathcal Y$ are measurable. Fix a regular
 conditional distribution $P_x=\mathcal L(Y\mid X=x)$. All pointwise
 statements involving $P_x$ use this version and are understood to hold for
-$P_X$-almost every $x$. For data with variable native resolutions, the
+$P_X$-almost every $x$; throughout the appendix, \(p_x:=p(x)\), so
+\(Q_{p_x}\) is the working posterior for that fixed image. For data with
+variable native resolutions, the
 statements apply imagewise; equivalently, one may use the countable disjoint
 union of the finite mask spaces.
 
@@ -44,10 +46,11 @@ conventions are
 \end{align}
 
 For two nonempty masks, $L_x^{\mathrm{HD95}}$ pools surface distances in
-both directions, takes their 95th percentile, and divides by the image
-diagonal $D_x$. Thus both $L_x^{\Dice}=1-\Dice$ and normalized penalized
-HD95 are bounded by one. These total conventions are necessary whenever a
-label law assigns positive probability to an empty mask.
+both directions, applies NumPy's default linear empirical percentile at 95,
+and divides by the image diagonal $D_x$. Thus both
+$L_x^{\Dice}=1-\Dice$ and penalized HD95 in unit-diagonal coordinates are
+bounded by one. These total conventions are necessary whenever a label law
+assigns positive probability to an empty mask.
 
 \subsection{Ideal confidence and optimal selective ranking}
 
@@ -613,6 +616,11 @@ is no resolution-independent converse from small Jaccard--Wasserstein distance
 to small TV. This result is Dice-specific; we do not assert the required metric
 or Lipschitz property for pooled penalized HD95.
 
+The total-variation inequalities above are formal bounded-loss fallbacks, not
+claims that TV will be informative on a high-dimensional discrete mask space.
+Two laws supported on distinct but geometrically close masks can have TV one
+while their task-grounded Wasserstein distance is small.
+
 \begin{proposition}[Fixed-action Dice moments]
 \label{app:prop:dice-cardinality}
 Fix $x$ and an action $A\subseteq\Omega$, and let $m:=|A|$. For a mask law
@@ -874,7 +882,7 @@ the pixel grid. For nonempty surface sets $U,V$, write
     \max_{v\in V}\min_{u\in U}\|u-v\|_x
   \right\}.
 \end{equation*}
-Define the normalized penalized full-Hausdorff ground cost on masks by
+Define the penalized full-Hausdorff ground cost in unit-diagonal coordinates by
 \begin{equation*}
   d_{H,x}(A,B):=
   \begin{cases}
@@ -926,6 +934,8 @@ Finally $0\leq d_{H,x}\leq1$, so a maximal coupling has expected cost at most
 its mismatch probability $\operatorname{TV}(P,Q)$.
 \end{proof}
 
+\begin{remark}[Why the HD result does not transfer to HD95]
+\label{app:rem:hd95-nonmetric}
 The constant-one conclusion does \emph{not} transfer to pooled HD95. A simple
 finite-grid construction isolates the obstruction. It is realizable by the
 erosion surface used in the experiment: take the action mask $A$ to be 100
@@ -939,10 +949,11 @@ all its added points remain at distance $\Theta(D_x)$ from $A$. Then
 $d_{H,x}(Y,Y')\leq k/D_x$, but the new pool has 200 zeros and 21 remote
 distances, so its 95th percentile is remote. On growing grids, keep $k$ fixed
 and place $z$ at a fixed fraction of the diagonal: the ground-cost change tends
-to zero while the normalized HD95 jump stays bounded away from zero. Thus
+to zero while the unit-diagonal HD95 jump stays bounded away from zero. Thus
 surface-point multiplicity can cross the quantile cutoff, ruling out a
 resolution-independent Lipschitz or Wasserstein bound of the form above for
 pooled HD95 without additional assumptions.
+\end{remark}
 
 \subsection{From score error to selective-risk and AURC regret}
 
@@ -1045,7 +1056,8 @@ $\widetilde r=r_{L,M}$, \cref{app:prop:total-error} gives
     +\mathbb E[\varepsilon_L(X)]
   \right).
 \end{equation*}
-For normalized penalized full Hausdorff, \cref{app:lem:full-hd-wasserstein}
+For penalized full HD in unit-diagonal coordinates,
+\cref{app:lem:full-hd-wasserstein}
 allows $\varepsilon_L(x)=\delta_H(x)$ and $B=1$, where
 $\delta_H(x):=W_{1,d_{H,x}}(P_x,Q_{p_x})$, yielding
 \begin{equation*}

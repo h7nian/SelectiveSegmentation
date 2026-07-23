@@ -16,8 +16,8 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 If `latexmk` is available, the equivalent one-line command is
 `latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex`.
 
-The tables are not hand-entered. The companion code repository uses normalized
-penalized full Hausdorff distance (HD) in unit-diagonal image coordinates as the
+The tables are not hand-entered. The companion code repository uses penalized
+full Hausdorff distance (HD) in unit-diagonal image coordinates as the
 flagship instance, HD95 as its robust nonmetric extension, and Dice as a regional
 contrast. Each schema-v2 assembled row contains
 all three risks, the three risk-aligned midpoint ladders at `M=2,8,32`, common
