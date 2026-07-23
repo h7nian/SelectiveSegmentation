@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 from scripts.analyze.synthetic import analyze
-from scripts.render.synthetic import main as render_main
+from scripts.render.synthetic import hd95_contamination_curve, main as render_main
 from scripts.submit import synthetic as submit_synthetic
 from selectseg.studies.synthetic import (
     COUPLINGS,
@@ -28,6 +28,12 @@ from selectseg.studies.synthetic import (
     sample_p_q,
     selected_cells,
     simulate_cell,
+)
+from selectseg.studies.synthetic_matrix import (
+    ESTIMATOR_COUPLINGS,
+    _load_config as load_matrix_config,
+    all_cells as all_matrix_cells,
+    simulate_cell as simulate_matrix_cell,
 )
 from selectseg.quadrature import sha256_file
 
@@ -59,6 +65,28 @@ def test_repository_lock_and_job_counts_are_exact():
         assert "--gres" not in command
 
 
+def test_matrix_config_and_scheduler_cover_all_estimator_couplings():
+    config_path, config = load_matrix_config(
+        ROOT / submit_synthetic.DEFAULT_MATRIX_CONFIG
+    )
+    assert config_path.is_file()
+    assert len(all_matrix_cells(config)) == 360
+    pilot = submit_synthetic.plan_matrix_jobs(config_path, phase="pilot")
+    full = submit_synthetic.plan_matrix_jobs(config_path, phase="full")
+    assert len(pilot) == 12
+    assert len(full) == 348
+    for job in pilot:
+        command = list(job.command)
+        assert "--true-coupling" in command
+        assert "--array" not in command
+        assert set(command[command.index("--partition") + 1].split(",")) == {
+            "saffo-2tb",
+            "agsmall",
+            "amdsmall",
+            "msismall",
+        }
+
+
 @pytest.mark.parametrize("coupling", COUPLINGS)
 def test_all_couplings_preserve_the_same_pixel_marginals(coupling):
     probability = np.array([[0.08, 0.25, 0.55], [0.72, 0.87, 0.96]])
@@ -84,6 +112,33 @@ def test_exact_dice_integral_and_mask_distances():
     assert dice_loss(action, action) == 0.0
     assert jaccard_distance(action, action) == 0.0
     assert dice_loss(np.zeros_like(action), np.zeros_like(action)) == 0.0
+
+
+def test_matrix_matched_coupling_recovers_the_monte_carlo_truth():
+    _, config = load_matrix_config(ROOT / submit_synthetic.DEFAULT_MATRIX_CONFIG)
+    config = copy.deepcopy(config)
+    config["protocol"].update(
+        {
+            "height": 8,
+            "width": 8,
+            "cohort_size": 3,
+            "posterior_draws": 16,
+            "mc_batches": 4,
+            "workers_per_job": 1,
+            "local_block_size": 4,
+            "sharpness_pixels": {"diffuse": 3.0, "medium": 1.5, "sharp": 0.7},
+        }
+    )
+    config["protocol"]["spatial_copula"]["posterior_batch_size"] = 4
+    cell = Cell("independent_bernoulli", "medium", "disk", 0)
+    result = simulate_matrix_cell(config, cell, workers=1)
+    assert set(result["losses"]) == set(LOSSES)
+    for loss in LOSSES:
+        estimators = result["losses"][loss]["estimators"]
+        assert set(estimators) == set(ESTIMATOR_COUPLINGS)
+        matched = estimators["independent_bernoulli"]
+        assert matched["risk_error"]["maximum"] == 0.0
+        assert matched["aurc_regret"] == pytest.approx(0.0)
 
 
 def test_exact_tv_detects_coupling_misspecification():
@@ -428,6 +483,24 @@ def test_strict_pilot_analysis_and_renderer(tmp_path):
     assert "Independent Bernoulli & 0.0500 & 5.0000" in tex
     assert (output / "synthetic_posterior_summary.pdf").is_file()
     assert (output / "synthetic_posterior_render.manifest.json").is_file()
+
+
+def test_hd95_contamination_curve_exposes_the_five_percent_transition():
+    rows = hd95_contamination_curve()
+    below = max(
+        row["hd95_pixels"]
+        for row in rows
+        if row["observed_contamination_percent"] < 5
+    )
+    above = min(
+        row["hd95_pixels"]
+        for row in rows
+        if row["observed_contamination_percent"] > 5.1
+    )
+    assert below == 0
+    assert above > 90
+    assert all(row["hd_pixels"] == 100 for row in rows[1:])
+    assert rows[-1]["dice_loss"] < 0.01
 
 
 def test_analyzer_rejects_duplicate_published_cell(tmp_path):

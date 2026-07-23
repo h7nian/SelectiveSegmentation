@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "construction": "fixed rectangle plus mutually separated remote one-pixel components; pooled surface percentile uses NumPy defaults",
+  "rows": [
+    {
+      "target_contamination_percent": 0.0,
+      "observed_contamination_percent": 0.0,
+      "outlier_surface_pixels": 0,
+      "dice_loss": 0.0,
+      "hd_pixels": 0.0,
+      "hd95_pixels": 0.0
+    },
+    {
+      "target_contamination_percent": 1.0,
+      "observed_contamination_percent": 1.0432190760059614,
+      "outlier_surface_pixels": 7,
+      "dice_loss": 0.0005061094642470065,
+      "hd_pixels": 100.0,
+      "hd95_pixels": 0.0
+    },
+    {
+      "target_contamination_percent": 4.0,
+      "observed_contamination_percent": 4.046242774566474,
+      "outlier_surface_pixels": 28,
+      "dice_loss": 0.0020213687554143656,
+      "hd_pixels": 100.0,
+      "hd95_pixels": 0.0
+    },
+    {
+      "target_contamination_percent": 4.9,
+      "observed_contamination_percent": 4.871060171919771,
+      "outlier_surface_pixels": 34,
+      "dice_loss": 0.002453456487227612,
+      "hd_pixels": 100.0,
+      "hd95_pixels": 0.0
+    },
+    {
+      "target_contamination_percent": 5.0,
+      "observed_contamination_percent": 5.007153075822604,
+      "outlier_surface_pixels": 35,
+      "dice_loss": 0.002525434735550891,
+      "hd_pixels": 100.0,
+      "hd95_pixels": 9.235799911217153
+    },
+    {
+      "target_contamination_percent": 5.1,
+      "observed_contamination_percent": 5.142857142857142,
+      "outlier_surface_pixels": 36,
+      "dice_loss": 0.0025974025974025983,
+      "hd_pixels": 100.0,
+      "hd95_pixels": 92.38579609026561
+    },
+    {
+      "target_contamination_percent": 6.0,
+      "observed_contamination_percent": 5.94900849858357,
+      "outlier_surface_pixels": 42,
+      "dice_loss": 0.0030289917784508402,
+      "hd_pixels": 100.0,
+      "hd95_pixels": 92.9462191412709
+    },
+    {
+      "target_contamination_percent": 10.0,
+      "observed_contamination_percent": 10.02710027100271,
+      "outlier_surface_pixels": 74,
+      "dice_loss": 0.005324507123327105,
+      "hd_pixels": 100.0,
+      "hd95_pixels": 92.91393867445294
+    }
+  ]
+}

@@ -26,10 +26,15 @@ from selectseg.studies.synthetic import (
     load_synthetic_lock,
     selected_cells,
 )
+from selectseg.studies.synthetic_matrix import (
+    _load_config as load_matrix_config,
+    all_cells as all_matrix_cells,
+)
 from selectseg.quadrature import sha256_file
 
 
 DEFAULT_LOCK = "configs/auxiliary/synthetic_posterior-v1.lock.json"
+DEFAULT_MATRIX_CONFIG = "configs/auxiliary/synthetic_posterior_matrix_v1.json"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FULL_RECEIPT = Path("outputs/synthetic_posterior_campaign/full-submissions.jsonl")
 _PILOT_ANALYSIS_FIELDS = frozenset(
@@ -53,7 +58,14 @@ _PILOT_ANALYSIS_FIELDS = frozenset(
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--study",
+        choices=("posterior", "matrix"),
+        default="posterior",
+        help="immutable v1 stress test or estimator-coupling matrix",
+    )
     parser.add_argument("--lock", default=DEFAULT_LOCK)
+    parser.add_argument("--config", default=DEFAULT_MATRIX_CONFIG)
     parser.add_argument("--phase", choices=("pilot", "full"), default="pilot")
     parser.add_argument(
         "--submit", action="store_true", help="call sbatch; otherwise print the plan"
@@ -70,6 +82,70 @@ def parse_args(argv=None):
         help="expected SHA-256 of --pilot-analysis; required by --phase full",
     )
     return parser.parse_args(argv)
+
+
+def plan_matrix_jobs(config=DEFAULT_MATRIX_CONFIG, *, phase="pilot"):
+    """Plan one independent job per matrix simulation/repeat."""
+
+    config_path, value = load_matrix_config(Path(config))
+    cells = all_matrix_cells(value)
+    pilot = {
+        cell
+        for cell in cells
+        if cell.morphology == "disk" and cell.replicate == 0
+    }
+    selected = tuple(
+        cell for cell in cells if (cell in pilot) == (phase == "pilot")
+    )
+    if phase not in {"pilot", "full"}:
+        raise ValueError("matrix phase must be pilot or full")
+    config_sha = sha256_file(config_path)
+    scheduler = value["scheduler"]
+    partitions = scheduler["cpu_partition_candidates"]
+    jobs = []
+    for index, cell in enumerate(selected):
+        rotated = partitions[index % len(partitions) :] + partitions[: index % len(partitions)]
+        seed = cell_seeds(value, cell)["cell_seed"]
+        command = slurm_command(
+            job_name=(
+                f"selseg-matrix-{cell.coupling[:6]}-{cell.sharpness[:3]}-"
+                f"{cell.morphology[:5]}-r{cell.replicate:02d}"
+            ),
+            partition=",".join(rotated),
+            cpus=scheduler["cpus_per_job"],
+            memory=scheduler["memory"],
+            time_limit=scheduler["time_limit"],
+            argv=(
+                "python",
+                "-m",
+                "selectseg.studies.synthetic_matrix",
+                "--config",
+                str(config_path),
+                "--expected-config-sha256",
+                config_sha,
+                "--true-coupling",
+                cell.coupling,
+                "--sharpness",
+                cell.sharpness,
+                "--morphology",
+                cell.morphology,
+                "--replicate",
+                str(cell.replicate),
+                "--expected-cell-seed",
+                str(seed),
+            ),
+        )
+        jobs.append(
+            PlannedJob(
+                phase=f"synthetic_matrix_{phase}",
+                key=(*cell.key, seed, ",".join(rotated)),
+                command=command,
+            )
+        )
+    expected = 12 if phase == "pilot" else 348
+    if len(jobs) != expected or len({job.key[:5] for job in jobs}) != expected:
+        raise RuntimeError(f"matrix {phase} plan must contain {expected} unique jobs")
+    return tuple(jobs)
 
 
 def _strict_sha256(value, *, location):
@@ -256,6 +332,18 @@ def plan_synthetic_jobs(
 
 def main(argv=None):
     args = parse_args(argv)
+    if args.study == "matrix":
+        if args.pilot_analysis or args.expected_pilot_analysis_sha256:
+            raise ValueError("matrix submission does not use the v1 pilot gate")
+        jobs = plan_matrix_jobs(args.config, phase=args.phase)
+        receipt = args.receipt
+        if args.submit and receipt is None:
+            receipt = (
+                "outputs/synthetic_posterior_matrix_v1/"
+                f"{args.phase}-submissions.jsonl"
+            )
+        execute_plan(jobs, submit=args.submit, receipt_path=receipt)
+        return
     jobs = plan_synthetic_jobs(
         Path(args.lock),
         phase=args.phase,

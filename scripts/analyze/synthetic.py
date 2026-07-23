@@ -31,11 +31,18 @@ from selectseg.studies.synthetic import (
     pilot_cells,
     selected_cells,
 )
+from selectseg.studies.synthetic_matrix import (
+    ARTIFACT_TYPE as MATRIX_ARTIFACT_TYPE,
+    ESTIMATOR_COUPLINGS,
+    _load_config as load_matrix_config,
+    all_cells as all_matrix_cells,
+)
 from selectseg.quadrature import sha256_file
 
 
 ANALYSIS_SCHEMA_VERSION = 1
 DEFAULT_LOCK = "configs/auxiliary/synthetic_posterior-v1.lock.json"
+DEFAULT_MATRIX_CONFIG = "configs/auxiliary/synthetic_posterior_matrix_v1.json"
 _MANIFEST_FIELDS = frozenset(
     {
         "manifest_schema_version",
@@ -71,13 +78,188 @@ _SUMMARY_FIELDS = frozenset(
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--study", choices=("posterior", "matrix"), default="posterior"
+    )
     parser.add_argument("--lock", default=DEFAULT_LOCK)
+    parser.add_argument("--config", default=DEFAULT_MATRIX_CONFIG)
     parser.add_argument("--mode", choices=("pilot", "complete"), default="pilot")
     parser.add_argument(
         "--output",
         default="outputs/synthetic_posterior_analysis/analysis.json",
     )
     return parser.parse_args(argv)
+
+
+def _matrix_cell_root(config_path, config, cell):
+    root = Path(config["output_root"])
+    if not root.is_absolute():
+        root = config_path.parents[2] / root
+    return (
+        root
+        / cell.coupling
+        / cell.sharpness
+        / cell.morphology
+        / f"replicate-{cell.replicate:02d}"
+    )
+
+
+def _load_matrix_cell(config_path, config, cell):
+    root = _matrix_cell_root(config_path, config, cell)
+    candidates = sorted(root.glob("*/manifest.json"))
+    if len(candidates) != 1:
+        raise ValueError(f"expected one matrix artifact under {root}, found {len(candidates)}")
+    manifest_path = candidates[0]
+    _, manifest = _load_json(manifest_path, name="synthetic matrix manifest")
+    if (
+        manifest.get("schema_version") != 1
+        or manifest.get("artifact_type") != MATRIX_ARTIFACT_TYPE
+        or manifest.get("campaign_id") != config["campaign_id"]
+    ):
+        raise ValueError(f"invalid matrix manifest: {manifest_path}")
+    expected_cell = {
+        "true_coupling": cell.coupling,
+        "sharpness": cell.sharpness,
+        "morphology": cell.morphology,
+        "replicate": cell.replicate,
+    }
+    if manifest.get("cell") != expected_cell:
+        raise ValueError(f"matrix cell identity mismatch: {manifest_path}")
+    if manifest.get("config", {}).get("sha256") != sha256_file(config_path):
+        raise ValueError(f"matrix config binding mismatch: {manifest_path}")
+    sources = manifest.get("code_sources")
+    if not isinstance(sources, list) or not sources:
+        raise ValueError(f"matrix source binding missing: {manifest_path}")
+    repository = config_path.parents[2]
+    for source in sources:
+        path = repository / source["path"]
+        if sha256_file(path) != source["sha256"]:
+            raise ValueError(f"matrix source changed after scoring: {path}")
+    summary_binding = manifest.get("summary", {})
+    summary_path = manifest_path.parent / summary_binding.get("path", "")
+    if sha256_file(summary_path) != summary_binding.get("sha256"):
+        raise ValueError(f"matrix summary hash mismatch: {summary_path}")
+    _, summary = _load_json(summary_path, name="synthetic matrix summary")
+    if summary.get("schema_version") != 1 or summary.get("cell") != expected_cell:
+        raise ValueError(f"invalid matrix summary: {summary_path}")
+    if set(summary.get("losses", {})) != set(LOSSES):
+        raise ValueError(f"matrix loss set mismatch: {summary_path}")
+    for loss in LOSSES:
+        if set(summary["losses"][loss]["estimators"]) != set(ESTIMATOR_COUPLINGS):
+            raise ValueError(f"matrix estimator set mismatch: {summary_path}")
+    return {
+        "cell": cell,
+        "manifest_path": manifest_path,
+        "manifest_sha256": sha256_file(manifest_path),
+        "runtime_seconds": float(manifest["runtime_seconds"]),
+        "summary": summary,
+    }
+
+
+def _aggregate_matrix(records):
+    output = {"num_cells": len(records), "losses": {}}
+    for loss in LOSSES:
+        estimators = {}
+        for estimator in ESTIMATOR_COUPLINGS:
+            entries = [
+                record["summary"]["losses"][loss]["estimators"][estimator]
+                for record in records
+            ]
+            estimators[estimator] = {
+                "mean_absolute_risk_error": _mean(
+                    entry["risk_error"]["mean"] for entry in entries
+                ),
+                "root_mean_squared_risk_error": _mean(
+                    entry["risk_error"]["root_mean_squared_error"]
+                    for entry in entries
+                ),
+                "mean_signed_risk_error": _mean(
+                    entry["risk_error"]["signed_bias"] for entry in entries
+                ),
+                "mean_spearman_risk_ranking": _mean(
+                    entry["spearman_risk_ranking"] for entry in entries
+                ),
+                "mean_kendall_tau_b_risk_ranking": _mean(
+                    entry["kendall_tau_b_risk_ranking"] for entry in entries
+                ),
+                "mean_aurc_regret": _mean(entry["aurc_regret"] for entry in entries),
+                "mean_risk_difference_mc_se": _mean(
+                    entry["cell_mean_risk_difference_mc_se"] for entry in entries
+                ),
+            }
+        output["losses"][loss] = {"estimators": estimators}
+    output["runtime_seconds"] = {
+        "mean": _mean(record["runtime_seconds"] for record in records),
+        "maximum": float(max(record["runtime_seconds"] for record in records)),
+    }
+    return output
+
+
+def analyze_matrix(config, *, mode):
+    config_path, value = load_matrix_config(Path(config))
+    cells = all_matrix_cells(value)
+    if mode == "pilot":
+        cells = tuple(
+            cell
+            for cell in cells
+            if cell.morphology == "disk" and cell.replicate == 0
+        )
+    elif mode != "complete":
+        raise ValueError("matrix mode must be pilot or complete")
+    records = [_load_matrix_cell(config_path, value, cell) for cell in cells]
+    expected = 12 if mode == "pilot" else 360
+    if len(records) != expected:
+        raise RuntimeError(f"matrix analysis requires {expected} cells")
+    by_truth = defaultdict(list)
+    by_truth_sharpness = defaultdict(list)
+    for record in records:
+        cell = record["cell"]
+        by_truth[cell.coupling].append(record)
+        by_truth_sharpness[(cell.coupling, cell.sharpness)].append(record)
+    identity = {
+        "config_sha256": sha256_file(config_path),
+        "mode": mode,
+        "manifests": [record["manifest_sha256"] for record in records],
+    }
+    return {
+        "schema_version": 1,
+        "analysis_id": hashlib.sha256(_canonical_json(identity).encode()).hexdigest(),
+        "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "campaign_id": value["campaign_id"],
+        "mode": mode,
+        "config": {"path": str(config_path), "sha256": sha256_file(config_path)},
+        "num_cells": len(records),
+        "source_manifests": [
+            {"path": str(record["manifest_path"]), "sha256": record["manifest_sha256"]}
+            for record in records
+        ],
+        "true_coupling_summaries": [
+            {"true_coupling": coupling, **_aggregate_matrix(group)}
+            for coupling, group in sorted(by_truth.items())
+        ],
+        "sharpness_summaries": [
+            {
+                "true_coupling": key[0],
+                "sharpness": key[1],
+                **_aggregate_matrix(group),
+            }
+            for key, group in sorted(by_truth_sharpness.items())
+        ],
+        "interpretation": {
+            "estimand": (
+                "risk-estimation and ranking error for every estimator coupling "
+                "under each known true coupling, with pixel marginals fixed"
+            ),
+            "selection": (
+                "the spatial-copula parameters are prespecified; no test-cell "
+                "selection or hyperparameter optimization is performed"
+            ),
+            "monte_carlo": (
+                "true and estimator risks use the same declared draw budget; "
+                "matched couplings share draws as a recovery control"
+            ),
+        },
+    }
 
 
 def _cell_dict(cell):
@@ -417,7 +599,11 @@ def main(argv=None):
     output = Path(args.output)
     if output.exists():
         raise FileExistsError(f"refusing to overwrite analysis: {output}")
-    analysis = analyze(Path(args.lock), mode=args.mode)
+    analysis = (
+        analyze_matrix(Path(args.config), mode=args.mode)
+        if args.study == "matrix"
+        else analyze(Path(args.lock), mode=args.mode)
+    )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + "\n")
     print(output)

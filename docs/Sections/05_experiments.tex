@@ -91,6 +91,19 @@ setting is declared before reading results and must improve over Dice-M32 in at
 least 7/10 conditions with a negative macro difference to pass its directional
 gate. SDC and foreground entropy remain matched one-map references.
 
+To separate \textbf{loss geometry} from \textbf{working-posterior adequacy},
+a known-posterior matrix crosses four true couplings (shared threshold,
+independent Bernoulli, local blocks, and a bimodal antithetic law) with four
+estimating couplings (shared threshold, independent Bernoulli, local blocks,
+and the prespecified spatial copula). Each true-coupling--sharpness--morphology--repeat
+cell is one CPU job and evaluates all estimators using the same probability
+maps and draw budget. For Dice, HD, and HD95 we report conditional-risk MAE,
+RMSE, bias, Spearman and Kendall ranking agreement, AURC regret, and
+posterior-integration standard error. Matching true and estimating couplings
+share draws as a recovery control; no estimator is chosen from these cells.
+We separately audit the SDC variance bound image by image using Exact Dice and
+the stored overlap/outside count variances.
+
 \noindent\textbf{Locked analysis.}
 Hashed manifests bind maps, labels, checkpoints, sample order, and each
 one-task-per-job shard. Separate fixed studies examine posterior support,

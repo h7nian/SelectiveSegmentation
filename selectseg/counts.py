@@ -290,6 +290,130 @@ def _linear_interpolation_variance(
     return (1 - fraction).square() + fraction.square()
 
 
+def sample_spatial_copula_masks(
+    probability,
+    *,
+    posterior_draws: int,
+    repeat_index: int,
+    global_variance_weight: float,
+    spatial_variance_weight: float,
+    spatial_knot_spacing_diagonal: float,
+    posterior_batch_size: int = 64,
+    master_seed: int = 20260721,
+    sample_id: str = "sample",
+    device: str = "cpu",
+) -> tuple[np.ndarray, tuple[int, int] | None]:
+    """Draw coherent masks while preserving every input pixel marginal.
+
+    This materializing API is intended for small synthetic diagnostics that
+    evaluate arbitrary structured losses.  The production Dice scorer below
+    remains streaming so native-resolution images do not retain every mask.
+    """
+
+    probability = np.asarray(probability, dtype=float)
+    action = probability >= 0.5
+    probability, _ = _validate_inputs(probability, action)
+    if posterior_draws <= 0 or posterior_draws % 2:
+        raise ValueError("posterior_draws must be a positive even integer")
+    if repeat_index < 0 or posterior_batch_size <= 0 or master_seed < 0:
+        raise ValueError("repeat, batch size, and seed must be valid")
+    if (
+        not math.isfinite(global_variance_weight)
+        or not math.isfinite(spatial_variance_weight)
+        or global_variance_weight < 0
+        or spatial_variance_weight < 0
+        or global_variance_weight + spatial_variance_weight > 1 + 1e-12
+    ):
+        raise ValueError("invalid copula variance weights")
+    if not math.isfinite(spatial_knot_spacing_diagonal) or not (
+        0 < spatial_knot_spacing_diagonal <= 1
+    ):
+        raise ValueError("spatial_knot_spacing_diagonal must lie in (0, 1]")
+
+    import torch
+    import torch.nn.functional as functional
+
+    compute_device = torch.device(device)
+    if compute_device.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is not available")
+    residual_weight = max(
+        0.0, 1.0 - global_variance_weight - spatial_variance_weight
+    )
+    grid_shape = (
+        _spatial_grid_shape(probability.shape, spatial_knot_spacing_diagonal)
+        if spatial_variance_weight > 0
+        else None
+    )
+    quantile = torch.special.ndtri(
+        torch.as_tensor(probability, dtype=torch.float32, device=compute_device)
+    )
+    spatial_sd = None
+    if grid_shape is not None:
+        row_variance = _linear_interpolation_variance(
+            probability.shape[0], grid_shape[0], torch=torch, device=compute_device
+        )
+        column_variance = _linear_interpolation_variance(
+            probability.shape[1], grid_shape[1], torch=torch, device=compute_device
+        )
+        spatial_sd = torch.sqrt(row_variance[:, None] * column_variance[None, :])
+
+    coupling_id = (
+        "spatial-copula-masks|"
+        f"global={float(global_variance_weight).hex()}|"
+        f"spatial={float(spatial_variance_weight).hex()}|"
+        f"spacing={float(spatial_knot_spacing_diagonal).hex()}"
+    )
+    generator = torch.Generator(device=compute_device)
+    generator.manual_seed(
+        _partition_seed(master_seed, str(sample_id), coupling_id, repeat_index)
+        % (2**63 - 1)
+    )
+    output = []
+    remaining_pairs = posterior_draws // 2
+    while remaining_pairs:
+        batch_size = min(posterior_batch_size, remaining_pairs)
+        latent = None
+        if global_variance_weight > 0:
+            latent = math.sqrt(global_variance_weight) * torch.randn(
+                (batch_size, 1, 1),
+                generator=generator,
+                device=compute_device,
+                dtype=torch.float32,
+            )
+        if spatial_variance_weight > 0:
+            knots = torch.randn(
+                (batch_size, 1, *grid_shape),
+                generator=generator,
+                device=compute_device,
+                dtype=torch.float32,
+            )
+            spatial = functional.interpolate(
+                knots,
+                size=probability.shape,
+                mode="bilinear",
+                align_corners=True,
+            )[:, 0]
+            spatial = math.sqrt(spatial_variance_weight) * spatial / spatial_sd
+            latent = spatial if latent is None else latent + spatial
+        if residual_weight > 0:
+            independent = math.sqrt(residual_weight) * torch.randn(
+                (batch_size, *probability.shape),
+                generator=generator,
+                device=compute_device,
+                dtype=torch.float32,
+            )
+            latent = independent if latent is None else latent + independent
+        if latent is None:
+            raise RuntimeError("copula latent field has no variance component")
+        for signed in (latent, -latent):
+            output.append((signed <= quantile).to(device="cpu").numpy())
+        remaining_pairs -= batch_size
+    masks = np.concatenate(output, axis=0)
+    if masks.shape != (posterior_draws, *probability.shape):
+        raise RuntimeError("spatial copula sampler emitted an invalid shape")
+    return masks.astype(bool, copy=False), grid_shape
+
+
 def spatial_copula_dice_confidence(
     probability,
     action,

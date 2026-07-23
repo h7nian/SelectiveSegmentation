@@ -30,6 +30,13 @@ METHODS = (
     ("confidence_foreground_entropy", "Foreground entropy"),
 )
 CONTROL_ABSOLUTE_TOLERANCE = 4 * np.finfo(np.float64).eps
+SDC_SIZE_STRATA = (
+    ("empty", 0, 0),
+    ("very_small", 1, 31),
+    ("small", 32, 255),
+    ("medium", 256, 4095),
+    ("large", 4096, None),
+)
 
 
 def parse_args(argv=None):
@@ -120,6 +127,127 @@ def _score_agreement(left: np.ndarray, right: np.ndarray) -> dict:
     if not math.isfinite(spearman) or not math.isfinite(kendall):
         raise RuntimeError("score agreement became non-finite")
     return {"spearman_rho": spearman, "kendall_tau_b": kendall}
+
+
+def _finite_summary(values: np.ndarray) -> dict:
+    """Summarize one finite numeric vector without hiding its upper tail."""
+
+    values = np.asarray(values, dtype=float)
+    if values.ndim != 1 or values.size == 0 or not np.isfinite(values).all():
+        raise ValueError("summary input must be a nonempty finite vector")
+    return {
+        "mean": float(values.mean()),
+        "median": float(np.median(values)),
+        "q95": float(np.quantile(values, 0.95)),
+        "maximum": float(values.max()),
+    }
+
+
+def sdc_bound_audit(rows: list[dict]) -> dict:
+    """Audit the count-dispersion bound against exact level-set Dice.
+
+    For nonempty actions, the theorem gives
+
+    ``error <= 2 sqrt(Var Z) / m + sqrt(Var W) / (2m)``.
+
+    Empty actions are reported separately because the theorem's ``1/m`` terms
+    are undefined there.  The calculation uses Exact Dice from the main
+    artifact and the deterministic midpoint count variances already stored in
+    the count artifact, so no posterior Monte Carlo is introduced.
+    """
+
+    if not rows:
+        raise ValueError("SDC audit requires at least one joined row")
+    records = []
+    empty_count = 0
+    for row in rows:
+        action_size = int(row["action_pixels"])
+        if action_size < 0:
+            raise ValueError("action_pixels must be nonnegative")
+        if action_size == 0:
+            empty_count += 1
+            continue
+        exact_risk = -float(row["confidence_dice_exact"])
+        plug_in_risk = 1.0 - float(row["confidence_dice_sdc_recomputed"])
+        error = abs(exact_risk - plug_in_risk)
+        overlap_term = (
+            2.0 * math.sqrt(float(row["shared_variance_overlap"])) / action_size
+        )
+        outside_term = (
+            math.sqrt(float(row["shared_variance_outside"]))
+            / (2.0 * action_size)
+        )
+        bound = overlap_term + outside_term
+        slack = bound - error
+        tolerance = 64 * np.finfo(np.float64).eps * max(1.0, bound, error)
+        records.append(
+            {
+                "action_size": action_size,
+                "error": error,
+                "bound": bound,
+                "slack": slack,
+                "ratio": 0.0 if bound == 0 and error == 0 else error / bound,
+                "overlap_term": overlap_term,
+                "outside_term": outside_term,
+                "holds": slack >= -tolerance,
+            }
+        )
+    if not records:
+        return {
+            "num_images": len(rows),
+            "num_nonempty_actions": 0,
+            "num_empty_actions": empty_count,
+            "all_nonempty_bounds_hold": True,
+            "maximum_numerical_violation": 0.0,
+            "strata": [],
+        }
+
+    def summarize(selected: list[dict], label: str) -> dict:
+        error = np.asarray([record["error"] for record in selected])
+        bound = np.asarray([record["bound"] for record in selected])
+        slack = np.asarray([record["slack"] for record in selected])
+        ratio = np.asarray([record["ratio"] for record in selected])
+        overlap = np.asarray([record["overlap_term"] for record in selected])
+        outside = np.asarray([record["outside_term"] for record in selected])
+        return {
+            "stratum": label,
+            "num_images": len(selected),
+            "action_pixels": {
+                "minimum": min(record["action_size"] for record in selected),
+                "maximum": max(record["action_size"] for record in selected),
+            },
+            "absolute_sdc_risk_error": _finite_summary(error),
+            "theoretical_bound": _finite_summary(bound),
+            "bound_slack": _finite_summary(slack),
+            "error_to_bound_ratio": _finite_summary(ratio),
+            "mean_overlap_term": float(overlap.mean()),
+            "mean_outside_term": float(outside.mean()),
+        }
+
+    strata = []
+    for label, lower, upper in SDC_SIZE_STRATA[1:]:
+        selected = [
+            record
+            for record in records
+            if record["action_size"] >= lower
+            and (upper is None or record["action_size"] <= upper)
+        ]
+        if selected:
+            strata.append(summarize(selected, label))
+    violations = [max(0.0, -record["slack"]) for record in records]
+    return {
+        "num_images": len(rows),
+        "num_nonempty_actions": len(records),
+        "num_empty_actions": empty_count,
+        "all_nonempty_bounds_hold": all(record["holds"] for record in records),
+        "maximum_numerical_violation": float(max(violations)),
+        "overall": summarize(records, "all_nonempty"),
+        "strata": strata,
+        "interpretation": (
+            "The bound is explanatory rather than expected to be tight; its "
+            "1/action-size factors can be conservative for small predictions."
+        ),
+    }
 
 
 def _validate_count_controls(main: dict, auxiliary: dict) -> None:
@@ -244,6 +372,7 @@ def analyze(
                         sum(row["score_runtime_seconds"] for row in rows)
                     ),
                 },
+                "sdc_bound_audit": sdc_bound_audit(rows),
             }
         )
     array = np.asarray(differences)

@@ -4,6 +4,7 @@ import json
 import numpy as np
 import pytest
 
+from scripts.analyze.counts import sdc_bound_audit
 from scripts.render.counts import (
     COPULA_METHODS,
     DATASETS,
@@ -17,6 +18,7 @@ from selectseg.counts import (
     action_two_block_dice_confidence,
     count_ladders,
     second_order_dice_similarity,
+    sample_spatial_copula_masks,
     shared_threshold_dice_confidence,
     spatial_copula_dice_confidence,
 )
@@ -128,6 +130,26 @@ def test_spatial_copula_repeat_is_exactly_reproducible():
     assert left.spatial_grid_shape == (4, 5)
 
 
+def test_materialized_spatial_copula_masks_are_reproducible_and_marginal_preserving():
+    probability = np.array([[0.2, 0.4], [0.6, 0.8]])
+    arguments = {
+        "posterior_draws": 20_000,
+        "repeat_index": 1,
+        "global_variance_weight": 0.25,
+        "spatial_variance_weight": 0.5,
+        "spatial_knot_spacing_diagonal": 0.2,
+        "posterior_batch_size": 1_000,
+        "master_seed": 7,
+        "sample_id": "tiny",
+        "device": "cpu",
+    }
+    left, grid = sample_spatial_copula_masks(probability, **arguments)
+    right, right_grid = sample_spatial_copula_masks(probability, **arguments)
+    assert np.array_equal(left, right)
+    assert grid == right_grid == (2, 2)
+    assert np.max(np.abs(left.mean(axis=0) - probability)) < 0.015
+
+
 @pytest.mark.parametrize(
     "overrides",
     [
@@ -199,3 +221,31 @@ def test_spatial_copula_renderer_rejects_missing_method(tmp_path):
     source.write_text(json.dumps(analysis), encoding="utf-8")
     with pytest.raises(ValueError, match="unexpected method set"):
         _load_copula(source)
+
+
+def test_sdc_bound_audit_uses_exact_risk_and_separates_empty_actions():
+    rows = [
+        {
+            "action_pixels": 4,
+            "confidence_dice_exact": -0.25,
+            "confidence_dice_sdc_recomputed": 0.80,
+            "shared_variance_overlap": 0.16,
+            "shared_variance_outside": 0.64,
+        },
+        {
+            "action_pixels": 0,
+            "confidence_dice_exact": -0.3,
+            "confidence_dice_sdc_recomputed": 0.0,
+            "shared_variance_overlap": 0.0,
+            "shared_variance_outside": 1.0,
+        },
+    ]
+    audit = sdc_bound_audit(rows)
+    assert audit["num_nonempty_actions"] == 1
+    assert audit["num_empty_actions"] == 1
+    assert audit["all_nonempty_bounds_hold"]
+    overall = audit["overall"]
+    assert overall["absolute_sdc_risk_error"]["mean"] == pytest.approx(0.05)
+    assert overall["theoretical_bound"]["mean"] == pytest.approx(0.3)
+    assert overall["mean_overlap_term"] == pytest.approx(0.2)
+    assert overall["mean_outside_term"] == pytest.approx(0.1)

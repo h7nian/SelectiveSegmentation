@@ -1,0 +1,2094 @@
+{
+  "schema_version": 1,
+  "analysis_id": "dice-count-result-analysis-v1",
+  "contract": {
+    "path": "configs/auxiliary/dice_count_result_analysis_v1.json",
+    "sha256": "275197eaee65382e78235205484b6db77886e46de249e3b1fcd5429674a26854"
+  },
+  "analysis": {
+    "tie_policy": "uniform random ordering within exact score ties",
+    "bootstrap_resamples": 10000,
+    "aurc_scale_for_display": 100,
+    "control_validation": {
+      "risk_and_image_index": "exact equality",
+      "recomputed_scores_absolute_tolerance": 8.881784197001252e-16,
+      "observed_preanalysis_maximum_difference": 2.220446049250313e-16
+    }
+  },
+  "conditions": [
+    {
+      "dataset": "fives",
+      "condition": "clipseg-target",
+      "num_images": 200,
+      "main_manifest_sha256": "3e7e3761af1b68424d76165ca30fd93caef04b6f719021583b8f7172c7d07bab",
+      "count_manifest_sha256": "59e59e12b9c94084af18d3abad2d423adf4b07280645b6727e2f3fbe6485a261",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.8735332342848442,
+          "oracle_aurc": 0.8179726540081557,
+          "random_aurc": 0.8753404619105529,
+          "excess_aurc": 0.05556058027668853,
+          "normalized_aurc": 0.9684975303783011,
+          "spearman_rho_with_safety": 0.4098562117581864,
+          "kendall_tau_b_with_safety": 0.3581560616924546
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.8731010277958277,
+          "oracle_aurc": 0.8179726540081557,
+          "random_aurc": 0.8753404619105529,
+          "excess_aurc": 0.05512837378767199,
+          "normalized_aurc": 0.9609635752766547,
+          "spearman_rho_with_safety": 0.4178525572106296,
+          "kendall_tau_b_with_safety": 0.3651066363674031
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.8731132206220734,
+          "oracle_aurc": 0.8179726540081557,
+          "random_aurc": 0.8753404619105529,
+          "excess_aurc": 0.05514056661391775,
+          "normalized_aurc": 0.961176113051612,
+          "spearman_rho_with_safety": 0.41747333236419637,
+          "kendall_tau_b_with_safety": 0.36459372147661706
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.8219978393224122,
+          "oracle_aurc": 0.8179726540081557,
+          "random_aurc": 0.8753404619105529,
+          "excess_aurc": 0.004025185314256552,
+          "normalized_aurc": 0.07016453062150818,
+          "spearman_rho_with_safety": 0.9167757929772941,
+          "kendall_tau_b_with_safety": 0.7757737812421991
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.8508567600120762,
+          "oracle_aurc": 0.8179726540081557,
+          "random_aurc": 0.8753404619105529,
+          "excess_aurc": 0.032884106003920555,
+          "normalized_aurc": 0.5732153137151055,
+          "spearman_rho_with_safety": 0.5646417249747291,
+          "kendall_tau_b_with_safety": 0.4133390511619521
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": 0.00043220648901654,
+        "bootstrap": {
+          "difference": 0.00043220648901654,
+          "ci_low": 0.00020112496390873317,
+          "ci_high": 0.0007673388151113845,
+          "confidence_level": 0.95,
+          "p_value": 0.00019998000199980003,
+          "n_resamples": 10000,
+          "n_observations": 200,
+          "n_clusters": 200,
+          "seed": 2150308206
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 6280614967.570015,
+        "mean_two_block_minus_shared_score": 0.12802763745836448,
+        "spearman_shared_covariance_vs_score_delta": -0.3297317573625121,
+        "total_score_runtime_seconds": 53.43559449224267
+      },
+      "sdc_bound_audit": {
+        "num_images": 200,
+        "num_nonempty_actions": 187,
+        "num_empty_actions": 13,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 187,
+          "action_pixels": {
+            "minimum": 113,
+            "maximum": 130737
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.12244495801834283,
+            "median": 0.12047941641387705,
+            "q95": 0.1730228403774832,
+            "maximum": 0.2439561570305938
+          },
+          "theoretical_bound": {
+            "mean": 36.837095968544396,
+            "median": 8.056922850000314,
+            "q95": 47.041928976530606,
+            "maximum": 3185.3931901454084
+          },
+          "bound_slack": {
+            "mean": 36.714651010526055,
+            "median": 7.920841627524005,
+            "q95": 46.93405772658981,
+            "maximum": 3185.3688350813513
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.014362791946103166,
+            "median": 0.01498596306708025,
+            "q95": 0.02261530758255761,
+            "maximum": 0.02577651892546667
+          },
+          "mean_overlap_term": 0.9193222186946577,
+          "mean_outside_term": 35.91777374984974
+        },
+        "strata": [
+          {
+            "stratum": "small",
+            "num_images": 1,
+            "action_pixels": {
+              "minimum": 113,
+              "maximum": 113
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.0243550640572594,
+              "median": 0.0243550640572594,
+              "q95": 0.0243550640572594,
+              "maximum": 0.0243550640572594
+            },
+            "theoretical_bound": {
+              "mean": 3185.3931901454084,
+              "median": 3185.3931901454084,
+              "q95": 3185.3931901454084,
+              "maximum": 3185.3931901454084
+            },
+            "bound_slack": {
+              "mean": 3185.3688350813513,
+              "median": 3185.3688350813513,
+              "q95": 3185.3688350813513,
+              "maximum": 3185.3688350813513
+            },
+            "error_to_bound_ratio": {
+              "mean": 7.645858016086117e-06,
+              "median": 7.645858016086117e-06,
+              "q95": 7.645858016086117e-06,
+              "maximum": 7.645858016086117e-06
+            },
+            "mean_overlap_term": 0.9958701628011007,
+            "mean_outside_term": 3184.3973199826073
+          },
+          {
+            "stratum": "medium",
+            "num_images": 4,
+            "action_pixels": {
+              "minimum": 745,
+              "maximum": 2876
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.08548841621766307,
+              "median": 0.0854284749862218,
+              "q95": 0.10699069219455842,
+              "maximum": 0.10896708415980572
+            },
+            "theoretical_bound": {
+              "mean": 419.4711243634198,
+              "median": 475.0046105319444,
+              "q95": 591.7455675001645,
+              "maximum": 602.6982708092629
+            },
+            "bound_slack": {
+              "mean": 419.38563594720216,
+              "median": 474.9256501477129,
+              "q95": 591.6724421151432,
+              "maximum": 602.6232049970153
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.0003350614229394946,
+              "median": 0.00017622260358312778,
+              "q95": 0.0007741127457701327,
+              "maximum": 0.0008705040007504113
+            },
+            "mean_overlap_term": 0.9766567493615059,
+            "mean_outside_term": 418.49446761405835
+          },
+          {
+            "stratum": "large",
+            "num_images": 182,
+            "action_pixels": {
+              "minimum": 5394,
+              "maximum": 130737
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.12379614516759449,
+              "median": 0.12109686431320826,
+              "q95": 0.17389677548809285,
+              "maximum": 0.2439561570305938
+            },
+            "theoretical_bound": {
+              "mean": 11.1277981237292,
+              "median": 7.8110967597524485,
+              "q95": 29.66302195414242,
+              "maximum": 93.50786951684536
+            },
+            "bound_slack": {
+              "mean": 11.004001978561604,
+              "median": 7.682767233125972,
+              "q95": 29.527433459142287,
+              "maximum": 93.38743771457548
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.014749968144898451,
+              "median": 0.015187928463332577,
+              "q95": 0.02263824789795021,
+              "maximum": 0.02577651892546667
+            },
+            "mean_overlap_term": 0.9176415260200761,
+            "mean_outside_term": 10.21015659770912
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "fives",
+      "condition": "deeplabv3-target",
+      "num_images": 200,
+      "main_manifest_sha256": "25a89d2e374f042f01119c71c39d6f8f96892d4b946692e8d7350ce3ae4ccdd4",
+      "count_manifest_sha256": "6762fa05ed4792ec8b3bcb1dd4418597cb2d7d9d47426ecbb14e6912fbd48865",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.4109290389047726,
+          "oracle_aurc": 0.36358648673880656,
+          "random_aurc": 0.42998989122206027,
+          "excess_aurc": 0.047342552165966056,
+          "normalized_aurc": 0.712953688660728,
+          "spearman_rho_with_safety": 0.752737850723015,
+          "kendall_tau_b_with_safety": 0.6189602755791873
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.4110183794883139,
+          "oracle_aurc": 0.36358648673880656,
+          "random_aurc": 0.42998989122206027,
+          "excess_aurc": 0.04743189274950732,
+          "normalized_aurc": 0.7142991103937928,
+          "spearman_rho_with_safety": 0.75377437702487,
+          "kendall_tau_b_with_safety": 0.6214729015253561
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.4110668123543815,
+          "oracle_aurc": 0.36358648673880656,
+          "random_aurc": 0.42998989122206027,
+          "excess_aurc": 0.047480325615574914,
+          "normalized_aurc": 0.7150284836306696,
+          "spearman_rho_with_safety": 0.7535598715817945,
+          "kendall_tau_b_with_safety": 0.6212718914496625
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.4134471969883332,
+          "oracle_aurc": 0.36358648673880656,
+          "random_aurc": 0.42998989122206027,
+          "excess_aurc": 0.04986071024952665,
+          "normalized_aurc": 0.7508758118283082,
+          "spearman_rho_with_safety": 0.7560604350335922,
+          "kendall_tau_b_with_safety": 0.6522274431064604
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.41165479118389897,
+          "oracle_aurc": 0.36358648673880656,
+          "random_aurc": 0.42998989122206027,
+          "excess_aurc": 0.048068304445092414,
+          "normalized_aurc": 0.7238831324862984,
+          "spearman_rho_with_safety": 0.7000490137437732,
+          "kendall_tau_b_with_safety": 0.540264830945185
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -8.934058354126417e-05,
+        "bootstrap": {
+          "difference": -8.934058354126417e-05,
+          "ci_low": -0.0006446629071594684,
+          "ci_high": 0.0002601814210953733,
+          "confidence_level": 0.95,
+          "p_value": 0.7897210278972103,
+          "n_resamples": 10000,
+          "n_observations": 200,
+          "n_clusters": 200,
+          "seed": 40453662
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 13415113036.406723,
+        "mean_two_block_minus_shared_score": 0.03891212342672857,
+        "spearman_shared_covariance_vs_score_delta": 0.0053828886093816915,
+        "total_score_runtime_seconds": 51.65064096916467
+      },
+      "sdc_bound_audit": {
+        "num_images": 200,
+        "num_nonempty_actions": 200,
+        "num_empty_actions": 0,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 200,
+          "action_pixels": {
+            "minimum": 435,
+            "maximum": 4194304
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.019740397777874154,
+            "median": 0.011007509373035601,
+            "q95": 0.06965947350846918,
+            "maximum": 0.2545081621724169
+          },
+          "theoretical_bound": {
+            "mean": 2.7210680337519277,
+            "median": 1.2895310183195725,
+            "q95": 1.9279058675426564,
+            "maximum": 149.5236871653249
+          },
+          "bound_slack": {
+            "mean": 2.701327635974053,
+            "median": 1.2835472883220769,
+            "q95": 1.8228118832038376,
+            "maximum": 149.2691790031525
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.011597451491750354,
+            "median": 0.008236045188933401,
+            "q95": 0.03526415810812691,
+            "maximum": 0.11710591711643373
+          },
+          "mean_overlap_term": 0.738655142853299,
+          "mean_outside_term": 1.9824128908986285
+        },
+        "strata": [
+          {
+            "stratum": "medium",
+            "num_images": 2,
+            "action_pixels": {
+              "minimum": 435,
+              "maximum": 1869
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.20387271405415192,
+              "median": 0.20387271405415192,
+              "q95": 0.2494446173605904,
+              "maximum": 0.2545081621724169
+            },
+            "theoretical_bound": {
+              "mean": 135.92976291125078,
+              "median": 135.92976291125078,
+              "q95": 148.1642947399175,
+              "maximum": 149.5236871653249
+            },
+            "bound_slack": {
+              "mean": 135.72589019719663,
+              "median": 135.72589019719663,
+              "q95": 147.9148501225569,
+              "maximum": 149.2691790031525
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.0014773605471635103,
+              "median": 0.0014773605471635103,
+              "q95": 0.001679649494637825,
+              "maximum": 0.0017021260443571933
+            },
+            "mean_overlap_term": 0.9446743551695226,
+            "mean_outside_term": 134.98508855608125
+          },
+          {
+            "stratum": "large",
+            "num_images": 198,
+            "action_pixels": {
+              "minimum": 48768,
+              "maximum": 4194304
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.017880475391245085,
+              "median": 0.01088240299987217,
+              "q95": 0.058400054611726954,
+              "maximum": 0.22392538604331758
+            },
+            "theoretical_bound": {
+              "mean": 1.3755256612519395,
+              "median": 1.286618446934248,
+              "q95": 1.8123452772862163,
+              "maximum": 5.403684977923636
+            },
+            "bound_slack": {
+              "mean": 1.3576451858606948,
+              "median": 1.2818787307405537,
+              "q95": 1.7701834494529276,
+              "maximum": 5.179759591880318
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.011699674632604766,
+              "median": 0.008354531094429681,
+              "q95": 0.03528970397580757,
+              "maximum": 0.11710591711643373
+            },
+            "mean_overlap_term": 0.7365741407086909,
+            "mean_outside_term": 0.6389515205432487
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "isic",
+      "condition": "clipseg-target",
+      "num_images": 1000,
+      "main_manifest_sha256": "e73b8c18daf00f9fa15fb1756805cbf4eba7bc145b8e81cdc57697e4aa2029fd",
+      "count_manifest_sha256": "47d5eb4ceb304dd9010fc7e220ef23e651c878c0cd1b1dc632b4448a004b1bbc",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.07173136883071288,
+          "oracle_aurc": 0.05582811524784597,
+          "random_aurc": 0.12065009317804361,
+          "excess_aurc": 0.015903253582866907,
+          "normalized_aurc": 0.24533736998880276,
+          "spearman_rho_with_safety": 0.6733850773850775,
+          "kendall_tau_b_with_safety": 0.49142742742742745
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.07175670445568763,
+          "oracle_aurc": 0.05582811524784597,
+          "random_aurc": 0.12065009317804361,
+          "excess_aurc": 0.01592858920784166,
+          "normalized_aurc": 0.24572821929306243,
+          "spearman_rho_with_safety": 0.6732100692100692,
+          "kendall_tau_b_with_safety": 0.49126326326326325
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.07181664752005099,
+          "oracle_aurc": 0.05582811524784597,
+          "random_aurc": 0.12065009317804361,
+          "excess_aurc": 0.015988532272205015,
+          "normalized_aurc": 0.24665295294478629,
+          "spearman_rho_with_safety": 0.6712766632766632,
+          "kendall_tau_b_with_safety": 0.48940940940940947
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.07300591007743942,
+          "oracle_aurc": 0.05582811524784597,
+          "random_aurc": 0.12065009317804361,
+          "excess_aurc": 0.017177794829593453,
+          "normalized_aurc": 0.2649995476548254,
+          "spearman_rho_with_safety": 0.6646468246468247,
+          "kendall_tau_b_with_safety": 0.48471271271271277
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.07062527417067967,
+          "oracle_aurc": 0.05582811524784597,
+          "random_aurc": 0.12065009317804361,
+          "excess_aurc": 0.014797158922833696,
+          "normalized_aurc": 0.2282737953286113,
+          "spearman_rho_with_safety": 0.6534716694716696,
+          "kendall_tau_b_with_safety": 0.47151151151151155
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -2.5335624974753834e-05,
+        "bootstrap": {
+          "difference": -2.5335624974753834e-05,
+          "ci_low": -6.345387223907795e-05,
+          "ci_high": -4.047731126662766e-06,
+          "confidence_level": 0.95,
+          "p_value": 0.012998700129987,
+          "n_resamples": 10000,
+          "n_observations": 1000,
+          "n_clusters": 1000,
+          "seed": 1295399491
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 121329383230.44025,
+        "mean_two_block_minus_shared_score": 0.001841141076597219,
+        "spearman_shared_covariance_vs_score_delta": 0.38791694173569585,
+        "total_score_runtime_seconds": 340.381640648935
+      },
+      "sdc_bound_audit": {
+        "num_images": 1000,
+        "num_nonempty_actions": 1000,
+        "num_empty_actions": 0,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 1000,
+          "action_pixels": {
+            "minimum": 10925,
+            "maximum": 27872445
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.00925534673864274,
+            "median": 0.002443352833978285,
+            "q95": 0.03885539690929075,
+            "maximum": 0.2624566151377862
+          },
+          "theoretical_bound": {
+            "mean": 0.3406902514050688,
+            "median": 0.24665081302433314,
+            "q95": 0.7385908266852922,
+            "maximum": 4.74917550267204
+          },
+          "bound_slack": {
+            "mean": 0.33143490466642606,
+            "median": 0.2443677952743734,
+            "q95": 0.7010045862074975,
+            "maximum": 4.623517747119985
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.016745433523948597,
+            "median": 0.010246324343971392,
+            "q95": 0.055881694062209296,
+            "maximum": 0.1158190486792556
+          },
+          "mean_overlap_term": 0.21399086354819497,
+          "mean_outside_term": 0.12669938785687387
+        },
+        "strata": [
+          {
+            "stratum": "large",
+            "num_images": 1000,
+            "action_pixels": {
+              "minimum": 10925,
+              "maximum": 27872445
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.00925534673864274,
+              "median": 0.002443352833978285,
+              "q95": 0.03885539690929075,
+              "maximum": 0.2624566151377862
+            },
+            "theoretical_bound": {
+              "mean": 0.3406902514050688,
+              "median": 0.24665081302433314,
+              "q95": 0.7385908266852922,
+              "maximum": 4.74917550267204
+            },
+            "bound_slack": {
+              "mean": 0.33143490466642606,
+              "median": 0.2443677952743734,
+              "q95": 0.7010045862074975,
+              "maximum": 4.623517747119985
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.016745433523948597,
+              "median": 0.010246324343971392,
+              "q95": 0.055881694062209296,
+              "maximum": 0.1158190486792556
+            },
+            "mean_overlap_term": 0.21399086354819497,
+            "mean_outside_term": 0.12669938785687387
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "isic",
+      "condition": "deeplabv3-target",
+      "num_images": 1000,
+      "main_manifest_sha256": "ffd1e35c7c7c5d0dc0ac4725b6495f2ef6c718139f1fcac21d74db6e9d8d4533",
+      "count_manifest_sha256": "b074ad7e58461400545012685aff0eadc06763cb44f036174346395831f2cbfd",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.06352365687180489,
+          "oracle_aurc": 0.04954424163430842,
+          "random_aurc": 0.12750019484849084,
+          "excess_aurc": 0.013979415237496469,
+          "normalized_aurc": 0.17932453726899222,
+          "spearman_rho_with_safety": 0.7297246636164038,
+          "kendall_tau_b_with_safety": 0.5437710336696695
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.06353886643398614,
+          "oracle_aurc": 0.04954424163430842,
+          "random_aurc": 0.12750019484849084,
+          "excess_aurc": 0.013994624799677717,
+          "normalized_aurc": 0.1795196418319428,
+          "spearman_rho_with_safety": 0.7295798594672556,
+          "kendall_tau_b_with_safety": 0.5436068685195254
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.06369743058194852,
+          "oracle_aurc": 0.04954424163430842,
+          "random_aurc": 0.12750019484849084,
+          "excess_aurc": 0.014153188947640095,
+          "normalized_aurc": 0.1815536641410117,
+          "spearman_rho_with_safety": 0.7269779387872772,
+          "kendall_tau_b_with_safety": 0.54115239932347
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.06615340724149188,
+          "oracle_aurc": 0.04954424163430842,
+          "random_aurc": 0.12750019484849084,
+          "excess_aurc": 0.01660916560718346,
+          "normalized_aurc": 0.2130583351543417,
+          "spearman_rho_with_safety": 0.7064561377691905,
+          "kendall_tau_b_with_safety": 0.5238114781650665
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.061336556897807454,
+          "oracle_aurc": 0.04954424163430842,
+          "random_aurc": 0.12750019484849084,
+          "excess_aurc": 0.011792315263499033,
+          "normalized_aurc": 0.15126895095618784,
+          "spearman_rho_with_safety": 0.7389149472991409,
+          "kendall_tau_b_with_safety": 0.5487445858047717
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -1.5209562181248137e-05,
+        "bootstrap": {
+          "difference": -1.5209562181248137e-05,
+          "ci_low": -4.088898731190379e-05,
+          "ci_high": 2.0852168851292324e-06,
+          "confidence_level": 0.95,
+          "p_value": 0.09759024097590241,
+          "n_resamples": 10000,
+          "n_observations": 1000,
+          "n_clusters": 1000,
+          "seed": 3276930669
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 78711502094.59259,
+        "mean_two_block_minus_shared_score": 0.003014741092911975,
+        "spearman_shared_covariance_vs_score_delta": 0.33660151728783594,
+        "total_score_runtime_seconds": 365.95483102824073
+      },
+      "sdc_bound_audit": {
+        "num_images": 1000,
+        "num_nonempty_actions": 998,
+        "num_empty_actions": 2,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 998,
+          "action_pixels": {
+            "minimum": 10686,
+            "maximum": 29590539
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.0080811033557649,
+            "median": 0.0024581345012016816,
+            "q95": 0.03553294724939573,
+            "maximum": 0.20241993529805757
+          },
+          "theoretical_bound": {
+            "mean": 0.44941498379436445,
+            "median": 0.23521465428838445,
+            "q95": 0.8831309008704659,
+            "maximum": 63.12403322661809
+          },
+          "bound_slack": {
+            "mean": 0.4413338804385995,
+            "median": 0.23098203413371698,
+            "q95": 0.8557681940032131,
+            "maximum": 62.972363983815924
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.016871471175425604,
+            "median": 0.010414703809774151,
+            "q95": 0.05323638590766358,
+            "maximum": 0.10855255237046342
+          },
+          "mean_overlap_term": 0.21958214467814258,
+          "mean_outside_term": 0.22983283911622188
+        },
+        "strata": [
+          {
+            "stratum": "large",
+            "num_images": 998,
+            "action_pixels": {
+              "minimum": 10686,
+              "maximum": 29590539
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.0080811033557649,
+              "median": 0.0024581345012016816,
+              "q95": 0.03553294724939573,
+              "maximum": 0.20241993529805757
+            },
+            "theoretical_bound": {
+              "mean": 0.44941498379436445,
+              "median": 0.23521465428838445,
+              "q95": 0.8831309008704659,
+              "maximum": 63.12403322661809
+            },
+            "bound_slack": {
+              "mean": 0.4413338804385995,
+              "median": 0.23098203413371698,
+              "q95": 0.8557681940032131,
+              "maximum": 62.972363983815924
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.016871471175425604,
+              "median": 0.010414703809774151,
+              "q95": 0.05323638590766358,
+              "maximum": 0.10855255237046342
+            },
+            "mean_overlap_term": 0.21958214467814258,
+            "mean_outside_term": 0.22983283911622188
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "clipseg-target",
+      "num_images": 200,
+      "main_manifest_sha256": "5fdfe6af03b047bcdcbf3cecbe8b58f54a326c04297759a93323dd06516e31d4",
+      "count_manifest_sha256": "a97c521487896b8ac6c9b5c1a7cb61cf82ec93565f2e4f9bbd4f9ba5c56ac5c3",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.09043053046986566,
+          "oracle_aurc": 0.07048941336152174,
+          "random_aurc": 0.21984820773476385,
+          "excess_aurc": 0.01994111710834391,
+          "normalized_aurc": 0.13351150290160882,
+          "spearman_rho_with_safety": 0.8040212805984622,
+          "kendall_tau_b_with_safety": 0.6189591466042986
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.09077247578539328,
+          "oracle_aurc": 0.07048941336152174,
+          "random_aurc": 0.21984820773476385,
+          "excess_aurc": 0.02028306242387154,
+          "normalized_aurc": 0.13580092494041504,
+          "spearman_rho_with_safety": 0.8026442017600477,
+          "kendall_tau_b_with_safety": 0.616746422973279
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.09084969505286765,
+          "oracle_aurc": 0.07048941336152174,
+          "random_aurc": 0.21984820773476385,
+          "excess_aurc": 0.020360281691345905,
+          "normalized_aurc": 0.13631793010103116,
+          "spearman_rho_with_safety": 0.8029203653990166,
+          "kendall_tau_b_with_safety": 0.6171177230821747
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.08922635613327269,
+          "oracle_aurc": 0.07048941336152174,
+          "random_aurc": 0.21984820773476385,
+          "excess_aurc": 0.018736942771750947,
+          "normalized_aurc": 0.12544921007415216,
+          "spearman_rho_with_safety": 0.8054390788318476,
+          "kendall_tau_b_with_safety": 0.6290213380519019
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.09264694695029768,
+          "oracle_aurc": 0.07048941336152174,
+          "random_aurc": 0.21984820773476385,
+          "excess_aurc": 0.022157533588775938,
+          "normalized_aurc": 0.14835104743417438,
+          "spearman_rho_with_safety": 0.7572347225954063,
+          "kendall_tau_b_with_safety": 0.5839475121646255
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -0.0003419453155276281,
+        "bootstrap": {
+          "difference": -0.0003419453155276281,
+          "ci_low": -0.0008607958510961278,
+          "ci_high": -5.644290216513388e-05,
+          "confidence_level": 0.95,
+          "p_value": 0.0025997400259974,
+          "n_resamples": 10000,
+          "n_observations": 200,
+          "n_clusters": 200,
+          "seed": 4269457176
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 105954023.96518555,
+        "mean_two_block_minus_shared_score": 0.011873015329965146,
+        "spearman_shared_covariance_vs_score_delta": 0.37288386029784026,
+        "total_score_runtime_seconds": 3.2770041073672473
+      },
+      "sdc_bound_audit": {
+        "num_images": 200,
+        "num_nonempty_actions": 194,
+        "num_empty_actions": 6,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 194,
+          "action_pixels": {
+            "minimum": 1,
+            "maximum": 597993
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.02405728183379797,
+            "median": 0.007433625103322829,
+            "q95": 0.10240357574247685,
+            "maximum": 0.2847466078541474
+          },
+          "theoretical_bound": {
+            "mean": 51.200504678160044,
+            "median": 0.3930850504188244,
+            "q95": 4.781478649742849,
+            "maximum": 9496.398092616015
+          },
+          "bound_slack": {
+            "mean": 51.17644739632626,
+            "median": 0.3861739543458438,
+            "q95": 4.6256782300495,
+            "maximum": 9496.382632186469
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.024062053336006913,
+            "median": 0.017984667849317994,
+            "q95": 0.07469990143311003,
+            "maximum": 0.10424048188303082
+          },
+          "mean_overlap_term": 0.35924250456698925,
+          "mean_outside_term": 50.84126217359306
+        },
+        "strata": [
+          {
+            "stratum": "very_small",
+            "num_images": 1,
+            "action_pixels": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.015460429546126253,
+              "median": 0.015460429546126253,
+              "q95": 0.015460429546126253,
+              "maximum": 0.015460429546126253
+            },
+            "theoretical_bound": {
+              "mean": 9496.398092616015,
+              "median": 9496.398092616015,
+              "q95": 9496.398092616015,
+              "maximum": 9496.398092616015
+            },
+            "bound_slack": {
+              "mean": 9496.382632186469,
+              "median": 9496.382632186469,
+              "q95": 9496.382632186469,
+              "maximum": 9496.382632186469
+            },
+            "error_to_bound_ratio": {
+              "mean": 1.6280309013316965e-06,
+              "median": 1.6280309013316965e-06,
+              "q95": 1.6280309013316965e-06,
+              "maximum": 1.6280309013316965e-06
+            },
+            "mean_overlap_term": 1.0,
+            "mean_outside_term": 9495.398092616015
+          },
+          {
+            "stratum": "small",
+            "num_images": 3,
+            "action_pixels": {
+              "minimum": 97,
+              "maximum": 254
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.13710566559236256,
+              "median": 0.11132700728709877,
+              "q95": 0.1932849053115566,
+              "maximum": 0.20239133842538526
+            },
+            "theoretical_bound": {
+              "mean": 83.93568055499121,
+              "median": 55.06948570560318,
+              "q95": 158.50833006424782,
+              "maximum": 170.0015349929861
+            },
+            "bound_slack": {
+              "mean": 83.79857488939884,
+              "median": 54.86709436717779,
+              "q95": 158.3878966238469,
+              "maximum": 169.89020798569902
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.002660171184363101,
+              "median": 0.003650455360852543,
+              "q95": 0.0036727249568922152,
+              "maximum": 0.0036751993564521786
+            },
+            "mean_overlap_term": 0.9632453700852676,
+            "mean_outside_term": 82.97243518490593
+          },
+          {
+            "stratum": "medium",
+            "num_images": 6,
+            "action_pixels": {
+              "minimum": 426,
+              "maximum": 3179
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.16705943596584547,
+              "median": 0.14941569751536565,
+              "q95": 0.28121079687927675,
+              "maximum": 0.2847466078541474
+            },
+            "theoretical_bound": {
+              "mean": 13.718870416653262,
+              "median": 6.120815537315437,
+              "q95": 41.40473806844811,
+              "maximum": 51.56960806339932
+            },
+            "bound_slack": {
+              "mean": 13.551810980687419,
+              "median": 5.88779682927531,
+              "q95": 41.27136602987072,
+              "maximum": 51.48197979994768
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.02482197266895168,
+              "median": 0.02564083761911189,
+              "q95": 0.0432019011227509,
+              "maximum": 0.048030438000227126
+            },
+            "mean_overlap_term": 0.8843982603427945,
+            "mean_outside_term": 12.834472156310468
+          },
+          {
+            "stratum": "large",
+            "num_images": 184,
+            "action_pixels": {
+              "minimum": 4463,
+              "maximum": 597993
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.017597709965426735,
+              "median": 0.00604641237294775,
+              "q95": 0.06699408162392882,
+              "maximum": 0.22685439505812466
+            },
+            "theoretical_bound": {
+              "mean": 0.5564106020768488,
+              "median": 0.3820329105354806,
+              "q95": 1.3488624881162625,
+              "maximum": 5.525189094122888
+            },
+            "bound_slack": {
+              "mean": 0.5388128921114219,
+              "median": 0.3721854588517425,
+              "q95": 1.2794519688075043,
+              "maximum": 5.391802881836853
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.02451698026949805,
+              "median": 0.017984667849317994,
+              "q95": 0.0747760206102761,
+              "maximum": 0.10424048188303082
+            },
+            "mean_overlap_term": 0.32878760985697475,
+            "mean_outside_term": 0.227622992219874
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "kvasir",
+      "condition": "deeplabv3-target",
+      "num_images": 200,
+      "main_manifest_sha256": "b685a5c9b23b3ca4e85ee72f1226829bbcdf0ea80df8a170ba399892e87efc9b",
+      "count_manifest_sha256": "ccad1ce22267736c7fbbfaed35c75a0f68841d60cfc822f0c68671757e7dbb17",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.052343497935277705,
+          "oracle_aurc": 0.039604660558556694,
+          "random_aurc": 0.13351438139179733,
+          "excess_aurc": 0.012738837376721011,
+          "normalized_aurc": 0.13564982691559577,
+          "spearman_rho_with_safety": 0.7945686621798587,
+          "kendall_tau_b_with_safety": 0.6164476496330187
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.05233761157907438,
+          "oracle_aurc": 0.039604660558556694,
+          "random_aurc": 0.13351438139179733,
+          "excess_aurc": 0.012732951020517684,
+          "normalized_aurc": 0.1355871459050348,
+          "spearman_rho_with_safety": 0.7945049105621614,
+          "kendall_tau_b_with_safety": 0.6163471445951719
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.052444999519074324,
+          "oracle_aurc": 0.039604660558556694,
+          "random_aurc": 0.13351438139179733,
+          "excess_aurc": 0.01284033896051763,
+          "normalized_aurc": 0.13673066905734657,
+          "spearman_rho_with_safety": 0.792264603714375,
+          "kendall_tau_b_with_safety": 0.6113218927028347
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.05165279750264198,
+          "oracle_aurc": 0.039604660558556694,
+          "random_aurc": 0.13351438139179733,
+          "excess_aurc": 0.012048136944085283,
+          "normalized_aurc": 0.128294886164976,
+          "spearman_rho_with_safety": 0.790663609587947,
+          "kendall_tau_b_with_safety": 0.6132468968289864
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.055122723934049024,
+          "oracle_aurc": 0.039604660558556694,
+          "random_aurc": 0.13351438139179733,
+          "excess_aurc": 0.01551806337549233,
+          "normalized_aurc": 0.16524448414715653,
+          "spearman_rho_with_safety": 0.7478495071248086,
+          "kendall_tau_b_with_safety": 0.5686215387707925
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": 5.8863562033273364e-06,
+        "bootstrap": {
+          "difference": 5.8863562033273364e-06,
+          "ci_low": -0.00010177374628793435,
+          "ci_high": 0.00012738411714121925,
+          "confidence_level": 0.95,
+          "p_value": 0.9373062693730627,
+          "n_resamples": 10000,
+          "n_observations": 200,
+          "n_clusters": 200,
+          "seed": 2343537194
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 56981932.49542969,
+        "mean_two_block_minus_shared_score": 0.005112095589392185,
+        "spearman_shared_covariance_vs_score_delta": 0.493457956542381,
+        "total_score_runtime_seconds": 3.038609759765677
+      },
+      "sdc_bound_audit": {
+        "num_images": 200,
+        "num_nonempty_actions": 198,
+        "num_empty_actions": 2,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 198,
+          "action_pixels": {
+            "minimum": 597,
+            "maximum": 416276
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.013352807724861205,
+            "median": 0.0033177701863905257,
+            "q95": 0.05543385022072674,
+            "maximum": 0.1870748026906658
+          },
+          "theoretical_bound": {
+            "mean": 0.40889113760535345,
+            "median": 0.2234380895302237,
+            "q95": 1.2300007204794776,
+            "maximum": 5.372567863192917
+          },
+          "bound_slack": {
+            "mean": 0.39553832988049237,
+            "median": 0.21362293151237574,
+            "q95": 1.1704421144469113,
+            "maximum": 5.185493060502251
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.027562632828165234,
+            "median": 0.01569538366978787,
+            "q95": 0.082423513752157,
+            "maximum": 0.16991014759854386
+          },
+          "mean_overlap_term": 0.24877962329570566,
+          "mean_outside_term": 0.16011151430964787
+        },
+        "strata": [
+          {
+            "stratum": "medium",
+            "num_images": 5,
+            "action_pixels": {
+              "minimum": 597,
+              "maximum": 4047
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.10792527084968559,
+              "median": 0.059119260546367625,
+              "q95": 0.18697469216343185,
+              "maximum": 0.1870748026906658
+            },
+            "theoretical_bound": {
+              "mean": 2.679753718734234,
+              "median": 2.0127221662708976,
+              "q95": 5.026457655691899,
+              "maximum": 5.372567863192917
+            },
+            "bound_slack": {
+              "mean": 2.571828447884548,
+              "median": 1.9612375823650474,
+              "q95": 4.839482963528466,
+              "maximum": 5.185493060502251
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.05204367418014787,
+              "median": 0.0348203703432584,
+              "q95": 0.1042268104994904,
+              "maximum": 0.11747644364993383
+            },
+            "mean_overlap_term": 0.7399667086113538,
+            "mean_outside_term": 1.93978701012288
+          },
+          {
+            "stratum": "large",
+            "num_images": 193,
+            "action_pixels": {
+              "minimum": 4490,
+              "maximum": 416276
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.010902743913337258,
+              "median": 0.0032309308742420814,
+              "q95": 0.05095548777933433,
+              "maximum": 0.09711924050164622
+            },
+            "theoretical_bound": {
+              "mean": 0.3500605007885431,
+              "median": 0.22021318308206617,
+              "q95": 0.9596356447727582,
+              "maximum": 2.7385419190713525
+            },
+            "bound_slack": {
+              "mean": 0.3391577568752059,
+              "median": 0.20822169099457935,
+              "q95": 0.9191548716606992,
+              "maximum": 2.7178040837284265
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.026928408958942884,
+              "median": 0.014794005919743912,
+              "q95": 0.07910558767830717,
+              "maximum": 0.16991014759854386
+            },
+            "mean_overlap_term": 0.2360545692719842,
+            "mean_outside_term": 0.11400593151655895
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "pet",
+      "condition": "clipseg-target",
+      "num_images": 3669,
+      "main_manifest_sha256": "619ee0a09937a6c9c7035112427b01a45ee50dbddcaddef76f91dd6f717fa5c5",
+      "count_manifest_sha256": "aca02bb78bf3061b218621cfa15ad07a19b4ea8649a60eda4a523e4ce99e2bc4",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.03316143380620479,
+          "oracle_aurc": 0.023126716402453756,
+          "random_aurc": 0.04101975826681013,
+          "excess_aurc": 0.010034717403751031,
+          "normalized_aurc": 0.5608167398155242,
+          "spearman_rho_with_safety": 0.7858768583130336,
+          "kendall_tau_b_with_safety": 0.6041096693533395
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.033161692228008764,
+          "oracle_aurc": 0.023126716402453756,
+          "random_aurc": 0.04101975826681013,
+          "excess_aurc": 0.010034975825555008,
+          "normalized_aurc": 0.560831182401974,
+          "spearman_rho_with_safety": 0.7858422838652566,
+          "kendall_tau_b_with_safety": 0.6040811358653904
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.033137263414706,
+          "oracle_aurc": 0.023126716402453756,
+          "random_aurc": 0.04101975826681013,
+          "excess_aurc": 0.010010547012252242,
+          "normalized_aurc": 0.5594659135176806,
+          "spearman_rho_with_safety": 0.7840031523079773,
+          "kendall_tau_b_with_safety": 0.601947068745856
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.03321078272210724,
+          "oracle_aurc": 0.023126716402453756,
+          "random_aurc": 0.04101975826681013,
+          "excess_aurc": 0.010084066319653487,
+          "normalized_aurc": 0.5635747345867073,
+          "spearman_rho_with_safety": 0.7861913671252218,
+          "kendall_tau_b_with_safety": 0.6042074559943322
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.03259627999254581,
+          "oracle_aurc": 0.023126716402453756,
+          "random_aurc": 0.04101975826681013,
+          "excess_aurc": 0.009469563590092052,
+          "normalized_aurc": 0.5292316232130314,
+          "spearman_rho_with_safety": 0.7486982789899017,
+          "kendall_tau_b_with_safety": 0.5660165712696513
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -2.584218039766717e-07,
+        "bootstrap": {
+          "difference": -2.584218039766717e-07,
+          "ci_low": -5.04328171402335e-07,
+          "ci_high": -3.950798991344517e-09,
+          "confidence_level": 0.95,
+          "p_value": 0.0481951804819518,
+          "n_resamples": 10000,
+          "n_observations": 3669,
+          "n_clusters": 3669,
+          "seed": 3437699581
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 9916900.602243619,
+        "mean_two_block_minus_shared_score": 0.00015928763351450033,
+        "spearman_shared_covariance_vs_score_delta": 0.05307672058772477,
+        "total_score_runtime_seconds": 31.740890062297694
+      },
+      "sdc_bound_audit": {
+        "num_images": 3669,
+        "num_nonempty_actions": 3669,
+        "num_empty_actions": 0,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 3669,
+          "action_pixels": {
+            "minimum": 5041,
+            "maximum": 1698691
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.0008926590569702478,
+            "median": 0.00029371460843757163,
+            "q95": 0.002827908256420975,
+            "maximum": 0.0824828104633013
+          },
+          "theoretical_bound": {
+            "mean": 0.14696964313405014,
+            "median": 0.13413063867961963,
+            "q95": 0.26104982867370996,
+            "maximum": 1.8909431753209558
+          },
+          "bound_slack": {
+            "mean": 0.14607698407707992,
+            "median": 0.13385634373703945,
+            "q95": 0.25952359878125864,
+            "maximum": 1.8582857020062482
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.003975408820003953,
+            "median": 0.0024018662132442564,
+            "q95": 0.013017567240118858,
+            "maximum": 0.08364993034831704
+          },
+          "mean_overlap_term": 0.11388297728113662,
+          "mean_outside_term": 0.03308666585291353
+        },
+        "strata": [
+          {
+            "stratum": "large",
+            "num_images": 3669,
+            "action_pixels": {
+              "minimum": 5041,
+              "maximum": 1698691
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.0008926590569702478,
+              "median": 0.00029371460843757163,
+              "q95": 0.002827908256420975,
+              "maximum": 0.0824828104633013
+            },
+            "theoretical_bound": {
+              "mean": 0.14696964313405014,
+              "median": 0.13413063867961963,
+              "q95": 0.26104982867370996,
+              "maximum": 1.8909431753209558
+            },
+            "bound_slack": {
+              "mean": 0.14607698407707992,
+              "median": 0.13385634373703945,
+              "q95": 0.25952359878125864,
+              "maximum": 1.8582857020062482
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.003975408820003953,
+              "median": 0.0024018662132442564,
+              "q95": 0.013017567240118858,
+              "maximum": 0.08364993034831704
+            },
+            "mean_overlap_term": 0.11388297728113662,
+            "mean_outside_term": 0.03308666585291353
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "pet",
+      "condition": "deeplabv3-target",
+      "num_images": 3669,
+      "main_manifest_sha256": "2c3e915405263ccbcac3d331b661c688653a518e36f40cf74212ee31801027de",
+      "count_manifest_sha256": "be8e95d50a9a2e317ac835e1d003e640d77d63bff0826f1829df22036a89669d",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.032410025016933686,
+          "oracle_aurc": 0.022393278154022332,
+          "random_aurc": 0.04326414603961585,
+          "excess_aurc": 0.010016746862911353,
+          "normalized_aurc": 0.4799391629432712,
+          "spearman_rho_with_safety": 0.7525653220296633,
+          "kendall_tau_b_with_safety": 0.5711222822695624
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.0324103921592655,
+          "oracle_aurc": 0.022393278154022332,
+          "random_aurc": 0.04326414603961585,
+          "excess_aurc": 0.010017114005243168,
+          "normalized_aurc": 0.4799567540819736,
+          "spearman_rho_with_safety": 0.752543824033383,
+          "kendall_tau_b_with_safety": 0.5710967210199412
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.032360578001855496,
+          "oracle_aurc": 0.022393278154022332,
+          "random_aurc": 0.04326414603961585,
+          "excess_aurc": 0.009967299847833164,
+          "normalized_aurc": 0.477569974687697,
+          "spearman_rho_with_safety": 0.74910924221181,
+          "kendall_tau_b_with_safety": 0.5674159010744936
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.03247808529576893,
+          "oracle_aurc": 0.022393278154022332,
+          "random_aurc": 0.04326414603961585,
+          "excess_aurc": 0.010084807141746595,
+          "normalized_aurc": 0.48320018108627916,
+          "spearman_rho_with_safety": 0.7523560808265338,
+          "kendall_tau_b_with_safety": 0.5706562352997253
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.030925103703820542,
+          "oracle_aurc": 0.022393278154022332,
+          "random_aurc": 0.04326414603961585,
+          "excess_aurc": 0.00853182554979821,
+          "normalized_aurc": 0.40879112438287496,
+          "spearman_rho_with_safety": 0.7034219431387968,
+          "kendall_tau_b_with_safety": 0.5225359939925537
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -3.671423318141187e-07,
+        "bootstrap": {
+          "difference": -3.671423318141187e-07,
+          "ci_low": -9.90127330529125e-07,
+          "ci_high": 3.743003286135739e-08,
+          "confidence_level": 0.95,
+          "p_value": 0.0785921407859214,
+          "n_resamples": 10000,
+          "n_observations": 3669,
+          "n_clusters": 3669,
+          "seed": 205267701
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 7702299.884296907,
+        "mean_two_block_minus_shared_score": 9.59749015247253e-05,
+        "spearman_shared_covariance_vs_score_delta": 0.09042158544110399,
+        "total_score_runtime_seconds": 40.173256137408316
+      },
+      "sdc_bound_audit": {
+        "num_images": 3669,
+        "num_nonempty_actions": 3669,
+        "num_empty_actions": 0,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 3669,
+          "action_pixels": {
+            "minimum": 875,
+            "maximum": 1668552
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.0007235309760833077,
+            "median": 0.00021551537501638546,
+            "q95": 0.00280608191907211,
+            "maximum": 0.12052738448326805
+          },
+          "theoretical_bound": {
+            "mean": 0.13210879568763162,
+            "median": 0.11764502611708755,
+            "q95": 0.24637161061124543,
+            "maximum": 2.1240017166176317
+          },
+          "bound_slack": {
+            "mean": 0.13138526471154832,
+            "median": 0.11718114243039057,
+            "q95": 0.24502924882115548,
+            "maximum": 2.0034743321343638
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.0036806877983978164,
+            "median": 0.001970357858523055,
+            "q95": 0.013089537247173648,
+            "maximum": 0.07005565094191965
+          },
+          "mean_overlap_term": 0.1031280856236057,
+          "mean_outside_term": 0.02898071006402594
+        },
+        "strata": [
+          {
+            "stratum": "medium",
+            "num_images": 1,
+            "action_pixels": {
+              "minimum": 875,
+              "maximum": 875
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.12052738448326805,
+              "median": 0.12052738448326805,
+              "q95": 0.12052738448326805,
+              "maximum": 0.12052738448326805
+            },
+            "theoretical_bound": {
+              "mean": 2.1240017166176317,
+              "median": 2.1240017166176317,
+              "q95": 2.1240017166176317,
+              "maximum": 2.1240017166176317
+            },
+            "bound_slack": {
+              "mean": 2.0034743321343638,
+              "median": 2.0034743321343638,
+              "q95": 2.0034743321343638,
+              "maximum": 2.0034743321343638
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.056745427058882976,
+              "median": 0.056745427058882976,
+              "q95": 0.056745427058882976,
+              "maximum": 0.056745427058882976
+            },
+            "mean_overlap_term": 0.6621966498414383,
+            "mean_outside_term": 1.4618050667761933
+          },
+          {
+            "stratum": "large",
+            "num_images": 3668,
+            "action_pixels": {
+              "minimum": 4285,
+              "maximum": 1668552
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.0006908690749090481,
+              "median": 0.00021547425545969182,
+              "q95": 0.0027900469394774,
+              "maximum": 0.05577862488177998
+            },
+            "theoretical_bound": {
+              "mean": 0.13156574963503348,
+              "median": 0.11758912033942744,
+              "q95": 0.2461245371377252,
+              "maximum": 0.9773670647661854
+            },
+            "bound_slack": {
+              "mean": 0.13087488056012442,
+              "median": 0.11715374069362253,
+              "q95": 0.24457866602299502,
+              "maximum": 0.957236558608266
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.003666220857487106,
+              "median": 0.0019700956472585014,
+              "q95": 0.013022994863213459,
+              "maximum": 0.07005565094191965
+            },
+            "mean_overlap_term": 0.1029756678034809,
+            "mean_outside_term": 0.028590081831552608
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "clipseg-target",
+      "num_images": 614,
+      "main_manifest_sha256": "7de32f9b17b7ded895673e178e39c66bd9fac2bfd8ab52ccc816faba24c81e7d",
+      "count_manifest_sha256": "1568b290f0798c19993f0c58f0d300534de43f7e7b943945536feb150c76641b",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.15977919283424916,
+          "oracle_aurc": 0.12303545601993245,
+          "random_aurc": 0.30955754276125524,
+          "excess_aurc": 0.03674373681431671,
+          "normalized_aurc": 0.19699402604944352,
+          "spearman_rho_with_safety": 0.7611891548954414,
+          "kendall_tau_b_with_safety": 0.5725591559359465
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.16153139362987914,
+          "oracle_aurc": 0.12303545601993245,
+          "random_aurc": 0.30955754276125524,
+          "excess_aurc": 0.0384959376099467,
+          "normalized_aurc": 0.20638809206190464,
+          "spearman_rho_with_safety": 0.7524266108038183,
+          "kendall_tau_b_with_safety": 0.5641856980037546
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.16136542015650604,
+          "oracle_aurc": 0.12303545601993245,
+          "random_aurc": 0.30955754276125524,
+          "excess_aurc": 0.038329964136573594,
+          "normalized_aurc": 0.2054982592476102,
+          "spearman_rho_with_safety": 0.7527878318965775,
+          "kendall_tau_b_with_safety": 0.5639859200598212
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.1556645619645043,
+          "oracle_aurc": 0.12303545601993245,
+          "random_aurc": 0.30955754276125524,
+          "excess_aurc": 0.03262910594457184,
+          "normalized_aurc": 0.17493427461930205,
+          "spearman_rho_with_safety": 0.7609019819041433,
+          "kendall_tau_b_with_safety": 0.5792995740922225
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.15226137919677257,
+          "oracle_aurc": 0.12303545601993245,
+          "random_aurc": 0.30955754276125524,
+          "excess_aurc": 0.029225923176840127,
+          "normalized_aurc": 0.1566888066042921,
+          "spearman_rho_with_safety": 0.7867897973354312,
+          "kendall_tau_b_with_safety": 0.6042287551013816
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -0.0017522007956299879,
+        "bootstrap": {
+          "difference": -0.0017522007956299879,
+          "ci_low": -0.002474624280778409,
+          "ci_high": -0.0011269769506237685,
+          "confidence_level": 0.95,
+          "p_value": 0.00019998000199980003,
+          "n_resamples": 10000,
+          "n_observations": 614,
+          "n_clusters": 614,
+          "seed": 3019799882
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 116910814.6254533,
+        "mean_two_block_minus_shared_score": 0.02647725371844248,
+        "spearman_shared_covariance_vs_score_delta": 0.02388440787846152,
+        "total_score_runtime_seconds": 8.60528848436661
+      },
+      "sdc_bound_audit": {
+        "num_images": 614,
+        "num_nonempty_actions": 586,
+        "num_empty_actions": 28,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 586,
+          "action_pixels": {
+            "minimum": 3,
+            "maximum": 406155
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.03311142426764652,
+            "median": 0.01654548149405831,
+            "q95": 0.1232695898613015,
+            "maximum": 0.24456346652626482
+          },
+          "theoretical_bound": {
+            "mean": 6.063478094041521,
+            "median": 0.8604959671320049,
+            "q95": 4.447740014595591,
+            "maximum": 2275.999593039303
+          },
+          "bound_slack": {
+            "mean": 6.030366669773874,
+            "median": 0.8389737642969932,
+            "q95": 4.330321378129448,
+            "maximum": 2275.973623435012
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.022833003508724938,
+            "median": 0.017949012780976704,
+            "q95": 0.060926457009020454,
+            "maximum": 0.10288939938313597
+          },
+          "mean_overlap_term": 0.5540088898743885,
+          "mean_outside_term": 5.509469204167133
+        },
+        "strata": [
+          {
+            "stratum": "very_small",
+            "num_images": 1,
+            "action_pixels": {
+              "minimum": 3,
+              "maximum": 3
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.02596960429090256,
+              "median": 0.02596960429090256,
+              "q95": 0.02596960429090256,
+              "maximum": 0.02596960429090256
+            },
+            "theoretical_bound": {
+              "mean": 2275.999593039303,
+              "median": 2275.999593039303,
+              "q95": 2275.999593039303,
+              "maximum": 2275.999593039303
+            },
+            "bound_slack": {
+              "mean": 2275.973623435012,
+              "median": 2275.973623435012,
+              "q95": 2275.973623435012,
+              "maximum": 2275.973623435012
+            },
+            "error_to_bound_ratio": {
+              "mean": 1.1410197247102103e-05,
+              "median": 1.1410197247102103e-05,
+              "q95": 1.1410197247102103e-05,
+              "maximum": 1.1410197247102103e-05
+            },
+            "mean_overlap_term": 1.0,
+            "mean_outside_term": 2274.999593039303
+          },
+          {
+            "stratum": "small",
+            "num_images": 7,
+            "action_pixels": {
+              "minimum": 53,
+              "maximum": 252
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.09873620671843782,
+              "median": 0.07963850840773135,
+              "q95": 0.1838851760828932,
+              "maximum": 0.19228512020819566
+            },
+            "theoretical_bound": {
+              "mean": 61.5666037793769,
+              "median": 33.52245347541784,
+              "q95": 129.1216095481909,
+              "maximum": 130.0572457975952
+            },
+            "bound_slack": {
+              "mean": 61.467867572658456,
+              "median": 33.33016835520964,
+              "q95": 129.05228048649468,
+              "maximum": 129.97760728918746
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.0037479887997361396,
+              "median": 0.0017125882841269508,
+              "q95": 0.011694620909377436,
+              "maximum": 0.014248311403322264
+            },
+            "mean_overlap_term": 0.9704603506951545,
+            "mean_outside_term": 60.596143428681735
+          },
+          {
+            "stratum": "medium",
+            "num_images": 116,
+            "action_pixels": {
+              "minimum": 331,
+              "maximum": 3982
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.07838056297232467,
+              "median": 0.06624545459043168,
+              "q95": 0.20772262194546115,
+              "maximum": 0.24456346652626482
+            },
+            "theoretical_bound": {
+              "mean": 3.6615804079732626,
+              "median": 2.0772005721852196,
+              "q95": 9.239185215262014,
+              "maximum": 72.54941603570936
+            },
+            "bound_slack": {
+              "mean": 3.5831998450009386,
+              "median": 1.9964785703230197,
+              "q95": 9.119939006368803,
+              "maximum": 72.41116996043657
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.03153827616049922,
+              "median": 0.02666727433162662,
+              "q95": 0.06755374881832184,
+              "maximum": 0.10288939938313597
+            },
+            "mean_overlap_term": 0.7548856725596252,
+            "mean_outside_term": 2.9066947354136383
+          },
+          {
+            "stratum": "large",
+            "num_images": 462,
+            "action_pixels": {
+              "minimum": 4127,
+              "maximum": 406155
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.02076629061630137,
+              "median": 0.012296826959686036,
+              "q95": 0.0711586400220115,
+              "maximum": 0.16793748326545038
+            },
+            "theoretical_bound": {
+              "mean": 0.9123138880703274,
+              "median": 0.7252659278344007,
+              "q95": 2.0249899142643697,
+              "maximum": 8.201937862782337
+            },
+            "bound_slack": {
+              "mean": 0.8915475974540262,
+              "median": 0.713793053147299,
+              "q95": 2.0005991025428926,
+              "maximum": 8.147071273360616
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.02098582833268291,
+              "median": 0.015985045606446972,
+              "q95": 0.05659328559603844,
+              "maximum": 0.09030851560908867
+            },
+            "mean_overlap_term": 0.4962970757459069,
+            "mean_outside_term": 0.4160168123244206
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    },
+    {
+      "dataset": "tn3k",
+      "condition": "deeplabv3-target",
+      "num_images": 614,
+      "main_manifest_sha256": "f81b16265db1f1d3361c7942700e7db28ba720db154b4665f60aea48bf61ff2e",
+      "count_manifest_sha256": "894120a9f2caa2e72ec39ecbeedfc40144c11b9d2eb7914baa899d3a553fb250",
+      "methods": {
+        "confidence_dice_action_two_block_m32": {
+          "label": "Dice two-block",
+          "aurc": 0.08776310593191629,
+          "oracle_aurc": 0.06559511312590915,
+          "random_aurc": 0.18362247221517128,
+          "excess_aurc": 0.022167992806007134,
+          "normalized_aurc": 0.18782079830526285,
+          "spearman_rho_with_safety": 0.8080847181094372,
+          "kendall_tau_b_with_safety": 0.6191835188652327
+        },
+        "confidence_dice_m32": {
+          "label": "Dice-M32",
+          "aurc": 0.08792312646502959,
+          "oracle_aurc": 0.06559511312590915,
+          "random_aurc": 0.18362247221517128,
+          "excess_aurc": 0.022328013339120434,
+          "normalized_aurc": 0.18917659016867547,
+          "spearman_rho_with_safety": 0.8073095970207917,
+          "kendall_tau_b_with_safety": 0.6182478188753622
+        },
+        "confidence_dice_exact": {
+          "label": "Dice-Exact",
+          "aurc": 0.08428988339415533,
+          "oracle_aurc": 0.06559511312590915,
+          "random_aurc": 0.18362247221517128,
+          "excess_aurc": 0.018694770268246175,
+          "normalized_aurc": 0.15839353191074648,
+          "spearman_rho_with_safety": 0.8076909698806065,
+          "kendall_tau_b_with_safety": 0.6178175762466898
+        },
+        "confidence_sdc": {
+          "label": "SDC",
+          "aurc": 0.07922232038133306,
+          "oracle_aurc": 0.06559511312590915,
+          "random_aurc": 0.18362247221517128,
+          "excess_aurc": 0.013627207255423907,
+          "normalized_aurc": 0.11545803753109377,
+          "spearman_rho_with_safety": 0.8015039253384865,
+          "kendall_tau_b_with_safety": 0.6098895210402498
+        },
+        "confidence_foreground_entropy": {
+          "label": "Foreground entropy",
+          "aurc": 0.07835412138751721,
+          "oracle_aurc": 0.06559511312590915,
+          "random_aurc": 0.18362247221517128,
+          "excess_aurc": 0.012759008261608057,
+          "normalized_aurc": 0.10810212445708145,
+          "spearman_rho_with_safety": 0.8132309081730902,
+          "kendall_tau_b_with_safety": 0.6226295607296374
+        }
+      },
+      "primary_comparison": {
+        "left": "confidence_dice_action_two_block_m32",
+        "right": "confidence_dice_m32",
+        "difference_left_minus_right": -0.00016002053311330033,
+        "bootstrap": {
+          "difference": -0.00016002053311330033,
+          "ci_low": -0.00030022469196685115,
+          "ci_high": -5.536361459810262e-05,
+          "confidence_level": 0.95,
+          "p_value": 0.000999900009999,
+          "n_resamples": 10000,
+          "n_observations": 614,
+          "n_clusters": 614,
+          "seed": 2999199051
+        }
+      },
+      "mechanism": {
+        "mean_shared_count_covariance": 29728775.298436865,
+        "mean_two_block_minus_shared_score": 0.009931302817328328,
+        "spearman_shared_covariance_vs_score_delta": 0.0012390440534452286,
+        "total_score_runtime_seconds": 9.881331613985822
+      },
+      "sdc_bound_audit": {
+        "num_images": 614,
+        "num_nonempty_actions": 603,
+        "num_empty_actions": 11,
+        "all_nonempty_bounds_hold": true,
+        "maximum_numerical_violation": 0.0,
+        "overall": {
+          "stratum": "all_nonempty",
+          "num_images": 603,
+          "action_pixels": {
+            "minimum": 3,
+            "maximum": 446870
+          },
+          "absolute_sdc_risk_error": {
+            "mean": 0.018879071378885066,
+            "median": 0.006026737265994009,
+            "q95": 0.08357898524971277,
+            "maximum": 0.3480349515615544
+          },
+          "theoretical_bound": {
+            "mean": 4.24979755438551,
+            "median": 0.43306218618303305,
+            "q95": 1.9055859847011756,
+            "maximum": 1293.394343807276
+          },
+          "bound_slack": {
+            "mean": 4.230918483006624,
+            "median": 0.4174847184772946,
+            "q95": 1.803021412827968,
+            "maximum": 1293.3597171805702
+          },
+          "error_to_bound_ratio": {
+            "mean": 0.02276189392175232,
+            "median": 0.014615071026427472,
+            "q95": 0.07288253794025928,
+            "maximum": 0.1230129564121718
+          },
+          "mean_overlap_term": 0.35627677377248745,
+          "mean_outside_term": 3.893520780613022
+        },
+        "strata": [
+          {
+            "stratum": "very_small",
+            "num_images": 4,
+            "action_pixels": {
+              "minimum": 3,
+              "maximum": 29
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.06236401126679589,
+              "median": 0.05922479121423335,
+              "q95": 0.10791479800426299,
+              "maximum": 0.11216629958336544
+            },
+            "theoretical_bound": {
+              "mean": 507.18548044223974,
+              "median": 353.50185358099515,
+              "q95": 1193.1361209962458,
+              "maximum": 1293.394343807276
+            },
+            "bound_slack": {
+              "mean": 507.12311643097297,
+              "median": 353.45052202160616,
+              "q95": 1193.1038623390875,
+              "maximum": 1293.3597171805702
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.001259129200809917,
+              "median": 0.0005262030518998335,
+              "q95": 0.0035170772989985464,
+              "maximum": 0.003957338797373492
+            },
+            "mean_overlap_term": 0.9874267020664456,
+            "mean_outside_term": 506.19805374017335
+          },
+          {
+            "stratum": "small",
+            "num_images": 4,
+            "action_pixels": {
+              "minimum": 32,
+              "maximum": 211
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.11891728977730007,
+              "median": 0.10614697233891768,
+              "q95": 0.18352103022161614,
+              "maximum": 0.19280520725751615
+            },
+            "theoretical_bound": {
+              "mean": 42.49877350375512,
+              "median": 39.70633231925067,
+              "q95": 78.20163959917949,
+              "maximum": 83.53896026417091
+            },
+            "bound_slack": {
+              "mean": 42.379856213977824,
+              "median": 39.60018534691176,
+              "q95": 78.12201848902899,
+              "maximum": 83.46839025699707
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.008383838438006287,
+              "median": 0.0026584918786309716,
+              "q95": 0.023677036452025076,
+              "maximum": 0.02737361436277199
+            },
+            "mean_overlap_term": 0.9598139707779781,
+            "mean_outside_term": 41.53895953297714
+          },
+          {
+            "stratum": "medium",
+            "num_images": 104,
+            "action_pixels": {
+              "minimum": 324,
+              "maximum": 4057
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.048789593338209085,
+              "median": 0.029070973494178642,
+              "q95": 0.1455111657569873,
+              "maximum": 0.3480349515615544
+            },
+            "theoretical_bound": {
+              "mean": 1.2316344774430306,
+              "median": 0.8051198914921932,
+              "q95": 3.2450937112267977,
+              "maximum": 8.99524861873041
+            },
+            "bound_slack": {
+              "mean": 1.1828448841048216,
+              "median": 0.7880350324032128,
+              "q95": 3.1913017702248108,
+              "maximum": 8.869730193189485
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.04012636357433101,
+              "median": 0.024890387644604016,
+              "q95": 0.10328802491547602,
+              "maximum": 0.1230129564121718
+            },
+            "mean_overlap_term": 0.49652411842073074,
+            "mean_outside_term": 0.7351103590222998
+          },
+          {
+            "stratum": "large",
+            "num_images": 491,
+            "action_pixels": {
+              "minimum": 4155,
+              "maximum": 446870
+            },
+            "absolute_sdc_risk_error": {
+              "mean": 0.011374413706960415,
+              "median": 0.004471387887007849,
+              "q95": 0.04430573433767403,
+              "maximum": 0.16560071303349622
+            },
+            "theoretical_bound": {
+              "mean": 0.48024628076661374,
+              "median": 0.37472461812866653,
+              "q95": 1.0946424314014256,
+              "maximum": 3.0476956686863987
+            },
+            "bound_slack": {
+              "mean": 0.4688718670596534,
+              "median": 0.3655653302719546,
+              "q95": 1.0497005123993473,
+              "maximum": 3.024529605882181
+            },
+            "error_to_bound_ratio": {
+              "mean": 0.01937618809069441,
+              "median": 0.013275524683348121,
+              "q95": 0.05718396850015897,
+              "maximum": 0.1109550128931235
+            },
+            "mean_overlap_term": 0.31651206431298623,
+            "mean_outside_term": 0.16373421645362754
+          }
+        ],
+        "interpretation": "The bound is explanatory rather than expected to be tight; its 1/action-size factors can be conservative for small predictions."
+      }
+    }
+  ],
+  "summary": {
+    "mean_difference_two_block_minus_shared": -0.0001946585133884106,
+    "median_difference_two_block_minus_shared": -2.0272593578000986e-05,
+    "two_block_wins": 8,
+    "shared_wins": 2,
+    "ties": 0,
+    "interpretation_gate_passed": true
+  }
+}

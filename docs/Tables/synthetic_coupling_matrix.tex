@@ -1,0 +1,44 @@
+% Auto-generated from coupling-matrix analysis SHA-256: 43244cfc8e9ed05a0e86d77e9bc7dd85c3882822562b24ef8f58b9a80ee05b2a
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.2pt}
+\caption{Known-posterior coupling matrix. Estimator couplings are rows and true couplings are columns. Each cell is mean absolute conditional-risk error / AURC regret $\times100$ (lower is better). Pixel marginals, actions, cohorts, and Monte Carlo budgets are fixed.}
+\label{tab:synthetic-coupling-matrix}
+\textbf{Dice}\par\vspace{1pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Estimator $Q$ & Shared threshold & Independent Bernoulli & Local block threshold & Bimodal antithetic \\
+\midrule
+Shared threshold & \bestresult{0.0000 / 0.000} & 0.0188 / 0.152 & 0.0186 / 0.174 & 0.0396 / 0.032 \\
+Independent Bernoulli & 0.0189 / 0.166 & \bestresult{0.0000 / 0.000} & 0.0057 / 0.030 & \bestresult{0.0260 / 0.112} \\
+Local block & 0.0183 / 0.182 & 0.0056 / 0.027 & \bestresult{0.0000 / 0.000} & 0.0279 / 0.126 \\
+Spatial copula & 0.0174 / 0.185 & 0.0081 / 0.047 & 0.0090 / 0.068 & 0.0296 / 0.137 \\
+\bottomrule
+\end{tabular*}
+\par\smallskip
+\textbf{HD}\par\vspace{1pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Estimator $Q$ & Shared threshold & Independent Bernoulli & Local block threshold & Bimodal antithetic \\
+\midrule
+Shared threshold & \bestresult{0.0000 / 0.000} & 0.0622 / 0.326 & 0.0455 / 0.232 & 0.0611 / 0.127 \\
+Independent Bernoulli & 0.0622 / 0.537 & \bestresult{0.0000 / 0.000} & 0.0618 / 0.103 & 0.1043 / 0.297 \\
+Local block & 0.0454 / 0.477 & 0.0618 / 0.123 & \bestresult{0.0000 / 0.000} & \bestresult{0.0430 / 0.202} \\
+Spatial copula & 0.0443 / 0.490 & 0.0507 / 0.132 & 0.0112 / 0.037 & 0.0538 / 0.200 \\
+\bottomrule
+\end{tabular*}
+\par\smallskip
+\textbf{HD95}\par\vspace{1pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Estimator $Q$ & Shared threshold & Independent Bernoulli & Local block threshold & Bimodal antithetic \\
+\midrule
+Shared threshold & \bestresult{0.0000 / 0.000} & 0.0446 / 0.216 & 0.0464 / 0.190 & 0.0627 / 0.095 \\
+Independent Bernoulli & 0.0446 / 0.471 & \bestresult{0.0000 / 0.000} & 0.0046 / 0.036 & 0.0358 / 0.185 \\
+Local block & 0.0464 / 0.415 & 0.0046 / 0.040 & \bestresult{0.0000 / 0.000} & 0.0330 / 0.128 \\
+Spatial copula & 0.0499 / 0.436 & 0.0110 / 0.065 & 0.0083 / 0.047 & \bestresult{0.0253 / 0.124} \\
+\bottomrule
+\end{tabular*}
+\par\smallskip
+\end{table*}

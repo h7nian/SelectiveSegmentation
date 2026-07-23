@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "campaign_id": "binary-synthetic-posterior-matrix-v1",
+  "status": "predeclared-before-computing-estimator-coupling-matrix",
+  "base_seed": 2026072300,
+  "grid": {
+    "true_couplings": [
+      "shared_threshold",
+      "independent_bernoulli",
+      "local_block_threshold",
+      "bimodal_antithetic"
+    ],
+    "estimator_couplings": [
+      "shared_threshold",
+      "independent_bernoulli",
+      "local_block_threshold",
+      "spatial_copula"
+    ],
+    "sharpness_levels": [
+      "diffuse",
+      "medium",
+      "sharp"
+    ],
+    "morphologies": [
+      "disk",
+      "elongated",
+      "two_component"
+    ],
+    "replicates": 10
+  },
+  "protocol": {
+    "height": 32,
+    "width": 32,
+    "cohort_size": 24,
+    "posterior_draws": 256,
+    "mc_batches": 8,
+    "workers_per_job": 4,
+    "gamma": 0.5,
+    "sharpness_pixels": {
+      "diffuse": 3.0,
+      "medium": 1.5,
+      "sharp": 0.7
+    },
+    "local_block_size": 8,
+    "losses": [
+      "dice",
+      "nhd",
+      "nhd95"
+    ],
+    "spatial_copula": {
+      "global_variance_weight": 0.5,
+      "spatial_variance_weight": 0.5,
+      "spatial_knot_spacing_diagonal": 0.05,
+      "posterior_batch_size": 64
+    }
+  },
+  "scheduler": {
+    "cpu_partition_candidates": [
+      "saffo-2tb",
+      "agsmall",
+      "amdsmall",
+      "msismall"
+    ],
+    "cpus_per_job": 4,
+    "memory": "24g",
+    "time_limit": "06:00:00"
+  },
+  "output_root": "outputs/synthetic_posterior_matrix_v1"
+}

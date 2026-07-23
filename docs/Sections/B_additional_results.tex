@@ -76,6 +76,16 @@ silently enlarged after inspection.
   and their control recomputations pass the dedicated analyzer.
 }
 
+\IfFileExists{Tables/sdc_count_bound.tex}{%
+  \noindent\textbf{SDC count-dispersion audit.}
+
+  \input{Tables/sdc_count_bound.tex}
+  The exact left-hand side never exceeds the theorem's right-hand side for a
+  nonempty action. The often small error-to-bound ratios quantify the expected
+  looseness of the global Lipschitz argument; they do not weaken the exact
+  ratio-of-expectations versus expectation-of-ratio distinction.
+}{}
+
 \IfFileExists{Tables/dice_partition_ladder.tex}{%
   \noindent\textbf{Spatial-partition Dice coupling.}
 
@@ -320,6 +330,42 @@ silently enlarged after inspection.
   The mechanism table and figure appear only after all 360 locked synthetic
   cells pass the strict complete analyzer.
 }
+
+\IfFileExists{Tables/synthetic_coupling_matrix.tex}{%
+  \noindent\textbf{True-posterior by estimator-coupling matrix.}
+
+  \input{Tables/synthetic_coupling_matrix.tex}
+  \begin{figure*}[t]
+    \centering
+    \includegraphics[width=.94\textwidth]{Figures/synthetic_coupling_matrix.pdf}
+    \caption{Known-posterior coupling matrix. Rows of each heat map are true
+    couplings and columns are estimating couplings. The upper row reports
+    conditional-risk MAE; the lower row reports AURC regret multiplied by 100.}
+    \label{fig:synthetic-coupling-matrix}
+  \end{figure*}
+}{%
+  \noindent\textbf{Coupling-matrix rendering guard.}
+  The matrix appears only after all 360 independent simulation cells pass
+  source-hash, identity, and completeness validation.
+}
+
+\IfFileExists{Figures/hd95_contamination.pdf}{%
+  \begin{figure}[t]
+    \centering
+    \includegraphics[width=.88\linewidth]{Figures/hd95_contamination.pdf}
+    \caption{Controlled remote-surface contamination. Full HD reacts to the
+    first distant component; pooled HD95 remains zero below five percent and
+    changes rapidly as the contaminated surface fraction crosses its
+    percentile cutoff. Dice changes by less than one point throughout.}
+    \label{fig:hd95-contamination}
+  \end{figure}
+  \noindent\textbf{Why HD95 is a robust extension, not an HD corollary.}
+  In this deterministic construction, HD is 100 pixels after the first remote
+  component. HD95 is zero through 4.87\% contamination, then rises from 9.24
+  pixels at 5.01\% to 92.39 pixels at 5.14\%. This quantile transition is the
+  practical robustness benefit and the source of the missing metric/Lipschitz
+  guarantee.
+}{}
 
 \subsection{Runtime, robustness, and qualitative audit}
 

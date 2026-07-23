@@ -168,6 +168,16 @@ the count-law explanation}, not superiority of either Dice score.
   \input{Tables/dice_count_posterior.tex}
 }{\noindent\textbf{Rendering guard.} The Dice coupling ablation is incomplete.}
 
+The count-dispersion inequality holds for every nonempty action at machine
+precision. It is deliberately conservative: across the ten target conditions,
+the condition-level median absolute SDC--Exact risk difference ranges from
+.022 to 12.048 on the \(\times100\) scale, while the corresponding median
+bound ranges from 11.765 to 805.692. Thus the theorem explains \emph{when}
+concentration makes SDC and posterior Dice close, but is not a useful numerical
+certificate for small or diffuse predictions. Empty actions are excluded from
+the \(1/|\Yhat|\) bound and reported separately in
+\Cref{tab:sdc-bound-audit}.
+
 \noindent\textbf{Does smooth non-nested coupling help?}
 The prespecified spatial copula improves on Dice-M32 in 5/10 conditions and
 worsens it in five, so it \textbf{fails the declared 7/10 directional gate}.
@@ -192,6 +202,24 @@ the prespecified primary setting and is not promoted post hoc.
     \label{fig:dice-spatial-copula}
   \end{figure}
 }{\noindent\textbf{Rendering guard.} The spatial-copula audit is incomplete.}
+
+\noindent\textbf{What changes when the true coupling is known?}
+The complete synthetic matrix separates geometry from posterior adequacy.
+All three available matched controls recover their conditional risks and
+AURC ordering exactly. Under independent truth, using the shared-threshold
+estimator incurs MAE .0188 for Dice, .0623 for HD, and .0446 for HD95; under
+local-block truth the corresponding errors are .0186, .0455, and .0464.
+Thus boundary risks are more sensitive to this coupling mismatch in these
+controlled families, but \textbf{no coupling is universally privileged}.
+The deliberately unmatched bimodal truth makes the distinction sharper:
+independent coupling has the lowest Dice-risk MAE (.0260), while shared
+threshold has the lowest Dice AURC regret (.032 on the \(\times100\) scale).
+Likewise, spatial copula has the lowest HD95-risk MAE (.0254), whereas shared
+threshold has the lowest HD95 AURC regret (.095). Absolute risk estimation and
+selective ordering are therefore related but not interchangeable, and a
+loss-compatible transport geometry does not establish that a chosen
+working posterior is true. The full matrix is reported in
+\Cref{tab:synthetic-coupling-matrix,fig:synthetic-coupling-matrix}.
 
 \clearpage
 
